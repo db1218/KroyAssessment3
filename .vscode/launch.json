@@ -1,0 +1,18 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DesktopLauncher",
+            "request": "launch",
+            "mainClass": "com.kroy.desktop.DesktopLauncher",
+            "projectName": "desktop"
+        },
+        {
+            "type": "java",
+            "name": "CodeLens (Launch) - DesktopLauncher",
+            "request": "launch",
+            "mainClass": "desktop.src.com.kroy.desktop.DesktopLauncher",
+            "projectName": "Kroy"
+        }
+    ]
+}
