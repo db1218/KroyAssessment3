@@ -1,0 +1,24 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Gradle_Build",
+            "type": "shell",
+            "command": "gradle build"
+        },
+        {
+            "label": "Gradle_Test",
+            "type": "shell",
+            "command": "gradle test"
+        },
+        {
+            "label": "Build",
+            "dependsOn":[
+                "Gradle_Build",
+                "Gradle_Test"
+            ]
+        }
+    ]
+}
