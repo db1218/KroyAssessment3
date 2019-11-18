@@ -7,6 +7,9 @@ import com.kroy.Kroy;
 public class DesktopLauncher {
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+		config.title = "Kroy";
+		config.width = 1280;
+		config.height = 720;
 		new LwjglApplication(new Kroy(), config);
 	}
 }
