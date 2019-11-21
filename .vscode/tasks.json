@@ -22,7 +22,8 @@
             "label": "Build",
             "dependsOn":[
                 "Clear_Console",
-                "Gradle_Build"
+                "Gradle_Build",
+                "Gradle_Test",
             ]
         }
     ]
