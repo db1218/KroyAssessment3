@@ -4,20 +4,25 @@
     "version": "2.0.0",
     "tasks": [
         {
+            "label": "Clear_Console",
+            "type": "shell",
+            "command": "clear"
+        },
+        {
             "label": "Gradle_Build",
             "type": "shell",
-            "command": "gradle build"
+            "command": "gradle assemble"
         },
         {
             "label": "Gradle_Test",
             "type": "shell",
-            "command": "gradle test"
+            "command": "gradle junitPlatformTest"
         },
         {
             "label": "Build",
             "dependsOn":[
-                "Gradle_Build",
-                "Gradle_Test"
+                "Clear_Console",
+                "Gradle_Build"
             ]
         }
     ]
