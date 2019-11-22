@@ -2,20 +2,6 @@
     "configurations": [
         {
             "type": "java",
-            "name": "CodeLens (Launch) - Map",
-            "request": "launch",
-            "mainClass": "com.kroy.Map",
-            "projectName": "core"
-        },
-        {
-            "type": "java",
-            "name": "CodeLens (Launch) - Map",
-            "request": "launch",
-            "mainClass": "com.screens.Map",
-            "projectName": "core"
-        },
-        {
-            "type": "java",
             "name": "CodeLens (Launch) - DesktopLauncher",
             "request": "launch",
             "mainClass": "com.kroy.desktop.DesktopLauncher",
