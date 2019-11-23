@@ -84,7 +84,6 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		texture.dispose();
-        sprites.clear();
 	}
 
 }
