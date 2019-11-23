@@ -1,4 +1,4 @@
-package test;
+package tests;
 
 // Java File type import
 import java.io.File;
@@ -6,24 +6,25 @@ import java.io.File;
 // JUnit imports
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
-
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 
 // Class imports
 import com.kroy.Kroy;
+import com.screens.GameScreen;
 
-class KroyTests {
+class GameScreenTests {
 
     // Allows test class to be acessed in all methods
-    private static Kroy TestClass;
+    private static GameScreen TestClass;
 
     // Runs before all tests
     @BeforeAll
     public static void setUp() {
-        // Create a new Kroy object to test
-        TestClass = new Kroy();
+        // Create classes to test
+        Kroy game = new Kroy();
+        TestClass = new GameScreen(game);
     }
      
     // Checks that the class contains all the required methods
@@ -31,7 +32,7 @@ class KroyTests {
     public void hasCorrectMethods() {
 
         // All methods that should be in the class
-        String[] correctMethods = {"create", "render", "dispose"};
+        String[] correctMethods = {"render", "dispose", "resize", "show", "hide", "pause", "resume"};
 
         for (int i = 0; i < correctMethods.length; i++) {
             try {
