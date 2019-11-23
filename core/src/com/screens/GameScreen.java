@@ -8,32 +8,41 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 // Class imports
 import com.kroy.Kroy;
 
-public class MainMenuScreen implements Screen {
-    
-    final Kroy game;
+// Constants import
+import static com.config.Constants.SCORE_Y;
+import static com.config.Constants.SCORE_X;
+
+public class GameScreen implements Screen {
+  	final Kroy game;
+
 	OrthographicCamera camera;
+	int score;
 
-	public MainMenuScreen(final Kroy gam) {
-		game = gam;
+	public GameScreen(final Kroy gam) {
+		this.game = gam;
 
+		// create the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, 800, 480);
-
 	}
 
 	@Override
 	public void render(float delta) {
+		// clear the screen with a dark blue color. The
+		// arguments to glClearColor are the red, green
+		// blue and alpha component in the range [0,1]
+		// of the color to be used to clear the screen.
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-        camera.update();
-        game.init(camera);
-        game.drawFontMultiple(new String[] {"Welcome to Kroy!", "Tap anywhere to begin!"}, new Double[] {100.0, 100.0}, new Double[] {150.0, 100.0});
+		// tell the camera to update its matrices.
+		camera.update();
 
-		if (Gdx.input.isTouched()) {
-			game.setScreen(new GameScreen(game));
-			dispose();
-		}
+		game.init(camera);
+
+		// Draw score
+		game.drawFontSingle("Score: " + score, SCORE_X, SCORE_Y);
+
 	}
 
 	@Override
@@ -59,4 +68,5 @@ public class MainMenuScreen implements Screen {
 	@Override
 	public void dispose() {
 	}
+
 }
