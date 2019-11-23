@@ -43,7 +43,7 @@ public class GameScreen implements Screen {
 		game.init(camera);
 
 		// Draw score
-		game.drawFontSingle("Score: " + score, SCORE_X, SCORE_Y);
+		game.drawFont("Score: " + score, SCORE_X, SCORE_Y);
 
 	}
 

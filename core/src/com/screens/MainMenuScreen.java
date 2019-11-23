@@ -34,7 +34,7 @@ public class MainMenuScreen implements Screen {
 
         camera.update();
         game.init(camera);
-        game.drawFontMultiple(
+        game.drawFont(
 			new String[] {"Welcome to Kroy!", "Tap anywhere to begin!"}, 
 			new Double[] {SCREEN_CENTRE_X - 90.0, SCREEN_CENTRE_X - 120.0}, 
 			new Double[] {SCREEN_CENTRE_Y, SCREEN_CENTRE_Y - 50.0}

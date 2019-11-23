@@ -38,13 +38,13 @@ public class Kroy extends Game {
 		font.getData().setScale(1.5f);
 	}
 
-	public void drawFontSingle(String text, Double x, Double y) {
+	public void drawFont(String text, Double x, Double y) {
 		batch.begin();
 		font.draw(batch, text, x.floatValue(), y.floatValue());
 		batch.end();
 	}
 
-	public void drawFontMultiple(String[] text, Double[] x, Double[] y) {
+	public void drawFont(String[] text, Double[] x, Double[] y) {
 		batch.begin();
 		if (text.length == x.length && x.length == y.length) {
 			for (int i = 0; i < text.length; i ++) {
