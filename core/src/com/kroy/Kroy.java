@@ -33,6 +33,9 @@ public class Kroy extends Game {
 		// tell the SpriteBatch to render in the
 		// coordinate system specified by the camera.
 		batch.setProjectionMatrix(camera.combined);
+
+		// Set font scale
+		font.getData().setScale(1.5f);
 	}
 
 	public void drawFontSingle(String text, Double x, Double y) {

@@ -13,6 +13,8 @@ public final class Constants {
     public static final int SCREEN_HEIGHT = 720;
 
     // Class sizing
-    public static final double SCORE_Y = SCREEN_HEIGHT * 0.65;
+    public static final double SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5;
+    public static final double SCREEN_CENTRE_Y = SCREEN_HEIGHT * 0.5;
+    public static final double SCORE_Y = SCREEN_HEIGHT * 0.95;
     public static final double SCORE_X = SCREEN_WIDTH * 0.05;
 }

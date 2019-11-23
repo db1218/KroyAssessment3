@@ -9,6 +9,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.kroy.Kroy;
 
 // Constants import
+import static com.config.Constants.SCREEN_HEIGHT;
+import static com.config.Constants.SCREEN_WIDTH;
 import static com.config.Constants.SCORE_Y;
 import static com.config.Constants.SCORE_X;
 
@@ -23,7 +25,7 @@ public class GameScreen implements Screen {
 
 		// create the camera
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
 	}
 
 	@Override

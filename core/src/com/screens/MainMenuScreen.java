@@ -8,6 +8,12 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 // Class imports
 import com.kroy.Kroy;
 
+// Constants import
+import static com.config.Constants.SCREEN_HEIGHT;
+import static com.config.Constants.SCREEN_WIDTH;
+import static com.config.Constants.SCREEN_CENTRE_X;
+import static com.config.Constants.SCREEN_CENTRE_Y;
+
 public class MainMenuScreen implements Screen {
     
     final Kroy game;
@@ -17,7 +23,7 @@ public class MainMenuScreen implements Screen {
 		game = gam;
 
 		camera = new OrthographicCamera();
-		camera.setToOrtho(false, 800, 480);
+		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 	}
 
@@ -28,7 +34,11 @@ public class MainMenuScreen implements Screen {
 
         camera.update();
         game.init(camera);
-        game.drawFontMultiple(new String[] {"Welcome to Kroy!", "Tap anywhere to begin!"}, new Double[] {100.0, 100.0}, new Double[] {150.0, 100.0});
+        game.drawFontMultiple(
+			new String[] {"Welcome to Kroy!", "Tap anywhere to begin!"}, 
+			new Double[] {SCREEN_CENTRE_X - 90.0, SCREEN_CENTRE_X - 120.0}, 
+			new Double[] {SCREEN_CENTRE_Y, SCREEN_CENTRE_Y - 50.0}
+		);
 
 		if (Gdx.input.isTouched()) {
 			game.setScreen(new GameScreen(game));
