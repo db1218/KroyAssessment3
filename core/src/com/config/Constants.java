@@ -17,4 +17,9 @@ public final class Constants {
     public static final double SCREEN_CENTRE_Y = SCREEN_HEIGHT * 0.5;
     public static final double SCORE_Y = SCREEN_HEIGHT * 0.95;
     public static final double SCORE_X = SCREEN_WIDTH * 0.05;
+
+    // Sprite sizing
+    public static final int SPRITE_WIDTH = 64;
+    public static final int SPRITE_HEIGHT = 64;
+
 }

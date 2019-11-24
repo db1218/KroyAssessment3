@@ -4,13 +4,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 
 // Class imports
 import com.kroy.Kroy;
-import com.sprites.SimpleSprite;
+import com.sprites.MovementSprite;
 
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
@@ -23,7 +22,7 @@ public class GameScreen implements Screen {
 
 	OrthographicCamera camera;
 	int score;
-	SimpleSprite testSprite;
+	MovementSprite testSprite;
 	Texture texture;
 	SpriteBatch batch;
 
@@ -37,7 +36,7 @@ public class GameScreen implements Screen {
 		// create sprite
 		batch = new SpriteBatch();
 		texture = new Texture("badlogic.jpg");
-		testSprite = new SimpleSprite(batch, texture);
+		testSprite = new MovementSprite(batch, texture);
 	}
 
 	@Override
@@ -58,7 +57,7 @@ public class GameScreen implements Screen {
 		game.drawFont("Score: " + score, SCORE_X, SCORE_Y);
 
 		// Draw sprite
-        testSprite.drawSprite(texture, 100, 100);
+        testSprite.update();
 	}
 
 	@Override
@@ -84,6 +83,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		texture.dispose();
+		testSprite.dispose();
 	}
 
 }

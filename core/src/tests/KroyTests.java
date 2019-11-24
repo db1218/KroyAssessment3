@@ -30,7 +30,7 @@ class KroyTests {
     public void hasCorrectMethods() {
 
         // All methods that should be in the class
-        String[] correctMethods = {"create", "render", "dispose", "init", "drawFontSingle", "drawFontMultiple"};
+        String[] correctMethods = {"create", "render", "dispose", "init", "drawFont"};
 
         for (int i = 0; i < correctMethods.length; i++) {
             try {
