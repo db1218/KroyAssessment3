@@ -1,33 +1,56 @@
 package com.kroy;
 
-import com.badlogic.gdx.ApplicationAdapter;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 
-public class Kroy extends ApplicationAdapter {
-	SpriteBatch batch;
-	Texture img;
-	
-	@Override
-	public void create () {
+// Class imports
+import com.screens.MainMenuScreen;
+
+public class Kroy extends Game {
+
+  	public SpriteBatch batch;
+	public BitmapFont font;
+
+	public void create() {
 		batch = new SpriteBatch();
-		img = new Texture("badlogic.jpg");
+		// Use LibGDX's default Arial font.
+		font = new BitmapFont();
+		this.setScreen(new MainMenuScreen(this));
 	}
 
-	@Override
-	public void render () {
-		Gdx.gl.glClearColor(1, 0, 0, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+	public void render() {
+		super.render(); // important!
+	}
+
+	public void dispose() {
+		batch.dispose();
+		font.dispose();
+	}
+
+	public void init(OrthographicCamera camera) {
+		// tell the SpriteBatch to render in the
+		// coordinate system specified by the camera.
+		batch.setProjectionMatrix(camera.combined);
+
+		// Set font scale
+		font.getData().setScale(1.5f);
+	}
+
+	public void drawFont(String text, Double x, Double y) {
 		batch.begin();
-		batch.draw(img, 0, 0);
+		font.draw(batch, text, x.floatValue(), y.floatValue());
 		batch.end();
 	}
-	
-	@Override
-	public void dispose () {
-		batch.dispose();
-		img.dispose();
+
+	public void drawFont(String[] text, Double[] x, Double[] y) {
+		batch.begin();
+		if (text.length == x.length && x.length == y.length) {
+			for (int i = 0; i < text.length; i ++) {
+				font.draw(batch, text[i], x[i].floatValue(), y[i].floatValue());
+			}
+		}
+		batch.end();
 	}
 }

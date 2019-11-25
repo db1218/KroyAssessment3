@@ -1,0 +1,30 @@
+{
+    // See https://go.microsoft.com/fwlink/?LinkId=733558
+    // for the documentation about the tasks.json format
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Clear_Console",
+            "type": "shell",
+            "command": "clear"
+        },
+        {
+            "label": "Gradle_Build",
+            "type": "shell",
+            "command": "gradle assemble"
+        },
+        {
+            "label": "Gradle_Test",
+            "type": "shell",
+            "command": "gradle junitPlatformTest"
+        },
+        {
+            "label": "Build",
+            "dependsOn":[
+                "Clear_Console",
+                "Gradle_Build",
+                "Gradle_Test",
+            ]
+        }
+    ]
+}
