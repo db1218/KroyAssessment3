@@ -4,8 +4,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
+
+// Tiled map imports
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 // Class imports
 import com.kroy.Kroy;
@@ -20,11 +27,13 @@ import static com.config.Constants.SCORE_X;
 public class GameScreen implements Screen {
   	final Kroy game;
 
+	TiledMap map;
+	OrthogonalTiledMapRenderer renderer;
 	OrthographicCamera camera;
 	int score;
 	MovementSprite testSprite;
 	Texture texture;
-	SpriteBatch batch;
+	Batch batch;
 
 	public GameScreen(final Kroy gam) {
 		this.game = gam;
@@ -32,9 +41,15 @@ public class GameScreen implements Screen {
 		// create the camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+		game.init(camera);
+
+		// load the map, set the unit scale to 1/16 (1 unit == 16 pixels)
+		// Update map asset location later
+		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / 4f);
 
 		// create sprite
-		batch = new SpriteBatch();
+		batch = renderer.getBatch();
 		texture = new Texture("badlogic.jpg");
 		testSprite = new MovementSprite(batch, texture);
 	}
@@ -48,16 +63,19 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// tell the camera to update its matrices.
-		camera.update();
-
-		game.init(camera);
+		// set the TiledMapRenderer view based on what the
+		// camera sees, and render the map
+		renderer.setView(camera);
+		renderer.render();
 
 		// Draw score
 		game.drawFont("Score: " + score, SCORE_X, SCORE_Y);
 
-		// Draw sprite
-        testSprite.update();
+		// Draw FPS
+		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), SCREEN_WIDTH - SCORE_X * 2, SCORE_Y);
+
+		// Draw and move sprite
+		testSprite.update();
 	}
 
 	@Override
