@@ -47,7 +47,7 @@ public class GameScreen implements Screen {
 		// load the map, set the unit scale to 1/16 (1 unit == 16 pixels)
 		// Update map asset location later
 		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
+		renderer = new OrthogonalTiledMapRenderer(map, 2f / 1f);
 
 		// create sprite
 		batch = renderer.getBatch();
@@ -76,7 +76,7 @@ public class GameScreen implements Screen {
 		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), SCREEN_WIDTH - SCORE_X * 2, SCORE_Y);
 
 		// tell the camera to update its matrices.
-		float lerp = 0.75f;
+		float lerp = 1f;
 		Vector3 position = camera.position;
 		position.x += (testSprite.getCentreX() - position.x) * lerp * Gdx.graphics.getDeltaTime();
 		position.y += (testSprite.getCentreY() - position.y) * lerp * Gdx.graphics.getDeltaTime();
