@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Vector3;
 
 // Tiled map imports
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -46,12 +47,12 @@ public class GameScreen implements Screen {
 		// load the map, set the unit scale to 1/16 (1 unit == 16 pixels)
 		// Update map asset location later
 		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, 1f / 4f);
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
 
 		// create sprite
 		batch = renderer.getBatch();
 		texture = new Texture("badlogic.jpg");
-		testSprite = new MovementSprite(batch, texture);
+		testSprite = new MovementSprite(batch, texture, 100, 100);
 	}
 
 	@Override
@@ -69,10 +70,17 @@ public class GameScreen implements Screen {
 		renderer.render();
 
 		// Draw score
-		game.drawFont("Score: " + score, SCORE_X, SCORE_Y);
+		game.drawFont("Score: " + testSprite.getX(), SCORE_X, SCORE_Y);
 
 		// Draw FPS
 		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), SCREEN_WIDTH - SCORE_X * 2, SCORE_Y);
+
+		// tell the camera to update its matrices.
+		float lerp = 0.75f;
+		Vector3 position = camera.position;
+		position.x += (testSprite.getCentreX() - position.x) * lerp * Gdx.graphics.getDeltaTime();
+		position.y += (testSprite.getCentreY() - position.y) * lerp * Gdx.graphics.getDeltaTime();
+		camera.update();
 
 		// Draw and move sprite
 		testSprite.update();
