@@ -11,7 +11,6 @@ import com.badlogic.gdx.math.Vector3;
 // Tiled map imports
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
@@ -47,12 +46,12 @@ public class GameScreen implements Screen {
 		// load the map, set the unit scale to 1/16 (1 unit == 16 pixels)
 		// Update map asset location later
 		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, 2f / 1f);
+		renderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
 
 		// create sprite
 		batch = renderer.getBatch();
 		texture = new Texture("badlogic.jpg");
-		testSprite = new MovementSprite(batch, texture, 100, 100);
+		testSprite = new MovementSprite(batch, texture, 2000, 500, (TiledMapTileLayer) map.getLayers().get("River"));
 	}
 
 	@Override

@@ -13,22 +13,21 @@ public class SimpleSprite extends Sprite {
     Sprite sprite;
     Batch batch;
     Texture texture;
-    float x,y;
 
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture) {
         batch = spriteBatch;
         texture = spriteTexture;
         sprite = new Sprite(texture);
-        x = 0;
-        y = 0;
+        setPosition(0, 0);
+        setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         batch = spriteBatch;
         texture = spriteTexture;
         sprite = new Sprite(texture);
-        x = xPos;
-        y = yPos;
+        setPosition(xPos, yPos);
+        setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
     public void drawSprite() {
@@ -36,40 +35,28 @@ public class SimpleSprite extends Sprite {
 	}
     
     public void drawSprite(float xPos, float yPos) {
-        x = xPos;
-        y = yPos;
+        setPosition(xPos, yPos);
         draw();
 	}
 
     public void drawSprite(Texture spriteTexture, float xPos, float yPos) {
 		sprite = new Sprite(spriteTexture);
-        x = xPos;
-        y = yPos;
+        setPosition(xPos, yPos);
         draw();
     }
 
     private void draw() {
         batch.begin();
-        batch.draw(texture, x, y);
+        batch.draw(texture, getX(), getY(), SPRITE_WIDTH, SPRITE_HEIGHT);
         batch.end();
     }
 
-    @Override
-    public float getX() {
-        return x;
-    }
-
-    @Override
-    public float getY() {
-        return y;
-    }
-
     public float getCentreX() {
-        return x + SPRITE_WIDTH / 2; //Add half sprite width to get centre
+        return getX() + SPRITE_WIDTH / 2; //Add half sprite width to get centre
     }
 
     public float getCentreY() {
-        return y + SPRITE_HEIGHT / 2; //Add half sprite height to get centre
+        return getY() + SPRITE_HEIGHT / 2; //Add half sprite height to get centre
     }
 
     public void dispose() {

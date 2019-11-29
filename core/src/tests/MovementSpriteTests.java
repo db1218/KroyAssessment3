@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 // Class imports
 import com.sprites.MovementSprite;
@@ -30,8 +33,9 @@ class MovementSpriteTests {
         SpriteBatch batch;
         // create sprite
 		batch = new SpriteBatch();
-		texture = new Texture("badlogic.jpg");
-        TestClass = new MovementSprite(batch, texture);
+        texture = new Texture("badlogic.jpg");
+        TiledMap map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
+        TestClass = new MovementSprite(batch, texture, (TiledMapTileLayer) map.getLayers().get(0));
     }
      
     // Checks that the class contains all the required methods

@@ -13,6 +13,7 @@ public final class Constants {
     public static final int SCREEN_HEIGHT = 720;
     public static final int MAP_WIDTH = 10000;
     public static final int MAP_HEIGHT = 10000;
+    public static final String COLLISION_TILE = "Blocked";
 
     // Class sizing
     public static final double SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5;
@@ -21,7 +22,7 @@ public final class Constants {
     public static final double SCORE_X = SCREEN_WIDTH * 0.05;
 
     // Sprite sizing
-    public static final int SPRITE_WIDTH = 200;
-    public static final int SPRITE_HEIGHT = 200;
+    public static final int SPRITE_WIDTH = 5*32;
+    public static final int SPRITE_HEIGHT = 5*32;
 
 }
