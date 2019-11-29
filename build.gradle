@@ -76,6 +76,11 @@ allprojects {
         // To avoid compiler warnings about @API annotations in JUnit code
         testCompileOnly('org.apiguardian:apiguardian-api:1.0.0')
     }
+
+    test {
+        useJUnitPlatform()
+    }
+
 }
 
 project(":desktop") {
