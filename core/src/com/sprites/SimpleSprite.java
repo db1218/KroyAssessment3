@@ -1,5 +1,6 @@
 package com.sprites;
 
+// LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
@@ -8,39 +9,54 @@ import com.badlogic.gdx.graphics.Texture;
 import static com.config.Constants.SPRITE_HEIGHT;
 import static com.config.Constants.SPRITE_WIDTH;
 
+// Class to simplify the Sprite object provided by LibGDX
 public class SimpleSprite extends Sprite {
 
-    Sprite sprite;
-    Batch batch;
-    Texture texture;
+    // Private values to be used in this class only
+    private Batch batch;
+    private Texture texture;
 
+    // Constructor for this class, gathers required information so that it can be drawn
+    // Params:
+    // Batch spriteBatch -  the batch that the sprite should be drawn on
+    // Texture spriteTexture - the texture the sprite should use
+    // TiledMapTileLayer collisionLayer - which layer of the map the sprite will collide with
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture) {
         batch = spriteBatch;
         texture = spriteTexture;
-        sprite = new Sprite(texture);
         setPosition(0, 0);
         setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
+    // Overload constructor for this class, takes a position to draw the sprite at
+    // Params:
+    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         batch = spriteBatch;
         texture = spriteTexture;
-        sprite = new Sprite(texture);
         setPosition(xPos, yPos);
         setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
+    // Draw the sprite at it current position, using current texture
     public void drawSprite() {
         draw();
 	}
     
+    // Draw the sprite at a new position, using current texture
+    // Params:
+    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     public void drawSprite(float xPos, float yPos) {
         setPosition(xPos, yPos);
         draw();
 	}
 
+    // Draw the sprite at a new position, using a new texture
+    // Params:
+    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
+    // Texture spriteTexture -  the texture the sprite should use
     public void drawSprite(Texture spriteTexture, float xPos, float yPos) {
-		sprite = new Sprite(spriteTexture);
+        texture = spriteTexture;
         setPosition(xPos, yPos);
         draw();
     }
