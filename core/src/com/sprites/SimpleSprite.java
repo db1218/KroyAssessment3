@@ -61,20 +61,26 @@ public class SimpleSprite extends Sprite {
         draw();
     }
 
+    // Helper function to simplify drawing of sprite
     private void draw() {
         batch.begin();
         batch.draw(texture, getX(), getY(), SPRITE_WIDTH, SPRITE_HEIGHT);
         batch.end();
     }
 
+    // Get the value of the centre x co-ordinate of the sprite
     public float getCentreX() {
-        return getX() + SPRITE_WIDTH / 2; //Add half sprite width to get centre
+        // Add half sprite width to get centre
+        return getX() + SPRITE_WIDTH / 2; 
     }
 
+    // Get the value of the centre y co-ordinate of the sprite
     public float getCentreY() {
-        return getY() + SPRITE_HEIGHT / 2; //Add half sprite height to get centre
+        //Add half sprite height to get centre
+        return getY() + SPRITE_HEIGHT / 2;
     }
 
+    // Dispose of assets used by this class
     public void dispose() {
         texture.dispose();
     }
