@@ -4,7 +4,11 @@ An 'Open Day' game aimed at prospective students and their parents visiting the 
 
 ## Table of Contents
 
-[TOC]
+- [Getting Started](#getting-started)
+  - [Prerequisites](#prerequisites)
+  - [Installation](#installation)
+  - [Configuration](#configuration)
+- [Tools](#tools)
 
 ## Getting Started
 
@@ -41,12 +45,12 @@ The project dependencies are given in `build.gradle` files. If you right-click o
 
 #### Visual Studio Code
 
-To be able to run tests in VSCode using the [Java Test Runner](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-test) extension, you will need to edit the `core/src/.classpath` file and add `<attribute name="test" value="true"/>` as in the example below:
+To be able to run tests in VSCode using the [Java Test Runner](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-test) extension, you will need to edit the `core/src/.classpath` file and edit it to reflect the example below:
 
 ```xml
-<classpathentry kind="src" output="bin/main" path="src">
+<classpathentry kind="src" path="test" output="bin/test">
     <attributes>
-    	<attribute name="test" value="true"/>
+        <attribute name="test" value="true"/>
     </attributes>
 </classpathentry>
 ```
