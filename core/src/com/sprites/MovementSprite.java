@@ -29,6 +29,7 @@ public class MovementSprite extends SimpleSprite {
     // Private values to be used in this class only
     private Direction direction;
     private Float movementSpeed;
+    private Float acceleration;
     private TiledMapTileLayer collisionLayer;
 
     // Constructor for this class, gathers required information so that it can be drawn
@@ -39,6 +40,7 @@ public class MovementSprite extends SimpleSprite {
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture);
         this.movementSpeed = 200f;
+        this.acceleration = 200f;
         this.collisionLayer = collisionLayer;
     }
 
@@ -48,6 +50,7 @@ public class MovementSprite extends SimpleSprite {
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture, xPos, yPos);
         this.movementSpeed = 200f;
+        this.acceleration = 200f;
         this.collisionLayer = collisionLayer;
     }
 
@@ -57,21 +60,22 @@ public class MovementSprite extends SimpleSprite {
         // If it doesn't collide, move the sprite in that direction
         // and update the sprites direction so that animations can use later
         if (!collidesLeft() && Gdx.input.isKeyPressed(Keys.LEFT))
-            setX(getX() - this.movementSpeed * Gdx.graphics.getDeltaTime());
+            setX(getX() - accelerate() * Gdx.graphics.getDeltaTime());
             direction = Direction.LEFT;
 
 		if (!collidesRight() && Gdx.input.isKeyPressed(Keys.RIGHT))
-            setX(getX() + this.movementSpeed * Gdx.graphics.getDeltaTime());
+            setX(getX() + accelerate() * Gdx.graphics.getDeltaTime());
             direction = Direction.RIGHT;
             
         if (!collidesBottom() && Gdx.input.isKeyPressed(Keys.DOWN))
-            setY(getY() - this.movementSpeed * Gdx.graphics.getDeltaTime());
+            setY(getY() - accelerate() * Gdx.graphics.getDeltaTime());
             direction = Direction.DOWN;
 
 		if (!collidesTop() && Gdx.input.isKeyPressed(Keys.UP))
-            setY(getY() + this.movementSpeed * Gdx.graphics.getDeltaTime());
+            setY(getY() + accelerate() * Gdx.graphics.getDeltaTime());
             direction = Direction.UP;
         
+        decelerate();
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
         this.drawSprite();
@@ -133,5 +137,18 @@ public class MovementSprite extends SimpleSprite {
             setX(0);
         if (getX() > MAP_WIDTH - SPRITE_WIDTH)
             setX(MAP_WIDTH - SPRITE_WIDTH);
+    }
+
+    private float accelerate() {
+        if (this.acceleration < 500) {
+            this.acceleration += 15;
+        }
+        return this.acceleration;
+    }
+
+    private void decelerate() {
+        if (this.acceleration > 50) {
+            this.acceleration -= 10;
+        }
     }
 }
