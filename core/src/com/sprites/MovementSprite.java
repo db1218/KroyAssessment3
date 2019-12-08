@@ -28,8 +28,7 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private Float movementSpeed;
-    private Float acceleration;
+    private Float accelerationRate = 15f, accelerationX = 0f, accelerationY = 0f;
     private TiledMapTileLayer collisionLayer;
 
     // Constructor for this class, gathers required information so that it can be drawn
@@ -39,8 +38,6 @@ public class MovementSprite extends SimpleSprite {
     // TiledMapTileLayer collisionLayer - which layer of the map the sprite will collide with
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture);
-        this.movementSpeed = 200f;
-        this.acceleration = 200f;
         this.collisionLayer = collisionLayer;
     }
 
@@ -49,36 +46,68 @@ public class MovementSprite extends SimpleSprite {
     // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture, xPos, yPos);
-        this.movementSpeed = 200f;
-        this.acceleration = 200f;
         this.collisionLayer = collisionLayer;
     }
 
     // Update the sprites position and direction. Called every game frame
     public void update() {
-        // Look for key press input, then check if it collides with a collision tile
-        // If it doesn't collide, move the sprite in that direction
-        // and update the sprites direction so that animations can use later
-        if (!collidesLeft() && Gdx.input.isKeyPressed(Keys.LEFT))
-            setX(getX() - accelerate() * Gdx.graphics.getDeltaTime());
+        // Look for key press input, then accelerate the sprite in that direction
+        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
             direction = Direction.LEFT;
-
-		if (!collidesRight() && Gdx.input.isKeyPressed(Keys.RIGHT))
-            setX(getX() + accelerate() * Gdx.graphics.getDeltaTime());
+            accelerate();
+        }
+		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
             direction = Direction.RIGHT;
-            
-        if (!collidesBottom() && Gdx.input.isKeyPressed(Keys.DOWN))
-            setY(getY() - accelerate() * Gdx.graphics.getDeltaTime());
+            accelerate();
+        }          
+        if (Gdx.input.isKeyPressed(Keys.DOWN)) {
             direction = Direction.DOWN;
-
-		if (!collidesTop() && Gdx.input.isKeyPressed(Keys.UP))
-            setY(getY() + accelerate() * Gdx.graphics.getDeltaTime());
+            accelerate();
+        } 
+		if (Gdx.input.isKeyPressed(Keys.UP)) {
             direction = Direction.UP;
-        
-        decelerate();
+            accelerate();
+        }
+        // Calculate the acceleration on the sprite and apply it
+        applyAcceleration();
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
+        // Draw the srpite at the new location
         this.drawSprite();
+    }
+
+    // Apply acceleration to the sprite
+    private void applyAcceleration() {
+        // Calculate whether it hits any boundaries
+        // Do this once here rather than multiple times in code
+        boolean hitLeft = collidesLeft();
+        boolean hitRight = collidesRight();
+        boolean hitTop = collidesTop();
+        boolean hitBottom = collidesBottom();
+        // Apply acceleration and check if it collides with any tiles
+        if (!hitLeft && this.accelerationX < 0) {
+            setX(getX() + this.accelerationX * Gdx.graphics.getDeltaTime());
+        } else if (hitLeft) {
+            this.accelerationX = 0f;
+        }
+        if (!hitRight && this.accelerationX > 0) {
+            setX(getX() + this.accelerationX * Gdx.graphics.getDeltaTime());
+        } else if (hitRight) {
+            this.accelerationX = 0f;
+        }
+        if (!hitTop && this.accelerationY > 0) {
+            setY(getY() + this.accelerationY * Gdx.graphics.getDeltaTime());
+        } else if (hitTop) {
+            this.accelerationY = 0f;
+        }
+        if (!hitBottom && this.accelerationY < 0) {
+            setY(getY() + this.accelerationY * Gdx.graphics.getDeltaTime());
+        } else if (hitBottom) {
+            this.accelerationY = 0f;
+        }
+        if (this.accelerationY != 0f || this.accelerationX != 0f) {
+            decelerate();
+        }
     }
 
     // Checks if the tile at a location is a "Blocked" tile or not
@@ -139,16 +168,56 @@ public class MovementSprite extends SimpleSprite {
             setX(MAP_WIDTH - SPRITE_WIDTH);
     }
 
-    private float accelerate() {
-        if (this.acceleration < 500) {
-            this.acceleration += 15;
+    // Accelerate the sprite in the direction it is facing
+    private void accelerate() {
+        float maxSpeed = 300f;
+        if (this.accelerationY < maxSpeed && direction == Direction.UP) {
+            this.accelerationY += this.accelerationRate;
         }
-        return this.acceleration;
+        if (this.accelerationY > -maxSpeed && direction == Direction.DOWN) {
+            this.accelerationY -= this.accelerationRate;
+        }
+        if (this.accelerationX < maxSpeed && direction == Direction.RIGHT) {
+            this.accelerationX += this.accelerationRate;
+        }
+        if (this.accelerationX > -maxSpeed && direction == Direction.LEFT) {
+            this.accelerationX -= this.accelerationRate;
+        }
     }
 
+    // Decelerate the sprite
     private void decelerate() {
-        if (this.acceleration > 50) {
-            this.acceleration -= 10;
+        float decelerationRate = this.accelerationRate * 0.5f;
+        float restThreshold = this.accelerationRate;
+        // Check the direction the sprite is moving based on its velocity
+        if (this.accelerationY > 0) {
+            // If within a threshold stop the spirte
+            // Stops it bouncing from decelerating in one direction and then another etc..
+            if (this.accelerationY < restThreshold) {
+                this.accelerationY = 0f;
+            } else {
+                this.accelerationY -= decelerationRate;
+            }
+        } else {
+            if (this.accelerationY > -restThreshold) {
+                this.accelerationY = 0f;
+            } else {
+                this.accelerationY += decelerationRate;
+            }
+        }
+        // Repeat for the x axis
+        if (this.accelerationX > 0) {
+            if (this.accelerationX < restThreshold) {
+                this.accelerationX = 0f;
+            } else {
+                this.accelerationX -= decelerationRate;
+            }
+        } else {
+            if (this.accelerationX > -restThreshold) {
+                this.accelerationX = 0f;
+            } else {
+                this.accelerationX += decelerationRate;
+            }
         }
     }
 }
