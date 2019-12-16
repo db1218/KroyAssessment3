@@ -7,6 +7,14 @@ public final class Constants {
         // Any constants that need instantiation go here
     }
 
+     // Enums
+     public static enum Direction {
+        UP,
+        DOWN,
+        LEFT,
+        RIGHT
+    }
+
     // Game settings
     public static final String GAME_NAME = "Kroy";
     public static final int SCREEN_WIDTH = 1280;
@@ -14,6 +22,9 @@ public final class Constants {
     public static final int MAP_WIDTH = 10000;
     public static final int MAP_HEIGHT = 10000;
     public static final String COLLISION_TILE = "Blocked";
+
+    // Camera settings
+    public static final float LERP = 1.1f;
 
     // Class sizing
     public static final double SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5;

@@ -3,6 +3,7 @@ package com.screens;
 // LibGDX imports
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -17,13 +18,14 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 // Class imports
 import com.kroy.Kroy;
-import com.sprites.MovementSprite;
+import com.classes.Firetruck;
 
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
 import static com.config.Constants.SCORE_Y;
 import static com.config.Constants.SCORE_X;
+import static com.config.Constants.LERP;
 
 // Class to display the main game
 public class GameScreen implements Screen {
@@ -36,7 +38,8 @@ public class GameScreen implements Screen {
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
 	private int score;
-	private MovementSprite testSprite;
+	private Firetruck fireTruckOne;
+	private Firetruck fireTruckTwo;
 	private Texture texture;
 	private Batch batch;
 
@@ -59,7 +62,9 @@ public class GameScreen implements Screen {
 		// Initalise textures and batch and then create a sprite
 		batch = renderer.getBatch();
 		texture = new Texture("badlogic.jpg");
-		testSprite = new MovementSprite(batch, texture, 2000, 500, (TiledMapTileLayer) map.getLayers().get("River"));
+		fireTruckOne = new Firetruck(batch, texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
+		fireTruckTwo = new Firetruck(batch, texture, 2000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 2);
+		setFiretruckFocus(1);
 	}
 
 	// Render function to display all elements in the main game
@@ -82,15 +87,35 @@ public class GameScreen implements Screen {
 		// Draw FPS to the screen at given co-ordinates
 		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), SCREEN_WIDTH - SCORE_X * 2, SCORE_Y);
 
+		// Check for user input to see if the focused truck should change
+		if (Gdx.input.isKeyPressed(Keys.NUM_1)) {
+            setFiretruckFocus(1);
+		}
+		if (Gdx.input.isKeyPressed(Keys.NUM_2)) {
+            setFiretruckFocus(2);
+        }
+
+		// Get the firetruck thats being driven
+		Firetruck focusedTruck = getFiretruckInFocus();
+
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
-		float lerp = 1.1f;
 		Vector3 position = camera.position;
-		position.x += (testSprite.getCentreX() - position.x) * lerp * delta;
-		position.y += (testSprite.getCentreY() - position.y) * lerp * delta;
+		position.x += (focusedTruck.getCentreX() - position.x) * LERP * delta;
+		position.y += (focusedTruck.getCentreY() - position.y) * LERP * delta;
 		camera.update();
 
-		// Call the update function of the sprite to draw and update it
-		testSprite.update();
+		// Call the update function of the sprites to draw and update it
+		fireTruckOne.update();
+		fireTruckTwo.update();
+	}
+
+	private Firetruck getFiretruckInFocus() { 
+		return fireTruckOne.getFocus() ? fireTruckOne : fireTruckTwo;
+	}
+
+	private void setFiretruckFocus(int focusID) {
+		fireTruckOne.setFocus(focusID);
+		fireTruckTwo.setFocus(focusID);
 	}
 
 	// Below are all required methods of the screen class
@@ -117,7 +142,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		texture.dispose();
-		testSprite.dispose();
+		fireTruckOne.dispose();
+		fireTruckTwo.dispose();
 	}
 
 }
