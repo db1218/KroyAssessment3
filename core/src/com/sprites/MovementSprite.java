@@ -2,7 +2,6 @@ package com.sprites;
 
 // LibGDX imports
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -14,17 +13,10 @@ import static com.config.Constants.MAP_WIDTH;
 import static com.config.Constants.SPRITE_HEIGHT;
 import static com.config.Constants.SPRITE_WIDTH;
 import static com.config.Constants.COLLISION_TILE;
+import static com.config.Constants.Direction;
 
 // Class to add movement code to a sprite
 public class MovementSprite extends SimpleSprite {
-
-    // For animations later
-    enum Direction {
-        UP,
-        DOWN,
-        LEFT,
-        RIGHT
-    }
 
     // Private values to be used in this class only
     private Direction direction;
@@ -50,24 +42,7 @@ public class MovementSprite extends SimpleSprite {
     }
 
     // Update the sprites position and direction. Called every game frame
-    public void update() {
-        // Look for key press input, then accelerate the sprite in that direction
-        if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-            direction = Direction.LEFT;
-            accelerate();
-        }
-		if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-            direction = Direction.RIGHT;
-            accelerate();
-        }          
-        if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-            direction = Direction.DOWN;
-            accelerate();
-        } 
-		if (Gdx.input.isKeyPressed(Keys.UP)) {
-            direction = Direction.UP;
-            accelerate();
-        }
+    public void update() {  
         // Calculate the acceleration on the sprite and apply it
         applyAcceleration();
         // Check the sprite is within the map boundaries then draw
@@ -169,7 +144,7 @@ public class MovementSprite extends SimpleSprite {
     }
 
     // Accelerate the sprite in the direction it is facing
-    private void accelerate() {
+    public void accelerate() {
         float maxSpeed = 300f;
         if (this.accelerationY < maxSpeed && direction == Direction.UP) {
             this.accelerationY += this.accelerationRate;
@@ -219,5 +194,13 @@ public class MovementSprite extends SimpleSprite {
                 this.accelerationX += decelerationRate;
             }
         }
+    }
+
+    public void setDirection(Direction dir) {
+        this.direction = dir;
+    }
+
+    public Direction getDirection() {
+        return this.direction;
     }
 }
