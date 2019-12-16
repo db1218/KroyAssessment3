@@ -20,7 +20,6 @@ public class ETFortress extends SimpleSprite {
     // Params:
     // Batch spriteBatch -  the batch that the sprite should be drawn on
     // Texture spriteTexture - the texture the sprite should use
-    // TiledMapTileLayer collisionLayer - which layer of the map the sprite will collide with
     public ETFortress(Batch spriteBatch, Texture spriteTexture) {
         super(spriteBatch, spriteTexture);
         this.health = ETFORTRESS_HEALTH;

@@ -25,6 +25,7 @@ public class Firetruck extends MovementSprite {
     // Batch spriteBatch -  the batch that the sprite should be drawn on
     // Texture spriteTexture - the texture the sprite should use
     // TiledMapTileLayer collisionLayer - which layer of the map the sprite will collide with
+    // ID - the ID of the truck to know when to focus it
     public Firetruck(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, collisionLayer);
         this.focusID = ID;
@@ -44,20 +45,20 @@ public class Firetruck extends MovementSprite {
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT)) {
-                this.setDirection(Direction.LEFT);
-                this.accelerate();
+                super.setDirection(Direction.LEFT);
+                super.accelerate();
             }
             if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
-                this.setDirection(Direction.RIGHT);
-                this.accelerate();
+                super.setDirection(Direction.RIGHT);
+                super.accelerate();
             }          
             if (Gdx.input.isKeyPressed(Keys.DOWN)) {
-                this.setDirection(Direction.DOWN);
-                this.accelerate();
+                super.setDirection(Direction.DOWN);
+                super.accelerate();
             } 
             if (Gdx.input.isKeyPressed(Keys.UP)) {
-                this.setDirection(Direction.UP);
-                this.accelerate();
+                super.setDirection(Direction.UP);
+                super.accelerate();
             }
         }
     }
