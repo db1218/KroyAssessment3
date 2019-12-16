@@ -19,6 +19,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 // Class imports
 import com.kroy.Kroy;
 import com.classes.Firetruck;
+import com.classes.ETFortress;
 
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
@@ -33,15 +34,22 @@ public class GameScreen implements Screen {
 	// A constant variable to store the game
 	final Kroy game;
 
-	// Private values to be used in this class only
+	// Private values for game screen logic
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	private int score;
-	private Firetruck fireTruckOne;
-	private Firetruck fireTruckTwo;
 	private Texture texture;
 	private Batch batch;
+
+	// Private values for the game
+	private int score;
+
+	// Private values for each firetruck
+	private Firetruck fireTruckOne;
+	private Firetruck fireTruckTwo;
+	
+	// Private values for each ETFortress
+	private ETFortress ETFotressOne;
 
 	// The constructor for the main game screen
 	// All of the logic for the game will go here
@@ -62,9 +70,14 @@ public class GameScreen implements Screen {
 		// Initalise textures and batch and then create a sprite
 		batch = renderer.getBatch();
 		texture = new Texture("badlogic.jpg");
+
+		// Initialise fire trucks and set inital focus
 		fireTruckOne = new Firetruck(batch, texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
 		fireTruckTwo = new Firetruck(batch, texture, 2000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 2);
 		setFiretruckFocus(1);
+
+		// Initialise ETFortresses
+		ETFotressOne = new ETFortress(batch, texture, 1500, 500);
 	}
 
 	// Render function to display all elements in the main game
@@ -107,6 +120,7 @@ public class GameScreen implements Screen {
 		// Call the update function of the sprites to draw and update it
 		fireTruckOne.update();
 		fireTruckTwo.update();
+		ETFotressOne.update();
 	}
 
 	private Firetruck getFiretruckInFocus() { 

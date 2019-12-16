@@ -15,6 +15,9 @@ public final class Constants {
         RIGHT
     }
 
+    // Difficulty settings
+    public static final int ETFORTRESS_HEALTH = 1000;
+
     // Game settings
     public static final String GAME_NAME = "Kroy";
     public static final int SCREEN_WIDTH = 1280;

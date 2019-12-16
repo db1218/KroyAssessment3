@@ -47,8 +47,8 @@ public class MovementSprite extends SimpleSprite {
         applyAcceleration();
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
-        // Draw the srpite at the new location
-        this.drawSprite();
+        // Draw the sprite at the new location
+        super.update();
     }
 
     // Apply acceleration to the sprite

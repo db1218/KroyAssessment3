@@ -39,14 +39,14 @@ public class SimpleSprite extends Sprite {
     }
 
     // Draw the sprite at it current position, using current texture
-    public void drawSprite() {
+    public void update() {
         draw();
 	}
     
     // Draw the sprite at a new position, using current texture
     // Params:
     // float xPos, yPos -  the co-ordinates the sprite should be drawn at
-    public void drawSprite(float xPos, float yPos) {
+    public void update(float xPos, float yPos) {
         setPosition(xPos, yPos);
         draw();
 	}
@@ -55,7 +55,7 @@ public class SimpleSprite extends Sprite {
     // Params:
     // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     // Texture spriteTexture -  the texture the sprite should use
-    public void drawSprite(Texture spriteTexture, float xPos, float yPos) {
+    public void update(Texture spriteTexture, float xPos, float yPos) {
         texture = spriteTexture;
         setPosition(xPos, yPos);
         draw();
