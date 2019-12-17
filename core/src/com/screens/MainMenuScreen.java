@@ -66,8 +66,8 @@ public class MainMenuScreen implements Screen {
 
 		// Create an orthographic camera
 		camera = new OrthographicCamera();
-		//camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
-		//game.init(camera);
+		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+		game.init(camera);
 
 		// Create a viewport
 		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);
@@ -88,20 +88,8 @@ public class MainMenuScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
-//		// clear the screen with a dark blue color. The arguments to glClearColor are the red, green
-//		// blue and alpha component in the range [0,1] of the color to be used to clear the screen.
-//		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-//		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-//
-//		// Update the camera every game second
-//        camera.update();
-//		
-//		//Draw multiple lines of text to the screen
-//        game.drawFont(
-//			new String[] {"Welcome to Kroy!", "Tap anywhere to begin!"}, 
-//			new Double[] {SCREEN_CENTRE_X - 90.0, SCREEN_CENTRE_X - 120.0}, 
-//			new Double[] {SCREEN_CENTRE_Y, SCREEN_CENTRE_Y - 50.0}
-//		);
+		// Draw the button stage
+		stage.draw();
 	}
 
 	// Below are all required methods of the screen class
@@ -110,7 +98,7 @@ public class MainMenuScreen implements Screen {
 	}
 
 	/**
-	 * Show button stage.
+	 * Create the button stage.
 	 */
 	@Override
 	public void show() {
@@ -125,7 +113,7 @@ public class MainMenuScreen implements Screen {
 		// Create table to arrange buttons.
 		Table buttonTable = new Table();
 		buttonTable.setFillParent(true);
-		buttonTable.top();
+		buttonTable.center();
 
 		// TextButtonStyle buttonStyle = skin.get("button", TextButtonStyle.class);
 
