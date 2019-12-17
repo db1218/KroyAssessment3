@@ -23,8 +23,6 @@ import com.kroy.Kroy;
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
-import static com.config.Constants.SCREEN_CENTRE_X;
-import static com.config.Constants.SCREEN_CENTRE_Y;
 
 /**
  * Displays the main menu screen with selection buttons.
@@ -115,12 +113,18 @@ public class MainMenuScreen implements Screen {
 		buttonTable.setFillParent(true);
 		buttonTable.center();
 
-		// TextButtonStyle buttonStyle = skin.get("button", TextButtonStyle.class);
-
 		// Create buttons
 		TextButton playButton = new TextButton("Play", skin);
 		TextButton leaderboardButton = new TextButton("Leaderboard", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
+
+		// Increase size of text
+		playButton.setTransform(true);
+		playButton.scaleBy(0.25f);
+		leaderboardButton.setTransform(true);
+		leaderboardButton.scaleBy(0.25f);
+		quitButton.setTransform(true);
+		quitButton.scaleBy(0.25f);
 
 		// Add listeners
 		playButton.addListener(new ClickListener() {
@@ -152,12 +156,12 @@ public class MainMenuScreen implements Screen {
 			}
 		});
 		
-		// Add buttons to table
-		buttonTable.add(playButton);
+		// Add buttons to table and style them
+		buttonTable.add(playButton).padBottom(40).width(150).height(40);
 		buttonTable.row();
-		buttonTable.add(leaderboardButton);
+		buttonTable.add(leaderboardButton).padBottom(40).width(150).height(40);
 		buttonTable.row();
-		buttonTable.add(quitButton);
+		buttonTable.add(quitButton).width(150).height(40);
 
 		// Add table to stage
 		stage.addActor(buttonTable);
