@@ -157,11 +157,11 @@ public class MainMenuScreen implements Screen {
 		});
 		
 		// Add buttons to table and style them
-		buttonTable.add(playButton).padBottom(40).width(150).height(40);
+		buttonTable.add(playButton).padBottom(40).padRight(50).width(150).height(40);
 		buttonTable.row();
-		buttonTable.add(leaderboardButton).padBottom(40).width(150).height(40);
+		buttonTable.add(leaderboardButton).padBottom(40).padRight(50).width(150).height(40);
 		buttonTable.row();
-		buttonTable.add(quitButton).width(150).height(40);
+		buttonTable.add(quitButton).width(150).padRight(50).height(40);
 
 		// Add table to stage
 		stage.addActor(buttonTable);
