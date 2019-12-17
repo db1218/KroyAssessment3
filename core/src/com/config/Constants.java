@@ -17,6 +17,7 @@ public final class Constants {
 
     // Difficulty settings
     public static final int ETFORTRESS_HEALTH = 1000;
+    public static final int FIRETRUCK_HEALTH = 100;
 
     // Game settings
     public static final String GAME_NAME = "Kroy";

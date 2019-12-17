@@ -20,6 +20,7 @@ public class ResourceBar {
     private int maxResourceAmount;
     private int barWidth;
     private int barHeight;
+    private float scaleFactor;
     private float x;
     private float y;
 
@@ -30,8 +31,9 @@ public class ResourceBar {
         // Adjust bar to fit sprite dimensions
         this.barWidth = (int) (0.75 * spriteWidth);
         this.barHeight = (int) (0.05 * spriteHeight);
-        this.currentResourceAmount = 1 * this.barWidth;
         this.maxResourceAmount = this.barWidth;
+        this.currentResourceAmount = this.barWidth;
+        this.scaleFactor = (float) this.barWidth / (float) this.maxResourceAmount;
         this.x = 0;
         this.y = 0;
         this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
@@ -43,10 +45,10 @@ public class ResourceBar {
     }
 
     // Create the rectangles for the bar and fill them with a given colour
-    private Skin createBarFill(String pixmapName, Color colorColour, int barWidth, int barHeight) {
+    private Skin createBarFill(String pixmapName, Color colour, int barWidth, int barHeight) {
         Skin barFill = new Skin();
         Pixmap pixMap= new Pixmap(barWidth, barHeight, Format.RGBA8888);
-        pixMap.setColor(colorColour);
+        pixMap.setColor(colour);
         pixMap.fill();
         barFill.add(pixmapName, new Texture(pixMap));
         return barFill;
@@ -54,9 +56,16 @@ public class ResourceBar {
 
     // Update the colour of the bar and then return the new style
     private ProgressBarStyle getResourceBarStyle() {
+        System.out.println("New");
+        System.out.println(this.currentResourceAmount * this.scaleFactor);
+        System.out.println(this.maxResourceAmount * this.scaleFactor);
+        System.out.println(this.barWidth);
+        System.out.println(this.scaleFactor);
         Color color = this.currentResourceAmount <= this.maxResourceAmount * 0.5 ? this.currentResourceAmount <= this.maxResourceAmount * 0.25 ? Color.RED : Color.ORANGE : Color.GREEN;
-        Skin healthColour = createBarFill("healthPixmap", color, this.currentResourceAmount, this.barHeight);
-        Skin background = createBarFill("backgroundPixmap", Color.GRAY, (this.maxResourceAmount - this.currentResourceAmount), this.barHeight);
+        int scaledResource = (int) (this.currentResourceAmount * this.scaleFactor);
+        int scaledEmpty = (int) ((this.maxResourceAmount - this.currentResourceAmount) >= 0 ? (this.maxResourceAmount - this.currentResourceAmount) * this.scaleFactor : 0);
+        Skin healthColour = createBarFill("healthPixmap", color, scaledResource, this.barHeight);
+        Skin background = createBarFill("backgroundPixmap", Color.GRAY, scaledEmpty, this.barHeight);
         return new ProgressBarStyle(background.newDrawable("backgroundPixmap"), healthColour.newDrawable("healthPixmap"));
     }
 
@@ -77,15 +86,25 @@ public class ResourceBar {
         this.y = spriteYPos + spriteHeight * 1.1f;
     }
 
+    public void setMaxResource(int maxAmount) {
+        // 100 / 1000
+        this.scaleFactor = (float) this.barWidth / (float) maxAmount;
+        // 1000
+        this.maxResourceAmount = maxAmount;
+        // 100 / 0.1 = 1000
+        this.currentResourceAmount = (int) (this.currentResourceAmount / this.scaleFactor);
+        this.bar.setStyle(getResourceBarStyle());
+    }
+
     // Set the percentage the bar shows
     public void setResourcePercentage(int percent) {
         this.currentResourceAmount = (percent * this.maxResourceAmount) / 100;
         this.bar.setStyle(getResourceBarStyle());
     }
 
-    // Update the bar by a percentage to be subtracted from
-    public void subtractResourcePercentage(int percent) {
-        this.currentResourceAmount = (percent * this.maxResourceAmount) / 100;
+    // Subtract current resource by an amount
+    public void subtractResourceAmount(int amount) {
+        this.currentResourceAmount -= amount;
         this.bar.setStyle(getResourceBarStyle());
     }
 }

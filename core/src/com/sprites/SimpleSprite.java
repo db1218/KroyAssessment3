@@ -18,7 +18,9 @@ public class SimpleSprite extends Sprite {
     // Private values to be used in this class only
     private Batch batch;
     private Texture texture;
-    private ResourceBar healthBar;
+
+    // Allows the health bar to be changed by subclasses
+    public ResourceBar healthBar;
 
     // Constructor for this class, gathers required information so that it can be drawn
     // Params:
@@ -76,16 +78,6 @@ public class SimpleSprite extends Sprite {
         batch.begin();
         batch.draw(texture, getX(), getY(), SPRITE_WIDTH, SPRITE_HEIGHT);
         batch.end();
-    }
-
-    // Set the percentage the bar shows
-    public void setResourcePercentage(int percent) {
-        healthBar.setResourcePercentage(percent);
-    }
-
-    // Update the bar by a percentage to be subtracted from
-    public void subtractResourcePercentage(int percent) {
-        healthBar.subtractResourcePercentage(percent);
     }
 
     // Get the value of the centre x co-ordinate of the sprite

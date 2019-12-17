@@ -12,6 +12,7 @@ import com.sprites.MovementSprite;
 
 // Constants import
 import static com.config.Constants.Direction;
+import static com.config.Constants.FIRETRUCK_HEALTH;
 
 // Class to add movement code to a sprite
 public class Firetruck extends MovementSprite {
@@ -29,6 +30,7 @@ public class Firetruck extends MovementSprite {
     public Firetruck(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, collisionLayer);
         this.focusID = ID;
+        this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
     }
 
     // Overload constructor for this class, takes a position to draw the sprite at
@@ -37,6 +39,7 @@ public class Firetruck extends MovementSprite {
     public Firetruck(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, xPos, yPos, collisionLayer);
         this.focusID = ID;
+        this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
     }
 
     // Update the sprites position and direction. Called every game frame
@@ -44,19 +47,19 @@ public class Firetruck extends MovementSprite {
         super.update();
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
-            if (Gdx.input.isKeyPressed(Keys.LEFT)) {
+            if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
                 super.setDirection(Direction.LEFT);
                 super.accelerate();
             }
-            if (Gdx.input.isKeyPressed(Keys.RIGHT)) {
+            if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
                 super.setDirection(Direction.RIGHT);
                 super.accelerate();
             }          
-            if (Gdx.input.isKeyPressed(Keys.DOWN)) {
+            if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
                 super.setDirection(Direction.DOWN);
                 super.accelerate();
             } 
-            if (Gdx.input.isKeyPressed(Keys.UP)) {
+            if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
                 super.setDirection(Direction.UP);
                 super.accelerate();
             }
