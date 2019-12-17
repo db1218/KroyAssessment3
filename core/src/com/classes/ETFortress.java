@@ -48,7 +48,7 @@ public class ETFortress extends SimpleSprite {
     }
 
     /**
-     * Update the fortress position, called every frame.
+     * Update the fortress so that it is drawn every frame.
      */
     public void update() {
         super.update();

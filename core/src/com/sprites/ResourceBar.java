@@ -83,11 +83,6 @@ public class ResourceBar {
      * @return Updated resource bar style.
      */
     private ProgressBarStyle getResourceBarStyle() {
-        System.out.println("New");
-        System.out.println(this.currentResourceAmount * this.scaleFactor);
-        System.out.println(this.maxResourceAmount * this.scaleFactor);
-        System.out.println(this.barWidth);
-        System.out.println(this.scaleFactor);
         Color color = this.currentResourceAmount <= this.maxResourceAmount * 0.5 ? this.currentResourceAmount <= this.maxResourceAmount * 0.25 ? Color.RED : Color.ORANGE : Color.GREEN;
         int scaledResource = (int) (this.currentResourceAmount * this.scaleFactor);
         int scaledEmpty = (int) ((this.maxResourceAmount - this.currentResourceAmount) >= 0 ? (this.maxResourceAmount - this.currentResourceAmount) * this.scaleFactor : 0);

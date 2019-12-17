@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.sprites.SimpleSprite;
 
 // Constants import
-import static com.config.Constants.ETFORTRESS_HEALTH;
+import static com.config.Constants.FIRESTATION_HEALTH;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -27,7 +27,7 @@ public class Firestation extends SimpleSprite {
      */
     public Firestation(Batch spriteBatch, Texture spriteTexture) {
         super(spriteBatch, spriteTexture);
-        this.healthBar.setMaxResource(ETFORTRESS_HEALTH);
+        this.healthBar.setMaxResource(FIRESTATION_HEALTH);
     }
 
     // Overload constructor for this class, takes a position to draw the sprite at
@@ -44,7 +44,7 @@ public class Firestation extends SimpleSprite {
      */
     public Firestation(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         super(spriteBatch, spriteTexture, xPos, yPos);
-        this.healthBar.setMaxResource(ETFORTRESS_HEALTH);
+        this.healthBar.setMaxResource(FIRESTATION_HEALTH);
     }
 
     /**
