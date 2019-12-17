@@ -5,6 +5,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
+// Class import
+import com.sprites.ResourceBar;
+
 // Constants import
 import static com.config.Constants.SPRITE_HEIGHT;
 import static com.config.Constants.SPRITE_WIDTH;
@@ -15,6 +18,7 @@ public class SimpleSprite extends Sprite {
     // Private values to be used in this class only
     private Batch batch;
     private Texture texture;
+    private ResourceBar healthBar;
 
     // Constructor for this class, gathers required information so that it can be drawn
     // Params:
@@ -24,8 +28,9 @@ public class SimpleSprite extends Sprite {
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture) {
         batch = spriteBatch;
         texture = spriteTexture;
-        setPosition(0, 0);
-        setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+        healthBar = new ResourceBar(batch, SPRITE_WIDTH, SPRITE_HEIGHT);
+        this.setPosition(0, 0);
+        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
     // Overload constructor for this class, takes a position to draw the sprite at
@@ -34,12 +39,15 @@ public class SimpleSprite extends Sprite {
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         batch = spriteBatch;
         texture = spriteTexture;
-        setPosition(xPos, yPos);
-        setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+        healthBar = new ResourceBar(batch, SPRITE_WIDTH, SPRITE_HEIGHT);
+        this.setPosition(xPos, yPos);
+        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
     // Draw the sprite at it current position, using current texture
     public void update() {
+        healthBar.setPosition(this.getX(), this.getY());
+        healthBar.update();
         draw();
 	}
     
@@ -48,6 +56,8 @@ public class SimpleSprite extends Sprite {
     // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     public void update(float xPos, float yPos) {
         setPosition(xPos, yPos);
+        this.healthBar.setPosition(xPos, yPos);
+        this.healthBar.update();
         draw();
 	}
 
@@ -56,8 +66,8 @@ public class SimpleSprite extends Sprite {
     // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     // Texture spriteTexture -  the texture the sprite should use
     public void update(Texture spriteTexture, float xPos, float yPos) {
-        texture = spriteTexture;
-        setPosition(xPos, yPos);
+        this.texture = spriteTexture;
+        this.setPosition(xPos, yPos);
         draw();
     }
 
@@ -66,6 +76,16 @@ public class SimpleSprite extends Sprite {
         batch.begin();
         batch.draw(texture, getX(), getY(), SPRITE_WIDTH, SPRITE_HEIGHT);
         batch.end();
+    }
+
+    // Set the percentage the bar shows
+    public void setResourcePercentage(int percent) {
+        healthBar.setResourcePercentage(percent);
+    }
+
+    // Update the bar by a percentage to be subtracted from
+    public void subtractResourcePercentage(int percent) {
+        healthBar.subtractResourcePercentage(percent);
     }
 
     // Get the value of the centre x co-ordinate of the sprite
