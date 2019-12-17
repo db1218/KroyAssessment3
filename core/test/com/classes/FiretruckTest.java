@@ -17,7 +17,7 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
 class FiretruckTest {
 
-	private static MovementSprite TestClass;
+    private static Firetruck TestClass;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -28,7 +28,7 @@ class FiretruckTest {
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
         TiledMap map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-        TestClass = new MovementSprite(batch, texture, (TiledMapTileLayer) map.getLayers().get(0));
+        TestClass = new Firetruck(batch, texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
     }
 
     /**

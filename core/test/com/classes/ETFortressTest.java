@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 class ETFortressTest {
 
-	private static MovementSprite TestClass;
+	private static ETFortress TestClass;
 	
 	@BeforeEach
 	void setUp() throws Exception {

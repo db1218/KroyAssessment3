@@ -14,7 +14,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 class FirestationTest {
 
-	private static MovementSprite TestClass;
+	private static Firestation TestClass;
 	
 	@BeforeEach
 	void setUp() throws Exception {
