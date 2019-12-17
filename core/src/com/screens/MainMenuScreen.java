@@ -15,7 +15,9 @@ import static com.config.Constants.SCREEN_WIDTH;
 import static com.config.Constants.SCREEN_CENTRE_X;
 import static com.config.Constants.SCREEN_CENTRE_Y;
 
-// Class to display the main menu screen
+/**
+ * Displays the main menu screen.
+ */
 public class MainMenuScreen implements Screen {
 	
 	// A constant variable to store the game
@@ -24,10 +26,12 @@ public class MainMenuScreen implements Screen {
 	// Private camera to see the screen
 	private OrthographicCamera camera;
 
-	// The constructor for the main game screen
-	// All of the logic for the game will go here
-	// Params:
-	// Kroy gam - the game object
+	/**
+	 * The constructor for the main menu screen. All game logic for the main
+	 * menu screen is contained.
+	 *
+	 * @param gam The game object.
+	 */
 	public MainMenuScreen(final Kroy gam) {
 		game = gam;
 
@@ -37,9 +41,11 @@ public class MainMenuScreen implements Screen {
 		game.init(camera);
 	}
 
-	// Render function to display all elements in the main game
-	// Params:
-	// float delta - the delta time of the game, updated every game second rather than frame
+	/**
+	 * Render function to display all elements in the main menu.
+	 * 
+	 * @param delta The delta time of the game, updated every second rather than frame.
+	 */
 	@Override
 	public void render(float delta) {
 		// clear the screen with a dark blue color. The arguments to glClearColor are the red, green

@@ -1,6 +1,8 @@
 package com.config;
 
-// Allows access to constants throughout project
+/**
+ * Game constants for use by Kroy.
+ */
 public final class Constants {
 
     private Constants() {

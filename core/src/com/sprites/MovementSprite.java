@@ -15,7 +15,11 @@ import static com.config.Constants.SPRITE_WIDTH;
 import static com.config.Constants.COLLISION_TILE;
 import static com.config.Constants.Direction;
 
-// Class to add movement code to a sprite
+/**
+ * MovementSprite adds movement facilities to a sprite.
+ * @author Archie
+ * @since 08/12/2019
+ */
 public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
@@ -23,25 +27,35 @@ public class MovementSprite extends SimpleSprite {
     private Float accelerationRate = 15f, accelerationX = 0f, accelerationY = 0f;
     private TiledMapTileLayer collisionLayer;
 
-    // Constructor for this class, gathers required information so that it can be drawn
-    // Params:
-    // Batch spriteBatch -  the batch that the sprite should be drawn on
-    // Texture spriteTexture - the texture the sprite should use
-    // TiledMapTileLayer collisionLayer - which layer of the map the sprite will collide with
+    /**
+     * Constructors for this class, gathers required information so that it can be drawn.
+     * @param spriteBatch    The batch that the sprite should be drawn on.
+     * @param spriteTexture  The texture the sprite should use.
+     * @param collisionLayer The layer of the map the sprite will collide with.
+     */
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture);
         this.collisionLayer = collisionLayer;
     }
 
-    // Overload constructor for this class, takes a position to draw the sprite at
-    // Params:
-    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
+    /**
+     * Overload constructor for this class, taking a position to draw the sprite at.
+     * 
+     * @param spriteBatch    The batch that the sprite should be drawn on.
+     * @param spriteTexture  The texture the sprite should use.
+     * @param collisionLayer The layer of the map the sprite will collide with.
+     * @param xPos           The x-coordinate for the sprite to be drawn.
+     * @param yPos           The y-coordinate for the sprite to be drawn.
+     */
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture, xPos, yPos);
         this.collisionLayer = collisionLayer;
     }
 
-    // Update the sprites position and direction. Called every game frame
+    /**
+     * Update the sprite position and direction based on acceleration and
+     * boundaries. This is called every game frame.
+     */
     public void update() {  
         // Calculate the acceleration on the sprite and apply it
         applyAcceleration();
@@ -51,7 +65,10 @@ public class MovementSprite extends SimpleSprite {
         super.update();
     }
 
-    // Apply acceleration to the sprite
+    /**
+     * Apply acceleration to the sprite, based on collision boundaries and
+     * existing acceleration.
+     */
     private void applyAcceleration() {
         // Calculate whether it hits any boundaries
         // Do this once here rather than multiple times in code
@@ -85,20 +102,23 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
-    // Checks if the tile at a location is a "Blocked" tile or not
-    // Params:
-    // float x, y - the coordinates the player is trying to move to
-    // Return value:
-    // Returns a boolean of whether the sprite can enter the tile or not
+    /**
+     * Checks if the tile at a location is a "blocked" tile or not.
+     * @param x The x-coordinate to check.
+     * @param y The y-coordinate to check.
+     * @return Whether the sprite can enter the tile (true) or not (false).
+     */
     private boolean isCellBlocked(float x, float y) {
         Cell cell = collisionLayer.getCell((int) (x / collisionLayer.getTileWidth()), (int) (y / collisionLayer.getTileHeight()));
 		return cell != null && cell.getTile() != null && cell.getTile().getProperties().containsKey(COLLISION_TILE);
 	}
 
-    // Checks all tiles the sprite will cover in the specified direction to see if they're "Blocked"
-    // Steps through each tile, step length is determined by the size of the sprite
-    // Return value:
-    // Returns a boolean of whether any tiles are "Blocked"
+    /**
+     * Checks all tiles the sprite will cover in the rightward direction to see
+     * if they are "blocked". Steps through each tile, with step length
+     * determined by the size of the sprite.
+     * @return Whether any tiles on route are blocked (true) or no blockages (false).
+     */
 	private boolean collidesRight() {
 		for(float step = 0; step < getHeight(); step += collisionLayer.getTileHeight() / 2)
 			if(isCellBlocked(getX() + getWidth(), getY() + step))
@@ -106,7 +126,14 @@ public class MovementSprite extends SimpleSprite {
 		return false;
 	}
 
-    // Same as above, checks left of sprite
+    /**
+     * Checks all tiles the sprite will cover in the leftward direction to see if
+     * they are "blocked". Steps through each tile, with step length determined by
+     * the size of the sprite.
+     * 
+     * @return Whether any tiles on route are blocked (true) or no blockages
+     *         (false).
+     */
 	private boolean collidesLeft() {
 		for(float step = 0; step < getHeight(); step += collisionLayer.getTileHeight() / 2)
 			if(isCellBlocked(getX(), getY() + step))
@@ -114,7 +141,14 @@ public class MovementSprite extends SimpleSprite {
 		return false;
 	}
 
-    // Same as above, checks on top of sprite
+    /**
+     * Checks all tiles the sprite will cover in the upward direction to see if
+     * they are "blocked". Steps through each tile, with step length determined by
+     * the size of the sprite.
+     * 
+     * @return Whether any tiles on route are blocked (true) or no blockages
+     *         (false).
+     */
 	private boolean collidesTop() {
 		for(float step = 0; step < getWidth(); step += collisionLayer.getTileWidth() / 2)
 			if(isCellBlocked(getX() + step, getY() + getHeight()))
@@ -123,7 +157,14 @@ public class MovementSprite extends SimpleSprite {
 
 	}
 
-    // Same as above, checks the bottom of sprite
+    /**
+     * Checks all tiles the sprite will cover in the downward direction to see if
+     * they are "blocked". Steps through each tile, with step length determined by
+     * the size of the sprite.
+     * 
+     * @return Whether any tiles on route are blocked (true) or no blockages
+     *         (false).
+     */
 	private boolean collidesBottom() {
 		for(float step = 0; step < getWidth(); step += collisionLayer.getTileWidth() / 2)
 			if(isCellBlocked(getX() + step, getY()))
@@ -131,7 +172,9 @@ public class MovementSprite extends SimpleSprite {
 		return false;
 	}
     
-    // Make sure the sprite stays within the map bounds
+    /**
+     * Ensures the sprite stays within the bounds set by the map.
+     */
     private void checkBoundaries() {
         if (getY() < 0)
             setY(0);
@@ -143,7 +186,10 @@ public class MovementSprite extends SimpleSprite {
             setX(MAP_WIDTH - SPRITE_WIDTH);
     }
 
-    // Accelerate the sprite in the direction it is facing
+    /**
+     * Increases the speed of the sprite (direction irrelevant). Acceleration
+     * rate is based upon the sprite's properties.
+     */
     public void accelerate() {
         float maxSpeed = 300f;
         if (this.accelerationY < maxSpeed && direction == Direction.UP) {
@@ -160,7 +206,10 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
-    // Decelerate the sprite
+    /**
+     * Decreases the speed of the sprite (direction irrelevant). Deceleration rate
+     * is based upon the sprite's properties.
+     */
     private void decelerate() {
         float decelerationRate = this.accelerationRate * 0.5f;
         float restThreshold = this.accelerationRate;
@@ -196,10 +245,18 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
+    /**
+     * Sets the current direction of the sprite.
+     * @param dir The direction for the sprite.
+     */
     public void setDirection(Direction dir) {
         this.direction = dir;
     }
 
+    /**
+     * Gets the current direction of the sprite.
+     * @return The direction of the sprite.
+     */
     public Direction getDirection() {
         return this.direction;
     }

@@ -10,7 +10,13 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Color;
 
-// Class to add ResourceBars to sprites
+/**
+ * Resource bars used by sprites to indicate properties of sprites.
+ * These are graphical and displayed to the user.
+ * 
+ * @author Archie
+ * @since 17/12/2019
+ */
 public class ResourceBar {
 
     // Private values to be used in this class only
@@ -24,8 +30,14 @@ public class ResourceBar {
     private float x;
     private float y;
 
-    // Constructor for this class, gathers required information so that it can be drawn
-    // Batch spriteBatch -  the batch that the sprite should be drawn on
+    /**
+     * Constructor for this class, gathers required information so that it can
+     * be drawn.
+     * 
+     * @param barBatch     The batch the sprite should be drawn on.
+     * @param spriteWidth  The width of the sprite.
+     * @param spriteHeight The height of the sprite.
+     */
     public ResourceBar(Batch barBatch, int spriteWidth, int spriteHeight ) {
         this.batch = barBatch;
         // Adjust bar to fit sprite dimensions
@@ -39,12 +51,23 @@ public class ResourceBar {
         this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
     }
 
-    // Draw the health bar
+    /**
+     * Draw the resource bar.
+     */
     public void update() {
         drawResourceBar();
     }
 
-    // Create the rectangles for the bar and fill them with a given colour
+    /**
+     * Create the rectangles for the resource bar, and fill them with the given
+     * colour.
+     * 
+     * @param pixmapName The name of the pixmap to draw.
+     * @param colour     The colour to fill the resource bar.
+     * @param barWidth   The width of the resource bar.
+     * @param barHeight  The height of the resource bar.
+     * @return           The filled bar.
+     */
     private Skin createBarFill(String pixmapName, Color colour, int barWidth, int barHeight) {
         Skin barFill = new Skin();
         Pixmap pixMap= new Pixmap(barWidth, barHeight, Format.RGBA8888);
@@ -54,7 +77,11 @@ public class ResourceBar {
         return barFill;
     }
 
-    // Update the colour of the bar and then return the new style
+    /**
+     * Update the colour of the resource bar and then return the new style.
+     * 
+     * @return Updated resource bar style.
+     */
     private ProgressBarStyle getResourceBarStyle() {
         System.out.println("New");
         System.out.println(this.currentResourceAmount * this.scaleFactor);
@@ -69,7 +96,9 @@ public class ResourceBar {
         return new ProgressBarStyle(background.newDrawable("backgroundPixmap"), healthColour.newDrawable("healthPixmap"));
     }
 
-    // Draw the bar onto the batch at the correct position
+    /**
+     * Draw the resource bar onto the batch at the correct position.
+     */
     private void drawResourceBar() {
         this.batch.begin();
         this.bar.setPosition(this.x, this.y);
@@ -78,7 +107,11 @@ public class ResourceBar {
         this.batch.end();
     }
 
-    // Set the position of the bar, takes into account the sprite's dimensions
+    /** 
+     * Set the position of the bar, takes into account the sprite's dimensions
+     * @param spriteXPos The x-coordinate of the sprite.
+     * @param spriteYPos The y-coordinate of the sprite.
+     */
     public void setPosition(float spriteXPos, float spriteYPos) {
         // Get sprite height and width by reversing previous calculations
         float spriteHeight = barHeight / 0.05f, spriteWidth = barWidth / 0.75f;
@@ -86,6 +119,11 @@ public class ResourceBar {
         this.y = spriteYPos + spriteHeight * 1.1f;
     }
 
+    /**
+     * Set the maximum limit for the resource bar.
+     * 
+     * @param maxAmount The maximum limit for the resource bar.
+     */
     public void setMaxResource(int maxAmount) {
         // 100 / 1000
         this.scaleFactor = (float) this.barWidth / (float) maxAmount;
@@ -96,13 +134,21 @@ public class ResourceBar {
         this.bar.setStyle(getResourceBarStyle());
     }
 
-    // Set the percentage the bar shows
+    /**
+     * The percentage for the bar to show.
+     * 
+     * @param percent The percentage the bar shows.
+     */
     public void setResourcePercentage(int percent) {
         this.currentResourceAmount = (percent * this.maxResourceAmount) / 100;
         this.bar.setStyle(getResourceBarStyle());
     }
 
-    // Subtract current resource by an amount
+    /**
+     * Subtrace a value from the resource bar.
+     * 
+     * @param amount The value to subtrace from the resource bar.
+     */
     public void subtractResourceAmount(int amount) {
         this.currentResourceAmount -= amount;
         this.bar.setStyle(getResourceBarStyle());

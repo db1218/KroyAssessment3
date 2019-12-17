@@ -14,35 +14,52 @@ import com.sprites.MovementSprite;
 import static com.config.Constants.Direction;
 import static com.config.Constants.FIRETRUCK_HEALTH;
 
-// Class to add movement code to a sprite
+/**
+ * The Firetruck implementation.
+ * 
+ * @author Archie
+ * @since 16/12/2019
+ */
 public class Firetruck extends MovementSprite {
 
     // Private values to be used in this class only
     private Boolean isFocused;
     private int focusID;
 
-    // Constructor for this class, gathers required information so that it can be drawn
-    // Params:
-    // Batch spriteBatch -  the batch that the sprite should be drawn on
-    // Texture spriteTexture - the texture the sprite should use
-    // TiledMapTileLayer collisionLayer - which layer of the map the sprite will collide with
-    // ID - the ID of the truck to know when to focus it
+    /**
+     * Constructor for the firetruck, gathering required information for it to be drawn.
+     * 
+     * @param spriteBatch The batch the firetruck should be drawn on.
+     * @param spriteTexture The texture the firetruck should use.
+     * @param collisionLayer The layer of the map the firetruck collides with.
+     * @param ID The ID of the truck (for object focus).
+     */
     public Firetruck(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, collisionLayer);
         this.focusID = ID;
         this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
     }
 
-    // Overload constructor for this class, takes a position to draw the sprite at
-    // Params:
-    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
+    /**
+     * Constructor for the firetruck, gathering required information for it to be
+     * drawn, given x and y coordinates.
+     * 
+     * @param spriteBatch    The batch the firetruck should be drawn on.
+     * @param spriteTexture  The texture the firetruck should use.
+     * @param collisionLayer The layer of the map the firetruck collides with.
+     * @param ID             The ID of the truck (for object focus).
+     * @param xPos           The x-coordinate for the firetruck.
+     * @param yPos           The y-coordinate for the firetruck.
+     */
     public Firetruck(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, xPos, yPos, collisionLayer);
         this.focusID = ID;
         this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
     }
 
-    // Update the sprites position and direction. Called every game frame
+    /**
+     * Update the position and direction of the firetruck every frame.
+     */
     public void update() {
         super.update();
         if (isFocused) {
@@ -66,10 +83,19 @@ public class Firetruck extends MovementSprite {
         }
     }
 
+    /**
+     * Gets whether the firetruck is in focus.
+     * 
+     * @return Whether the firetruck is in focus (true) or not (false).
+     */
     public boolean getFocus() {
         return this.isFocused;
     }
 
+    /**
+     * Sets the firetruck in focus if its ID matches the one to focus.
+     * @param focus The ID of the firetruck to focus on.
+     */
     public void setFocus(int focus) {
         if (focus == focusID) {
             this.isFocused = true;

@@ -28,7 +28,12 @@ import static com.config.Constants.SCORE_Y;
 import static com.config.Constants.SCORE_X;
 import static com.config.Constants.LERP;
 
-// Class to display the main game
+/**
+ * Display the main game.
+ * 
+ * @author Archie
+ * @since 23/11/2019
+ */
 public class GameScreen implements Screen {
 	  
 	// A constant variable to store the game
@@ -51,10 +56,12 @@ public class GameScreen implements Screen {
 	// Private values for each ETFortress
 	private ETFortress ETFotressOne;
 
-	// The constructor for the main game screen
-	// All of the logic for the game will go here
-	// Params:
-	// Kroy gam - the game object
+	/**
+	 * The constructor for the main game screen. All main game logic is
+	 * contained.
+	 * 
+	 * @param gam The game object.
+	 */
 	public GameScreen(final Kroy gam) {
 		this.game = gam;
 
@@ -80,9 +87,11 @@ public class GameScreen implements Screen {
 		ETFotressOne = new ETFortress(batch, texture, 1500, 500);
 	}
 
-	// Render function to display all elements in the main game
-	// Params:
-	// float delta - the delta time of the game, updated every game second rather than frame
+	/**
+	 * Render function to display all elements in the main game.
+	 * 
+	 * @param delta The delta time of the game, updated every game second rather than frame.
+	 */
 	@Override
 	public void render(float delta) {
 		// clear the screen with a dark blue color. The arguments to glClearColor are the red, green
@@ -123,36 +132,65 @@ public class GameScreen implements Screen {
 		ETFotressOne.update();
 	}
 
+	/**
+	 * Get the firetruck the user is currently controlling.
+	 * 
+	 * @return The firetruck with user's focus.
+	 */
 	private Firetruck getFiretruckInFocus() { 
 		return fireTruckOne.getFocus() ? fireTruckOne : fireTruckTwo;
 	}
 
+	/**
+	 * Set which firetruck the user is currently controlling.
+	 * 
+	 * @param focusID The ID of the firetruck to focus on.
+	 */
 	private void setFiretruckFocus(int focusID) {
 		fireTruckOne.setFocus(focusID);
 		fireTruckTwo.setFocus(focusID);
 	}
 
-	// Below are all required methods of the screen class
+	/**
+	 * Resize the screen.
+	 * @param width The width of the screen.
+	 * @param height The height of the screen.
+	 */
 	@Override
 	public void resize(int width, int height) {
 	}
 
+	/**
+	 * Actions to perform when the main game is shown.
+	 */
 	@Override
 	public void show() {
 	}
 
+	/**
+	 * Actions to perform when the main game is hidden.
+	 */
 	@Override
 	public void hide() {
 	}
 
+	/**
+	 * Actions to perform when the main game is paused.
+	 */
 	@Override
 	public void pause() {
 	}
 
+	/**
+	 * Actions to perform when the main game is resumed.
+	 */
 	@Override
 	public void resume() {
 	}
 
+	/**
+	 * Dispose of main game assets upon completion.
+	 */
 	@Override
 	public void dispose() {
 		texture.dispose();

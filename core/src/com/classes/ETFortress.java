@@ -10,13 +10,21 @@ import com.sprites.SimpleSprite;
 // Constants import
 import static com.config.Constants.ETFORTRESS_HEALTH;
 
-// Class to add movement code to a sprite
+/**
+ * The ET Fortress implementation, a static sprite in the game.
+ * 
+ * @author Archie
+ * @since 16/12/2019
+ */
 public class ETFortress extends SimpleSprite {
 
-    // Constructor for this class, gathers required information so that it can be drawn
-    // Params:
-    // Batch spriteBatch -  the batch that the sprite should be drawn on
-    // Texture spriteTexture - the texture the sprite should use
+    /**
+     * The constructor for the class, gathering required information for it to
+     * be drawn.
+     * 
+     * @param spriteBatch The batch the sprite should be drawn on.
+     * @param spriteTexture The texture the sprite should use.
+     */
     public ETFortress(Batch spriteBatch, Texture spriteTexture) {
         super(spriteBatch, spriteTexture);
         this.healthBar.setMaxResource(ETFORTRESS_HEALTH);
@@ -25,12 +33,23 @@ public class ETFortress extends SimpleSprite {
     // Overload constructor for this class, takes a position to draw the sprite at
     // Params:
     // float xPos, yPos -  the co-ordinates the sprite should be drawn at
+    /**
+     * The constructor for the class, gathering required information for it to be
+     * drawn, also giving information about a required position.
+     * 
+     * @param spriteBatch   The batch the sprite should be drawn on.
+     * @param spriteTexture The texture the fortress should use.
+     * @param xPos          The x-coordinate for the fortress.
+     * @param yPos          The y-coordinate for the fortress.
+     */
     public ETFortress(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         super(spriteBatch, spriteTexture, xPos, yPos);
         this.healthBar.setMaxResource(ETFORTRESS_HEALTH);
     }
 
-    // Update the sprites position and direction. Called every game frame
+    /**
+     * Update the fortress position, called every frame.
+     */
     public void update() {
         super.update();
     }
