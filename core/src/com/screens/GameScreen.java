@@ -16,6 +16,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
+// Java util imports
+import java.util.ArrayList;
+
 // Class imports
 import com.kroy.Kroy;
 import com.classes.Firetruck;
@@ -49,12 +52,9 @@ public class GameScreen implements Screen {
 	// Private values for the game
 	private int score;
 
-	// Private values for each firetruck
-	private Firetruck fireTruckOne;
-	private Firetruck fireTruckTwo;
-	
-	// Private values for each ETFortress
-	private ETFortress ETFotressOne;
+	// Private arrays to group sprites
+	private ArrayList<Firetruck> firetrucks;
+	private ArrayList<ETFortress> ETFortresses;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -78,13 +78,22 @@ public class GameScreen implements Screen {
 		batch = renderer.getBatch();
 		texture = new Texture("badlogic.jpg");
 
-		// Initialise fire trucks and set inital focus
-		fireTruckOne = new Firetruck(batch, texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
-		fireTruckTwo = new Firetruck(batch, texture, 2000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 2);
+		// Initialise firetrucks array and add firetrucks to it
+		this.firetrucks = new ArrayList<Firetruck>();
+		for (int i = 1; i <= 2; i++) {
+			Firetruck firetruck = new Firetruck(batch, texture, 1000 * i, 500, (TiledMapTileLayer) map.getLayers().get("River"), i);
+			this.firetrucks.add(firetruck);
+		}
+
+		// Set inital firetruck to focus
 		setFiretruckFocus(1);
 
-		// Initialise ETFortresses
-		ETFotressOne = new ETFortress(batch, texture, 1500, 500);
+		// Initialise ETFortresses array and add ETFortresses to it
+		this.ETFortresses = new ArrayList<ETFortress>();
+		for (int i = 1; i <= 2; i++) {
+			ETFortress ETFortress = new ETFortress(batch, texture, 1500 * i, 500);
+			this.ETFortresses.add(ETFortress);
+		}
 	}
 
 	/**
@@ -127,9 +136,12 @@ public class GameScreen implements Screen {
 		camera.update();
 
 		// Call the update function of the sprites to draw and update it
-		fireTruckOne.update();
-		fireTruckTwo.update();
-		ETFotressOne.update();
+		for (Firetruck firetruck : this.firetrucks) {
+			firetruck.update();
+		}
+		for (ETFortress ETFortress : this.ETFortresses) {
+			ETFortress.update();
+		}
 	}
 
 	/**
@@ -137,8 +149,13 @@ public class GameScreen implements Screen {
 	 * 
 	 * @return The firetruck with user's focus.
 	 */
-	private Firetruck getFiretruckInFocus() { 
-		return fireTruckOne.getFocus() ? fireTruckOne : fireTruckTwo;
+	private Firetruck getFiretruckInFocus() {
+		for (Firetruck firetruck : this.firetrucks) {
+			if (firetruck.getFocus()) {
+				return firetruck;
+			}
+		}
+		return this.firetrucks.get(0);
 	}
 
 	/**
@@ -147,8 +164,9 @@ public class GameScreen implements Screen {
 	 * @param focusID The ID of the firetruck to focus on.
 	 */
 	private void setFiretruckFocus(int focusID) {
-		fireTruckOne.setFocus(focusID);
-		fireTruckTwo.setFocus(focusID);
+		for (Firetruck firetruck : this.firetrucks) {
+			firetruck.setFocus(focusID);
+		}
 	}
 
 	/**
@@ -194,8 +212,12 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		texture.dispose();
-		fireTruckOne.dispose();
-		fireTruckTwo.dispose();
+		for (Firetruck firetruck : this.firetrucks) {
+			firetruck.dispose();
+		}
+		for (ETFortress ETFortress : this.ETFortresses) {
+			ETFortress.dispose();
+		}
 	}
 
 }
