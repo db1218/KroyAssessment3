@@ -153,28 +153,18 @@ public class GameScreen implements Screen {
 	private void checkForCollisions() {
 		// Check each firetruck to see if it has collided with anything
 		for (Firetruck firetruckA : this.firetrucks) {
-			// Can only process one collision at a time
-			boolean collisionDetected = false;
 			for (Firetruck firetruckB : this.firetrucks) {
 				// Check if the firetruck overlaps another firetruck, but not itself
 				if (!firetruckA.equals(firetruckB) && firetruckA.getBoundingRectangle().overlaps(firetruckB.getBoundingRectangle())) {
-					collisionDetected = true;
-					break;
+					firetruckA.collisionOccurred();
+					firetruckB.collisionOccurred();
 				}
 			}
-			// If no collisions against firetrucks, check against fortress
-			if (!collisionDetected) {
-				for (ETFortress ETFortress : this.ETFortresses) {
-					if (firetruckA.getBoundingRectangle().overlaps(ETFortress.getBoundingRectangle())) {
-						collisionDetected = true;
-						break;
-					}
+			// Check if it overlaps with an ETFortress
+			for (ETFortress ETFortress : this.ETFortresses) {
+				if (firetruckA.getBoundingRectangle().overlaps(ETFortress.getBoundingRectangle())) {
+					firetruckA.collisionOccurred();
 				}
-			}
-			// If there was a collision, tell the sprite
-			if (collisionDetected) {
-				firetruckA.collisionOccurred();
-				break;
 			}
 		}
 	}

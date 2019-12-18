@@ -35,6 +35,7 @@ public class MovementSprite extends SimpleSprite {
      */
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture);
+        this.direction = Direction.UP;
         this.collisionLayer = collisionLayer;
     }
 
@@ -49,6 +50,7 @@ public class MovementSprite extends SimpleSprite {
      */
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture, xPos, yPos);
+        this.direction = Direction.UP;
         this.collisionLayer = collisionLayer;
     }
 
@@ -56,13 +58,39 @@ public class MovementSprite extends SimpleSprite {
      * Update the sprite position and direction based on acceleration and
      * boundaries. This is called every game frame.
      */
-    public void update() {  
+    public void update() {
         // Calculate the acceleration on the sprite and apply it
         applyAcceleration();
+        // Set the sprites direction based on its speed
+        setDirection(getDirectionFromSpeed());
+        System.out.println(this.direction);
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
         // Draw the sprite at the new location
         super.update();
+    }
+
+    /**
+     * Calculate the sprite's direction from its speed
+     * @return The direction the sprite is travelling in
+     */
+    private Direction getDirectionFromSpeed() {
+        boolean left = this.speedX < 0, right = this.speedX > 0, up = this.speedY > 0,down = this.speedY < 0;
+        boolean vertical = up || down, horizontal = left || right;
+        if (vertical) {
+            if (up && horizontal) {
+                return left ? Direction.UPLEFT : Direction.UPRIGHT;
+            } else if (down && horizontal) {
+                return left ? Direction.DOWNLEFT : Direction.DOWNRIGHT;
+            } else if (up) {
+                return Direction.UP;
+            }
+            return Direction.DOWN;
+        } else if (horizontal) {
+            return left ? Direction.LEFT : Direction.RIGHT;
+        }
+        // If stationary return last direction
+        return this.direction;
     }
 
     /**
@@ -106,29 +134,40 @@ public class MovementSprite extends SimpleSprite {
      * Checks what direction the sprite is facing and bounces it the opposite way
      */
     public void collisionOccurred() {
-        if (this.speedX > 0) {
-            this.setX(this.getX() - 2);
-            this.speedX = -this.speedX * this.bounce;
-            //float inertia = this.speedX / 2 * this.bounce;
-            //if (this.speedY != 0) this.speedY = this.speedY + (this.speedY < 0 ? inertia : inertia);
-        }
-        if (this.speedX < 0) {
-            this.setX(this.getX() + 2);
-            this.speedX = this.speedX * this.bounce;
-            //float inertia = this.speedX / 2 * this.bounce;
-            //if (this.speedY < inertia && this.speedY < -inertia) this.speedY = this.speedY + (this.speedY > 0 ? inertia : -inertia);
-        }
-        if (this.speedY > 0) {
-            this.setY(this.getY() - 2);
-            this.speedY = -this.speedY * this.bounce;
-            //float inertia = this.speedY / 2 * this.bounce;
-            //if (this.speedX < inertia && this.speedX < -inertia) this.speedX = this.speedX + (this.speedX > 0 ? inertia : -inertia);
-        }
-        if (this.speedY < 0) {
-            this.setY(this.getY() + 2);
-            this.speedY = this.speedY * this.bounce;
-            //float inertia = this.speedY / 2 * this.bounce;
-            //if (this.speedX < inertia && this.speedX < -inertia) this.speedX = this.speedX + (this.speedX > 0 ? inertia : -inertia);
+        int knockback = 2;
+        switch (this.direction) {
+            case UP:
+                this.setY(this.getY() - knockback);
+                this.speedY *= -this.bounce;
+            case DOWN:
+                this.setY(this.getY() + knockback);
+                this.speedY *= this.bounce;
+            case LEFT:
+                this.setX(this.getX() + knockback);
+                this.speedX *= this.bounce;
+            case RIGHT:
+                this.setX(this.getX() - knockback);
+                this.speedX *= -this.bounce;
+            case UPLEFT:
+                this.setY(this.getY() - knockback);
+                this.speedY *= -this.bounce;
+                this.setX(this.getX() + knockback);
+                this.speedX *= this.bounce;
+            case UPRIGHT:
+                this.setY(this.getY() - knockback);
+                this.speedY *= -this.bounce;
+                this.setX(this.getX() - knockback);
+                this.speedX *= -this.bounce;
+            case DOWNLEFT:
+                this.setY(this.getY() + knockback);
+                this.speedY *= this.bounce;
+                this.setX(this.getX() + knockback);
+                this.speedX *= this.bounce;
+            case DOWNRIGHT:
+                this.setY(this.getY() + knockback);
+                this.speedY *= this.bounce;
+                this.setX(this.getX() - knockback);
+                this.speedX *= -this.bounce;
         }
     }
 
@@ -217,9 +256,10 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Increases the speed of the sprite based upon the sprite's current direction.
+     * Increases the speed of the sprite in the given direction.
+     * @param direction The direction to accelerate in.
      */
-    public void accelerate() {
+    public void accelerate(Direction direction) {
         float maxSpeed = 300f;
         if (this.speedY < maxSpeed && direction == Direction.UP) {
             this.speedY += this.accelerationRate;

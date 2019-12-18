@@ -12,7 +12,11 @@ public final class Constants {
      // Enums
      public static enum Direction {
         UP,
+        UPLEFT,
+        UPRIGHT,
         DOWN,
+        DOWNLEFT,
+        DOWNRIGHT,
         LEFT,
         RIGHT
     }

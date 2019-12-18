@@ -65,20 +65,16 @@ public class Firetruck extends MovementSprite {
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-                super.setDirection(Direction.LEFT);
-                super.accelerate();
+                super.accelerate(Direction.LEFT);
             }
             if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
-                super.setDirection(Direction.RIGHT);
-                super.accelerate();
+                super.accelerate(Direction.RIGHT);
             }          
             if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
-                super.setDirection(Direction.DOWN);
-                super.accelerate();
+                super.accelerate(Direction.DOWN);
             } 
             if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-                super.setDirection(Direction.UP);
-                super.accelerate();
+                super.accelerate(Direction.UP);
             }
         }
     }
