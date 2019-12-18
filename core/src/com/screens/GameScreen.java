@@ -135,12 +135,47 @@ public class GameScreen implements Screen {
 		position.y += (focusedTruck.getCentreY() - position.y) * LERP * delta;
 		camera.update();
 
+		// Check for any collisions before moving sprites so speeds can be updated
+		checkForCollisions();
+
 		// Call the update function of the sprites to draw and update it
 		for (Firetruck firetruck : this.firetrucks) {
 			firetruck.update();
 		}
 		for (ETFortress ETFortress : this.ETFortresses) {
 			ETFortress.update();
+		}
+	}
+
+	/**
+     * Checks to see if any collisions have occurred
+     */
+	private void checkForCollisions() {
+		// Check each firetruck to see if it has collided with anything
+		for (Firetruck firetruckA : this.firetrucks) {
+			// Can only process one collision at a time
+			boolean collisionDetected = false;
+			for (Firetruck firetruckB : this.firetrucks) {
+				// Check if the firetruck overlaps another firetruck, but not itself
+				if (!firetruckA.equals(firetruckB) && firetruckA.getBoundingRectangle().overlaps(firetruckB.getBoundingRectangle())) {
+					collisionDetected = true;
+					break;
+				}
+			}
+			// If no collisions against firetrucks, check against fortress
+			if (!collisionDetected) {
+				for (ETFortress ETFortress : this.ETFortresses) {
+					if (firetruckA.getBoundingRectangle().overlaps(ETFortress.getBoundingRectangle())) {
+						collisionDetected = true;
+						break;
+					}
+				}
+			}
+			// If there was a collision, tell the sprite
+			if (collisionDetected) {
+				firetruckA.collisionOccurred();
+				break;
+			}
 		}
 	}
 

@@ -24,7 +24,7 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private Float accelerationRate = 15f, speedX = 0f, speedY = 0f;
+    private float accelerationRate = 15f, speedX = 0f, speedY = 0f, bounce = 1f;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -80,25 +80,55 @@ public class MovementSprite extends SimpleSprite {
         if (!hitLeft && this.speedX < 0) {
             setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
         } else if (hitLeft) {
-            this.speedX = 0f;
+            collisionOccurred();
         }
         if (!hitRight && this.speedX > 0) {
             setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
         } else if (hitRight) {
-            this.speedX = 0f;
+            collisionOccurred();
         }
         if (!hitTop && this.speedY > 0) {
             setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
         } else if (hitTop) {
-            this.speedY = 0f;
+            collisionOccurred();
         }
         if (!hitBottom && this.speedY < 0) {
             setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
         } else if (hitBottom) {
-            this.speedY = 0f;
+            collisionOccurred();
         }
         if (this.speedY != 0f || this.speedX != 0f) {
             decelerate();
+        }
+    }
+
+    /**
+     * Checks what direction the sprite is facing and bounces it the opposite way
+     */
+    public void collisionOccurred() {
+        if (this.speedX > 0) {
+            this.setX(this.getX() - 2);
+            this.speedX = -this.speedX * this.bounce;
+            //float inertia = this.speedX / 2 * this.bounce;
+            //if (this.speedY != 0) this.speedY = this.speedY + (this.speedY < 0 ? inertia : inertia);
+        }
+        if (this.speedX < 0) {
+            this.setX(this.getX() + 2);
+            this.speedX = this.speedX * this.bounce;
+            //float inertia = this.speedX / 2 * this.bounce;
+            //if (this.speedY < inertia && this.speedY < -inertia) this.speedY = this.speedY + (this.speedY > 0 ? inertia : -inertia);
+        }
+        if (this.speedY > 0) {
+            this.setY(this.getY() - 2);
+            this.speedY = -this.speedY * this.bounce;
+            //float inertia = this.speedY / 2 * this.bounce;
+            //if (this.speedX < inertia && this.speedX < -inertia) this.speedX = this.speedX + (this.speedX > 0 ? inertia : -inertia);
+        }
+        if (this.speedY < 0) {
+            this.setY(this.getY() + 2);
+            this.speedY = this.speedY * this.bounce;
+            //float inertia = this.speedY / 2 * this.bounce;
+            //if (this.speedX < inertia && this.speedX < -inertia) this.speedX = this.speedX + (this.speedX > 0 ? inertia : -inertia);
         }
     }
 
