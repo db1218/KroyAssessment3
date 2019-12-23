@@ -38,7 +38,7 @@ public class ResourceBar {
      * @param spriteWidth  The width of the sprite.
      * @param spriteHeight The height of the sprite.
      */
-    public ResourceBar(Batch barBatch, int spriteWidth, int spriteHeight ) {
+    public ResourceBar(Batch barBatch, float spriteWidth, float spriteHeight ) {
         this.batch = barBatch;
         // Adjust bar to fit sprite dimensions
         this.barWidth = (int) (0.75 * spriteWidth);

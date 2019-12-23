@@ -9,6 +9,8 @@ import com.sprites.SimpleSprite;
 
 // Constants import
 import static com.config.Constants.FIRESTATION_HEALTH;
+import static com.config.Constants.FIRESTATION_HEIGHT;
+import static com.config.Constants.FIRESTATION_WIDTH;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -28,6 +30,7 @@ public class Firestation extends SimpleSprite {
     public Firestation(Batch spriteBatch, Texture spriteTexture) {
         super(spriteBatch, spriteTexture);
         this.healthBar.setMaxResource(FIRESTATION_HEALTH);
+        this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
     }
 
     // Overload constructor for this class, takes a position to draw the sprite at
@@ -45,6 +48,7 @@ public class Firestation extends SimpleSprite {
     public Firestation(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         super(spriteBatch, spriteTexture, xPos, yPos);
         this.healthBar.setMaxResource(FIRESTATION_HEALTH);
+        this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
     }
 
     /**

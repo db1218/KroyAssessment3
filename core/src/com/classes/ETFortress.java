@@ -9,6 +9,8 @@ import com.sprites.SimpleSprite;
 
 // Constants import
 import static com.config.Constants.ETFORTRESS_HEALTH;
+import static com.config.Constants.ETFORTRESS_HEIGHT;
+import static com.config.Constants.ETFORTRESS_WIDTH;
 
 /**
  * The ET Fortress implementation, a static sprite in the game.
@@ -28,6 +30,7 @@ public class ETFortress extends SimpleSprite {
     public ETFortress(Batch spriteBatch, Texture spriteTexture) {
         super(spriteBatch, spriteTexture);
         this.healthBar.setMaxResource(ETFORTRESS_HEALTH);
+        this.setSize(ETFORTRESS_HEIGHT, ETFORTRESS_HEIGHT);
     }
 
     // Overload constructor for this class, takes a position to draw the sprite at
@@ -45,6 +48,7 @@ public class ETFortress extends SimpleSprite {
     public ETFortress(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         super(spriteBatch, spriteTexture, xPos, yPos);
         this.healthBar.setMaxResource(ETFORTRESS_HEALTH);
+        this.setSize(ETFORTRESS_HEIGHT, ETFORTRESS_HEIGHT);
     }
 
     /**

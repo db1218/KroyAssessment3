@@ -8,12 +8,8 @@ import com.badlogic.gdx.graphics.Texture;
 // Class import
 import com.sprites.ResourceBar;
 
-// Constants import
-import static com.config.Constants.SPRITE_HEIGHT;
-import static com.config.Constants.SPRITE_WIDTH;
-
 /**
- * Simplify the sprite object provided by libGDX.
+ * Simplify and add functionality to the sprite object provided by libGDX.
  * 
  * @author Archie
  * @since 17/12/2019
@@ -23,6 +19,7 @@ public class SimpleSprite extends Sprite {
     // Private values to be used in this class only
     private Batch batch;
     private Texture texture;
+    private float width = 0, height = 0;
 
     // Allows the health bar to be changed by subclasses
     public ResourceBar healthBar;
@@ -35,11 +32,14 @@ public class SimpleSprite extends Sprite {
      * @param spriteTexture The texture the sprite should use.
      */
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture) {
+        super(spriteTexture);
         batch = spriteBatch;
         texture = spriteTexture;
-        healthBar = new ResourceBar(batch, SPRITE_WIDTH, SPRITE_HEIGHT);
+        healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
         this.setPosition(0, 0);
-        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+        this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
+        this.setBounds(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.setRotation(90f);
     }
 
     /**
@@ -51,11 +51,14 @@ public class SimpleSprite extends Sprite {
      * @param yPos           The y-coordinate for the sprite to be drawn.
      */
     public SimpleSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
+        super(spriteTexture);
         batch = spriteBatch;
         texture = spriteTexture;
-        healthBar = new ResourceBar(batch, SPRITE_WIDTH, SPRITE_HEIGHT);
+        healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
         this.setPosition(xPos, yPos);
-        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+        this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
+        this.setBounds(this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.setRotation(90f);
     }
 
     /**
@@ -64,46 +67,38 @@ public class SimpleSprite extends Sprite {
     public void update() {
         healthBar.setPosition(this.getX(), this.getY());
         healthBar.update();
-        draw();
-	}
-    
-    /**
-     * Draw the sprite at a new position, using current texture.
-     * 
-     * @param xPos The x-coordinate for the sprite.
-     * @param yPos The y-coordinate for the sprite.
-     */
-    public void update(float xPos, float yPos) {
-        setPosition(xPos, yPos);
-        this.healthBar.setPosition(xPos, yPos);
-        this.healthBar.update();
-        draw();
-	}
-
-    // Draw the sprite at a new position, using a new texture
-    // Params:
-    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
-    // Texture spriteTexture -  the texture the sprite should use
-    /**
-     * Draw the sprite at a new position, using a new texture.
-     * 
-     * @param spriteTexture The new texture for the sprite to use.
-     * @param xPos          The x-coorinate for the sprite.
-     * @param yPos          The y-coorinate for the sprite.
-     */
-    public void update(Texture spriteTexture, float xPos, float yPos) {
-        this.texture = spriteTexture;
-        this.setPosition(xPos, yPos);
-        draw();
+        batch.begin();
+        batch.draw(texture, getX(), getY(), this.getWidth(), this.getHeight());
+        batch.end();
     }
 
     /**
-     * Helper function to simplify the drawing of a sprite.
+     * Overrides Sprite class method to keep seperate values for width and height.
+     * Updates the sprites width and height.
+     * @param width    The width the sprite should be set to.
+     * @param height   The height the sprite should be set to.
      */
-    private void draw() {
-        batch.begin();
-        batch.draw(texture, getX(), getY(), SPRITE_WIDTH, SPRITE_HEIGHT);
-        batch.end();
+    @Override
+    public void setSize(float width, float height) {
+        super.setSize(width, height);
+        if (this.width == 0) this.width = width;
+        if (this.height == 0) this.height = height;
+    }
+
+    /**
+     * Get the current width of the sprite.
+     * @return The width of the sprite.
+     */
+    public float getWidth() {
+        return this.width;
+    }
+
+    /**
+     * Get the current height of the sprite.
+     * @return The height of the sprite.
+     */
+    public float getHeight() {
+        return this.height;
     }
 
     /**
@@ -112,7 +107,7 @@ public class SimpleSprite extends Sprite {
      */
     public float getCentreX() {
         // Add half sprite width to get centre
-        return getX() + SPRITE_WIDTH / 2; 
+        return this.getX() + this.getWidth() / 2; 
     }
 
     /**
@@ -121,7 +116,7 @@ public class SimpleSprite extends Sprite {
      */
     public float getCentreY() {
         //Add half sprite height to get centre
-        return getY() + SPRITE_HEIGHT / 2;
+        return this.getY() + this.getHeight() / 2;
     }
 
     /**
