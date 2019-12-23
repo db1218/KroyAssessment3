@@ -10,10 +10,9 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 // Constants import
 import static com.config.Constants.MAP_HEIGHT;
 import static com.config.Constants.MAP_WIDTH;
-import static com.config.Constants.SPRITE_HEIGHT;
-import static com.config.Constants.SPRITE_WIDTH;
 import static com.config.Constants.COLLISION_TILE;
 import static com.config.Constants.Direction;
+import static com.config.Constants.DirectionToAngle;
 
 /**
  * MovementSprite adds movement facilities to a sprite.
@@ -24,7 +23,7 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private float accelerationRate = 15f, speedX = 0f, speedY = 0f, bounce = 1f;
+    private float accelerationRate = 20f, speedX = 0f, speedY = 0f, bounce = 1f;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -63,11 +62,33 @@ public class MovementSprite extends SimpleSprite {
         applyAcceleration();
         // Set the sprites direction based on its speed
         setDirection(getDirectionFromSpeed());
-        System.out.println(this.direction);
+        // Rotate sprite to face the direction its moving in
+        updateRotation();
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
         // Draw the sprite at the new location
         super.update();
+    }
+
+    /**
+     * Calculate the sprite's rotation from its speed
+     */
+    private void updateRotation() {
+        float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
+        if (currentRotation != desiredRotation) {
+            float difference = desiredRotation - currentRotation;
+            // Choose the shortest angle
+            float adjustment = difference >= 200 ? -(360 - difference): difference;
+            this.rotate(adjustment * 3 * Gdx.graphics.getDeltaTime());
+        }
+        switch (this.direction) {
+            case UP:
+                this.setSize(this.getWidth(), this.getHeight());
+            case DOWN:
+                this.setSize(this.getWidth(), this.getHeight());
+            default:
+                this.setSize(this.getHeight(), this.getWidth());
+        }
     }
 
     /**
@@ -247,12 +268,12 @@ public class MovementSprite extends SimpleSprite {
     private void checkBoundaries() {
         if (getY() < 0)
             setY(0);
-        if (getY() > MAP_HEIGHT - SPRITE_HEIGHT)
-            setY(MAP_HEIGHT - SPRITE_HEIGHT);
+        if (getY() > MAP_HEIGHT - this.getHeight())
+            setY(MAP_HEIGHT - this.getHeight());
         if (getX() < 0)
             setX(0);
-        if (getX() > MAP_WIDTH - SPRITE_WIDTH)
-            setX(MAP_WIDTH - SPRITE_WIDTH);
+        if (getX() > MAP_WIDTH - this.getWidth())
+            setX(MAP_WIDTH - this.getWidth());
     }
 
     /**

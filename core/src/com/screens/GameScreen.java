@@ -46,7 +46,6 @@ public class GameScreen implements Screen {
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
 	private OrthographicCamera camera;
-	private Texture texture;
 	private Batch batch;
 
 	// Private values for the game
@@ -74,24 +73,29 @@ public class GameScreen implements Screen {
 		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
 
-		// Initalise textures and batch and then create a sprite
+		// Initialise batch to draw texture to
 		batch = renderer.getBatch();
-		texture = new Texture("badlogic.jpg");
+
+		// Initialise texture to use for firetruck
+		Texture firetruckTexture = new Texture("FiretruckSlices/tile000.png");
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
 		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(batch, texture, 1000 * i, 500, (TiledMapTileLayer) map.getLayers().get("River"), i);
+			Firetruck firetruck = new Firetruck(batch, firetruckTexture, 1000 * i, 500, (TiledMapTileLayer) map.getLayers().get("River"), i);
 			this.firetrucks.add(firetruck);
 		}
 
 		// Set inital firetruck to focus
 		setFiretruckFocus(1);
 
+		// Initialise texture to use for ETFortress
+		Texture ETFortressTexture = new Texture("FiretruckSlices/tile008.png");
+
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
 		for (int i = 1; i <= 2; i++) {
-			ETFortress ETFortress = new ETFortress(batch, texture, 1500 * i, 500);
+			ETFortress ETFortress = new ETFortress(batch, ETFortressTexture, 1500 * i, 500);
 			this.ETFortresses.add(ETFortress);
 		}
 	}
@@ -236,7 +240,6 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void dispose() {
-		texture.dispose();
 		for (Firetruck firetruck : this.firetrucks) {
 			firetruck.dispose();
 		}

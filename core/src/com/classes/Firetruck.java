@@ -3,6 +3,7 @@ package com.classes;
 // LibGDX imports
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.Input.Keys;
@@ -13,6 +14,8 @@ import com.sprites.MovementSprite;
 // Constants import
 import static com.config.Constants.Direction;
 import static com.config.Constants.FIRETRUCK_HEALTH;
+import static com.config.Constants.SPRITE_HEIGHT;
+import static com.config.Constants.SPRITE_WIDTH;
 
 /**
  * The Firetruck implementation.
@@ -25,6 +28,7 @@ public class Firetruck extends MovementSprite {
     // Private values to be used in this class only
     private Boolean isFocused;
     private int focusID;
+    private Batch batch;
 
     /**
      * Constructor for the firetruck, gathering required information for it to be drawn.
@@ -37,7 +41,9 @@ public class Firetruck extends MovementSprite {
     public Firetruck(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, collisionLayer);
         this.focusID = ID;
+        this.batch = spriteBatch;
         this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
+        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
     /**
@@ -54,7 +60,9 @@ public class Firetruck extends MovementSprite {
     public Firetruck(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer, int ID) {
         super(spriteBatch, spriteTexture, xPos, yPos, collisionLayer);
         this.focusID = ID;
+        this.batch = spriteBatch;
         this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
+        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
     }
 
     /**
@@ -62,6 +70,7 @@ public class Firetruck extends MovementSprite {
      */
     public void update() {
         super.update();
+        drawAdditionalTextures();
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
@@ -76,6 +85,26 @@ public class Firetruck extends MovementSprite {
             if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
                 super.accelerate(Direction.UP);
             }
+        }
+    }
+
+    private void drawAdditionalTextures() {
+        for (int i = 19; i > 0; i--) {
+            Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
+            
+            float x = getX(), y = (getY() + (SPRITE_HEIGHT - (i * 2))), angle = this.getRotation();
+            float width = SPRITE_WIDTH, height = (SPRITE_HEIGHT - (i * 2));
+
+
+            // Set rotation based on direction it is travelling
+
+            batch.begin();
+
+            batch.draw(new TextureRegion(texture), x, y, width / 2, height / 2, width, height,1,1, angle, false);
+
+            batch.end();
+            texture.dispose();
+            this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
         }
     }
 

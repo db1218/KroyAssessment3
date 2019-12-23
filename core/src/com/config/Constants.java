@@ -21,6 +21,29 @@ public final class Constants {
         RIGHT
     }
 
+    public static float DirectionToAngle(Direction dir) {
+        switch (dir) {
+            case UP:
+                return 270;
+            case DOWN:
+                return 90;
+            case LEFT:
+                return 0;
+            case RIGHT:
+                return 180;
+            case UPLEFT:
+                return 315;
+            case UPRIGHT:
+                return 225;
+            case DOWNLEFT:
+                return 45;
+            case DOWNRIGHT:
+                return 135;
+            default:
+                return 0;
+        }
+    }
+
     // Difficulty settings
     public static final int ETFORTRESS_HEALTH = 1000;
     public static final int FIRESTATION_HEALTH = 1000;
@@ -44,7 +67,11 @@ public final class Constants {
     public static final double SCORE_X = SCREEN_WIDTH * 0.05;
 
     // Sprite sizing
-    public static final int SPRITE_WIDTH = 5*32;
-    public static final int SPRITE_HEIGHT = 5*32;
+    public static final int SPRITE_WIDTH = 6*32;
+    public static final int SPRITE_HEIGHT = 3*32;
+    public static final int FIRESTATION_WIDTH = 5*32;
+    public static final int FIRESTATION_HEIGHT = 5*32;
+    public static final int ETFORTRESS_WIDTH = 5*32;
+    public static final int ETFORTRESS_HEIGHT = 5*32;
 
 }
