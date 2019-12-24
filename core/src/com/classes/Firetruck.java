@@ -70,7 +70,7 @@ public class Firetruck extends MovementSprite {
      */
     public void update() {
         super.update();
-        drawAdditionalTextures();
+        drawVoxelImage();
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
@@ -88,23 +88,21 @@ public class Firetruck extends MovementSprite {
         }
     }
 
-    private void drawAdditionalTextures() {
+    /**
+     * Draws the voxel representation of the firetruck. Incrementally builds the firetruck
+     * from layers of images with each image slightly higher than the last
+     */
+    private void drawVoxelImage() {
         for (int i = 19; i > 0; i--) {
             Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
             
             float x = getX(), y = (getY() + (SPRITE_HEIGHT - (i * 2))), angle = this.getRotation();
             float width = SPRITE_WIDTH, height = (SPRITE_HEIGHT - (i * 2));
 
-
-            // Set rotation based on direction it is travelling
-
             batch.begin();
-
             batch.draw(new TextureRegion(texture), x, y, width / 2, height / 2, width, height,1,1, angle, false);
-
             batch.end();
             texture.dispose();
-            this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
         }
     }
 

@@ -62,8 +62,6 @@ public class MovementSprite extends SimpleSprite {
         applyAcceleration();
         // Set the sprites direction based on its speed
         setDirection(getDirectionFromSpeed());
-        // Update bounding rectangle
-        //this.setOrigin(this.getWidth() / (this.direction != Direction.LEFT ? 2f : 1f), this.getHeight() / (this.direction != Direction.UP ? 2f : 1f));
         // Rotate sprite to face the direction its moving in
         updateRotation();
         // Check the sprite is within the map boundaries then draw
