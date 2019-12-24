@@ -2,6 +2,8 @@ package com.sprites;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -37,9 +39,6 @@ public class SimpleSprite extends Sprite {
         texture = spriteTexture;
         healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
         this.setPosition(0, 0);
-        this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
-        this.setBounds(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        this.setRotation(90f);
     }
 
     /**
@@ -56,9 +55,6 @@ public class SimpleSprite extends Sprite {
         texture = spriteTexture;
         healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
         this.setPosition(xPos, yPos);
-        this.setOrigin(this.getWidth() / 2, this.getHeight() / 2);
-        this.setBounds(this.getX(), this.getY(), this.getWidth(), this.getHeight());
-        this.setRotation(90f);
     }
 
     /**
@@ -72,6 +68,12 @@ public class SimpleSprite extends Sprite {
         batch.end();
     }
 
+    public void drawDebug(ShapeRenderer renderer) {
+        renderer.begin(ShapeType.Line);
+        renderer.rect(this.getBoundingRectangle().x, this.getBoundingRectangle().y, this.getBoundingRectangle().getWidth(), this.getBoundingRectangle().getHeight());
+        renderer.end();
+    }
+
     /**
      * Overrides Sprite class method to keep seperate values for width and height.
      * Updates the sprites width and height.
@@ -81,8 +83,8 @@ public class SimpleSprite extends Sprite {
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        if (this.width == 0) this.width = width;
-        if (this.height == 0) this.height = height;
+        this.width = width;
+        this.height = height;
     }
 
     /**

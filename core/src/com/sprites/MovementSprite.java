@@ -34,7 +34,7 @@ public class MovementSprite extends SimpleSprite {
      */
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture);
-        this.direction = Direction.UP;
+        this.direction = Direction.LEFT;
         this.collisionLayer = collisionLayer;
     }
 
@@ -49,7 +49,7 @@ public class MovementSprite extends SimpleSprite {
      */
     public MovementSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer) {
         super(spriteBatch, spriteTexture, xPos, yPos);
-        this.direction = Direction.UP;
+        this.direction = Direction.LEFT;
         this.collisionLayer = collisionLayer;
     }
 
@@ -62,6 +62,8 @@ public class MovementSprite extends SimpleSprite {
         applyAcceleration();
         // Set the sprites direction based on its speed
         setDirection(getDirectionFromSpeed());
+        // Update bounding rectangle
+        //this.setOrigin(this.getWidth() / (this.direction != Direction.LEFT ? 2f : 1f), this.getHeight() / (this.direction != Direction.UP ? 2f : 1f));
         // Rotate sprite to face the direction its moving in
         updateRotation();
         // Check the sprite is within the map boundaries then draw
@@ -80,14 +82,6 @@ public class MovementSprite extends SimpleSprite {
             // Choose the shortest angle
             float adjustment = difference >= 200 ? -(360 - difference): difference;
             this.rotate(adjustment * 3 * Gdx.graphics.getDeltaTime());
-        }
-        switch (this.direction) {
-            case UP:
-                this.setSize(this.getWidth(), this.getHeight());
-            case DOWN:
-                this.setSize(this.getWidth(), this.getHeight());
-            default:
-                this.setSize(this.getHeight(), this.getWidth());
         }
     }
 

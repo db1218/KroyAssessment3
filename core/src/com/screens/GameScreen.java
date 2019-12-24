@@ -7,6 +7,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 
@@ -45,6 +46,7 @@ public class GameScreen implements Screen {
 	// Private values for game screen logic
 	private TiledMap map;
 	private OrthogonalTiledMapRenderer renderer;
+	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private Batch batch;
 
@@ -72,6 +74,7 @@ public class GameScreen implements Screen {
 		// Load the map, set the unit scale
 		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
+		shapeRenderer = new ShapeRenderer();
 
 		// Initialise batch to draw texture to
 		batch = renderer.getBatch();
@@ -116,6 +119,8 @@ public class GameScreen implements Screen {
 		renderer.setView(camera);
 		renderer.render();
 
+		shapeRenderer.setProjectionMatrix(camera.combined);
+
 		// Draw score to the screen at given co-ordinates
 		game.drawFont("Score: " + score, SCORE_X, SCORE_Y);
 
@@ -139,16 +144,18 @@ public class GameScreen implements Screen {
 		position.y += (focusedTruck.getCentreY() - position.y) * LERP * delta;
 		camera.update();
 
-		// Check for any collisions before moving sprites so speeds can be updated
-		checkForCollisions();
-
 		// Call the update function of the sprites to draw and update it
 		for (Firetruck firetruck : this.firetrucks) {
 			firetruck.update();
+			firetruck.drawDebug(shapeRenderer);
 		}
 		for (ETFortress ETFortress : this.ETFortresses) {
 			ETFortress.update();
+			ETFortress.drawDebug(shapeRenderer);
 		}
+
+		// Check for any collisions before moving sprites so speeds can be updated
+		checkForCollisions();
 	}
 
 	/**
