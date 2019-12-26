@@ -23,7 +23,8 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private float accelerationRate = 20f, speedX = 0f, speedY = 0f, bounce = 1f;
+    private float accelerationRate = 20f, speedX = 0f, speedY = 0f; 
+    private float bounce = 0.5f, rotationLockTime = 0;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -64,6 +65,8 @@ public class MovementSprite extends SimpleSprite {
         setDirection(getDirectionFromSpeed());
         // Rotate sprite to face the direction its moving in
         updateRotation();
+        // Update rotationLockout if set
+        if (this.rotationLockTime >= 0) this.rotationLockTime -= 1;
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
         // Draw the sprite at the new location
@@ -77,7 +80,7 @@ public class MovementSprite extends SimpleSprite {
         float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
         float angle = desiredRotation - currentRotation;
         angle = (angle + 180) % 360 - 180;
-        if (currentRotation != desiredRotation) {
+        if (currentRotation != desiredRotation && (this.rotationLockTime <= 0)) {
             this.rotate(angle * 3 * Gdx.graphics.getDeltaTime());
         }
     }
@@ -143,10 +146,11 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Checks what direction the sprite is facing and bounces it the opposite way
+     * Checks what direction the sprite is facing and bounces it the opposite way without rotating.
      */
     public void collisionOccurred() {
-        int knockback = 2;
+        float knockback = this.getWidth() * 0.05f;
+        setRotationLock(0.5f);
         switch (this.direction) {
             case UP:
                 this.setY(this.getY() - knockback);
@@ -180,6 +184,16 @@ public class MovementSprite extends SimpleSprite {
                 this.speedY *= this.bounce;
                 this.setX(this.getX() - knockback);
                 this.speedX *= -this.bounce;
+        }
+    }
+
+    /**
+     * Sets the amount of time the sprite cannot rotate for.
+     * @param milliseconds The duration the sprite cannot rotate in.
+     */
+    public void setRotationLock(float duration) {
+        if (duration > 0 && this.rotationLockTime <= 0) {
+            this.rotationLockTime = duration * 100;
         }
     }
 

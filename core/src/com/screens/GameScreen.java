@@ -154,7 +154,7 @@ public class GameScreen implements Screen {
 			ETFortress.drawDebug(shapeRenderer);
 		}
 
-		// Check for any collisions before moving sprites so speeds can be updated
+		// Check for any collisions
 		checkForCollisions();
 	}
 
