@@ -83,6 +83,7 @@ public class SimpleSprite extends Sprite {
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
+        this.setOrigin(width / 2, height / 2);
         this.width = width;
         this.height = height;
     }

@@ -93,14 +93,14 @@ public class Firetruck extends MovementSprite {
      * from layers of images with each image slightly higher than the last
      */
     private void drawVoxelImage() {
-        for (int i = 19; i > 0; i--) {
+        // Length of array containing image slices
+        int slicesLength = 19;
+        float x = getX(), y = getY(), angle = this.getRotation();
+        float width = this.getWidth(), height = this.getHeight();
+        for (int i = slicesLength; i > 0; i--) {
             Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
-            
-            float x = getX(), y = (getY() + (SPRITE_HEIGHT - (i * 2))), angle = this.getRotation();
-            float width = SPRITE_WIDTH, height = (SPRITE_HEIGHT - (i * 2));
-
             batch.begin();
-            batch.draw(new TextureRegion(texture), x, y, width / 2, height / 2, width, height,1,1, angle, false);
+            batch.draw(new TextureRegion(texture), x, (y + slicesLength) - i, width / 2, height / 2, width, height, 1, 1, angle, false);
             batch.end();
             texture.dispose();
         }

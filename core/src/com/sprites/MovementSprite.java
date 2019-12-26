@@ -71,15 +71,14 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Calculate the sprite's rotation from its speed
+     * Calculate the angle the sprite needs to rotate to from it's current rotation.
      */
     private void updateRotation() {
         float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
+        float angle = desiredRotation - currentRotation;
+        angle = (angle + 180) % 360 - 180;
         if (currentRotation != desiredRotation) {
-            float difference = desiredRotation - currentRotation;
-            // Choose the shortest angle
-            float adjustment = difference >= 200 ? -(360 - difference): difference;
-            this.rotate(adjustment * 3 * Gdx.graphics.getDeltaTime());
+            this.rotate(angle * 3 * Gdx.graphics.getDeltaTime());
         }
     }
 
