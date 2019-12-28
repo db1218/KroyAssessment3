@@ -11,11 +11,14 @@ import com.badlogic.gdx.Input.Keys;
 // Custom class import
 import com.sprites.MovementSprite;
 
-// Constants import
+// Constants imports
 import static com.config.Constants.Direction;
 import static com.config.Constants.FIRETRUCK_HEALTH;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
+
+// Java util import
+import java.util.ArrayList;
 
 /**
  * The Firetruck implementation.
@@ -28,39 +31,49 @@ public class Firetruck extends MovementSprite {
     // Private values to be used in this class only
     private Boolean isFocused;
     private int focusID;
-    private Batch batch;
+    private ArrayList<Texture> firetruckSlices;
 
     /**
-     * Constructor for the firetruck, gathering required information for it to be drawn.
+     * Overloaded constructor containing all possible parameters.
+     * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
+     * It also requires an ID so that it can be focused with the camera. Drawn with the given
+     * texture at the given position.
      * 
-     * @param spriteBatch The batch the firetruck should be drawn on.
-     * @param spriteTexture The texture the firetruck should use.
-     * @param collisionLayer The layer of the map the firetruck collides with.
-     * @param ID The ID of the truck (for object focus).
-     */
-    public Firetruck(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer, int ID) {
-        super(spriteBatch, spriteTexture, collisionLayer);
-        this.focusID = ID;
-        this.batch = spriteBatch;
-        this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
-        this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
-    }
-
-    /**
-     * Constructor for the firetruck, gathering required information for it to be
-     * drawn, given x and y coordinates.
-     * 
-     * @param spriteBatch    The batch the firetruck should be drawn on.
-     * @param spriteTexture  The texture the firetruck should use.
+     * @param textureSlices  The array of textures used to draw the firetruck with.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
      * @param xPos           The x-coordinate for the firetruck.
      * @param yPos           The y-coordinate for the firetruck.
      */
-    public Firetruck(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer, int ID) {
-        super(spriteBatch, spriteTexture, xPos, yPos, collisionLayer);
+    public Firetruck(ArrayList<Texture> textureSlices, float xPos, float yPos, TiledMapTileLayer collisionLayer, int ID) {
+        super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
         this.focusID = ID;
-        this.batch = spriteBatch;
+        this.firetruckSlices = textureSlices;
+        this.setPosition(xPos, yPos);
+        this.create();
+    }
+
+    /**
+     * Simplfied constructor for the firetruck, that doesn't require a position.
+     * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
+     * It also requires an ID so that it can be focused with the camera. Drawn with the given
+     * texture at (0,0).
+     * 
+     * @param textureSlices  The array of textures used to draw the firetruck with.
+     * @param collisionLayer The layer of the map the firetruck collides with.
+     * @param ID             The ID of the truck (for object focus).
+     */
+    public Firetruck(ArrayList<Texture> textureSlices, TiledMapTileLayer collisionLayer, int ID) {
+        super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
+        this.focusID = ID;
+        this.firetruckSlices = textureSlices;
+        this.create();
+    }
+
+    /**
+     * Sets the health of the firetruck and its size provided in CONSTANTS.
+     */
+    private void create() {
         this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
     }
@@ -68,9 +81,9 @@ public class Firetruck extends MovementSprite {
     /**
      * Update the position and direction of the firetruck every frame.
      */
-    public void update() {
-        super.update();
-        drawVoxelImage();
+    public void update(Batch batch) {
+        super.update(batch);
+        drawVoxelImage(batch);
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
@@ -92,17 +105,14 @@ public class Firetruck extends MovementSprite {
      * Draws the voxel representation of the firetruck. Incrementally builds the firetruck
      * from layers of images with each image slightly higher than the last
      */
-    private void drawVoxelImage() {
+    private void drawVoxelImage(Batch batch) {
         // Length of array containing image slices
-        int slicesLength = 19;
+        int slicesLength = this.firetruckSlices.size() - 1;
         float x = getX(), y = getY(), angle = this.getRotation();
         float width = this.getWidth(), height = this.getHeight();
-        for (int i = slicesLength; i > 0; i--) {
-            Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
-            batch.begin();
-            batch.draw(new TextureRegion(texture), x, (y + slicesLength) - i, width / 2, height / 2, width, height, 1, 1, angle, false);
-            batch.end();
-            texture.dispose();
+        for (int i = 0; i < slicesLength; i++) {
+            Texture texture = this.firetruckSlices.get(i);
+            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, false);
         }
     }
 
@@ -124,6 +134,17 @@ public class Firetruck extends MovementSprite {
             this.isFocused = true;
         } else {
             this.isFocused = false;
+        }
+    }
+
+    /**
+     * Dispose of all textures used by this class and its parents.
+     */
+    @Override
+    public void dispose() {
+        super.dispose();
+        for (Texture texture : this.firetruckSlices) {
+            texture.dispose();
         }
     }
 }

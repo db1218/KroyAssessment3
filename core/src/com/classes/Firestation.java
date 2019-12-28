@@ -21,32 +21,34 @@ import static com.config.Constants.FIRESTATION_WIDTH;
 public class Firestation extends SimpleSprite {
 
     /**
-     * The constructor for the class, gathering required information for it to
-     * be drawn.
+     * Overloaded constructor containing all possible parameters.
+     * Drawn with the given texture at the given position.
      * 
-     * @param spriteBatch The batch the sprite should be drawn on.
-     * @param spriteTexture The texture the sprite should use.
+     * @param texture  The texture used to draw the Firestation with.
+     * @param xPos     The x-coordinate for the Firestation.
+     * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Batch spriteBatch, Texture spriteTexture) {
-        super(spriteBatch, spriteTexture);
-        this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
-        this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
+    public Firestation(Texture texture, float xPos, float yPos) {
+        super(texture);
+        this.setPosition(xPos, yPos);
+        this.create();
     }
 
-    // Overload constructor for this class, takes a position to draw the sprite at
-    // Params:
-    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     /**
-     * The constructor for the class, gathering required information for it to be
-     * drawn, also giving information about a required position.
+     * Simplfied constructor for the Firestation, that doesn't require a position.
+     * Drawn with the given texture at (0,0).
      * 
-     * @param spriteBatch   The batch the sprite should be drawn on.
-     * @param spriteTexture The texture the fortress should use.
-     * @param xPos          The x-coordinate for the fortress.
-     * @param yPos          The y-coordinate for the fortress.
+     * @param texture  The texture used to draw the Firestation with.
      */
-    public Firestation(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
-        super(spriteBatch, spriteTexture, xPos, yPos);
+    public Firestation(Texture texture) {
+        super(texture);
+        this.create();
+    }
+
+    /**
+     * Sets the health of the Firestation and its size provided in CONSTANTS.
+     */
+    private void create() {
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
     }
@@ -54,7 +56,7 @@ public class Firestation extends SimpleSprite {
     /**
      * Updates the firestation so that it is drawn every frame.
      */
-    public void update() {
-        super.update();
+    public void update(Batch batch) {
+        super.update(batch);
     }
 }

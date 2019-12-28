@@ -20,29 +20,28 @@ import com.badlogic.gdx.graphics.Color;
 public class ResourceBar {
 
     // Private values to be used in this class only
-    private Batch batch;
     private ProgressBar bar;
-    private int currentResourceAmount;
-    private int maxResourceAmount;
-    private int barWidth;
-    private int barHeight;
-    private float scaleFactor;
-    private float x;
-    private float y;
+    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight;
+    private float scaleFactor, x, y;
 
     /**
      * Constructor for this class, gathers required information so that it can
      * be drawn.
      * 
-     * @param barBatch     The batch the sprite should be drawn on.
      * @param spriteWidth  The width of the sprite.
      * @param spriteHeight The height of the sprite.
      */
-    public ResourceBar(Batch barBatch, float spriteWidth, float spriteHeight ) {
-        this.batch = barBatch;
+    public ResourceBar(float spriteWidth, float spriteHeight ) {
         // Adjust bar to fit sprite dimensions
         this.barWidth = (int) (0.75 * spriteWidth);
-        this.barHeight = (int) (0.05 * spriteHeight);
+        this.barHeight = (int) (0.5 * spriteHeight);
+        this.create();
+    }
+
+    /**
+     * Creates a new progress bar and sets the inital values for all properties needed.
+     */
+    private void create() {
         this.maxResourceAmount = this.barWidth;
         this.currentResourceAmount = this.barWidth;
         this.scaleFactor = (float) this.barWidth / (float) this.maxResourceAmount;
@@ -52,10 +51,12 @@ public class ResourceBar {
     }
 
     /**
-     * Draw the resource bar.
+     * Draw the resource bar. Needs to be called every frame.
      */
-    public void update() {
-        drawResourceBar();
+    public void update(Batch batch) {
+        this.bar.setPosition(this.x, this.y);
+        this.bar.setSize(this.barWidth, this.barHeight);
+        this.bar.draw(batch, 1);
     }
 
     /**
@@ -91,17 +92,6 @@ public class ResourceBar {
         return new ProgressBarStyle(background.newDrawable("backgroundPixmap"), healthColour.newDrawable("healthPixmap"));
     }
 
-    /**
-     * Draw the resource bar onto the batch at the correct position.
-     */
-    private void drawResourceBar() {
-        this.batch.begin();
-        this.bar.setPosition(this.x, this.y);
-        this.bar.setSize(this.barWidth, this.barHeight);
-        this.bar.draw(batch, 1);
-        this.batch.end();
-    }
-
     /** 
      * Set the position of the bar, takes into account the sprite's dimensions
      * @param spriteXPos The x-coordinate of the sprite.
@@ -109,9 +99,9 @@ public class ResourceBar {
      */
     public void setPosition(float spriteXPos, float spriteYPos) {
         // Get sprite height and width by reversing previous calculations
-        float spriteHeight = barHeight / 0.05f, spriteWidth = barWidth / 0.75f;
+        float spriteHeight = barHeight / 0.5f, spriteWidth = barWidth / 0.75f;
         this.x = spriteXPos + spriteWidth * 0.125f;
-        this.y = spriteYPos + spriteHeight * 1.1f;
+        this.y = spriteYPos + spriteHeight * 3f;
     }
 
     /**
@@ -120,11 +110,8 @@ public class ResourceBar {
      * @param maxAmount The maximum limit for the resource bar.
      */
     public void setMaxResource(int maxAmount) {
-        // 100 / 1000
         this.scaleFactor = (float) this.barWidth / (float) maxAmount;
-        // 1000
         this.maxResourceAmount = maxAmount;
-        // 100 / 0.1 = 1000
         this.currentResourceAmount = (int) (this.currentResourceAmount / this.scaleFactor);
         this.bar.setStyle(getResourceBarStyle());
     }

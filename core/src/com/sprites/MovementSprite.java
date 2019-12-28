@@ -25,42 +25,38 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private float accelerationRate = 20f, speedX = 0f, speedY = 0f; 
-    private float bounce = 0.8f, rotationLockTime = 0;
+    private float accelerationRate, speedX, speedY, bounce, rotationLockTime;
     private TiledMapTileLayer collisionLayer;
 
     /**
-     * Constructors for this class, gathers required information so that it can be drawn.
-     * @param spriteBatch    The batch that the sprite should be drawn on.
+     * Creates a sprite capable of moving and colliding with the tiledMap and other sprites.
+     * 
      * @param spriteTexture  The texture the sprite should use.
      * @param collisionLayer The layer of the map the sprite will collide with.
      */
-    public MovementSprite(Batch spriteBatch, Texture spriteTexture, TiledMapTileLayer collisionLayer) {
-        super(spriteBatch, spriteTexture);
-        this.direction = Direction.LEFT;
+    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer) {
+        super(spriteTexture);
         this.collisionLayer = collisionLayer;
+        this.create();
     }
 
     /**
-     * Overload constructor for this class, taking a position to draw the sprite at.
-     * 
-     * @param spriteBatch    The batch that the sprite should be drawn on.
-     * @param spriteTexture  The texture the sprite should use.
-     * @param collisionLayer The layer of the map the sprite will collide with.
-     * @param xPos           The x-coordinate for the sprite to be drawn.
-     * @param yPos           The y-coordinate for the sprite to be drawn.
+     * Sets the inital values for all properties needed by the sprite.
      */
-    public MovementSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos, TiledMapTileLayer collisionLayer) {
-        super(spriteBatch, spriteTexture, xPos, yPos);
+    private void create() {
         this.direction = Direction.LEFT;
-        this.collisionLayer = collisionLayer;
+        this.accelerationRate = 20f;
+        this.speedX = 0f;
+        this.speedY = 0f; 
+        this.bounce = 0.8f;
+        this.rotationLockTime = 0;
     }
 
     /**
      * Update the sprite position and direction based on acceleration and
      * boundaries. This is called every game frame.
      */
-    public void update() {
+    public void update(Batch batch) {
         // Calculate the acceleration on the sprite and apply it
         applyAcceleration();
         // Set the sprites direction based on its speed
@@ -72,7 +68,7 @@ public class MovementSprite extends SimpleSprite {
         // Check the sprite is within the map boundaries then draw
         checkBoundaries();
         // Draw the sprite at the new location
-        super.update();
+        super.update(batch);
     }
 
     /**

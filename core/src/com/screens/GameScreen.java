@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
@@ -68,41 +69,65 @@ public class GameScreen implements Screen {
 	public GameScreen(final Kroy gam) {
 		this.game = gam;
 
+		// ---- 1) Create new instance for all the objects needed for the game ---- //
+		
 		// Create an orthographic camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
-		game.init(camera);
 
 		// Load the map, set the unit scale
 		map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
 		renderer = new OrthogonalTiledMapRenderer(map, MAP_SCALE);
 		shapeRenderer = new ShapeRenderer();
 
-		// Initialise batch to draw texture to
+		// ---- 2) Initialise and set game properties ----------------------------- //
+
+		// Initialise map renderer as batch to draw textures to
 		batch = renderer.getBatch();
 
-		// Initialise texture to use for firetruck
-		Texture firetruckTexture = new Texture("FiretruckSlices/tile000.png");
+		// Set the game bath and font size
+		this.game.setBatch(batch);
+		this.game.getFont().getData().setScale(1.5f);
+		
+		// Set the Batch to render in the coordinate system specified by the camera.
+		this.batch.setProjectionMatrix(camera.combined);
+
+		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
+
+		// Initialise textures to use for spites
+		Texture ETFortressTexture = new Texture("FiretruckSlices/tile008.png");
+		
+		// Create array of tertures for firetruck animations
+		ArrayList<Texture> firetruckSlices = new ArrayList<Texture>();
+		for (int i = 19; i > 0; i--) {
+			Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
+			firetruckSlices.add(texture);
+		}
+
+		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
 		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(batch, firetruckTexture, 1000 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
+			Firetruck firetruck = new Firetruck(firetruckSlices, 1000 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
 			this.firetrucks.add(firetruck);
 		}
-
-		// Set inital firetruck to focus
-		setFiretruckFocus(1);
-
-		// Initialise texture to use for ETFortress
-		Texture ETFortressTexture = new Texture("FiretruckSlices/tile008.png");
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
 		for (int i = 1; i <= 1; i++) {
-			ETFortress ETFortress = new ETFortress(batch, ETFortressTexture, 1500 * i, 500);
+			ETFortress ETFortress = new ETFortress(ETFortressTexture, 1500 * i, 500);
 			this.ETFortresses.add(ETFortress);
 		}
+	}
+
+	/**
+	 * Actions to perform on first render cycle of the game
+	 */
+	@Override
+	public void show() {
+		// Set inital firetruck to focus the camera on
+		setFiretruckFocus(1);
 	}
 
 	/**
@@ -112,22 +137,30 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
-		// clear the screen with a dark blue color. The arguments to glClearColor are the red, green
-		// blue and alpha component in the range [0,1] of the color to be used to clear the screen.
+
+		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
 		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		// set the TiledMapRenderer view based on what the camera sees, and render the map
+		// ---- 1) Update camera and map properties each iteration -------- //
+		
+		// Set the TiledMapRenderer view based on what the camera sees, and render the map
 		renderer.setView(camera);
 		renderer.render();
 
+		// Align the debug view with the camera
 		shapeRenderer.setProjectionMatrix(camera.combined);
 
-		// Draw score to the screen at given co-ordinates
-		game.drawFont("Score: " + score, SCORE_X, SCORE_Y);
+		// Get the firetruck thats being driven so that the camera can follow it
+		Firetruck focusedTruck = getFiretruckInFocus();
 
-		// Draw FPS to the screen at given co-ordinates
-		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), SCREEN_WIDTH - SCORE_X * 2, SCORE_Y);
+		// Tell the camera to update to the sprites position with a delay based on lerp and game time
+		Vector3 cameraPosition = camera.position;
+		cameraPosition.x += (focusedTruck.getCentreX() - cameraPosition.x) * LERP * delta;
+		cameraPosition.y += (focusedTruck.getCentreY() - cameraPosition.y) * LERP * delta;
+		camera.update();
+
+		// ---- 2) Perform any checks for user input ---------------------- //
 
 		// Check for user input to see if the focused truck should change
 		if (Gdx.input.isKeyPressed(Keys.NUM_1)) {
@@ -137,24 +170,31 @@ public class GameScreen implements Screen {
             setFiretruckFocus(2);
         }
 
-		// Get the firetruck thats being driven
-		Firetruck focusedTruck = getFiretruckInFocus();
+		// ---- 3) Perform all render functions here ------------------------ //
 
-		// Tell the camera to update to the sprites position with a delay based on lerp and game time
-		Vector3 position = camera.position;
-		position.x += (focusedTruck.getCentreX() - position.x) * LERP * delta;
-		position.y += (focusedTruck.getCentreY() - position.y) * LERP * delta;
-		camera.update();
+		// Ready the batch's for drawing
+		batch.begin();
+		shapeRenderer.begin(ShapeType.Line);
+		
+		// Draw the score and FPS to the screen at given co-ordinates
+		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X, cameraPosition.y + SCORE_Y);
+		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), cameraPosition.x + SCORE_X * 0.85f, cameraPosition.y + SCORE_Y);
 
-		// Call the update function of the sprites to draw and update it
+		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update();
+			firetruck.update(batch);
 			firetruck.drawDebug(shapeRenderer);
 		}
 		for (ETFortress ETFortress : this.ETFortresses) {
-			ETFortress.update();
+			ETFortress.update(batch);
 			ETFortress.drawDebug(shapeRenderer);
 		}
+		
+		// Finish rendering 
+		shapeRenderer.end();
+		batch.end();
+
+		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
 		// Check for any collisions
 		checkForCollisions();
@@ -214,13 +254,6 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
-	}
-
-	/**
-	 * Actions to perform when the main game is shown.
-	 */
-	@Override
-	public void show() {
 	}
 
 	/**

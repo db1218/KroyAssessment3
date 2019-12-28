@@ -3,7 +3,6 @@ package com.sprites;
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
@@ -20,69 +19,51 @@ import com.sprites.ResourceBar;
 public class SimpleSprite extends Sprite {
 
     // Private values to be used in this class only
-    private Batch batch;
     private Texture texture;
-    private float width = 0, height = 0;
+    private float width, height;
     private ResourceBar healthBar;
     private Polygon hitBox;
 
     /**
-     * Constructor for this class. Gathers the required information so the
-     * sprite can be drawn.
-     * 
-     * @param spriteBatch   The batch that the sprite should be drawn on.
-     * @param spriteTexture The texture the sprite should use.
-     */
-    public SimpleSprite(Batch spriteBatch, Texture spriteTexture) {
-        super(spriteTexture);
-        batch = spriteBatch;
-        texture = spriteTexture;
-        healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
-        this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
-        this.hitBox.setPosition(0, 0);
-        this.setPosition(0, 0);
-    }
-
-    /**
-     * Overload constructor for this class, taking a position to draw the sprite at.
+     * Constructor that creates a sprite at a given position using a given texture..
+     * Creates a sprite at (0,0) using a given texture.
      * 
      * @param spriteBatch    The batch that the sprite should be drawn on.
      * @param spriteTexture  The texture the sprite should use.
-     * @param xPos           The x-coordinate for the sprite to be drawn.
-     * @param yPos           The y-coordinate for the sprite to be drawn.
      */
-    public SimpleSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
+    public SimpleSprite(Texture spriteTexture) {
         super(spriteTexture);
-        batch = spriteBatch;
-        texture = spriteTexture;
-        healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
+        this.texture = spriteTexture;
+        this.create();
+    }
+
+    /**
+     * Creates a healthbar and hitbox for the sprite.
+     */
+    private void create() {
+        this.healthBar = new ResourceBar(this.getWidth(), this.getHeight());
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
-        this.hitBox.setPosition(xPos, yPos);
-        this.setPosition(xPos, yPos);
     }
 
     /**
      * Update the sprite position, hitbox and health bar.
+     * Must be called every frame in order to draw the sprite.
      */
-    public void update() {
+    public void update(Batch batch) {
         // Keep the healthbar and hitbox located on the sprite
-        healthBar.setPosition(this.getX(), this.getY());
-        healthBar.update();
+        this.healthBar.setPosition(this.getX(), this.getY());
         this.hitBox.setPosition(this.getX(), this.getY());
-        // Draw the sprite
-        batch.begin();
-        batch.draw(texture, getX(), getY(), this.getWidth(), this.getHeight());
-        batch.end();
+        // Draw the sprite and update the healthbar
+        batch.draw(this.texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.healthBar.update(batch);
     }
 
     /**
      * Enables drawing of the hitbox to it can be seen. 
-     * @param renderer   The shape renderer to draw onto
+     * @param renderer   The shape renderer to draw onto.
      */
-    public void drawDebug(ShapeRenderer renderer) {
-        renderer.begin(ShapeType.Line);
+    public void drawDebug(ShapeRenderer renderer) { 
         renderer.polygon(this.hitBox.getTransformedVertices());
-        renderer.end();
     }
 
     /**

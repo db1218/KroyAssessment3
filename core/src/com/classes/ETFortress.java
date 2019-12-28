@@ -21,32 +21,34 @@ import static com.config.Constants.ETFORTRESS_WIDTH;
 public class ETFortress extends SimpleSprite {
 
     /**
-     * The constructor for the class, gathering required information for it to
-     * be drawn.
+     * Overloaded constructor containing all possible parameters.
+     * Drawn with the given texture at the given position.
      * 
-     * @param spriteBatch The batch the sprite should be drawn on.
-     * @param spriteTexture The texture the sprite should use.
+     * @param texture  The texture used to draw the ETFortress with.
+     * @param xPos     The x-coordinate for the ETFortress.
+     * @param yPos     The y-coordinate for the ETFortress.
      */
-    public ETFortress(Batch spriteBatch, Texture spriteTexture) {
-        super(spriteBatch, spriteTexture);
-        this.getHealthBar().setMaxResource(ETFORTRESS_HEALTH);
-        this.setSize(ETFORTRESS_WIDTH, ETFORTRESS_HEIGHT);
+    public ETFortress(Texture texture, float xPos, float yPos) {
+        super(texture);
+        this.setPosition(xPos, yPos);
+        this.create();
     }
 
-    // Overload constructor for this class, takes a position to draw the sprite at
-    // Params:
-    // float xPos, yPos -  the co-ordinates the sprite should be drawn at
     /**
-     * The constructor for the class, gathering required information for it to be
-     * drawn, also giving information about a required position.
+     * Simplfied constructor for the ETFortress, that doesn't require a position.
+     * Drawn with the given texture at (0,0).
      * 
-     * @param spriteBatch   The batch the sprite should be drawn on.
-     * @param spriteTexture The texture the fortress should use.
-     * @param xPos          The x-coordinate for the fortress.
-     * @param yPos          The y-coordinate for the fortress.
+     * @param texture  The texture used to draw the ETFortress with.
      */
-    public ETFortress(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
-        super(spriteBatch, spriteTexture, xPos, yPos);
+    public ETFortress(Texture texture) {
+        super(texture);
+        this.create();
+    }
+
+    /**
+     * Sets the health of the ETFortress and its size provided in CONSTANTS.
+     */
+    private void create() {
         this.getHealthBar().setMaxResource(ETFORTRESS_HEALTH);
         this.setSize(ETFORTRESS_WIDTH, ETFORTRESS_HEIGHT);
     }
@@ -54,7 +56,7 @@ public class ETFortress extends SimpleSprite {
     /**
      * Update the fortress so that it is drawn every frame.
      */
-    public void update() {
-        super.update();
+    public void update(Batch batch) {
+        super.update(batch);
     }
 }

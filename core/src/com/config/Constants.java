@@ -63,10 +63,10 @@ public final class Constants {
     public static final float LERP = 1.5f;
 
     // Class sizing
-    public static final double SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5;
-    public static final double SCREEN_CENTRE_Y = SCREEN_HEIGHT * 0.5;
-    public static final double SCORE_Y = SCREEN_HEIGHT * 0.95;
-    public static final double SCORE_X = SCREEN_WIDTH * 0.05;
+    public static final float SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5f;
+    public static final float SCREEN_CENTRE_Y = SCREEN_HEIGHT * 0.5f;
+    public static final float SCORE_Y = SCREEN_HEIGHT * 0.45f;
+    public static final float SCORE_X = SCREEN_WIDTH * 0.45f;
 
     // Sprite sizing
     public static final int FIRETRUCK_WIDTH = 2*TILE_DIMS;
