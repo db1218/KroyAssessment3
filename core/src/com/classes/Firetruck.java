@@ -14,8 +14,8 @@ import com.sprites.MovementSprite;
 // Constants import
 import static com.config.Constants.Direction;
 import static com.config.Constants.FIRETRUCK_HEALTH;
-import static com.config.Constants.SPRITE_HEIGHT;
-import static com.config.Constants.SPRITE_WIDTH;
+import static com.config.Constants.FIRETRUCK_HEIGHT;
+import static com.config.Constants.FIRETRUCK_WIDTH;
 
 /**
  * The Firetruck implementation.
@@ -42,8 +42,8 @@ public class Firetruck extends MovementSprite {
         super(spriteBatch, spriteTexture, collisionLayer);
         this.focusID = ID;
         this.batch = spriteBatch;
-        this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
-        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+        this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
+        this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
     }
 
     /**
@@ -61,8 +61,8 @@ public class Firetruck extends MovementSprite {
         super(spriteBatch, spriteTexture, xPos, yPos, collisionLayer);
         this.focusID = ID;
         this.batch = spriteBatch;
-        this.healthBar.setMaxResource(FIRETRUCK_HEALTH);
-        this.setSize(SPRITE_WIDTH, SPRITE_HEIGHT);
+        this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
+        this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
     }
 
     /**

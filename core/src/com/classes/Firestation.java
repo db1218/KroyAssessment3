@@ -29,7 +29,7 @@ public class Firestation extends SimpleSprite {
      */
     public Firestation(Batch spriteBatch, Texture spriteTexture) {
         super(spriteBatch, spriteTexture);
-        this.healthBar.setMaxResource(FIRESTATION_HEALTH);
+        this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
     }
 
@@ -47,7 +47,7 @@ public class Firestation extends SimpleSprite {
      */
     public Firestation(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
         super(spriteBatch, spriteTexture, xPos, yPos);
-        this.healthBar.setMaxResource(FIRESTATION_HEALTH);
+        this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
     }
 

@@ -169,13 +169,13 @@ public class GameScreen implements Screen {
 		for (Firetruck firetruckA : this.firetrucks) {
 			for (Firetruck firetruckB : this.firetrucks) {
 				// Check if the firetruck overlaps another firetruck, but not itself
-				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.hitBox, firetruckB.hitBox, seperationVector)) {
+				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.getHitBox(), firetruckB.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
 				}
 			}
 			// Check if it overlaps with an ETFortress
 			for (ETFortress ETFortress : this.ETFortresses) {
-				if (Intersector.overlapConvexPolygons(firetruckA.hitBox, ETFortress.hitBox, seperationVector)) {
+				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), ETFortress.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
 				}
 			}

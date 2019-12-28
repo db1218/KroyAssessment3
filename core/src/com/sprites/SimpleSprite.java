@@ -23,10 +23,8 @@ public class SimpleSprite extends Sprite {
     private Batch batch;
     private Texture texture;
     private float width = 0, height = 0;
-
-    // Allows the health bar to be changed by subclasses
-    public ResourceBar healthBar;
-    public Polygon hitBox;
+    private ResourceBar healthBar;
+    private Polygon hitBox;
 
     /**
      * Constructor for this class. Gathers the required information so the
@@ -110,6 +108,22 @@ public class SimpleSprite extends Sprite {
     public void rotate(float degrees) {
         super.rotate(degrees);
         this.hitBox.rotate(degrees);
+    }
+
+    /**
+     * Get the health bar of the sprite.
+     * @return The health bar of the sprite.
+     */
+    public ResourceBar getHealthBar() {
+        return this.healthBar;
+    }
+
+    /**
+     * Get the hit box of the sprite.
+     * @return The hit box of the sprite.
+     */
+    public Polygon getHitBox() {
+        return this.hitBox;
     }
 
     /**

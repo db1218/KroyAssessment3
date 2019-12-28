@@ -93,6 +93,7 @@ public class MovementSprite extends SimpleSprite {
      * @return The direction the sprite is travelling in
      */
     private Direction getDirectionFromSpeed() {
+        // Allow the sprite to reverse in any direction if going slow enough
         float speedBeforeRotation = this.accelerationRate * 3.5f;
         boolean left = this.speedX < -speedBeforeRotation, right = this.speedX > speedBeforeRotation;
         boolean up = this.speedY > speedBeforeRotation, down = this.speedY < -speedBeforeRotation;
@@ -145,11 +146,12 @@ public class MovementSprite extends SimpleSprite {
 
     /**
      * Checks what direction the sprite is facing and bounces it the opposite way.
+     * @param seperationVector Vector containing the minimum distance needed to travel to seperate two sprites.
      */
     public void collisionOccurred(Vector2 seperationVector) {
         // Calculate how far to push the sprite back
-        float pushBackX = seperationVector.x; //< 1 ? 10 : seperationVector.x * 10;
-        float pushBackY = seperationVector.y; //< 1 ? 10 : seperationVector.y * 10;
+        float pushBackX = seperationVector.x;
+        float pushBackY = seperationVector.y;
         // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
         this.speedY *= -this.bounce;
         this.speedX *= -this.bounce;

@@ -69,8 +69,8 @@ public final class Constants {
     public static final double SCORE_X = SCREEN_WIDTH * 0.05;
 
     // Sprite sizing
-    public static final int SPRITE_WIDTH = 2*TILE_DIMS;
-    public static final int SPRITE_HEIGHT = 1*TILE_DIMS;
+    public static final int FIRETRUCK_WIDTH = 2*TILE_DIMS;
+    public static final int FIRETRUCK_HEIGHT = 1*TILE_DIMS;
     public static final int FIRESTATION_WIDTH = 5*TILE_DIMS;
     public static final int FIRESTATION_HEIGHT = 5*TILE_DIMS;
     public static final int ETFORTRESS_WIDTH = 5*TILE_DIMS;
