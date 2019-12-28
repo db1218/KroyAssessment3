@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.Vector2;
 
 // Constants import
 import static com.config.Constants.MAP_HEIGHT;
@@ -13,6 +14,7 @@ import static com.config.Constants.MAP_WIDTH;
 import static com.config.Constants.COLLISION_TILE;
 import static com.config.Constants.Direction;
 import static com.config.Constants.DirectionToAngle;
+import static com.config.Constants.TILE_DIMS;
 
 /**
  * MovementSprite adds movement facilities to a sprite.
@@ -24,7 +26,7 @@ public class MovementSprite extends SimpleSprite {
     // Private values to be used in this class only
     private Direction direction;
     private float accelerationRate = 20f, speedX = 0f, speedY = 0f; 
-    private float bounce = 0.5f, rotationLockTime = 0;
+    private float bounce = 0.8f, rotationLockTime = 0;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -74,13 +76,14 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Calculate the angle the sprite needs to rotate to from it's current rotation.
+     * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
      */
     private void updateRotation() {
         float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
         float angle = desiredRotation - currentRotation;
-        angle = (angle + 180) % 360 - 180;
-        if (currentRotation != desiredRotation && (this.rotationLockTime <= 0)) {
+        if (currentRotation != desiredRotation) {
+            // Use the shortest angle
+            angle = (angle + 180) % 360 - 180;
             this.rotate(angle * 3 * Gdx.graphics.getDeltaTime());
         }
     }
@@ -90,9 +93,11 @@ public class MovementSprite extends SimpleSprite {
      * @return The direction the sprite is travelling in
      */
     private Direction getDirectionFromSpeed() {
-        boolean left = this.speedX < 0, right = this.speedX > 0, up = this.speedY > 0,down = this.speedY < 0;
+        float speedBeforeRotation = this.accelerationRate * 3.5f;
+        boolean left = this.speedX < -speedBeforeRotation, right = this.speedX > speedBeforeRotation;
+        boolean up = this.speedY > speedBeforeRotation, down = this.speedY < -speedBeforeRotation;
         boolean vertical = up || down, horizontal = left || right;
-        if (vertical) {
+        if (vertical && (this.rotationLockTime <= 0)) {
             if (up && horizontal) {
                 return left ? Direction.UPLEFT : Direction.UPRIGHT;
             } else if (down && horizontal) {
@@ -101,7 +106,7 @@ public class MovementSprite extends SimpleSprite {
                 return Direction.UP;
             }
             return Direction.DOWN;
-        } else if (horizontal) {
+        } else if (horizontal && (this.rotationLockTime <= 0)) {
             return left ? Direction.LEFT : Direction.RIGHT;
         }
         // If stationary return last direction
@@ -122,69 +127,35 @@ public class MovementSprite extends SimpleSprite {
         // Apply acceleration and check if it collides with any tiles
         if (!hitLeft && this.speedX < 0) {
             setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-        } else if (hitLeft) {
-            collisionOccurred();
         }
         if (!hitRight && this.speedX > 0) {
             setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-        } else if (hitRight) {
-            collisionOccurred();
         }
         if (!hitTop && this.speedY > 0) {
             setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
-        } else if (hitTop) {
-            collisionOccurred();
         }
         if (!hitBottom && this.speedY < 0) {
             setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
-        } else if (hitBottom) {
-            collisionOccurred();
         }
-        if (this.speedY != 0f || this.speedX != 0f) {
+        // Only decelerate if it wont move us into a wall
+        if (!hitLeft && !hitRight && !hitTop && !hitBottom && (this.speedY != 0f || this.speedX != 0f)) {
             decelerate();
         }
     }
 
     /**
-     * Checks what direction the sprite is facing and bounces it the opposite way without rotating.
+     * Checks what direction the sprite is facing and bounces it the opposite way.
      */
-    public void collisionOccurred() {
-        float knockback = this.getWidth() * 0.05f;
-        setRotationLock(0.5f);
-        switch (this.direction) {
-            case UP:
-                this.setY(this.getY() - knockback);
-                this.speedY *= -this.bounce;
-            case DOWN:
-                this.setY(this.getY() + knockback);
-                this.speedY *= this.bounce;
-            case LEFT:
-                this.setX(this.getX() + knockback);
-                this.speedX *= this.bounce;
-            case RIGHT:
-                this.setX(this.getX() - knockback);
-                this.speedX *= -this.bounce;
-            case UPLEFT:
-                this.setY(this.getY() - knockback);
-                this.speedY *= -this.bounce;
-                this.setX(this.getX() + knockback);
-                this.speedX *= this.bounce;
-            case UPRIGHT:
-                this.setY(this.getY() - knockback);
-                this.speedY *= -this.bounce;
-                this.setX(this.getX() - knockback);
-                this.speedX *= -this.bounce;
-            case DOWNLEFT:
-                this.setY(this.getY() + knockback);
-                this.speedY *= this.bounce;
-                this.setX(this.getX() + knockback);
-                this.speedX *= this.bounce;
-            case DOWNRIGHT:
-                this.setY(this.getY() + knockback);
-                this.speedY *= this.bounce;
-                this.setX(this.getX() - knockback);
-                this.speedX *= -this.bounce;
-        }
+    public void collisionOccurred(Vector2 seperationVector) {
+        // Calculate how far to push the sprite back
+        float pushBackX = seperationVector.x; //< 1 ? 10 : seperationVector.x * 10;
+        float pushBackY = seperationVector.y; //< 1 ? 10 : seperationVector.y * 10;
+        // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
+        this.speedY *= -this.bounce;
+        this.speedX *= -this.bounce;
+        this.setRotationLock(0.5f);
+        this.setY(this.getY() + pushBackY);
+        this.setX(this.getX() + pushBackX);
     }
 
     /**
@@ -204,7 +175,7 @@ public class MovementSprite extends SimpleSprite {
      * @return Whether the sprite can enter the tile (true) or not (false).
      */
     private boolean isCellBlocked(float x, float y) {
-        Cell cell = collisionLayer.getCell((int) (x / collisionLayer.getTileWidth()), (int) (y / collisionLayer.getTileHeight()));
+        Cell cell = collisionLayer.getCell((int) (x / TILE_DIMS), (int) (y / TILE_DIMS));
 		return cell != null && cell.getTile() != null && cell.getTile().getProperties().containsKey(COLLISION_TILE);
 	}
 
@@ -215,8 +186,8 @@ public class MovementSprite extends SimpleSprite {
      * @return Whether any tiles on route are blocked (true) or no blockages (false).
      */
 	private boolean collidesRight() {
-		for(float step = 0; step < getHeight(); step += collisionLayer.getTileHeight() / 2)
-			if(isCellBlocked(getX() + getWidth(), getY() + step))
+		for(float step = 0; step < this.getHeight(); step += TILE_DIMS / 2)
+			if(isCellBlocked(this.getX() + this.getWidth(), this.getY() + step))
 				return true;
 		return false;
 	}
@@ -230,8 +201,8 @@ public class MovementSprite extends SimpleSprite {
      *         (false).
      */
 	private boolean collidesLeft() {
-		for(float step = 0; step < getHeight(); step += collisionLayer.getTileHeight() / 2)
-			if(isCellBlocked(getX(), getY() + step))
+		for(float step = 0; step < this.getHeight(); step += TILE_DIMS / 2)
+			if(isCellBlocked(this.getX(), this.getY() + step))
 				return true;
 		return false;
 	}
@@ -245,8 +216,8 @@ public class MovementSprite extends SimpleSprite {
      *         (false).
      */
 	private boolean collidesTop() {
-		for(float step = 0; step < getWidth(); step += collisionLayer.getTileWidth() / 2)
-			if(isCellBlocked(getX() + step, getY() + getHeight()))
+		for(float step = 0; step < this.getWidth(); step += TILE_DIMS / 2)
+			if(isCellBlocked(this.getX() + step, this.getY() + this.getHeight()))
 				return true;
 		return false;
 
@@ -261,8 +232,8 @@ public class MovementSprite extends SimpleSprite {
      *         (false).
      */
 	private boolean collidesBottom() {
-		for(float step = 0; step < getWidth(); step += collisionLayer.getTileWidth() / 2)
-			if(isCellBlocked(getX() + step, getY()))
+		for(float step = 0; step < this.getWidth(); step += TILE_DIMS / 2)
+			if(isCellBlocked(this.getX() + step, this.getY()))
 				return true;
 		return false;
 	}

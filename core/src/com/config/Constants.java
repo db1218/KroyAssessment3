@@ -55,10 +55,12 @@ public final class Constants {
     public static final int SCREEN_HEIGHT = 720;
     public static final int MAP_WIDTH = 10000;
     public static final int MAP_HEIGHT = 10000;
-    public static final String COLLISION_TILE = "Blocked";
+    public static final float MAP_SCALE = 6f;
+    public static final int TILE_DIMS = (int) (8 * MAP_SCALE);
+    public static final String COLLISION_TILE = "BLOCKED";
 
     // Camera settings
-    public static final float LERP = 1.1f;
+    public static final float LERP = 1.5f;
 
     // Class sizing
     public static final double SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5;
@@ -67,11 +69,11 @@ public final class Constants {
     public static final double SCORE_X = SCREEN_WIDTH * 0.05;
 
     // Sprite sizing
-    public static final int SPRITE_WIDTH = 6*32;
-    public static final int SPRITE_HEIGHT = 3*32;
-    public static final int FIRESTATION_WIDTH = 5*32;
-    public static final int FIRESTATION_HEIGHT = 5*32;
-    public static final int ETFORTRESS_WIDTH = 5*32;
-    public static final int ETFORTRESS_HEIGHT = 5*32;
+    public static final int SPRITE_WIDTH = 2*TILE_DIMS;
+    public static final int SPRITE_HEIGHT = 1*TILE_DIMS;
+    public static final int FIRESTATION_WIDTH = 5*TILE_DIMS;
+    public static final int FIRESTATION_HEIGHT = 5*TILE_DIMS;
+    public static final int ETFORTRESS_WIDTH = 5*TILE_DIMS;
+    public static final int ETFORTRESS_HEIGHT = 5*TILE_DIMS;
 
 }

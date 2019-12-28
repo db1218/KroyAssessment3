@@ -4,6 +4,7 @@ package com.sprites;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -25,6 +26,7 @@ public class SimpleSprite extends Sprite {
 
     // Allows the health bar to be changed by subclasses
     public ResourceBar healthBar;
+    public Polygon hitBox;
 
     /**
      * Constructor for this class. Gathers the required information so the
@@ -38,6 +40,8 @@ public class SimpleSprite extends Sprite {
         batch = spriteBatch;
         texture = spriteTexture;
         healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
+        this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        this.hitBox.setPosition(0, 0);
         this.setPosition(0, 0);
     }
 
@@ -54,23 +58,32 @@ public class SimpleSprite extends Sprite {
         batch = spriteBatch;
         texture = spriteTexture;
         healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
+        this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        this.hitBox.setPosition(xPos, yPos);
         this.setPosition(xPos, yPos);
     }
 
     /**
-     * Update the sprite position and health bar.
+     * Update the sprite position, hitbox and health bar.
      */
     public void update() {
+        // Keep the healthbar and hitbox located on the sprite
         healthBar.setPosition(this.getX(), this.getY());
         healthBar.update();
+        this.hitBox.setPosition(this.getX(), this.getY());
+        // Draw the sprite
         batch.begin();
         batch.draw(texture, getX(), getY(), this.getWidth(), this.getHeight());
         batch.end();
     }
 
+    /**
+     * Enables drawing of the hitbox to it can be seen. 
+     * @param renderer   The shape renderer to draw onto
+     */
     public void drawDebug(ShapeRenderer renderer) {
         renderer.begin(ShapeType.Line);
-        renderer.rect(this.getBoundingRectangle().x, this.getBoundingRectangle().y, this.getBoundingRectangle().getWidth(), this.getBoundingRectangle().getHeight());
+        renderer.polygon(this.hitBox.getTransformedVertices());
         renderer.end();
     }
 
@@ -83,9 +96,20 @@ public class SimpleSprite extends Sprite {
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        this.setOrigin(width / 2, height / 2);
+        this.hitBox = new Polygon(new float[]{0,0,width,0,width,height,0,height});
+        this.hitBox.setOrigin(width/2, height/2);
         this.width = width;
         this.height = height;
+    }
+
+    /**
+     * Overrides Sprite class method to rotate the sprite and hitbox at once.
+     * @param degrees   The degree to rotate to.
+     */
+    @Override
+    public void rotate(float degrees) {
+        super.rotate(degrees);
+        this.hitBox.rotate(degrees);
     }
 
     /**
