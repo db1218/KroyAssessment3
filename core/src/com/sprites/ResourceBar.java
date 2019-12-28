@@ -33,7 +33,7 @@ public class ResourceBar {
      */
     public ResourceBar(float spriteWidth, float spriteHeight ) {
         // Adjust bar to fit sprite dimensions
-        this.barWidth = (int) (0.75 * spriteWidth);
+        this.barWidth = (int) (spriteWidth);
         this.barHeight = (int) (0.5 * spriteHeight);
         this.create();
     }
@@ -100,8 +100,8 @@ public class ResourceBar {
     public void setPosition(float spriteXPos, float spriteYPos) {
         // Get sprite height and width by reversing previous calculations
         float spriteHeight = barHeight / 0.5f, spriteWidth = barWidth / 0.75f;
-        this.x = spriteXPos + spriteWidth * 0.125f;
-        this.y = spriteYPos + spriteHeight * 3f;
+        this.x = spriteXPos + spriteWidth * (1 / 3);
+        this.y = spriteYPos + spriteHeight * 1.75f;
     }
 
     /**

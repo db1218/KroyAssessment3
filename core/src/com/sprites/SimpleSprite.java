@@ -41,7 +41,8 @@ public class SimpleSprite extends Sprite {
      * Creates a healthbar and hitbox for the sprite.
      */
     private void create() {
-        this.healthBar = new ResourceBar(this.getWidth(), this.getHeight());
+        // Use the longest side of the sprite as the bar width
+        this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
     }
 
@@ -68,17 +69,17 @@ public class SimpleSprite extends Sprite {
 
     /**
      * Overrides Sprite class method to keep seperate values for width and height.
-     * Updates the sprites width and height.
+     * Also updates the sprites width and height and creates a new hitbox and health bar.
      * @param width    The width the sprite should be set to.
      * @param height   The height the sprite should be set to.
      */
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        this.hitBox = new Polygon(new float[]{0,0,width,0,width,height,0,height});
-        this.hitBox.setOrigin(width/2, height/2);
         this.width = width;
         this.height = height;
+        this.create();
+        this.hitBox.setOrigin(width/2, height/2);
     }
 
     /**
