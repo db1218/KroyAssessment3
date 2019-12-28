@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 
 // Tiled map imports fro LibGDX
@@ -31,6 +32,7 @@ import static com.config.Constants.SCREEN_WIDTH;
 import static com.config.Constants.SCORE_Y;
 import static com.config.Constants.SCORE_X;
 import static com.config.Constants.LERP;
+import static com.config.Constants.MAP_SCALE;
 
 /**
  * Display the main game.
@@ -72,8 +74,8 @@ public class GameScreen implements Screen {
 		game.init(camera);
 
 		// Load the map, set the unit scale
-		map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, 1f / 1f);
+		map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
+		renderer = new OrthogonalTiledMapRenderer(map, MAP_SCALE);
 		shapeRenderer = new ShapeRenderer();
 
 		// Initialise batch to draw texture to
@@ -85,7 +87,7 @@ public class GameScreen implements Screen {
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
 		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(batch, firetruckTexture, 1000 * i, 500, (TiledMapTileLayer) map.getLayers().get("River"), i);
+			Firetruck firetruck = new Firetruck(batch, firetruckTexture, 1000 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
 			this.firetrucks.add(firetruck);
 		}
 
@@ -97,7 +99,7 @@ public class GameScreen implements Screen {
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
-		for (int i = 1; i <= 2; i++) {
+		for (int i = 1; i <= 1; i++) {
 			ETFortress ETFortress = new ETFortress(batch, ETFortressTexture, 1500 * i, 500);
 			this.ETFortresses.add(ETFortress);
 		}
@@ -162,19 +164,19 @@ public class GameScreen implements Screen {
      * Checks to see if any collisions have occurred
      */
 	private void checkForCollisions() {
+		Intersector.MinimumTranslationVector seperationVector = new Intersector.MinimumTranslationVector();
 		// Check each firetruck to see if it has collided with anything
 		for (Firetruck firetruckA : this.firetrucks) {
 			for (Firetruck firetruckB : this.firetrucks) {
 				// Check if the firetruck overlaps another firetruck, but not itself
-				if (!firetruckA.equals(firetruckB) && firetruckA.getBoundingRectangle().overlaps(firetruckB.getBoundingRectangle())) {
-					firetruckA.collisionOccurred();
-					firetruckB.collisionOccurred();
+				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.hitBox, firetruckB.hitBox, seperationVector)) {
+					firetruckA.collisionOccurred(seperationVector.normal);
 				}
 			}
 			// Check if it overlaps with an ETFortress
 			for (ETFortress ETFortress : this.ETFortresses) {
-				if (firetruckA.getBoundingRectangle().overlaps(ETFortress.getBoundingRectangle())) {
-					firetruckA.collisionOccurred();
+				if (Intersector.overlapConvexPolygons(firetruckA.hitBox, ETFortress.hitBox, seperationVector)) {
+					firetruckA.collisionOccurred(seperationVector.normal);
 				}
 			}
 		}
