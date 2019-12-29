@@ -32,7 +32,7 @@ public class Firetruck extends MovementSprite {
 
     // Private values to be used in this class only
     private Boolean isFocused;
-    private int focusID;
+    private int focusID, redLightDelay;
     private ArrayList<Texture> firetruckSlices;
 
     /**
@@ -74,8 +74,10 @@ public class Firetruck extends MovementSprite {
 
     /**
      * Sets the health of the firetruck and its size provided in CONSTANTS.
+     * Also initialises any properties needed by the firetruck.
      */
     private void create() {
+        this.redLightDelay = 0;
         this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         this.setAccelerationRate(FIRETRUCK_ACCELERATION);
@@ -103,6 +105,7 @@ public class Firetruck extends MovementSprite {
                 super.accelerate(Direction.UP);
             }
         }
+        if (redLightDelay > 0) redLightDelay -= 1;
     }
 
     /**
@@ -115,9 +118,27 @@ public class Firetruck extends MovementSprite {
         float x = getX(), y = getY(), angle = this.getRotation();
         float width = this.getWidth(), height = this.getHeight();
         for (int i = 0; i < slicesLength; i++) {
-            Texture texture = this.firetruckSlices.get(i);
+            Texture texture = animateLights(i);
             batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, false);
         }
+    }
+
+    /**
+     * Alternates between showing the red and blue light on the truck.
+     * Returns the texture at the given index offset to the correct index.
+     * 
+     * @param index The index of the next texture to draw the sprite with.
+     * @return      The next texture to draw the sprite with.
+     */
+    private Texture animateLights(int index) {
+        if (index == 14) { // The index of the texture containing the first light colour
+            Texture texture = this.redLightDelay > 50 ? this.firetruckSlices.get(index + 1) : this.firetruckSlices.get(index);
+            if (this.redLightDelay <= 0) this.redLightDelay = 100;
+            return texture;
+        } else if (index > 14) { // Offset remaining in order to not repeat a texture
+            return this.firetruckSlices.get(index + 1);
+        }
+        return this.firetruckSlices.get(index);
     }
 
     /**

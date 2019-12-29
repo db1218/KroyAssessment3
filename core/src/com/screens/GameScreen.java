@@ -107,8 +107,15 @@ public class GameScreen implements Screen {
 		// Create array of textures for firetruck animations
 		ArrayList<Texture> firetruckSlices = new ArrayList<Texture>();
 		for (int i = 19; i > 0; i--) {
-			Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
-			firetruckSlices.add(texture);
+			if (i == 5) { // Texture 5 contains identical slices except the lights are different
+				Texture texture = new Texture("FiretruckSlices/tile05A.png");
+				firetruckSlices.add(texture);
+				texture = new Texture("FiretruckSlices/tile05B.png");
+				firetruckSlices.add(texture);
+			} else {
+				Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
+				firetruckSlices.add(texture);
+			}
 		}
 
 		// ---- 4) Create entities that will be around for entire game duration - //
