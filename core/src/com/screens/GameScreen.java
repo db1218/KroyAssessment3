@@ -36,6 +36,7 @@ import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
+import static com.config.Constants.DEBUG_ENABLED;
 
 /**
  * Display the main game.
@@ -199,12 +200,11 @@ public class GameScreen implements Screen {
 
 		// Ready the batch's for drawing
 		batch.begin();
-		shapeRenderer.begin(ShapeType.Line);
+		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		
 		// Draw the score and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
-		game.drawFont(
-			"FPS: "
+		if (DEBUG_ENABLED) game.drawFont("FPS: "
 			+ Gdx.graphics.getFramesPerSecond(),
 			cameraPosition.x + SCORE_X * 0.85f * camera.zoom,
 			cameraPosition.y + SCORE_Y * camera.zoom
@@ -213,15 +213,15 @@ public class GameScreen implements Screen {
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
 			firetruck.update(batch);
-			firetruck.drawDebug(shapeRenderer);
+			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
 		for (ETFortress ETFortress : this.ETFortresses) {
 			ETFortress.update(batch);
-			ETFortress.drawDebug(shapeRenderer);
+			if (DEBUG_ENABLED) ETFortress.drawDebug(shapeRenderer);
 		}
 		
 		// Finish rendering 
-		shapeRenderer.end();
+		if (DEBUG_ENABLED) shapeRenderer.end();
 		batch.end();
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //

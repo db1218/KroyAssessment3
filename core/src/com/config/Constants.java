@@ -44,6 +44,9 @@ public final class Constants {
         }
     }
 
+    // Debug mode
+    public static final boolean DEBUG_ENABLED = false;
+
     // Game settings
     public static final String GAME_NAME = "Kroy";
     public static final int SCREEN_WIDTH = 1280;
