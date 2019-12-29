@@ -25,7 +25,7 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private float accelerationRate, speedX, speedY, bounce, rotationLockTime;
+    private float accelerationRate, speedX, speedY, restitution, rotationLockTime;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -45,10 +45,8 @@ public class MovementSprite extends SimpleSprite {
      */
     private void create() {
         this.direction = Direction.LEFT;
-        this.accelerationRate = 20f;
         this.speedX = 0f;
         this.speedY = 0f; 
-        this.bounce = 0.8f;
         this.rotationLockTime = 0;
     }
 
@@ -149,8 +147,8 @@ public class MovementSprite extends SimpleSprite {
         float pushBackX = seperationVector.x;
         float pushBackY = seperationVector.y;
         // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
-        this.speedY *= -this.bounce;
-        this.speedX *= -this.bounce;
+        this.speedY *= -this.restitution;
+        this.speedX *= -this.restitution;
         this.setRotationLock(0.5f);
         this.setY(this.getY() + pushBackY);
         this.setX(this.getX() + pushBackX);
@@ -307,6 +305,23 @@ public class MovementSprite extends SimpleSprite {
                 this.speedX += decelerationRate;
             }
         }
+    }
+    
+
+    /**
+     * Sets the amount the sprite will bounce upon collisions.
+     * @param bounce The restitution of the sprite.
+     */
+    public void setRestitution(float bounce) {
+        this.restitution = bounce;
+    }
+
+    /**
+     * Sets the rate at which the sprite will accelerate.
+     * @param rate The acceleration rate for the sprite.
+     */
+    public void setAccelerationRate(float rate) {
+        this.accelerationRate = rate;
     }
 
     /**

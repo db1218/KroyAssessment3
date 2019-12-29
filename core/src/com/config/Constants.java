@@ -44,11 +44,6 @@ public final class Constants {
         }
     }
 
-    // Difficulty settings
-    public static final int ETFORTRESS_HEALTH = 1000;
-    public static final int FIRESTATION_HEALTH = 1000;
-    public static final int FIRETRUCK_HEALTH = 100;
-
     // Game settings
     public static final String GAME_NAME = "Kroy";
     public static final int SCREEN_WIDTH = 1280;
@@ -61,14 +56,23 @@ public final class Constants {
 
     // Camera settings
     public static final float LERP = 1.5f;
+    public static final float MIN_ZOOM = 1f;
+    public static final float MAX_ZOOM = 2f;
 
-    // Class sizing
+    // Screen elements sizing
     public static final float SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5f;
     public static final float SCREEN_CENTRE_Y = SCREEN_HEIGHT * 0.5f;
     public static final float SCORE_Y = SCREEN_HEIGHT * 0.45f;
     public static final float SCORE_X = SCREEN_WIDTH * 0.45f;
 
-    // Sprite sizing
+    // Sprite properties
+    public static final float FIRETRUCK_RESTITUTION = 0.8f;
+    public static final float FIRETRUCK_ACCELERATION = 15f;
+    // Health
+    public static final int ETFORTRESS_HEALTH = 1000;
+    public static final int FIRESTATION_HEALTH = 1000;
+    public static final int FIRETRUCK_HEALTH = 100;
+    // Size
     public static final int FIRETRUCK_WIDTH = 2*TILE_DIMS;
     public static final int FIRETRUCK_HEIGHT = 1*TILE_DIMS;
     public static final int FIRESTATION_WIDTH = 5*TILE_DIMS;
