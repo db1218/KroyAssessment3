@@ -25,6 +25,7 @@ import java.util.ArrayList;
 // Class imports
 import com.kroy.Kroy;
 import com.classes.Firetruck;
+import com.classes.Firestation;
 import com.classes.ETFortress;
 
 // Constants import
@@ -36,6 +37,7 @@ import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
+import static com.config.Constants.FIRETRUCK_ACCELERATION;
 import static com.config.Constants.DEBUG_ENABLED;
 
 /**
@@ -63,6 +65,7 @@ public class GameScreen implements Screen {
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
 	private ArrayList<ETFortress> ETFortresses;
+	private Firestation firestation;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -98,9 +101,10 @@ public class GameScreen implements Screen {
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
 		// Initialise textures to use for spites
-		Texture ETFortressTexture = new Texture("FiretruckSlices/tile008.png");
+		Texture firestationTexture = new Texture("FiretruckSlices/tile008.png");
+		Texture ETFortressTexture = new Texture("FiretruckSlices/tile009.png");
 		
-		// Create array of tertures for firetruck animations
+		// Create array of textures for firetruck animations
 		ArrayList<Texture> firetruckSlices = new ArrayList<Texture>();
 		for (int i = 19; i > 0; i--) {
 			Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
@@ -108,6 +112,9 @@ public class GameScreen implements Screen {
 		}
 
 		// ---- 4) Create entities that will be around for entire game duration - //
+
+		// Create a new firestation 
+		this.firestation = new Firestation(firestationTexture, 1200, 500);
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
@@ -119,7 +126,7 @@ public class GameScreen implements Screen {
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
 		for (int i = 1; i <= 1; i++) {
-			ETFortress ETFortress = new ETFortress(ETFortressTexture, 1500 * i, 500);
+			ETFortress ETFortress = new ETFortress(ETFortressTexture, 1750 * i, 500);
 			this.ETFortresses.add(ETFortress);
 		}
 	}
@@ -168,7 +175,7 @@ public class GameScreen implements Screen {
 		// Zoom the camera out when firetruck moves
 		float maxZoomHoldTime = MAX_ZOOM * 6, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
 		double speed = Math.max(Math.abs(focusedTruck.getSpeedX()), Math.abs(focusedTruck.getSpeedY()));
-		boolean isMoving = speed > 15 * 10;
+		boolean isMoving = speed > FIRETRUCK_ACCELERATION * 10;
 		// If moving, increase delay before zooming out up until the limit
 		if (isMoving && this.zoomDelay < maxZoomHoldTime) {
 			this.zoomDelay += timeIncrement;
@@ -219,6 +226,8 @@ public class GameScreen implements Screen {
 			ETFortress.update(batch);
 			if (DEBUG_ENABLED) ETFortress.drawDebug(shapeRenderer);
 		}
+		this.firestation.update(batch);
+		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 		
 		// Finish rendering 
 		if (DEBUG_ENABLED) shapeRenderer.end();
@@ -234,6 +243,7 @@ public class GameScreen implements Screen {
      * Checks to see if any collisions have occurred
      */
 	private void checkForCollisions() {
+		// Vector to store the minimum movement to seperate two sprites
 		Intersector.MinimumTranslationVector seperationVector = new Intersector.MinimumTranslationVector();
 		// Check each firetruck to see if it has collided with anything
 		for (Firetruck firetruckA : this.firetrucks) {
@@ -241,6 +251,7 @@ public class GameScreen implements Screen {
 				// Check if the firetruck overlaps another firetruck, but not itself
 				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.getHitBox(), firetruckB.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
+					firetruckA.getHealthBar().subtractResourceAmount(15);
 				}
 			}
 			// Check if it overlaps with an ETFortress
@@ -248,6 +259,11 @@ public class GameScreen implements Screen {
 				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), ETFortress.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
 				}
+			}
+			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
+			// Allows multiple trucks to be in the radius and be repaired.
+			if (firetruckA.isDamaged() && this.firestation.isInRadius(firetruckA.getHitBox())) {
+				this.firestation.repair(firetruckA);
 			}
 		}
 	}
@@ -259,7 +275,7 @@ public class GameScreen implements Screen {
 	 */
 	private Firetruck getFiretruckInFocus() {
 		for (Firetruck firetruck : this.firetrucks) {
-			if (firetruck.getFocus()) {
+			if (firetruck.isFocused()) {
 				return firetruck;
 			}
 		}
@@ -312,6 +328,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void dispose() {
+		this.firestation.dispose();
 		for (Firetruck firetruck : this.firetrucks) {
 			firetruck.dispose();
 		}

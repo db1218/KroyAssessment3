@@ -121,11 +121,20 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
+     * Gets whether the firetruck is damaged.
+     * 
+     * @return Whether the firetruck is damaged.
+     */
+    public boolean isDamaged() {
+        return this.getHealthBar().getCurrentAmount() < FIRETRUCK_HEALTH;
+    }
+
+    /**
      * Gets whether the firetruck is in focus.
      * 
      * @return Whether the firetruck is in focus (true) or not (false).
      */
-    public boolean getFocus() {
+    public boolean isFocused() {
         return this.isFocused;
     }
 
