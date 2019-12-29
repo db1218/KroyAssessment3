@@ -33,6 +33,8 @@ import static com.config.Constants.SCREEN_WIDTH;
 import static com.config.Constants.SCORE_Y;
 import static com.config.Constants.SCORE_X;
 import static com.config.Constants.LERP;
+import static com.config.Constants.MIN_ZOOM;
+import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
 
 /**
@@ -55,6 +57,7 @@ public class GameScreen implements Screen {
 
 	// Private values for the game
 	private int score;
+	private float zoomDelay;
 
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
@@ -85,9 +88,8 @@ public class GameScreen implements Screen {
 		// Initialise map renderer as batch to draw textures to
 		batch = renderer.getBatch();
 
-		// Set the game bath and font size
+		// Set the game batch
 		this.game.setBatch(batch);
-		this.game.getFont().getData().setScale(1.5f);
 		
 		// Set the Batch to render in the coordinate system specified by the camera.
 		this.batch.setProjectionMatrix(camera.combined);
@@ -128,6 +130,7 @@ public class GameScreen implements Screen {
 	public void show() {
 		// Set inital firetruck to focus the camera on
 		setFiretruckFocus(1);
+		this.zoomDelay = 0;
 	}
 
 	/**
@@ -156,8 +159,27 @@ public class GameScreen implements Screen {
 
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
 		Vector3 cameraPosition = camera.position;
-		cameraPosition.x += (focusedTruck.getCentreX() - cameraPosition.x) * LERP * delta;
-		cameraPosition.y += (focusedTruck.getCentreY() - cameraPosition.y) * LERP * delta;
+		float xDifference = focusedTruck.getCentreX() - cameraPosition.x;
+		float yDifference = focusedTruck.getCentreY() - cameraPosition.y;
+		cameraPosition.x += xDifference * LERP * delta;
+		cameraPosition.y += yDifference * LERP * delta;
+		
+		// Zoom the camera out when firetruck moves
+		float maxZoomHoldTime = MAX_ZOOM * 6, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
+		double speed = Math.max(Math.abs(focusedTruck.getSpeedX()), Math.abs(focusedTruck.getSpeedY()));
+		boolean isMoving = speed > 15 * 10;
+		// If moving, increase delay before zooming out up until the limit
+		if (isMoving && this.zoomDelay < maxZoomHoldTime) {
+			this.zoomDelay += timeIncrement;
+		} else if (this.zoomDelay > MIN_ZOOM) {
+			this.zoomDelay -= 0.1f;
+		}
+		// If delay has been reached, zoom out, then hold until stationary
+		if (this.zoomDelay > maxZoomHoldTime / 4) {
+			camera.zoom = camera.zoom + zoomSpeed > MAX_ZOOM ? MAX_ZOOM : camera.zoom + zoomSpeed;
+		} else if (camera.zoom > MIN_ZOOM) {
+			camera.zoom -= zoomSpeed * 2;
+		}
 		camera.update();
 
 		// ---- 2) Perform any checks for user input ---------------------- //
@@ -172,13 +194,21 @@ public class GameScreen implements Screen {
 
 		// ---- 3) Perform all render functions here ------------------------ //
 
+		// Set font scale
+		this.game.getFont().getData().setScale(camera.zoom * 1.5f);
+
 		// Ready the batch's for drawing
 		batch.begin();
 		shapeRenderer.begin(ShapeType.Line);
 		
 		// Draw the score and FPS to the screen at given co-ordinates
-		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X, cameraPosition.y + SCORE_Y);
-		game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(), cameraPosition.x + SCORE_X * 0.85f, cameraPosition.y + SCORE_Y);
+		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
+		game.drawFont(
+			"FPS: "
+			+ Gdx.graphics.getFramesPerSecond(),
+			cameraPosition.x + SCORE_X * 0.85f * camera.zoom,
+			cameraPosition.y + SCORE_Y * camera.zoom
+		);
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
