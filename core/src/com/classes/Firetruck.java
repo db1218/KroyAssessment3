@@ -26,7 +26,7 @@ import static com.config.Constants.FIRETRUCK_RESTITUTION;
 import java.util.ArrayList;
 
 /**
- * The Firetruck implementation.
+ * The Firetruck implementation. A sprite capable of moving and colliding with other sprites.
  * 
  * @author Archie
  * @since 16/12/2019
