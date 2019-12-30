@@ -4,8 +4,11 @@ package com.classes;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
@@ -34,6 +37,7 @@ public class Firetruck extends MovementSprite {
     private Boolean isFocused;
     private int focusID, redLightDelay;
     private ArrayList<Texture> firetruckSlices;
+    private Polygon hoseRange;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -82,6 +86,17 @@ public class Firetruck extends MovementSprite {
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         this.setAccelerationRate(FIRETRUCK_ACCELERATION);
         this.setRestitution(FIRETRUCK_RESTITUTION);
+        float[] hoseVertices = { // Starts facing left
+            0, 0,
+            -(this.getWidth() * 1.5f), (this.getHeight() / 1.5f),
+            -(this.getWidth() * 1.75f), (this.getHeight() / 2f),
+            -(this.getWidth() * 1.85f), (this.getHeight() / 5f),
+            -(this.getWidth() * 1.85f), -(this.getHeight() / 5f),
+            -(this.getWidth() * 1.75f), -(this.getHeight() / 2f),
+            -(this.getWidth() * 1.5f), -(this.getHeight() / 1.5f)
+        }; 
+        this.hoseRange = new Polygon(hoseVertices);
+        
     }
 
     /**
@@ -90,6 +105,8 @@ public class Firetruck extends MovementSprite {
     public void update(Batch batch) {
         super.update(batch);
         drawVoxelImage(batch);
+        this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
+        this.hoseRange.setRotation(this.getRotation());
         if (isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
@@ -142,6 +159,15 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
+     * Checks if a polygon is within the range of the firetrucks hose.
+     * 
+     * @param polygon  The polygon that needs to be checked.
+     */
+    public boolean isInHoseRange(Polygon polygon) {
+        return Intersector.overlapConvexPolygons(polygon, this.hoseRange);
+    }
+
+    /**
      * Gets whether the firetruck is damaged.
      * 
      * @return Whether the firetruck is damaged.
@@ -169,6 +195,18 @@ public class Firetruck extends MovementSprite {
         } else {
             this.isFocused = false;
         }
+    }
+
+    /**
+     * Overloaded method for drawing debug information. Draws the hitbox as well
+     * as the hose range indicator.
+     * 
+     * @param renderer  The renderer used to draw the hitbox and range indicator with.
+     */
+    @Override
+    public void drawDebug(ShapeRenderer renderer) {
+        super.drawDebug(renderer);
+        renderer.polygon(this.hoseRange.getTransformedVertices());
     }
 
     /**

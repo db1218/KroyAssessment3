@@ -126,7 +126,7 @@ public class GameScreen implements Screen {
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
 		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(firetruckSlices, 1000 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
+			Firetruck firetruck = new Firetruck(firetruckSlices, 1100 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
 			this.firetrucks.add(firetruck);
 		}
 
@@ -258,13 +258,16 @@ public class GameScreen implements Screen {
 				// Check if the firetruck overlaps another firetruck, but not itself
 				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.getHitBox(), firetruckB.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
-					firetruckA.getHealthBar().subtractResourceAmount(15);
+					firetruckA.getHealthBar().subtractResourceAmount(5);
 				}
 			}
 			// Check if it overlaps with an ETFortress
 			for (ETFortress ETFortress : this.ETFortresses) {
 				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), ETFortress.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
+				}
+				if (firetruckA.isInHoseRange(ETFortress.getHitBox())) {
+					ETFortress.getHealthBar().subtractResourceAmount(1);
 				}
 			}
 			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.

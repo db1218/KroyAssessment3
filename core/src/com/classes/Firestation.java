@@ -71,6 +71,7 @@ public class Firestation extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
+        this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
         if (this.repairTimeout >= 0) this.repairTimeout -= 1;
     }
 
@@ -109,8 +110,8 @@ public class Firestation extends SimpleSprite {
     }
 
     /**
-     * Simplfied constructor for the Firestation, that doesn't require a position.
-     * Drawn with the given texture at (0,0).
+     * Overloaded method for drawing debug information. Draws the hitbox as well
+     * as the range circle.
      * 
      * @param renderer  The renderer used to draw the hitbox and range indicator with.
      */
