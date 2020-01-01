@@ -20,42 +20,38 @@ import com.badlogic.gdx.graphics.Color;
 public class ResourceBar {
 
     // Private values to be used in this class only
-    private Batch batch;
     private ProgressBar bar;
-    private int currentResourceAmount;
-    private int maxResourceAmount;
-    private int barWidth;
-    private int barHeight;
-    private float scaleFactor;
-    private float x;
-    private float y;
+    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight;
 
     /**
      * Constructor for this class, gathers required information so that it can
      * be drawn.
      * 
-     * @param barBatch     The batch the sprite should be drawn on.
      * @param spriteWidth  The width of the sprite.
      * @param spriteHeight The height of the sprite.
      */
-    public ResourceBar(Batch barBatch, float spriteWidth, float spriteHeight ) {
-        this.batch = barBatch;
+    public ResourceBar(float spriteWidth, float spriteHeight ) {
         // Adjust bar to fit sprite dimensions
-        this.barWidth = (int) (0.75 * spriteWidth);
-        this.barHeight = (int) (0.05 * spriteHeight);
-        this.maxResourceAmount = this.barWidth;
-        this.currentResourceAmount = this.barWidth;
-        this.scaleFactor = (float) this.barWidth / (float) this.maxResourceAmount;
-        this.x = 0;
-        this.y = 0;
-        this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
+        this.barWidth = (int) (0.7 * spriteWidth);
+        this.barHeight = (int) (0.3 * spriteHeight);
+        this.create();
     }
 
     /**
-     * Draw the resource bar.
+     * Creates a new progress bar and sets the inital values for all properties needed.
      */
-    public void update() {
-        drawResourceBar();
+    private void create() {
+        this.maxResourceAmount = 100;
+        this.currentResourceAmount = 100;
+        this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
+        this.bar.setSize(this.barWidth, this.barHeight);
+    }
+
+    /**
+     * Draw the resource bar. Needs to be called every frame.
+     */
+    public void update(Batch batch) {
+        this.bar.draw(batch, 1);
     }
 
     /**
@@ -84,22 +80,19 @@ public class ResourceBar {
      */
     private ProgressBarStyle getResourceBarStyle() {
         Color color = this.currentResourceAmount <= this.maxResourceAmount * 0.5 ? this.currentResourceAmount <= this.maxResourceAmount * 0.25 ? Color.RED : Color.ORANGE : Color.GREEN;
-        int scaledResource = (int) (this.currentResourceAmount * this.scaleFactor);
-        int scaledEmpty = (int) ((this.maxResourceAmount - this.currentResourceAmount) >= 0 ? (this.maxResourceAmount - this.currentResourceAmount) * this.scaleFactor : 0);
-        Skin healthColour = createBarFill("healthPixmap", color, scaledResource, this.barHeight);
-        Skin background = createBarFill("backgroundPixmap", Color.GRAY, scaledEmpty, this.barHeight);
-        return new ProgressBarStyle(background.newDrawable("backgroundPixmap"), healthColour.newDrawable("healthPixmap"));
+        int scaledResource = (int) (((float) this.currentResourceAmount / 100) * this.barWidth);
+        int scaledEmpty = (int) (((float)(this.maxResourceAmount - this.currentResourceAmount) / 100) * this.barWidth);
+        Skin resource = createBarFill("resource", color, scaledResource, this.barHeight);
+        Skin background = createBarFill("background", Color.GRAY, scaledEmpty, this.barHeight);
+        return new ProgressBarStyle(background.newDrawable("background"), resource.newDrawable("resource"));
     }
 
-    /**
-     * Draw the resource bar onto the batch at the correct position.
+    /** 
+     * Get the current resource amount.
+     * @return The current resource amount;
      */
-    private void drawResourceBar() {
-        this.batch.begin();
-        this.bar.setPosition(this.x, this.y);
-        this.bar.setSize(this.barWidth, this.barHeight);
-        this.bar.draw(batch, 1);
-        this.batch.end();
+    public float getCurrentAmount() {
+        return this.currentResourceAmount;
     }
 
     /** 
@@ -109,9 +102,10 @@ public class ResourceBar {
      */
     public void setPosition(float spriteXPos, float spriteYPos) {
         // Get sprite height and width by reversing previous calculations
-        float spriteHeight = barHeight / 0.05f, spriteWidth = barWidth / 0.75f;
-        this.x = spriteXPos + spriteWidth * 0.125f;
-        this.y = spriteYPos + spriteHeight * 1.1f;
+        float longestSide = Math.max(barHeight / 0.3f, barWidth / 0.7f);
+        float x = spriteXPos + (longestSide / 2) - (barWidth / 2);
+        float y = spriteYPos + longestSide;
+        this.bar.setPosition(x, y);
     }
 
     /**
@@ -120,12 +114,8 @@ public class ResourceBar {
      * @param maxAmount The maximum limit for the resource bar.
      */
     public void setMaxResource(int maxAmount) {
-        // 100 / 1000
-        this.scaleFactor = (float) this.barWidth / (float) maxAmount;
-        // 1000
+        this.currentResourceAmount = (this.currentResourceAmount / this.maxResourceAmount) * maxAmount;
         this.maxResourceAmount = maxAmount;
-        // 100 / 0.1 = 1000
-        this.currentResourceAmount = (int) (this.currentResourceAmount / this.scaleFactor);
         this.bar.setStyle(getResourceBarStyle());
     }
 
@@ -140,12 +130,38 @@ public class ResourceBar {
     }
 
     /**
-     * Subtrace a value from the resource bar.
+     * Add a value to the resource bar.
      * 
-     * @param amount The value to subtrace from the resource bar.
+     * @param amount The value to add to the resource bar.
+     */
+    public void addResourceAmount(int amount) {
+        if (amount < 0) {
+            subtractResourceAmount(amount);
+        } else {
+            if ((this.currentResourceAmount + amount) > this.maxResourceAmount) {
+                this.currentResourceAmount = this.maxResourceAmount;
+            } else {
+                this.currentResourceAmount += amount;
+            }
+        }
+        this.bar.setStyle(getResourceBarStyle());
+    }
+
+    /**
+     * Subtract a value from the resource bar.
+     * 
+     * @param amount The value to subtract from the resource bar.
      */
     public void subtractResourceAmount(int amount) {
-        this.currentResourceAmount -= amount;
+        if (amount < 0) {
+            addResourceAmount(amount);
+        } else {
+            if ((this.currentResourceAmount - amount) < 0) {
+                this.currentResourceAmount = 0;
+            } else {
+                this.currentResourceAmount -= amount;
+            }
+        }
         this.bar.setStyle(getResourceBarStyle());
     }
 }

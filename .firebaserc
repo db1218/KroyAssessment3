@@ -1,0 +1,14 @@
+{
+  "projects": {
+    "default": "sepr-documentation"
+  },
+  "targets": {
+    "sepr-documentation": {
+      "hosting": {
+        "salt-and-sepr": [
+          "salt-and-sepr"
+        ]
+      }
+    }
+  }
+}

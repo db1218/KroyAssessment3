@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -43,7 +42,7 @@ public class MainMenuScreen implements Screen {
 	protected Texture texture;
 	protected Skin skin;
 	protected TextureAtlas atlas;
-	private Batch batch;
+	private SpriteBatch batch;
 	private Viewport viewport;
 
 	/**
@@ -65,7 +64,12 @@ public class MainMenuScreen implements Screen {
 		// Create an orthographic camera
 		camera = new OrthographicCamera();
 		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
-		game.init(camera);
+		// tell the SpriteBatch to render in the
+		// coordinate system specified by the camera.
+		batch.setProjectionMatrix(camera.combined);
+
+		// Set font scale
+		game.getFont().getData().setScale(1.5f);
 
 		// Create a viewport
 		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);

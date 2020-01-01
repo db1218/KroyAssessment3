@@ -3,7 +3,7 @@ package com.sprites;
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -19,73 +19,93 @@ import com.sprites.ResourceBar;
 public class SimpleSprite extends Sprite {
 
     // Private values to be used in this class only
-    private Batch batch;
     private Texture texture;
-    private float width = 0, height = 0;
-
-    // Allows the health bar to be changed by subclasses
-    public ResourceBar healthBar;
-
-    /**
-     * Constructor for this class. Gathers the required information so the
-     * sprite can be drawn.
-     * 
-     * @param spriteBatch   The batch that the sprite should be drawn on.
-     * @param spriteTexture The texture the sprite should use.
-     */
-    public SimpleSprite(Batch spriteBatch, Texture spriteTexture) {
-        super(spriteTexture);
-        batch = spriteBatch;
-        texture = spriteTexture;
-        healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
-        this.setPosition(0, 0);
-    }
+    private float width, height;
+    private ResourceBar healthBar;
+    private Polygon hitBox;
 
     /**
-     * Overload constructor for this class, taking a position to draw the sprite at.
+     * Constructor that creates a sprite at a given position using a given texture..
+     * Creates a sprite at (0,0) using a given texture.
      * 
      * @param spriteBatch    The batch that the sprite should be drawn on.
      * @param spriteTexture  The texture the sprite should use.
-     * @param xPos           The x-coordinate for the sprite to be drawn.
-     * @param yPos           The y-coordinate for the sprite to be drawn.
      */
-    public SimpleSprite(Batch spriteBatch, Texture spriteTexture, float xPos, float yPos) {
+    public SimpleSprite(Texture spriteTexture) {
         super(spriteTexture);
-        batch = spriteBatch;
-        texture = spriteTexture;
-        healthBar = new ResourceBar(batch, this.getWidth(), this.getHeight());
-        this.setPosition(xPos, yPos);
+        this.texture = spriteTexture;
+        this.create();
     }
 
     /**
-     * Update the sprite position and health bar.
+     * Creates a healthbar and hitbox for the sprite.
      */
-    public void update() {
-        healthBar.setPosition(this.getX(), this.getY());
-        healthBar.update();
-        batch.begin();
-        batch.draw(texture, getX(), getY(), this.getWidth(), this.getHeight());
-        batch.end();
+    private void create() {
+        // Use the longest side of the sprite as the bar width
+        this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
+        this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
     }
 
-    public void drawDebug(ShapeRenderer renderer) {
-        renderer.begin(ShapeType.Line);
-        renderer.rect(this.getBoundingRectangle().x, this.getBoundingRectangle().y, this.getBoundingRectangle().getWidth(), this.getBoundingRectangle().getHeight());
-        renderer.end();
+    /**
+     * Update the sprite position, hitbox and health bar.
+     * Must be called every frame in order to draw the sprite.
+     */
+    public void update(Batch batch) {
+        // Keep the healthbar and hitbox located on the sprite
+        this.healthBar.setPosition(this.getX(), this.getY());
+        this.hitBox.setPosition(this.getX(), this.getY());
+        // Draw the sprite and update the healthbar
+        batch.draw(this.texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        this.healthBar.update(batch);
+    }
+
+    /**
+     * Enables drawing of the hitbox to it can be seen. 
+     * @param renderer   The shape renderer to draw onto.
+     */
+    public void drawDebug(ShapeRenderer renderer) { 
+        renderer.polygon(this.hitBox.getTransformedVertices());
     }
 
     /**
      * Overrides Sprite class method to keep seperate values for width and height.
-     * Updates the sprites width and height.
+     * Also updates the sprites width and height and creates a new hitbox and health bar.
      * @param width    The width the sprite should be set to.
      * @param height   The height the sprite should be set to.
      */
     @Override
     public void setSize(float width, float height) {
         super.setSize(width, height);
-        this.setOrigin(width / 2, height / 2);
         this.width = width;
         this.height = height;
+        this.create();
+        this.hitBox.setOrigin(width/2, height/2);
+    }
+
+    /**
+     * Overrides Sprite class method to rotate the sprite and hitbox at once.
+     * @param degrees   The degree to rotate to.
+     */
+    @Override
+    public void rotate(float degrees) {
+        super.rotate(degrees);
+        this.hitBox.rotate(degrees);
+    }
+
+    /**
+     * Get the health bar of the sprite.
+     * @return The health bar of the sprite.
+     */
+    public ResourceBar getHealthBar() {
+        return this.healthBar;
+    }
+
+    /**
+     * Get the hit box of the sprite.
+     * @return The hit box of the sprite.
+     */
+    public Polygon getHitBox() {
+        return this.hitBox;
     }
 
     /**

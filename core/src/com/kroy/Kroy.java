@@ -3,8 +3,7 @@ package com.kroy;
 // LibGDX imports
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Batch;
 
 // Class imports
 import com.screens.MainMenuScreen;
@@ -18,16 +17,16 @@ import com.screens.MainMenuScreen;
 public class Kroy extends Game {
 
 	// Batches to store drawn elements
-  	public SpriteBatch batch;
+  	public Batch batch;
 	public BitmapFont font;
 
 	/**
 	 * Display the main menu screen upon game start.
 	 */
 	public void create() {
-		batch = new SpriteBatch();
 		// Use LibGDX's default Arial font.
-		font = new BitmapFont();
+		this.font = new BitmapFont();
+		// Instantly transition to the main menu screen when game starts
 		this.setScreen(new MainMenuScreen(this));
 	}
 
@@ -43,23 +42,25 @@ public class Kroy extends Game {
 	 * Dispose of all game elements upon game completion.
 	 */
 	public void dispose() {
-		batch.dispose();
-		font.dispose();
-		screen.dispose();
+		this.batch.dispose();
+		this.font.dispose();
+		this.screen.dispose();
 	}
 
 	/**
-	 * Initiate the game based upon parameters, including setting up the viewer.
-	 * 
-	 * @param camera The viewing system for the game.
+	 * Set the batch that should be used to render all the textures.
+	 * @param batch The batch to be used for the game.
 	 */
-	public void init(OrthographicCamera camera) {
-		// tell the SpriteBatch to render in the
-		// coordinate system specified by the camera.
-		batch.setProjectionMatrix(camera.combined);
+	public void setBatch(Batch batch) {
+		this.batch = batch;
+	}
 
-		// Set font scale
-		font.getData().setScale(1.5f);
+	/**
+	 * Get the font used in the game.
+	 * @return The font system for the game.
+	 */
+	public BitmapFont getFont() {
+		return this.font;
 	}
 
 	/**
@@ -69,10 +70,8 @@ public class Kroy extends Game {
 	 * @param x The x-coorinate for the text.
 	 * @param y The y-coorinate for the text.
 	 */
-	public void drawFont(String text, Double x, Double y) {
-		batch.begin();
-		font.draw(batch, text, x.floatValue(), y.floatValue());
-		batch.end();
+	public void drawFont(String text, float x, float y) {
+		this.font.draw(this.batch, text, x, y);
 	}
 
 	/**
@@ -82,13 +81,11 @@ public class Kroy extends Game {
 	 * @param x The x-coorinate for where to draw the text.
 	 * @param y The y-coorinate for where to draw the text.
 	 */
-	public void drawFont(String[] text, Double[] x, Double[] y) {
-		batch.begin();
+	public void drawFont(String[] text, float[] x, float[] y) {
 		if (text.length == x.length && x.length == y.length) {
 			for (int i = 0; i < text.length; i ++) {
-				font.draw(batch, text[i], x[i].floatValue(), y[i].floatValue());
+				this.font.draw(this.batch, text[i], x[i], y[i]);
 			}
 		}
-		batch.end();
 	}
 }
