@@ -12,6 +12,10 @@ import java.io.File;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 
+//Import Kroy game
+import com.kroy.Kroy;
+import com.classes.ETFortress;
+
 class ETFortressTest {
 
 	private static ETFortress TestClass;
@@ -24,7 +28,7 @@ class ETFortressTest {
 		// create sprite
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
-        TestClass = new ETFortress(batch, texture, 1500, 500);
+        TestClass = new ETFortress(texture, 1500, 500);
     }
 
     /**

@@ -15,6 +15,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
+//Import Kroy game
+import com.kroy.Kroy;
+import com.classes.Firetruck;
+
 class FiretruckTest {
 
     private static Firetruck TestClass;
@@ -28,7 +32,7 @@ class FiretruckTest {
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
         TiledMap map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-        TestClass = new Firetruck(batch, texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
+        TestClass = new Firetruck(texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
     }
 
     /**

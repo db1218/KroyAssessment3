@@ -2,6 +2,10 @@ package com.classes;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+//Import Kroy game
+import com.kroy.Kroy;
+import com.classes.Firestation;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +28,7 @@ class FirestationTest {
 		// create sprite
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
-        TestClass = new Firestation(batch, texture, 1500, 500);
+        TestClass = new Firestation(texture, 1500, 500);
     }
 
     /**
