@@ -38,7 +38,6 @@ import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
-import static com.config.Constants.FIRETRUCK_ACCELERATION;
 import static com.config.Constants.DEBUG_ENABLED;
 
 /**
@@ -195,9 +194,9 @@ public class GameScreen implements Screen {
 		cameraPosition.y += yDifference * LERP * delta;
 		
 		// Zoom the camera out when firetruck moves
-		float maxZoomHoldTime = MAX_ZOOM * 6, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
+		float maxZoomHoldTime = MAX_ZOOM * 4, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
 		double speed = Math.max(Math.abs(focusedTruck.getSpeedX()), Math.abs(focusedTruck.getSpeedY()));
-		boolean isMoving = speed > FIRETRUCK_ACCELERATION * 10;
+		boolean isMoving = speed > focusedTruck.getMaxSpeed() / 2;
 		// If moving, increase delay before zooming out up until the limit
 		if (isMoving && this.zoomDelay < maxZoomHoldTime) {
 			this.zoomDelay += timeIncrement;
@@ -206,9 +205,9 @@ public class GameScreen implements Screen {
 		}
 		// If delay has been reached, zoom out, then hold until stationary
 		if (this.zoomDelay > maxZoomHoldTime / 4) {
-			camera.zoom = camera.zoom + zoomSpeed > MAX_ZOOM ? MAX_ZOOM : camera.zoom + zoomSpeed;
-		} else if (camera.zoom > MIN_ZOOM) {
-			camera.zoom -= zoomSpeed * 2;
+			this.camera.zoom = this.camera.zoom + zoomSpeed > MAX_ZOOM ? MAX_ZOOM : this.camera.zoom + zoomSpeed;
+		} else if (this.camera.zoom > MIN_ZOOM) {
+			this.camera.zoom -= zoomSpeed * 2;
 		}
 		camera.update();
 
