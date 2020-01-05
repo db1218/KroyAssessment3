@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.maps.MapLayers;
 
 // Tiled map imports fro LibGDX
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -52,11 +53,15 @@ public class GameScreen implements Screen {
 	final Kroy game;
 
 	// Private values for game screen logic
-	private TiledMap map;
-	private OrthogonalTiledMapRenderer renderer;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private Batch batch;
+
+	// Private values for tiled map
+	private TiledMap map;
+	private OrthogonalTiledMapRenderer renderer;
+	private int[] foregroundLayers;
+    private int[] backgroundLayers;
 
 	// Private values for the game
 	private int score;
@@ -90,15 +95,26 @@ public class GameScreen implements Screen {
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
 		// Initialise map renderer as batch to draw textures to
-		batch = renderer.getBatch();
+		this.batch = renderer.getBatch();
 
 		// Set the game batch
-		this.game.setBatch(batch);
+		this.game.setBatch(this.batch);
 		
 		// Set the Batch to render in the coordinate system specified by the camera.
-		this.batch.setProjectionMatrix(camera.combined);
+		this.batch.setProjectionMatrix(this.camera.combined);
 
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
+
+		// Select background and foreground map layers, order matters
+        MapLayers mapLayers = map.getLayers();
+        foregroundLayers = new int[] {
+			mapLayers.getIndex("Trees"),
+			mapLayers.getIndex("Buildings")
+        };
+        backgroundLayers = new int[] {
+			mapLayers.getIndex("River"),
+			mapLayers.getIndex("Road")
+        };
 
 		// Initialise textures to use for spites
 		Texture firestationTexture = new Texture("FiretruckSlices/tile008.png");
@@ -126,7 +142,7 @@ public class GameScreen implements Screen {
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
 		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(firetruckSlices, 1100 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
+			Firetruck firetruck = new Firetruck(firetruckSlices, 1100 * i, 650, (TiledMapTileLayer) map.getLayers().get("Collision"), i);
 			this.firetrucks.add(firetruck);
 		}
 
@@ -162,18 +178,17 @@ public class GameScreen implements Screen {
 
 		// ---- 1) Update camera and map properties each iteration -------- //
 		
-		// Set the TiledMapRenderer view based on what the camera sees, and render the map
-		renderer.setView(camera);
-		renderer.render();
+		// Set the TiledMapRenderer view based on what the camera sees
+		renderer.setView(this.camera);
 
 		// Align the debug view with the camera
-		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(this.camera.combined);
 
 		// Get the firetruck thats being driven so that the camera can follow it
 		Firetruck focusedTruck = getFiretruckInFocus();
 
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
-		Vector3 cameraPosition = camera.position;
+		Vector3 cameraPosition = this.camera.position;
 		float xDifference = focusedTruck.getCentreX() - cameraPosition.x;
 		float yDifference = focusedTruck.getCentreY() - cameraPosition.y;
 		cameraPosition.x += xDifference * LERP * delta;
@@ -212,6 +227,9 @@ public class GameScreen implements Screen {
 		// Set font scale
 		this.game.getFont().getData().setScale(camera.zoom * 1.5f);
 
+		// Render background map layers
+		renderer.render(backgroundLayers);
+
 		// Ready the batch's for drawing
 		batch.begin();
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
@@ -226,7 +244,7 @@ public class GameScreen implements Screen {
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update(batch);
+			firetruck.update(batch, camera);
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
 		for (ETFortress ETFortress : this.ETFortresses) {
@@ -239,6 +257,9 @@ public class GameScreen implements Screen {
 		// Finish rendering 
 		if (DEBUG_ENABLED) shapeRenderer.end();
 		batch.end();
+
+		// Render map foreground layers last to be on top of all other layers
+		renderer.render(foregroundLayers);
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
