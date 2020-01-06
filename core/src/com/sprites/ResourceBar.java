@@ -79,9 +79,16 @@ public class ResourceBar {
      * @return Updated resource bar style.
      */
     private ProgressBarStyle getResourceBarStyle() {
-        Color color = this.currentResourceAmount <= this.maxResourceAmount * 0.5 ? this.currentResourceAmount <= this.maxResourceAmount * 0.25 ? Color.RED : Color.ORANGE : Color.GREEN;
+        // Colour to use for the bar, depending on health percentage
+        Color color = this.currentResourceAmount <= this.maxResourceAmount * 0.5 ?
+            this.currentResourceAmount <= this.maxResourceAmount * 0.25 ?
+                Color.RED : Color.ORANGE : Color.GREEN;
+        
+        // Size of entire bar is shared between the reource bar and the empty bar
         int scaledResource = (int) (((float) this.currentResourceAmount / 100) * this.barWidth);
         int scaledEmpty = (int) (((float)(this.maxResourceAmount - this.currentResourceAmount) / 100) * this.barWidth);
+
+        // Create the bars and return a combined bar
         Skin resource = createBarFill("resource", color, scaledResource, this.barHeight);
         Skin background = createBarFill("background", Color.GRAY, scaledEmpty, this.barHeight);
         return new ProgressBarStyle(background.newDrawable("background"), resource.newDrawable("resource"));
