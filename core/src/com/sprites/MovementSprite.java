@@ -25,7 +25,7 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private float accelerationRate, speedX, speedY, restitution, rotationLockTime;
+    private float accelerationRate, maxSpeed, speedX, speedY, restitution, rotationLockTime;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -122,16 +122,16 @@ public class MovementSprite extends SimpleSprite {
         // Apply acceleration and check if it collides with any tiles
         if (!hitLeft && this.speedX < 0) {
             setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-        }
+        } else if (hitLeft) collisionOccurred(new Vector2(1,0));
         if (!hitRight && this.speedX > 0) {
             setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-        }
+        } else if (hitRight) collisionOccurred(new Vector2(-1,0));
         if (!hitTop && this.speedY > 0) {
             setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
-        }
+        } else if (hitTop) collisionOccurred(new Vector2(0,-1));
         if (!hitBottom && this.speedY < 0) {
             setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
-        }
+        } else if (hitBottom) collisionOccurred(new Vector2(0,1));
         // Only decelerate if it wont move us into a wall
         if (!hitLeft && !hitRight && !hitTop && !hitBottom && (this.speedY != 0f || this.speedX != 0f)) {
             decelerate();
@@ -253,17 +253,16 @@ public class MovementSprite extends SimpleSprite {
      * @param direction The direction to accelerate in.
      */
     public void accelerate(Direction direction) {
-        float maxSpeed = 300f;
-        if (this.speedY < maxSpeed && direction == Direction.UP) {
+        if (this.speedY < this.maxSpeed && direction == Direction.UP) {
             this.speedY += this.accelerationRate;
         }
-        if (this.speedY > -maxSpeed && direction == Direction.DOWN) {
+        if (this.speedY > -this.maxSpeed && direction == Direction.DOWN) {
             this.speedY -= this.accelerationRate;
         }
-        if (this.speedX < maxSpeed && direction == Direction.RIGHT) {
+        if (this.speedX < this.maxSpeed && direction == Direction.RIGHT) {
             this.speedX += this.accelerationRate;
         }
-        if (this.speedX > -maxSpeed && direction == Direction.LEFT) {
+        if (this.speedX > -this.maxSpeed && direction == Direction.LEFT) {
             this.speedX -= this.accelerationRate;
         }
     }
@@ -322,6 +321,22 @@ public class MovementSprite extends SimpleSprite {
      */
     public void setAccelerationRate(float rate) {
         this.accelerationRate = rate;
+    }
+
+    /**
+     * Sets the max speed the sprite can accelerate to.
+     * @param amount The max speed value for the sprite.
+     */
+    public void setMaxSpeed(float amount) {
+        this.maxSpeed = amount;
+    }
+
+     /**
+     * Returns the max speed the sprite can accelerate to.
+     * @return  The max speed value for the sprite.
+     */
+    public float getMaxSpeed() {
+        return this.maxSpeed;
     }
 
     /**

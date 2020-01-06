@@ -20,6 +20,7 @@ import static com.config.Constants.FIRETRUCK_HEALTH;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
 import static com.config.Constants.FIRETRUCK_ACCELERATION;
+import static com.config.Constants.FIRETRUCK_MAX_SPEED;
 import static com.config.Constants.FIRETRUCK_RESTITUTION;
 
 // Java util import
@@ -85,6 +86,7 @@ public class Firetruck extends MovementSprite {
         this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         this.setAccelerationRate(FIRETRUCK_ACCELERATION);
+        this.setMaxSpeed(FIRETRUCK_MAX_SPEED);
         this.setRestitution(FIRETRUCK_RESTITUTION);
         float[] hoseVertices = { // Starts facing left
             0, 0,

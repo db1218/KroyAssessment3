@@ -70,7 +70,8 @@ public final class Constants {
 
     // Sprite properties
     public static final float FIRETRUCK_RESTITUTION = 0.8f;
-    public static final float FIRETRUCK_ACCELERATION = 15f;
+    public static final float FIRETRUCK_ACCELERATION = 10f;
+    public static final float FIRETRUCK_MAX_SPEED = 300f;
     // Health
     public static final int ETFORTRESS_HEALTH = 1000;
     public static final int FIRESTATION_HEALTH = 1000;
