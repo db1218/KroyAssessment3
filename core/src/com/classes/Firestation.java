@@ -68,6 +68,7 @@ public class Firestation extends SimpleSprite {
     /**
      * Updates the firestation so that it is drawn every frame.
      * Also reduces the time before next repair can occur.
+     * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
         super.update(batch);

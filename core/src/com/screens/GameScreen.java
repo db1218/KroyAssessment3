@@ -39,6 +39,8 @@ import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
 import static com.config.Constants.DEBUG_ENABLED;
+import static com.config.Constants.FiretruckOneProperties;
+import static com.config.Constants.FiretruckTwoProperties;
 
 /**
  * Display the main game.
@@ -140,10 +142,8 @@ public class GameScreen implements Screen {
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
-		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(firetruckSlices, 1100 * i, 650, (TiledMapTileLayer) map.getLayers().get("Collision"), i);
-			this.firetrucks.add(firetruck);
-		}
+		this.firetrucks.add(new Firetruck(firetruckSlices, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 1100, 650));
+		this.firetrucks.add(new Firetruck(firetruckSlices, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 2200, 650));
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
@@ -243,7 +243,7 @@ public class GameScreen implements Screen {
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update(batch, camera);
+			firetruck.update(batch);
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
 		for (ETFortress ETFortress : this.ETFortresses) {

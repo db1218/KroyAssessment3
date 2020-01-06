@@ -53,6 +53,7 @@ public class MovementSprite extends SimpleSprite {
     /**
      * Update the sprite position and direction based on acceleration and
      * boundaries. This is called every game frame.
+     * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
         // Calculate the acceleration on the sprite and apply it
@@ -272,19 +273,18 @@ public class MovementSprite extends SimpleSprite {
      * is based upon the sprite's properties.
      */
     private void decelerate() {
-        float decelerationRate = this.accelerationRate * 0.5f;
-        float restThreshold = this.accelerationRate;
+        float decelerationRate = this.accelerationRate * 0.6f;
         // Check the direction the sprite is moving based on its velocity
         if (this.speedY > 0) {
             // If within a threshold stop the spirte
             // Stops it bouncing from decelerating in one direction and then another etc..
-            if (this.speedY < restThreshold) {
+            if (this.speedY < decelerationRate) {
                 this.speedY = 0f;
             } else {
                 this.speedY -= decelerationRate;
             }
         } else {
-            if (this.speedY > -restThreshold) {
+            if (this.speedY > -decelerationRate) {
                 this.speedY = 0f;
             } else {
                 this.speedY += decelerationRate;
@@ -292,13 +292,13 @@ public class MovementSprite extends SimpleSprite {
         }
         // Repeat for the x axis
         if (this.speedX > 0) {
-            if (this.speedX < restThreshold) {
+            if (this.speedX < decelerationRate) {
                 this.speedX = 0f;
             } else {
                 this.speedX -= decelerationRate;
             }
         } else {
-            if (this.speedX > -restThreshold) {
+            if (this.speedX > -decelerationRate) {
                 this.speedX = 0f;
             } else {
                 this.speedX += decelerationRate;

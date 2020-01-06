@@ -16,12 +16,8 @@ import com.sprites.MovementSprite;
 
 // Constants imports
 import static com.config.Constants.Direction;
-import static com.config.Constants.FIRETRUCK_HEALTH;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
-import static com.config.Constants.FIRETRUCK_ACCELERATION;
-import static com.config.Constants.FIRETRUCK_MAX_SPEED;
-import static com.config.Constants.FIRETRUCK_RESTITUTION;
 
 // Java util import
 import java.util.ArrayList;
@@ -37,6 +33,7 @@ public class Firetruck extends MovementSprite {
     // Private values to be used in this class only
     private Boolean isFocused;
     private int focusID, redLightDelay;
+    private float[] firetruckProperties;
     private ArrayList<Texture> firetruckSlices;
     private Polygon hoseRange;
 
@@ -47,15 +44,17 @@ public class Firetruck extends MovementSprite {
      * texture at the given position.
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
+     * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
      * @param xPos           The x-coordinate for the firetruck.
      * @param yPos           The y-coordinate for the firetruck.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, float xPos, float yPos, TiledMapTileLayer collisionLayer, int ID) {
+    public Firetruck(ArrayList<Texture> textureSlices, float[] properties, TiledMapTileLayer collisionLayer, int ID, float xPos, float yPos) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
         this.focusID = ID;
         this.firetruckSlices = textureSlices;
+        this.firetruckProperties = properties;
         this.setPosition(xPos, yPos);
         this.create();
     }
@@ -67,13 +66,15 @@ public class Firetruck extends MovementSprite {
      * texture at (0,0).
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
+     * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
      */
-    public Firetruck(ArrayList<Texture> textureSlices, TiledMapTileLayer collisionLayer, int ID) {
+    public Firetruck(ArrayList<Texture> textureSlices, float[] properties, TiledMapTileLayer collisionLayer, int ID) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
         this.focusID = ID;
         this.firetruckSlices = textureSlices;
+        this.firetruckProperties = properties;
         this.create();
     }
 
@@ -83,26 +84,27 @@ public class Firetruck extends MovementSprite {
      */
     private void create() {
         this.redLightDelay = 0;
-        this.getHealthBar().setMaxResource(FIRETRUCK_HEALTH);
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
-        this.setAccelerationRate(FIRETRUCK_ACCELERATION);
-        this.setMaxSpeed(FIRETRUCK_MAX_SPEED);
-        this.setRestitution(FIRETRUCK_RESTITUTION);
+        this.getHealthBar().setMaxResource((int) this.firetruckProperties[0]);
+        this.setAccelerationRate(this.firetruckProperties[1]);
+        this.setMaxSpeed(this.firetruckProperties[2]);
+        this.setRestitution(this.firetruckProperties[3]);
+        float rangeScale = this.firetruckProperties[4];
         float[] hoseVertices = { // Starts facing left
             0, 0,
-            -(this.getWidth() * 1.5f), (this.getHeight() / 1.5f),
-            -(this.getWidth() * 1.75f), (this.getHeight() / 2f),
-            -(this.getWidth() * 1.85f), (this.getHeight() / 5f),
-            -(this.getWidth() * 1.85f), -(this.getHeight() / 5f),
-            -(this.getWidth() * 1.75f), -(this.getHeight() / 2f),
-            -(this.getWidth() * 1.5f), -(this.getHeight() / 1.5f)
+            -(this.getWidth() * 1.50f * rangeScale),  (this.getHeight() / 1.5f * rangeScale),
+            -(this.getWidth() * 1.75f * rangeScale),  (this.getHeight() / 2.0f * rangeScale),
+            -(this.getWidth() * 1.85f * rangeScale),  (this.getHeight() / 5.0f * rangeScale),
+            -(this.getWidth() * 1.85f * rangeScale), -(this.getHeight() / 5.0f * rangeScale),
+            -(this.getWidth() * 1.75f * rangeScale), -(this.getHeight() / 2.0f * rangeScale),
+            -(this.getWidth() * 1.50f * rangeScale), -(this.getHeight() / 1.5f * rangeScale)
         }; 
         this.hoseRange = new Polygon(hoseVertices);
-        
     }
 
     /**
      * Update the position and direction of the firetruck every frame.
+     * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
         super.update(batch);
@@ -175,7 +177,7 @@ public class Firetruck extends MovementSprite {
      * @return Whether the firetruck is damaged.
      */
     public boolean isDamaged() {
-        return this.getHealthBar().getCurrentAmount() < FIRETRUCK_HEALTH;
+        return this.getHealthBar().getCurrentAmount() < this.firetruckProperties[0];
     }
 
     /**

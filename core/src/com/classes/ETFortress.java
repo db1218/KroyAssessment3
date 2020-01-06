@@ -55,6 +55,7 @@ public class ETFortress extends SimpleSprite {
 
     /**
      * Update the fortress so that it is drawn every frame.
+     * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
         super.update(batch);

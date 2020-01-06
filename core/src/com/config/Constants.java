@@ -9,6 +9,24 @@ public final class Constants {
         // Any constants that need instantiation go here
     }
 
+    // Firetruck One properties.
+    public static final float[] FiretruckOneProperties = {
+        100,  // HEALTH
+        10f,  // ACCELERATION
+        300f, // MAX_SPEED
+        0.8f, // RESTITUTION
+        1.5f, // RANGE
+    };
+
+    // Firetruck Two properties
+    public static final float[] FiretruckTwoProperties = {
+        100,  // HEALTH
+        20f,  // ACCELERATION
+        400f, // MAX_SPEED
+        0.6f, // RESTITUTION
+        1f,   // RANGE
+    };
+
      // Enums
      public static enum Direction {
         UP,
@@ -69,13 +87,9 @@ public final class Constants {
     public static final float SCORE_X = SCREEN_WIDTH * 0.45f;
 
     // Sprite properties
-    public static final float FIRETRUCK_RESTITUTION = 0.8f;
-    public static final float FIRETRUCK_ACCELERATION = 10f;
-    public static final float FIRETRUCK_MAX_SPEED = 300f;
     // Health
     public static final int ETFORTRESS_HEALTH = 1000;
     public static final int FIRESTATION_HEALTH = 1000;
-    public static final int FIRETRUCK_HEALTH = 100;
     // Size
     public static final int FIRETRUCK_WIDTH = 2*TILE_DIMS;
     public static final int FIRETRUCK_HEIGHT = 1*TILE_DIMS;

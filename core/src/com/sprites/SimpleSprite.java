@@ -49,6 +49,7 @@ public class SimpleSprite extends Sprite {
     /**
      * Update the sprite position, hitbox and health bar.
      * Must be called every frame in order to draw the sprite.
+     * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
         // Keep the healthbar and hitbox located on the sprite
