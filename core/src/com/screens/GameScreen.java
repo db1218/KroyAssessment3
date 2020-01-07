@@ -195,7 +195,7 @@ public class GameScreen implements Screen {
 		
 		// Zoom the camera out when firetruck moves
 		float maxZoomHoldTime = MAX_ZOOM * 4, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
-		double speed = Math.max(Math.abs(focusedTruck.getSpeedX()), Math.abs(focusedTruck.getSpeedY()));
+		double speed = Math.max(Math.abs(focusedTruck.getSpeed().x), Math.abs(focusedTruck.getSpeed().y));
 		boolean isMoving = speed > focusedTruck.getMaxSpeed() / 2;
 		// If moving, increase delay before zooming out up until the limit
 		if (isMoving && this.zoomDelay < maxZoomHoldTime) {

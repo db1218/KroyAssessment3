@@ -25,7 +25,8 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private Direction direction;
-    private float accelerationRate, maxSpeed, speedX, speedY, restitution, rotationLockTime;
+    private float accelerationRate, maxSpeed, restitution, rotationLockTime;
+    private Vector2 speed;
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -45,8 +46,7 @@ public class MovementSprite extends SimpleSprite {
      */
     private void create() {
         this.direction = Direction.LEFT;
-        this.speedX = 0f;
-        this.speedY = 0f; 
+        this.speed = new Vector2(0,0);
         this.rotationLockTime = 0;
     }
 
@@ -56,6 +56,7 @@ public class MovementSprite extends SimpleSprite {
      * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
+        super.update(batch);
         // Calculate the acceleration on the sprite and apply it
         accelerate();
         // Set the sprites direction based on its speed
@@ -65,9 +66,7 @@ public class MovementSprite extends SimpleSprite {
         // Update rotationLockout if set
         if (this.rotationLockTime >= 0) this.rotationLockTime -= 1;
         // Check the sprite is within the map boundaries then draw
-        checkBoundaries();
-        // Draw the sprite at the new location
-        super.update(batch);
+        checkBoundaries();  
     }
 
     /**
@@ -75,17 +74,17 @@ public class MovementSprite extends SimpleSprite {
      * @param direction The direction to accelerate in.
      */
     public void applyAcceleration(Direction direction) {
-        if (this.speedY < this.maxSpeed && direction == Direction.UP) {
-            this.speedY += this.accelerationRate;
+        if (this.speed.y < this.maxSpeed && direction == Direction.UP) {
+            this.speed.y += this.accelerationRate;
         }
-        if (this.speedY > -this.maxSpeed && direction == Direction.DOWN) {
-            this.speedY -= this.accelerationRate;
+        if (this.speed.y > -this.maxSpeed && direction == Direction.DOWN) {
+            this.speed.y -= this.accelerationRate;
         }
-        if (this.speedX < this.maxSpeed && direction == Direction.RIGHT) {
-            this.speedX += this.accelerationRate;
+        if (this.speed.x < this.maxSpeed && direction == Direction.RIGHT) {
+            this.speed.x += this.accelerationRate;
         }
-        if (this.speedX > -this.maxSpeed && direction == Direction.LEFT) {
-            this.speedX -= this.accelerationRate;
+        if (this.speed.x > -this.maxSpeed && direction == Direction.LEFT) {
+            this.speed.x -= this.accelerationRate;
         }
     }
 
@@ -98,8 +97,8 @@ public class MovementSprite extends SimpleSprite {
         float pushBackX = seperationVector.x;
         float pushBackY = seperationVector.y;
         // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
-        this.speedY *= -this.restitution;
-        this.speedX *= -this.restitution;
+        this.speed.y *= -this.restitution;
+        this.speed.x *= -this.restitution;
         this.setRotationLock(0.5f);
         this.setY(this.getY() + pushBackY);
         this.setX(this.getX() + pushBackX);
@@ -219,8 +218,8 @@ public class MovementSprite extends SimpleSprite {
     private Direction getDirectionFromSpeed() {
         // Allow the sprite to reverse in any direction if going slow enough
         float speedBeforeRotation = this.accelerationRate * 3.5f;
-        boolean left = this.speedX < -speedBeforeRotation, right = this.speedX > speedBeforeRotation;
-        boolean up = this.speedY > speedBeforeRotation, down = this.speedY < -speedBeforeRotation;
+        boolean left = this.speed.x < -speedBeforeRotation, right = this.speed.x > speedBeforeRotation;
+        boolean up = this.speed.y > speedBeforeRotation, down = this.speed.y < -speedBeforeRotation;
         boolean vertical = up || down, horizontal = left || right;
         if (vertical && (this.rotationLockTime <= 0)) {
             if (up && horizontal) {
@@ -247,8 +246,8 @@ public class MovementSprite extends SimpleSprite {
         boolean collides = collidesLeft() || collidesRight() || collidesTop() || collidesBottom();
         // Check if it collides with any tiles, then move the sprite
         if (!collides) {
-            setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-            setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
+            setX(getX() + this.speed.x * Gdx.graphics.getDeltaTime());
+            setY(getY() + this.speed.y * Gdx.graphics.getDeltaTime());
             decelerate();
         } else {
             // Seperate the sprite from the tile depending on where its collided
@@ -263,15 +262,15 @@ public class MovementSprite extends SimpleSprite {
     private void decelerate() {
         float decelerationRate = this.accelerationRate * 0.6f;
         // Stops it bouncing from decelerating in one direction and then another etc..
-        if (this.speedY < decelerationRate && this.speedY > -decelerationRate) {
-            this.speedY = 0f;
+        if (this.speed.y < decelerationRate && this.speed.y > -decelerationRate) {
+            this.speed.y = 0f;
         } else {
-            this.speedY -= this.speedY > 0 ? decelerationRate : -decelerationRate;
+            this.speed.y -= this.speed.y > 0 ? decelerationRate : -decelerationRate;
         }
-        if (this.speedX < decelerationRate && this.speedX > -decelerationRate) {
-            this.speedX = 0f;
+        if (this.speed.x < decelerationRate && this.speed.x > -decelerationRate) {
+            this.speed.x = 0f;
         } else {
-            this.speedX -= this.speedX > 0 ? decelerationRate : -decelerationRate;
+            this.speed.x -= this.speed.x > 0 ? decelerationRate : -decelerationRate;
         }
     }
     
@@ -325,34 +324,18 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Sets the current speed of the sprite in the X axis.
+     * Sets the current speed of the sprite.
      * @param speed The speed the sprite should travel.
      */
-    public void setSpeedX(Float speed) {
-        this.speedX = speed;
+    public void setSpeed(Vector2 speed) {
+        this.speed = speed;
     }
 
     /**
-     * Gets the current speed of the sprite in the X axis.
-     * @return The current speed of the sprite in the X axis.
+     * Gets the current speed of the sprite.
+     * @return The current speed of the sprite.
      */
-    public float getSpeedX() {
-        return this.speedX;
-    }
-
-    /**
-     * Sets the current speed of the sprite in the Y axis.
-     * @param speed The speed the sprite should travel.
-     */
-    public void setSpeedY(Float speed) {
-        this.speedY = speed;
-    }
-
-    /**
-     * Gets the current speed of the sprite in the Y axis.
-     * @return The current speed of the sprite in the Y axis.
-     */
-    public float getSpeedY() {
-        return this.speedY;
+    public Vector2 getSpeed() {
+        return this.speed;
     }
 }
