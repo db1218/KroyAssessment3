@@ -57,7 +57,7 @@ public class MovementSprite extends SimpleSprite {
      */
     public void update(Batch batch) {
         // Calculate the acceleration on the sprite and apply it
-        applyAcceleration();
+        accelerate();
         // Set the sprites direction based on its speed
         setDirection(getDirectionFromSpeed());
         // Rotate sprite to face the direction its moving in
@@ -71,71 +71,21 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
+     * Increases the speed of the sprite in the given direction.
+     * @param direction The direction to accelerate in.
      */
-    private void updateRotation() {
-        float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
-        float angle = desiredRotation - currentRotation;
-        if (currentRotation != desiredRotation) {
-            // Use the shortest angle
-            angle = (angle + 180) % 360 - 180;
-            this.rotate(angle * 3 * Gdx.graphics.getDeltaTime());
+    public void applyAcceleration(Direction direction) {
+        if (this.speedY < this.maxSpeed && direction == Direction.UP) {
+            this.speedY += this.accelerationRate;
         }
-    }
-
-    /**
-     * Calculate the sprite's direction from its speed
-     * @return The direction the sprite is travelling in
-     */
-    private Direction getDirectionFromSpeed() {
-        // Allow the sprite to reverse in any direction if going slow enough
-        float speedBeforeRotation = this.accelerationRate * 3.5f;
-        boolean left = this.speedX < -speedBeforeRotation, right = this.speedX > speedBeforeRotation;
-        boolean up = this.speedY > speedBeforeRotation, down = this.speedY < -speedBeforeRotation;
-        boolean vertical = up || down, horizontal = left || right;
-        if (vertical && (this.rotationLockTime <= 0)) {
-            if (up && horizontal) {
-                return left ? Direction.UPLEFT : Direction.UPRIGHT;
-            } else if (down && horizontal) {
-                return left ? Direction.DOWNLEFT : Direction.DOWNRIGHT;
-            } else if (up) {
-                return Direction.UP;
-            }
-            return Direction.DOWN;
-        } else if (horizontal && (this.rotationLockTime <= 0)) {
-            return left ? Direction.LEFT : Direction.RIGHT;
+        if (this.speedY > -this.maxSpeed && direction == Direction.DOWN) {
+            this.speedY -= this.accelerationRate;
         }
-        // If stationary return last direction
-        return this.direction;
-    }
-
-    /**
-     * Apply acceleration to the sprite, based on collision boundaries and
-     * existing acceleration.
-     */
-    private void applyAcceleration() {
-        // Calculate whether it hits any boundaries
-        // Do this once here rather than multiple times in code
-        boolean hitLeft = collidesLeft();
-        boolean hitRight = collidesRight();
-        boolean hitTop = collidesTop();
-        boolean hitBottom = collidesBottom();
-        // Apply acceleration and check if it collides with any tiles
-        if (!hitLeft && this.speedX < 0) {
-            setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-        } else if (hitLeft) collisionOccurred(new Vector2(1,0));
-        if (!hitRight && this.speedX > 0) {
-            setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
-        } else if (hitRight) collisionOccurred(new Vector2(-1,0));
-        if (!hitTop && this.speedY > 0) {
-            setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
-        } else if (hitTop) collisionOccurred(new Vector2(0,-1));
-        if (!hitBottom && this.speedY < 0) {
-            setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
-        } else if (hitBottom) collisionOccurred(new Vector2(0,1));
-        // Only decelerate if it wont move us into a wall
-        if (!hitLeft && !hitRight && !hitTop && !hitBottom && (this.speedY != 0f || this.speedX != 0f)) {
-            decelerate();
+        if (this.speedX < this.maxSpeed && direction == Direction.RIGHT) {
+            this.speedX += this.accelerationRate;
+        }
+        if (this.speedX > -this.maxSpeed && direction == Direction.LEFT) {
+            this.speedX -= this.accelerationRate;
         }
     }
 
@@ -250,21 +200,59 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Increases the speed of the sprite in the given direction.
-     * @param direction The direction to accelerate in.
+     * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
      */
-    public void accelerate(Direction direction) {
-        if (this.speedY < this.maxSpeed && direction == Direction.UP) {
-            this.speedY += this.accelerationRate;
+    private void updateRotation() {
+        float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
+        float angle = desiredRotation - currentRotation;
+        if (currentRotation != desiredRotation) {
+            // Use the shortest angle
+            angle = (angle + 180) % 360 - 180;
+            this.rotate(angle * 2 * Gdx.graphics.getDeltaTime());
         }
-        if (this.speedY > -this.maxSpeed && direction == Direction.DOWN) {
-            this.speedY -= this.accelerationRate;
+    }
+
+    /**
+     * Calculate the sprite's direction from its speed
+     * @return The direction the sprite is travelling in
+     */
+    private Direction getDirectionFromSpeed() {
+        // Allow the sprite to reverse in any direction if going slow enough
+        float speedBeforeRotation = this.accelerationRate * 3.5f;
+        boolean left = this.speedX < -speedBeforeRotation, right = this.speedX > speedBeforeRotation;
+        boolean up = this.speedY > speedBeforeRotation, down = this.speedY < -speedBeforeRotation;
+        boolean vertical = up || down, horizontal = left || right;
+        if (vertical && (this.rotationLockTime <= 0)) {
+            if (up && horizontal) {
+                return left ? Direction.UPLEFT : Direction.UPRIGHT;
+            } else if (down && horizontal) {
+                return left ? Direction.DOWNLEFT : Direction.DOWNRIGHT;
+            } else if (up) {
+                return Direction.UP;
+            }
+            return Direction.DOWN;
+        } else if (horizontal && (this.rotationLockTime <= 0)) {
+            return left ? Direction.LEFT : Direction.RIGHT;
         }
-        if (this.speedX < this.maxSpeed && direction == Direction.RIGHT) {
-            this.speedX += this.accelerationRate;
-        }
-        if (this.speedX > -this.maxSpeed && direction == Direction.LEFT) {
-            this.speedX -= this.accelerationRate;
+        // If stationary return last direction
+        return this.direction;
+    }
+
+    /**
+     * Apply acceleration to the sprite, based on collision boundaries and
+     * existing acceleration.
+     */
+    private void accelerate() {
+        // Calculate whether it hits any boundaries
+        boolean collides = collidesLeft() || collidesRight() || collidesTop() || collidesBottom();
+        // Check if it collides with any tiles, then move the sprite
+        if (!collides) {
+            setX(getX() + this.speedX * Gdx.graphics.getDeltaTime());
+            setY(getY() + this.speedY * Gdx.graphics.getDeltaTime());
+            decelerate();
+        } else {
+            // Seperate the sprite from the tile depending on where its collided
+            collisionOccurred(new Vector2(collidesRight() ? -1 : 1, collidesTop() ? -1 : 1));
         }
     }
 
@@ -274,35 +262,16 @@ public class MovementSprite extends SimpleSprite {
      */
     private void decelerate() {
         float decelerationRate = this.accelerationRate * 0.6f;
-        // Check the direction the sprite is moving based on its velocity
-        if (this.speedY > 0) {
-            // If within a threshold stop the spirte
-            // Stops it bouncing from decelerating in one direction and then another etc..
-            if (this.speedY < decelerationRate) {
-                this.speedY = 0f;
-            } else {
-                this.speedY -= decelerationRate;
-            }
+        // Stops it bouncing from decelerating in one direction and then another etc..
+        if (this.speedY < decelerationRate && this.speedY > -decelerationRate) {
+            this.speedY = 0f;
         } else {
-            if (this.speedY > -decelerationRate) {
-                this.speedY = 0f;
-            } else {
-                this.speedY += decelerationRate;
-            }
+            this.speedY -= this.speedY > 0 ? decelerationRate : -decelerationRate;
         }
-        // Repeat for the x axis
-        if (this.speedX > 0) {
-            if (this.speedX < decelerationRate) {
-                this.speedX = 0f;
-            } else {
-                this.speedX -= decelerationRate;
-            }
+        if (this.speedX < decelerationRate && this.speedX > -decelerationRate) {
+            this.speedX = 0f;
         } else {
-            if (this.speedX > -decelerationRate) {
-                this.speedX = 0f;
-            } else {
-                this.speedX += decelerationRate;
-            }
+            this.speedX -= this.speedX > 0 ? decelerationRate : -decelerationRate;
         }
     }
     
