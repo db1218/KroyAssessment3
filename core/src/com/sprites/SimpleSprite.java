@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
 // Class import
-import com.sprites.ResourceBar;
+import com.classes.ResourceBar;
 
 /**
  * Simplify and add functionality to the sprite object provided by libGDX.

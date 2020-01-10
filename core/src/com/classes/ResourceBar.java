@@ -1,4 +1,4 @@
-package com.sprites;
+package com.classes;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.Texture;
