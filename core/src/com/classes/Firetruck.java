@@ -87,17 +87,18 @@ public class Firetruck extends MovementSprite {
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         this.getHealthBar().setMaxResource((int) this.firetruckProperties[0]);
         this.setAccelerationRate(this.firetruckProperties[1]);
+        this.setDecelerationRate(this.firetruckProperties[1] * 0.6f);
         this.setMaxSpeed(this.firetruckProperties[2]);
         this.setRestitution(this.firetruckProperties[3]);
         float rangeScale = this.firetruckProperties[4];
-        float[] hoseVertices = { // Starts facing left
+        float[] hoseVertices = { // Starts facing right
             0, 0,
-            -(this.getWidth() * 1.50f * rangeScale),  (this.getHeight() / 1.5f * rangeScale),
-            -(this.getWidth() * 1.75f * rangeScale),  (this.getHeight() / 2.0f * rangeScale),
-            -(this.getWidth() * 1.85f * rangeScale),  (this.getHeight() / 5.0f * rangeScale),
-            -(this.getWidth() * 1.85f * rangeScale), -(this.getHeight() / 5.0f * rangeScale),
-            -(this.getWidth() * 1.75f * rangeScale), -(this.getHeight() / 2.0f * rangeScale),
-            -(this.getWidth() * 1.50f * rangeScale), -(this.getHeight() / 1.5f * rangeScale)
+            (this.getWidth() * 1.50f * rangeScale),  (this.getHeight() / 1.5f * rangeScale),
+            (this.getWidth() * 1.75f * rangeScale),  (this.getHeight() / 2.0f * rangeScale),
+            (this.getWidth() * 1.85f * rangeScale),  (this.getHeight() / 5.0f * rangeScale),
+            (this.getWidth() * 1.85f * rangeScale), -(this.getHeight() / 5.0f * rangeScale),
+            (this.getWidth() * 1.75f * rangeScale), -(this.getHeight() / 2.0f * rangeScale),
+            (this.getWidth() * 1.50f * rangeScale), -(this.getHeight() / 1.5f * rangeScale)
         }; 
         this.hoseRange = new Polygon(hoseVertices);
     }
@@ -140,7 +141,7 @@ public class Firetruck extends MovementSprite {
         float width = this.getWidth(), height = this.getHeight();
         for (int i = 0; i < slicesLength; i++) {
             Texture texture = animateLights(i);
-            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, false);
+            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
         }
     }
 
