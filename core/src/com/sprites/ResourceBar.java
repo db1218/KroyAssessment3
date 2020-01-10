@@ -21,7 +21,7 @@ public class ResourceBar {
 
     // Private values to be used in this class only
     private ProgressBar bar;
-    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight;
+    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight, isVisibileTime;
 
     /**
      * Constructor for this class, gathers required information so that it can
@@ -41,6 +41,7 @@ public class ResourceBar {
      * Creates a new progress bar and sets the inital values for all properties needed.
      */
     private void create() {
+        this.isVisibileTime = 0;
         this.maxResourceAmount = 100;
         this.currentResourceAmount = 100;
         this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
@@ -51,7 +52,10 @@ public class ResourceBar {
      * Draw the resource bar. Needs to be called every frame.
      */
     public void update(Batch batch) {
-        this.bar.draw(batch, 1);
+        if (this.isVisibileTime > 0) {
+            if (this.currentResourceAmount >= this.maxResourceAmount) this.isVisibileTime -= 1;
+            this.bar.draw(batch, 1);
+        }
     }
 
     /**
@@ -152,6 +156,8 @@ public class ResourceBar {
             }
         }
         this.bar.setStyle(getResourceBarStyle());
+        // Bar values changed so show user
+        this.isVisibileTime = 200;
     }
 
     /**
@@ -170,5 +176,7 @@ public class ResourceBar {
             }
         }
         this.bar.setStyle(getResourceBarStyle());
+        // Bar values changed so show user
+        this.isVisibileTime = 200;
     }
 }
