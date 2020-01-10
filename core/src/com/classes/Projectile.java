@@ -63,6 +63,10 @@ public class Projectile extends MovementSprite {
         super.update(batch);
     }
 
+    /**
+     * Calculates the trajectory from the projectiles starting point to the target point.
+     * @param Polygon The target the projectile is fired at
+     */
     public void calculateTrajectory(Polygon target) {
         // Convert the two points into vectors
         Vector2 targetVector = new Vector2(target.getX(),target.getY()); 
@@ -80,10 +84,10 @@ public class Projectile extends MovementSprite {
         this.setSpeed(trajectory);
     }
     
-
     /**
      * Gets whether the projectile is ready to be removed. It needs to be offscreen
      * so it doesn't disappear in view.
+     * @param Vector3 The position of the camera, needed to calculate the edge of the screen
      * 
      * @return Whether the projectile can be removed.
      */
@@ -96,8 +100,8 @@ public class Projectile extends MovementSprite {
     }
 
     /**
-     * Gets whether the projectile is ready to be removed. It needs to be offscreen
-     * so it doesn't disappear in view.
+     * Gets whether the projectile is ready to be removed. It needs to be outside
+     * of the map before it disappears.
      * 
      * @return Whether the projectile can be removed.
      */

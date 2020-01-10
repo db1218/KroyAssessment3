@@ -93,7 +93,7 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
-        /**
+    /**
      * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
      */
     private void updateRotation() {
