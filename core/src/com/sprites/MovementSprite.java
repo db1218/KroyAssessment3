@@ -7,13 +7,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
 import com.badlogic.gdx.math.Vector2;
+import com.config.Constants.Direction;
 
 // Constants import
-import static com.config.Constants.MAP_HEIGHT;
-import static com.config.Constants.MAP_WIDTH;
 import static com.config.Constants.COLLISION_TILE;
-import static com.config.Constants.Direction;
-import static com.config.Constants.DirectionToAngle;
 import static com.config.Constants.TILE_DIMS;
 
 /**
@@ -24,8 +21,7 @@ import static com.config.Constants.TILE_DIMS;
 public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
-    private Direction direction;
-    private float accelerationRate, maxSpeed, restitution, rotationLockTime;
+    private float accelerationRate, decelerationRate, maxSpeed, restitution, rotationLockTime;
     private Vector2 speed;
     private TiledMapTileLayer collisionLayer;
 
@@ -42,12 +38,25 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
+     * Creates a sprite capable of moving and but only colliding with other sprites.
+     * 
+     * @param spriteTexture  The texture the sprite should use.
+     */
+    public MovementSprite(Texture spriteTexture) {
+        super(spriteTexture);
+        this.create();
+    }
+
+    /**
      * Sets the inital values for all properties needed by the sprite.
      */
     private void create() {
-        this.direction = Direction.LEFT;
         this.speed = new Vector2(0,0);
+        this.accelerationRate = 10;
+        this.decelerationRate = 6;
         this.rotationLockTime = 0;
+        this.restitution = 0.8f;
+        this.maxSpeed = 200;
     }
 
     /**
@@ -59,14 +68,10 @@ public class MovementSprite extends SimpleSprite {
         super.update(batch);
         // Calculate the acceleration on the sprite and apply it
         accelerate();
-        // Set the sprites direction based on its speed
-        setDirection(getDirectionFromSpeed());
         // Rotate sprite to face the direction its moving in
         updateRotation();
         // Update rotationLockout if set
-        if (this.rotationLockTime >= 0) this.rotationLockTime -= 1;
-        // Check the sprite is within the map boundaries then draw
-        checkBoundaries();  
+        if (this.rotationLockTime >= 0) this.rotationLockTime -= 1; 
     }
 
     /**
@@ -88,6 +93,56 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
+        /**
+     * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
+     */
+    private void updateRotation() {
+        float currentRotation = this.getRotation();
+        float desiredRotation = this.speed.angle();
+        float angle = desiredRotation - currentRotation;
+        if (this.speed.len() >= this.accelerationRate) {
+            // Use the shortest angle
+            angle = (angle + 180) % 360 - 180;
+            this.rotate(angle * Gdx.graphics.getDeltaTime());
+        }
+    }
+
+    /**
+     * Apply acceleration to the sprite, based on collision boundaries and
+     * existing acceleration.
+     */
+    private void accelerate() {
+        // Calculate whether it hits any boundaries
+        boolean collides = this.collisionLayer != null && (collidesLeft() || collidesRight() || collidesTop() || collidesBottom());
+        // Check if it collides with any tiles, then move the sprite
+        if (!collides) {
+            setX(getX() + this.speed.x * Gdx.graphics.getDeltaTime());
+            setY(getY() + this.speed.y * Gdx.graphics.getDeltaTime());
+            if (this.decelerationRate != 0) decelerate();
+        } else {
+            // Seperate the sprite from the tile depending on where its collided
+            collisionOccurred(new Vector2(collidesRight() ? -1 : 1, collidesTop() ? -1 : 1));
+        }
+    }
+
+    /**
+     * Decreases the speed of the sprite (direction irrelevant). Deceleration rate
+     * is based upon the sprite's properties.
+     */
+    private void decelerate() {
+        // Stops it bouncing from decelerating in one direction and then another etc..
+        if (this.speed.y < this.decelerationRate && this.speed.y > -this.decelerationRate) {
+            this.speed.y = 0f;
+        } else {
+            this.speed.y -= this.speed.y > 0 ? this.decelerationRate : -this.decelerationRate;
+        }
+        if (this.speed.x < this.decelerationRate && this.speed.x > -this.decelerationRate) {
+            this.speed.x = 0f;
+        } else {
+            this.speed.x -= this.speed.x > 0 ? this.decelerationRate : -this.decelerationRate;
+        }
+    }
+
     /**
      * Checks what direction the sprite is facing and bounces it the opposite way.
      * @param seperationVector Vector containing the minimum distance needed to travel to seperate two sprites.
@@ -102,16 +157,6 @@ public class MovementSprite extends SimpleSprite {
         this.setRotationLock(0.5f);
         this.setY(this.getY() + pushBackY);
         this.setX(this.getX() + pushBackX);
-    }
-
-    /**
-     * Sets the amount of time the sprite cannot rotate for.
-     * @param milliseconds The duration the sprite cannot rotate in.
-     */
-    public void setRotationLock(float duration) {
-        if (duration > 0 && this.rotationLockTime <= 0) {
-            this.rotationLockTime = duration * 100;
-        }
     }
 
     /**
@@ -182,98 +227,17 @@ public class MovementSprite extends SimpleSprite {
 			if(isCellBlocked(this.getX() + step, this.getY()))
 				return true;
 		return false;
-	}
-    
-    /**
-     * Ensures the sprite stays within the bounds set by the map.
-     */
-    private void checkBoundaries() {
-        if (getY() < 0)
-            setY(0);
-        if (getY() > MAP_HEIGHT - this.getHeight())
-            setY(MAP_HEIGHT - this.getHeight());
-        if (getX() < 0)
-            setX(0);
-        if (getX() > MAP_WIDTH - this.getWidth())
-            setX(MAP_WIDTH - this.getWidth());
-    }
-
-    /**
-     * Calculate the angle the sprite needs to rotate from it's current rotation to the new rotation.
-     */
-    private void updateRotation() {
-        float currentRotation = this.getRotation(), desiredRotation = DirectionToAngle(this.direction);
-        float angle = desiredRotation - currentRotation;
-        if (currentRotation != desiredRotation) {
-            // Use the shortest angle
-            angle = (angle + 180) % 360 - 180;
-            this.rotate(angle * 2 * Gdx.graphics.getDeltaTime());
-        }
-    }
-
-    /**
-     * Calculate the sprite's direction from its speed
-     * @return The direction the sprite is travelling in
-     */
-    private Direction getDirectionFromSpeed() {
-        // Allow the sprite to reverse in any direction if going slow enough
-        float speedBeforeRotation = this.accelerationRate * 3.5f;
-        boolean left = this.speed.x < -speedBeforeRotation, right = this.speed.x > speedBeforeRotation;
-        boolean up = this.speed.y > speedBeforeRotation, down = this.speed.y < -speedBeforeRotation;
-        boolean vertical = up || down, horizontal = left || right;
-        if (vertical && (this.rotationLockTime <= 0)) {
-            if (up && horizontal) {
-                return left ? Direction.UPLEFT : Direction.UPRIGHT;
-            } else if (down && horizontal) {
-                return left ? Direction.DOWNLEFT : Direction.DOWNRIGHT;
-            } else if (up) {
-                return Direction.UP;
-            }
-            return Direction.DOWN;
-        } else if (horizontal && (this.rotationLockTime <= 0)) {
-            return left ? Direction.LEFT : Direction.RIGHT;
-        }
-        // If stationary return last direction
-        return this.direction;
-    }
-
-    /**
-     * Apply acceleration to the sprite, based on collision boundaries and
-     * existing acceleration.
-     */
-    private void accelerate() {
-        // Calculate whether it hits any boundaries
-        boolean collides = collidesLeft() || collidesRight() || collidesTop() || collidesBottom();
-        // Check if it collides with any tiles, then move the sprite
-        if (!collides) {
-            setX(getX() + this.speed.x * Gdx.graphics.getDeltaTime());
-            setY(getY() + this.speed.y * Gdx.graphics.getDeltaTime());
-            decelerate();
-        } else {
-            // Seperate the sprite from the tile depending on where its collided
-            collisionOccurred(new Vector2(collidesRight() ? -1 : 1, collidesTop() ? -1 : 1));
-        }
-    }
-
-    /**
-     * Decreases the speed of the sprite (direction irrelevant). Deceleration rate
-     * is based upon the sprite's properties.
-     */
-    private void decelerate() {
-        float decelerationRate = this.accelerationRate * 0.6f;
-        // Stops it bouncing from decelerating in one direction and then another etc..
-        if (this.speed.y < decelerationRate && this.speed.y > -decelerationRate) {
-            this.speed.y = 0f;
-        } else {
-            this.speed.y -= this.speed.y > 0 ? decelerationRate : -decelerationRate;
-        }
-        if (this.speed.x < decelerationRate && this.speed.x > -decelerationRate) {
-            this.speed.x = 0f;
-        } else {
-            this.speed.x -= this.speed.x > 0 ? decelerationRate : -decelerationRate;
-        }
     }
     
+    /**
+     * Sets the amount of time the sprite cannot rotate for.
+     * @param milliseconds The duration the sprite cannot rotate in.
+     */
+    public void setRotationLock(float duration) {
+        if (duration > 0 && this.rotationLockTime <= 0) {
+            this.rotationLockTime = duration * 100;
+        }
+    }
 
     /**
      * Sets the amount the sprite will bounce upon collisions.
@@ -292,6 +256,15 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
+     * Sets the rate at which the sprite will decelerate.
+     * @param rate The deceleration rate for the sprite.
+     */
+    public void setDecelerationRate(float rate) {
+        this.decelerationRate = rate;
+    }
+
+
+    /**
      * Sets the max speed the sprite can accelerate to.
      * @param amount The max speed value for the sprite.
      */
@@ -305,22 +278,6 @@ public class MovementSprite extends SimpleSprite {
      */
     public float getMaxSpeed() {
         return this.maxSpeed;
-    }
-
-    /**
-     * Sets the current direction of the sprite.
-     * @param dir The direction for the sprite.
-     */
-    public void setDirection(Direction dir) {
-        this.direction = dir;
-    }
-
-    /**
-     * Gets the current direction of the sprite.
-     * @return The direction of the sprite.
-     */
-    public Direction getDirection() {
-        return this.direction;
     }
 
     /**

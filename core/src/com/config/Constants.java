@@ -30,36 +30,9 @@ public final class Constants {
      // Enums
      public static enum Direction {
         UP,
-        UPLEFT,
-        UPRIGHT,
         DOWN,
-        DOWNLEFT,
-        DOWNRIGHT,
         LEFT,
         RIGHT
-    }
-
-    public static float DirectionToAngle(Direction dir) {
-        switch (dir) {
-            case UP:
-                return 270;
-            case DOWN:
-                return 90;
-            case LEFT:
-                return 0;
-            case RIGHT:
-                return 180;
-            case UPLEFT:
-                return 315;
-            case UPRIGHT:
-                return 225;
-            case DOWNLEFT:
-                return 45;
-            case DOWNRIGHT:
-                return 135;
-            default:
-                return 0;
-        }
     }
 
     // Debug mode
