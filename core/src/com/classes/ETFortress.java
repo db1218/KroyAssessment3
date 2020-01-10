@@ -2,6 +2,11 @@ package com.classes;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
@@ -19,6 +24,10 @@ import static com.config.Constants.ETFORTRESS_WIDTH;
  * @since 16/12/2019
  */
 public class ETFortress extends SimpleSprite {
+
+    // Private values for this class to use
+    private Circle detectionRange;
+    private float timeBetweenProjectiles;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -51,6 +60,7 @@ public class ETFortress extends SimpleSprite {
     private void create() {
         this.getHealthBar().setMaxResource(ETFORTRESS_HEALTH);
         this.setSize(ETFORTRESS_WIDTH, ETFORTRESS_HEIGHT);
+        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 2);
     }
 
     /**
@@ -59,5 +69,56 @@ public class ETFortress extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
+        this.detectionRange.setPosition(this.getCentreX(), this.getCentreY());
+        if (this.timeBetweenProjectiles > 0) this.timeBetweenProjectiles -= 1;
+    }
+
+    /**
+     * Check to see if the ETFortress should fire another projectile. The pattern the ETFortress
+     * uses to fire can be modified here. 
+     * 
+     * @return boolean  Whether the ETFortress is ready to fire again (true) or not (false)
+     */
+    public boolean canShootProjectile() {
+        if (this.timeBetweenProjectiles < 120 && this.timeBetweenProjectiles % 30 == 0) {
+            if (this.timeBetweenProjectiles <= 0) this.timeBetweenProjectiles = 150;
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Checks if a polygon is within the range of the firestation.
+     * Usually used to see if a firetruck is close enough to be repaired.
+     * 
+     * @param polygon  The polygon that needs to be checked.
+     */
+    public boolean isInRadius(Polygon polygon) {
+        float []vertices = polygon.getTransformedVertices();
+        Vector2 center = new Vector2(this.detectionRange.x, this.detectionRange.y);
+        float squareRadius = this.detectionRange.radius * this.detectionRange.radius;
+        for (int i = 0; i < vertices.length; i+=2){
+            if (i == 0){
+                if (Intersector.intersectSegmentCircle(new Vector2(vertices[vertices.length - 2], vertices[vertices.length - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
+                    return true;
+            } else {
+                if (Intersector.intersectSegmentCircle(new Vector2(vertices[i-2], vertices[i-1]), new Vector2(vertices[i], vertices[i+1]), center, squareRadius))
+                    return true;
+            }
+        }
+        return polygon.contains(this.detectionRange.x, this.detectionRange.y);
+    }
+
+
+    /**
+     * Overloaded method for drawing debug information. Draws the hitbox as well
+     * as the range circle.
+     * 
+     * @param renderer  The renderer used to draw the hitbox and range indicator with.
+     */
+    @Override
+    public void drawDebug(ShapeRenderer renderer) {
+        super.drawDebug(renderer);
+        renderer.circle(this.detectionRange.x, this.detectionRange.y, this.detectionRange.radius);
     }
 }

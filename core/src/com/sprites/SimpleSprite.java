@@ -2,6 +2,7 @@ package com.sprites;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -44,6 +45,7 @@ public class SimpleSprite extends Sprite {
         // Use the longest side of the sprite as the bar width
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        this.rotate(-90);
     }
 
     /**
@@ -56,7 +58,8 @@ public class SimpleSprite extends Sprite {
         this.healthBar.setPosition(this.getX(), this.getY());
         this.hitBox.setPosition(this.getX(), this.getY());
         // Draw the sprite and update the healthbar
-        batch.draw(this.texture, this.getX(), this.getY(), this.getWidth(), this.getHeight());
+        batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
+            this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
         this.healthBar.update(batch);
     }
 

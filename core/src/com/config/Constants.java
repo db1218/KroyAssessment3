@@ -42,9 +42,9 @@ public final class Constants {
     public static final String GAME_NAME = "Kroy";
     public static final int SCREEN_WIDTH = 1280;
     public static final int SCREEN_HEIGHT = 720;
-    public static final int MAP_WIDTH = 10000;
-    public static final int MAP_HEIGHT = 10000;
     public static final float MAP_SCALE = 6f;
+    public static final float MAP_WIDTH = 117 * (8 * MAP_SCALE);
+    public static final float MAP_HEIGHT = 10000 * (8 * MAP_SCALE);
     public static final int TILE_DIMS = (int) (8 * MAP_SCALE);
     public static final String COLLISION_TILE = "BLOCKED";
 
@@ -63,12 +63,16 @@ public final class Constants {
     // Health
     public static final int ETFORTRESS_HEALTH = 1000;
     public static final int FIRESTATION_HEALTH = 1000;
+    // Speed
+    public static final float PROJECTILE_SPEED = 400;
     // Size
-    public static final int FIRETRUCK_WIDTH = 2*TILE_DIMS;
-    public static final int FIRETRUCK_HEIGHT = 1*TILE_DIMS;
-    public static final int FIRESTATION_WIDTH = 5*TILE_DIMS;
-    public static final int FIRESTATION_HEIGHT = 5*TILE_DIMS;
-    public static final int ETFORTRESS_WIDTH = 5*TILE_DIMS;
-    public static final int ETFORTRESS_HEIGHT = 5*TILE_DIMS;
+    public static final float FIRETRUCK_WIDTH =  2*TILE_DIMS;
+    public static final float FIRETRUCK_HEIGHT = 1*TILE_DIMS;
+    public static final float FIRESTATION_WIDTH =5*TILE_DIMS;
+    public static final float FIRESTATION_HEIGHT=5*TILE_DIMS;
+    public static final float ETFORTRESS_WIDTH = 5*TILE_DIMS;
+    public static final float ETFORTRESS_HEIGHT =5*TILE_DIMS;
+    public static final float PROJECTILE_WIDTH = 1*TILE_DIMS;
+    public static final float PROJECTILE_HEIGHT =0.5f*TILE_DIMS;
 
 }
