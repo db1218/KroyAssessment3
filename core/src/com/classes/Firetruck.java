@@ -128,8 +128,6 @@ public class Firetruck extends MovementSprite {
             // Position the hose on the firetruck
             this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
             this.hoseRange.setRotation(this.getRotation());
-        } else {
-            this.waterBar.setFade(false, true);
         }
         this.waterBar.setPosition(this.getX(), this.getCentreY());
         this.waterBar.update(batch);
@@ -235,6 +233,7 @@ public class Firetruck extends MovementSprite {
             float scale = !this.isSpraying ? this.firetruckProperties[4] : 0;
             this.hoseRange.setScale(scale,scale);
             this.isSpraying = !this.isSpraying;
+            this.waterBar.setFade(false, !this.isSpraying);
         }
     }
 
