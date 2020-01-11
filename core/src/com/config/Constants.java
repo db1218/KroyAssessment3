@@ -15,7 +15,7 @@ public final class Constants {
         10f,  // ACCELERATION
         300f, // MAX_SPEED
         0.8f, // RESTITUTION
-        1.5f, // RANGE
+        1.2f, // RANGE
         1000, // WATER MAX
     };
 

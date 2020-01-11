@@ -127,6 +127,7 @@ public class GameScreen implements Screen {
 		// Initialise textures to use for spites
 		Texture firestationTexture = new Texture("FiretruckSlices/tile008.png");
 		Texture ETFortressTexture = new Texture("FiretruckSlices/tile009.png");
+		Texture waterTexture = new Texture("temp_water.png");
 		this.projectileTexture = new Texture("FiretruckSlices/tile008.png");
 		
 		// Create array of textures for firetruck animations
@@ -150,8 +151,8 @@ public class GameScreen implements Screen {
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
-		this.firetrucks.add(new Firetruck(firetruckSlices, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 1100, 650));
-		this.firetrucks.add(new Firetruck(firetruckSlices, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 2200, 650));
+		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 1100, 650));
+		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 2200, 650));
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();

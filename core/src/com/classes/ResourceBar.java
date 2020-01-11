@@ -140,6 +140,14 @@ public class ResourceBar {
     }
 
     /** 
+     * Get the bar's alpha value, manipulated to remain in the range 0-1.
+     * @return The alpha value of the bar
+     */
+    public float getFade() {
+        return (this.bar.getColor().a / 10) * BAR_FADE_DURATION;
+    }
+
+    /** 
      * Set the colour range of the bar. The bar is split into 3 sections
      * so 3 colours are required.
      * @param colours The colours the sprite will use;

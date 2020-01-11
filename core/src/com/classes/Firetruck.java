@@ -35,7 +35,9 @@ public class Firetruck extends MovementSprite {
     // Private values to be used in this class only
     private Boolean isFocused, isSpraying;
     private int focusID, redLightDelay, toggleDelay;
+    private float hoseWidth, hoseHeight;
     private float[] firetruckProperties;
+    private Texture waterTexture;
     private ArrayList<Texture> firetruckSlices;
     private Polygon hoseRange;
     private ResourceBar waterBar;
@@ -47,15 +49,17 @@ public class Firetruck extends MovementSprite {
      * texture at the given position.
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
+     * @param texture        The texture used to draw the water with.
      * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
      * @param xPos           The x-coordinate for the firetruck.
      * @param yPos           The y-coordinate for the firetruck.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, float[] properties, TiledMapTileLayer collisionLayer, int ID, float xPos, float yPos) {
+    public Firetruck(ArrayList<Texture> textureSlices, Texture texture, float[] properties, TiledMapTileLayer collisionLayer, int ID, float xPos, float yPos) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
         this.focusID = ID;
+        this.waterTexture = texture;
         this.firetruckSlices = textureSlices;
         this.firetruckProperties = properties;
         this.setPosition(xPos, yPos);
@@ -69,13 +73,15 @@ public class Firetruck extends MovementSprite {
      * texture at (0,0).
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
+     * @param texture        The texture used to draw the water with.
      * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
      */
-    public Firetruck(ArrayList<Texture> textureSlices, float[] properties, TiledMapTileLayer collisionLayer, int ID) {
+    public Firetruck(ArrayList<Texture> textureSlices, Texture texture, float[] properties, TiledMapTileLayer collisionLayer, int ID) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
         this.focusID = ID;
+        this.waterTexture = texture;
         this.firetruckSlices = textureSlices;
         this.firetruckProperties = properties;
         this.create();
@@ -119,18 +125,37 @@ public class Firetruck extends MovementSprite {
                 super.applyAcceleration(Direction.UP);
             }
         }
-        
+
         // If spraying
         if (this.isSpraying) {
+            // Scale hose to show it
+            if (this.hoseRange.getScaleX() < this.firetruckProperties[4]) {
+                this.hoseRange.setScale(this.hoseRange.getScaleX() + 0.05f, this.hoseRange.getScaleY() + 0.05f);
+            } 
             // Deplete water if spraying
-            this.waterBar.subtractResourceAmount(1);
-
-            // Position the hose on the firetruck
-            this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
-            this.hoseRange.setRotation(this.getRotation());
+            if (this.waterBar.getCurrentAmount() > 0) {
+                this.waterBar.subtractResourceAmount(1);
+            } else {
+                this.toggleHose();
+            }
+        } else {
+            if (this.hoseRange.getScaleX() > 0) {
+                this.hoseRange.setScale(this.hoseRange.getScaleX() - 0.05f, this.hoseRange.getScaleY() - 0.05f);
+            }
         }
+ 
+         // Change batch aplha to match bar to fade hose in and out
+         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.7f);
+         batch.draw(new TextureRegion(this.waterTexture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
+             this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX() / 2, this.hoseRange.getScaleY(), this.getRotation(), true);
+         // Return the batch to its original colours
+         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
+
+        // Update the water bar and hose positions
         this.waterBar.setPosition(this.getX(), this.getCentreY());
         this.waterBar.update(batch);
+        this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
+        this.hoseRange.setRotation(this.getRotation());
 
         // Decrease timeouts, used for keeping track of time
         if (this.redLightDelay > 0) this.redLightDelay -= 1;
@@ -177,14 +202,16 @@ public class Firetruck extends MovementSprite {
     private void createWaterHose() {
         // Get the scale of the hose and create its shape
         float rangeScale = this.firetruckProperties[4];
+        this.hoseWidth = this.getWidth() * 4.5f * rangeScale;
+        this.hoseHeight = this.getHeight() * rangeScale;
         float[] hoseVertices = { // Starts facing right
             0, 0,
-            (this.getWidth() * 1.50f * rangeScale),  (this.getHeight() / 1.5f * rangeScale),
-            (this.getWidth() * 1.75f * rangeScale),  (this.getHeight() / 2.0f * rangeScale),
-            (this.getWidth() * 1.85f * rangeScale),  (this.getHeight() / 5.0f * rangeScale),
-            (this.getWidth() * 1.85f * rangeScale), -(this.getHeight() / 5.0f * rangeScale),
-            (this.getWidth() * 1.75f * rangeScale), -(this.getHeight() / 2.0f * rangeScale),
-            (this.getWidth() * 1.50f * rangeScale), -(this.getHeight() / 1.5f * rangeScale)
+            (hoseWidth * 0.40f),  (hoseHeight/ 2.0f),
+            (hoseWidth * 0.45f),  (hoseHeight/ 2.5f),
+            (hoseWidth * 0.53f),  (hoseHeight/ 3.0f),
+            (hoseWidth * 0.53f), -(hoseHeight/ 3.0f),
+            (hoseWidth * 0.45f), -(hoseHeight/ 2.5f),
+            (hoseWidth * 0.40f), -(hoseHeight/ 2.0f)
         }; 
         this.hoseRange = new Polygon(hoseVertices);
         // Create the water bar
@@ -229,9 +256,6 @@ public class Firetruck extends MovementSprite {
     public void toggleHose() {
         if (this.toggleDelay <= 0) {
             this.toggleDelay = 10;
-            // Scale the hose to hide it
-            float scale = !this.isSpraying ? this.firetruckProperties[4] : 0;
-            this.hoseRange.setScale(scale,scale);
             this.isSpraying = !this.isSpraying;
             this.waterBar.setFade(false, !this.isSpraying);
         }
