@@ -100,10 +100,11 @@ public class MovementSprite extends SimpleSprite {
         float currentRotation = this.getRotation();
         float desiredRotation = this.speed.angle();
         float angle = desiredRotation - currentRotation;
-        if (this.speed.len() >= this.accelerationRate) {
+        if (this.speed.len() >= this.accelerationRate && this.rotationLockTime <= 0) {
             // Use the shortest angle
             angle = (angle + 180) % 360 - 180;
-            this.rotate(angle * Gdx.graphics.getDeltaTime());
+            float rotationSpeed = 0.05f * this.speed.len();
+            this.rotate(angle * rotationSpeed * Gdx.graphics.getDeltaTime());
         }
     }
 
@@ -121,7 +122,7 @@ public class MovementSprite extends SimpleSprite {
             if (this.decelerationRate != 0) decelerate();
         } else {
             // Seperate the sprite from the tile depending on where its collided
-            collisionOccurred(new Vector2(collidesRight() ? -1 : 1, collidesTop() ? -1 : 1));
+            collisionOccurred(this.speed.rotate(180).scl(0.05f));
         }
     }
 
