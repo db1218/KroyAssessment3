@@ -46,13 +46,13 @@ public class ResourceBar {
      * Creates a new progress bar and sets the inital values for all properties needed.
      */
     private void create() {
-        this.beginFadeOut = false;
         this.maxResourceAmount = 100;
         this.currentResourceAmount = 100;
         this.colourRange = new Color[] { Color.RED, Color.ORANGE, Color.GREEN };
         this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
         this.bar.setSize(this.barWidth, this.barHeight);
         this.bar.getColor().a = 0;
+        this.setFade(false, true);
     }
 
     /**
