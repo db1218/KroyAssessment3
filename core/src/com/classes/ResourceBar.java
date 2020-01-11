@@ -10,6 +10,9 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Color;
 
+// Constants imports
+import static com.config.Constants.BAR_FADE_DURATION;
+
 /**
  * Resource bars used by sprites to indicate properties of sprites.
  * These are graphical and displayed to the user.
@@ -21,7 +24,9 @@ public class ResourceBar {
 
     // Private values to be used in this class only
     private ProgressBar bar;
-    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight, isVisibileTime;
+    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight;
+    private boolean fadeIn, fadeOut, beginFadeOut;
+    private Color[] colourRange; 
 
     /**
      * Constructor for this class, gathers required information so that it can
@@ -41,21 +46,31 @@ public class ResourceBar {
      * Creates a new progress bar and sets the inital values for all properties needed.
      */
     private void create() {
-        this.isVisibileTime = 0;
+        this.beginFadeOut = false;
         this.maxResourceAmount = 100;
         this.currentResourceAmount = 100;
+        this.colourRange = new Color[] { Color.RED, Color.ORANGE, Color.GREEN };
         this.bar = new ProgressBar(0, 100, 0.5f, false, getResourceBarStyle());
         this.bar.setSize(this.barWidth, this.barHeight);
+        this.bar.getColor().a = 0;
     }
 
     /**
      * Draw the resource bar. Needs to be called every frame.
      */
     public void update(Batch batch) {
-        if (this.isVisibileTime > 0) {
-            if (this.currentResourceAmount >= this.maxResourceAmount) this.isVisibileTime -= 1;
-            this.bar.draw(batch, 1);
+        // Fade the bar in or out
+        if (!this.beginFadeOut) {
+            this.bar.getColor().a += this.fadeIn  && this.bar.getColor().a < BAR_FADE_DURATION ? 0.05 : 0;
+            if (this.bar.getColor().a >= BAR_FADE_DURATION) this.beginFadeOut = true;
+        } else {
+            this.bar.getColor().a -= this.fadeOut && this.bar.getColor().a > 0 ? 0.05 : 0;
         }
+
+        this.bar.draw(batch, 1);
+        // MUST return batch to correct alpha value
+        // otherwise it fades all layers out
+        batch.setColor(1.0f, 1.0f, 1.0f, 1f);
     }
 
     /**
@@ -83,27 +98,22 @@ public class ResourceBar {
      * @return Updated resource bar style.
      */
     private ProgressBarStyle getResourceBarStyle() {
+        // Values changed, show bar then fade out if at maximum
+        this.setFade(true, this.currentResourceAmount >= this.maxResourceAmount);
+
         // Colour to use for the bar, depending on health percentage
         Color color = this.currentResourceAmount <= this.maxResourceAmount * 0.5 ?
             this.currentResourceAmount <= this.maxResourceAmount * 0.25 ?
-                Color.RED : Color.ORANGE : Color.GREEN;
+                this.colourRange[0] : this.colourRange[1] : this.colourRange[2];
         
-        // Size of entire bar is shared between the reource bar and the empty bar
-        int scaledResource = (int) (((float) this.currentResourceAmount / 100) * this.barWidth);
-        int scaledEmpty = (int) (((float)(this.maxResourceAmount - this.currentResourceAmount) / 100) * this.barWidth);
+        // Size of entire bar is shared between the resource bar and the empty bar
+        int scaledResource = (int) (((float) this.currentResourceAmount / this.maxResourceAmount) * this.barWidth);
+        int scaledEmpty = (int) (((float)(this.maxResourceAmount - this.currentResourceAmount) / this.maxResourceAmount) * this.barWidth);
 
         // Create the bars and return a combined bar
         Skin resource = createBarFill("resource", color, scaledResource, this.barHeight);
         Skin background = createBarFill("background", Color.GRAY, scaledEmpty, this.barHeight);
         return new ProgressBarStyle(background.newDrawable("background"), resource.newDrawable("resource"));
-    }
-
-    /** 
-     * Get the current resource amount.
-     * @return The current resource amount;
-     */
-    public float getCurrentAmount() {
-        return this.currentResourceAmount;
     }
 
     /** 
@@ -117,6 +127,46 @@ public class ResourceBar {
         float x = spriteXPos + (longestSide / 2) - (barWidth / 2);
         float y = spriteYPos + longestSide;
         this.bar.setPosition(x, y);
+    }
+
+    /** 
+     * Fade the bar either in or out using it's alpha value.
+     * @param shouldFadeIn Whether to fade in (true) or out (false)
+     */
+    public void setFade(boolean shouldFadeIn, boolean shouldFadeOut) {
+        this.fadeIn = shouldFadeIn;
+        this.fadeOut = shouldFadeOut;
+        this.beginFadeOut = !shouldFadeIn;
+    }
+
+    /** 
+     * Set the colour range of the bar. The bar is split into 3 sections
+     * so 3 colours are required.
+     * @param colours The colours the sprite will use;
+     */
+    public void setColourRange(Color[] colours) {
+        if (colours.length >= 3) {
+            this.colourRange = colours;
+        } else {
+            this.colourRange = new Color[] { colours[0], colours[0], colours[0] };
+        }
+        this.bar.setStyle(getResourceBarStyle());
+    }
+
+    /** 
+     * Get the current resource amount.
+     * @return The current resource amount;
+     */
+    public float getCurrentAmount() {
+        return this.currentResourceAmount;
+    }
+
+    /** 
+     * Get the max resource amount.
+     * @return The max resource amount;
+     */
+    public float getMaxAmount() {
+        return this.maxResourceAmount;
     }
 
     /**
@@ -156,8 +206,6 @@ public class ResourceBar {
             }
         }
         this.bar.setStyle(getResourceBarStyle());
-        // Bar values changed so show user
-        this.isVisibileTime = 200;
     }
 
     /**
@@ -176,7 +224,5 @@ public class ResourceBar {
             }
         }
         this.bar.setStyle(getResourceBarStyle());
-        // Bar values changed so show user
-        this.isVisibileTime = 200;
     }
 }

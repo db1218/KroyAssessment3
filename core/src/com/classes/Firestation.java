@@ -16,6 +16,7 @@ import com.sprites.SimpleSprite;
 import static com.config.Constants.FIRESTATION_HEALTH;
 import static com.config.Constants.FIRESTATION_HEIGHT;
 import static com.config.Constants.FIRESTATION_WIDTH;
+import static com.config.Constants.FIRETRUCK_REPAIR_SPEED;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -83,7 +84,8 @@ public class Firestation extends SimpleSprite {
      */
     public void repair(Firetruck firetruck) {
         if (this.repairTimeout <= 0) {
-            firetruck.getHealthBar().addResourceAmount(1);
+            firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
+            firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
             this.repairTimeout = 10;
         }
     }

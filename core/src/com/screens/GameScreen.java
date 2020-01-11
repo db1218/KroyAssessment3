@@ -230,6 +230,9 @@ public class GameScreen implements Screen {
 		// ---- 2) Perform any checks for user input ---------------------- //
 
 		// Check for user input to see if the focused truck should change
+		if (Gdx.input.isKeyPressed(Keys.E)) {
+			focusedTruck.toggleHose();
+		}
 		if (Gdx.input.isKeyPressed(Keys.NUM_1)) {
             setFiretruckFocus(1);
 		}
@@ -334,8 +337,8 @@ public class GameScreen implements Screen {
 				}
 			}
 			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
-			// Allows multiple trucks to be in the radius and be repaired.
-			if (firetruckA.isDamaged() && this.firestation.isInRadius(firetruckA.getHitBox())) {
+			// Allows multiple trucks to be in the radius and be repaired or refilled.
+			if ((firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
 				this.firestation.repair(firetruckA);
 			}
 		}

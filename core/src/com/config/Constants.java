@@ -16,6 +16,7 @@ public final class Constants {
         300f, // MAX_SPEED
         0.8f, // RESTITUTION
         1.5f, // RANGE
+        1000, // WATER MAX
     };
 
     // Firetruck Two properties
@@ -25,6 +26,7 @@ public final class Constants {
         400f, // MAX_SPEED
         0.6f, // RESTITUTION
         1f,   // RANGE
+        750,  // WATER MAX
     };
 
      // Enums
@@ -47,6 +49,10 @@ public final class Constants {
     public static final float MAP_HEIGHT = 10000 * (8 * MAP_SCALE);
     public static final int TILE_DIMS = (int) (8 * MAP_SCALE);
     public static final String COLLISION_TILE = "BLOCKED";
+
+    // Time durations
+    public static final float BAR_FADE_DURATION = 3;
+    public static final int FIRETRUCK_REPAIR_SPEED = 50;
 
     // Camera settings
     public static final float LERP = 1.5f;

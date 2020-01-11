@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
@@ -13,6 +14,7 @@ import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
 import com.sprites.MovementSprite;
+import com.classes.ResourceBar;
 
 // Constants imports
 import static com.config.Constants.Direction;
@@ -31,11 +33,12 @@ import java.util.ArrayList;
 public class Firetruck extends MovementSprite {
 
     // Private values to be used in this class only
-    private Boolean isFocused;
-    private int focusID, redLightDelay;
+    private Boolean isFocused, isSpraying;
+    private int focusID, redLightDelay, toggleDelay;
     private float[] firetruckProperties;
     private ArrayList<Texture> firetruckSlices;
     private Polygon hoseRange;
+    private ResourceBar waterBar;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -84,23 +87,14 @@ public class Firetruck extends MovementSprite {
      */
     private void create() {
         this.redLightDelay = 0;
+        this.isSpraying = true;
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         this.getHealthBar().setMaxResource((int) this.firetruckProperties[0]);
         this.setAccelerationRate(this.firetruckProperties[1]);
         this.setDecelerationRate(this.firetruckProperties[1] * 0.6f);
         this.setMaxSpeed(this.firetruckProperties[2]);
         this.setRestitution(this.firetruckProperties[3]);
-        float rangeScale = this.firetruckProperties[4];
-        float[] hoseVertices = { // Starts facing right
-            0, 0,
-            (this.getWidth() * 1.50f * rangeScale),  (this.getHeight() / 1.5f * rangeScale),
-            (this.getWidth() * 1.75f * rangeScale),  (this.getHeight() / 2.0f * rangeScale),
-            (this.getWidth() * 1.85f * rangeScale),  (this.getHeight() / 5.0f * rangeScale),
-            (this.getWidth() * 1.85f * rangeScale), -(this.getHeight() / 5.0f * rangeScale),
-            (this.getWidth() * 1.75f * rangeScale), -(this.getHeight() / 2.0f * rangeScale),
-            (this.getWidth() * 1.50f * rangeScale), -(this.getHeight() / 1.5f * rangeScale)
-        }; 
-        this.hoseRange = new Polygon(hoseVertices);
+        this.createWaterHose();
     }
 
     /**
@@ -110,9 +104,7 @@ public class Firetruck extends MovementSprite {
     public void update(Batch batch) {
         super.update(batch);
         drawVoxelImage(batch);
-        this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
-        this.hoseRange.setRotation(this.getRotation());
-        if (isFocused) {
+        if (this.isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
                 super.applyAcceleration(Direction.LEFT);
@@ -127,7 +119,24 @@ public class Firetruck extends MovementSprite {
                 super.applyAcceleration(Direction.UP);
             }
         }
-        if (redLightDelay > 0) redLightDelay -= 1;
+        
+        // If spraying
+        if (this.isSpraying) {
+            // Deplete water if spraying
+            this.waterBar.subtractResourceAmount(1);
+
+            // Position the hose on the firetruck
+            this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
+            this.hoseRange.setRotation(this.getRotation());
+        } else {
+            this.waterBar.setFade(false, true);
+        }
+        this.waterBar.setPosition(this.getX(), this.getCentreY());
+        this.waterBar.update(batch);
+
+        // Decrease timeouts, used for keeping track of time
+        if (this.redLightDelay > 0) this.redLightDelay -= 1;
+        if (this.toggleDelay > 0) this.toggleDelay -= 1;
     }
 
     /**
@@ -164,9 +173,35 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
+     * Creates the polygon for the hose and the water bar to store the firetruck's
+     * water level.
+     */
+    private void createWaterHose() {
+        // Get the scale of the hose and create its shape
+        float rangeScale = this.firetruckProperties[4];
+        float[] hoseVertices = { // Starts facing right
+            0, 0,
+            (this.getWidth() * 1.50f * rangeScale),  (this.getHeight() / 1.5f * rangeScale),
+            (this.getWidth() * 1.75f * rangeScale),  (this.getHeight() / 2.0f * rangeScale),
+            (this.getWidth() * 1.85f * rangeScale),  (this.getHeight() / 5.0f * rangeScale),
+            (this.getWidth() * 1.85f * rangeScale), -(this.getHeight() / 5.0f * rangeScale),
+            (this.getWidth() * 1.75f * rangeScale), -(this.getHeight() / 2.0f * rangeScale),
+            (this.getWidth() * 1.50f * rangeScale), -(this.getHeight() / 1.5f * rangeScale)
+        }; 
+        this.hoseRange = new Polygon(hoseVertices);
+        // Create the water bar
+        this.waterBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
+        this.waterBar.setColourRange(new Color[] { Color.BLUE });
+        this.waterBar.setMaxResource((int) this.firetruckProperties[5]);
+        // Start with the hose off
+        this.toggleHose();
+    } 
+
+    /**
      * Checks if a polygon is within the range of the firetrucks hose.
-     * 
      * @param polygon  The polygon that needs to be checked.
+     * 
+     * @return Whether the polygon is in the hose's range
      */
     public boolean isInHoseRange(Polygon polygon) {
         return Intersector.overlapConvexPolygons(polygon, this.hoseRange);
@@ -179,6 +214,28 @@ public class Firetruck extends MovementSprite {
      */
     public boolean isDamaged() {
         return this.getHealthBar().getCurrentAmount() < this.firetruckProperties[0];
+    }
+
+    /**
+     * Gets whether the firetruck has used any water.
+     * 
+     * @return Whether the firetruck has used any water.
+     */
+    public boolean isLowOnWater() {
+        return this.waterBar.getCurrentAmount() < this.firetruckProperties[5];
+    }
+
+    /**
+     * Toggles the fireturck's hose to spray if off and stop if on.
+     */
+    public void toggleHose() {
+        if (this.toggleDelay <= 0) {
+            this.toggleDelay = 10;
+            // Scale the hose to hide it
+            float scale = !this.isSpraying ? this.firetruckProperties[4] : 0;
+            this.hoseRange.setScale(scale,scale);
+            this.isSpraying = !this.isSpraying;
+        }
     }
 
     /**
@@ -200,6 +257,15 @@ public class Firetruck extends MovementSprite {
         } else {
             this.isFocused = false;
         }
+    }
+
+    /**
+     * Gets the firetruck's water bar so it can be manipulated.
+     * 
+     * @return The firetruck's water bar.
+     */
+    public ResourceBar getWaterBar() {
+        return this.waterBar;
     }
 
     /**
