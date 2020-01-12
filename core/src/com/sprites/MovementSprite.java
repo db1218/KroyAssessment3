@@ -113,16 +113,21 @@ public class MovementSprite extends SimpleSprite {
      * existing acceleration.
      */
     private void accelerate() {
+        // The coordinates the sprite will move into
+        float newX = this.getX() + this.speed.x * Gdx.graphics.getDeltaTime();
+        float newY = this.getY() + this.speed.y * Gdx.graphics.getDeltaTime();
         // Calculate whether it hits any boundaries
-        boolean collides = this.collisionLayer != null && (collidesLeft() || collidesRight() || collidesTop() || collidesBottom());
+        boolean collides = this.collisionLayer != null && collidesWithBlockedTile(newX, newY);
         // Check if it collides with any tiles, then move the sprite
         if (!collides) {
-            setX(getX() + this.speed.x * Gdx.graphics.getDeltaTime());
-            setY(getY() + this.speed.y * Gdx.graphics.getDeltaTime());
+            this.setX(newX);
+            this.setY(newY);
             if (this.decelerationRate != 0) decelerate();
         } else {
-            // Seperate the sprite from the tile depending on where its collided
+            // Seperate the sprite from the tile
             collisionOccurred(this.speed.rotate(180).scl(0.05f));
+            this.setX(this.getX() - this.speed.x);
+            this.setY(this.getY() - this.speed.y);
         }
     }
 
@@ -155,7 +160,7 @@ public class MovementSprite extends SimpleSprite {
         // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
         this.speed.y *= -this.restitution;
         this.speed.x *= -this.restitution;
-        this.setRotationLock(0.5f);
+        this.setRotationLock(0.25f);
         this.setY(this.getY() + pushBackY);
         this.setX(this.getX() + pushBackX);
     }
@@ -166,69 +171,23 @@ public class MovementSprite extends SimpleSprite {
      * @param y The y-coordinate to check.
      * @return Whether the sprite can enter the tile (true) or not (false).
      */
-    private boolean isCellBlocked(float x, float y) {
-        Cell cell = collisionLayer.getCell((int) (x / TILE_DIMS), (int) (y / TILE_DIMS));
-		return cell != null && cell.getTile() != null && cell.getTile().getProperties().containsKey(COLLISION_TILE);
+    private boolean collidesWithBlockedTile(float x, float y) {
+        // Vector to calculate rotated width and height
+        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(-this.getRotation());
+        // Coordinates to check with a bit of leniance
+        int leftX =   (int) x + TILE_DIMS / 8;
+        int rightX =  (int) (x + Math.abs(size.x)) - TILE_DIMS / 8;
+        int bottomY = (int) y + TILE_DIMS / 8;
+        int topY =    (int) (y + Math.abs(size.y)) - TILE_DIMS / 8;
+        // Check neighbours and return if they're blocked
+        for ( int xPos = leftX; xPos <= rightX; xPos+= TILE_DIMS) {
+            for ( int yPos = bottomY; yPos <= topY; yPos+= TILE_DIMS) {
+                Cell cell = collisionLayer.getCell(xPos / TILE_DIMS, yPos / TILE_DIMS);
+		        if (cell != null && cell.getTile() != null) return cell.getTile().getProperties().containsKey(COLLISION_TILE);
+            }
+        }
+        return false;
 	}
-
-    /**
-     * Checks all tiles the sprite will cover in the rightward direction to see
-     * if they are "blocked". Steps through each tile, with step length
-     * determined by the size of the sprite.
-     * @return Whether any tiles on route are blocked (true) or no blockages (false).
-     */
-	private boolean collidesRight() {
-		for(float step = 0; step < this.getHeight(); step += TILE_DIMS / 2)
-			if(isCellBlocked(this.getX() + this.getWidth(), this.getY() + step))
-				return true;
-		return false;
-	}
-
-    /**
-     * Checks all tiles the sprite will cover in the leftward direction to see if
-     * they are "blocked". Steps through each tile, with step length determined by
-     * the size of the sprite.
-     * 
-     * @return Whether any tiles on route are blocked (true) or no blockages
-     *         (false).
-     */
-	private boolean collidesLeft() {
-		for(float step = 0; step < this.getHeight(); step += TILE_DIMS / 2)
-			if(isCellBlocked(this.getX(), this.getY() + step))
-				return true;
-		return false;
-	}
-
-    /**
-     * Checks all tiles the sprite will cover in the upward direction to see if
-     * they are "blocked". Steps through each tile, with step length determined by
-     * the size of the sprite.
-     * 
-     * @return Whether any tiles on route are blocked (true) or no blockages
-     *         (false).
-     */
-	private boolean collidesTop() {
-		for(float step = 0; step < this.getWidth(); step += TILE_DIMS / 2)
-			if(isCellBlocked(this.getX() + step, this.getY() + this.getHeight()))
-				return true;
-		return false;
-
-	}
-
-    /**
-     * Checks all tiles the sprite will cover in the downward direction to see if
-     * they are "blocked". Steps through each tile, with step length determined by
-     * the size of the sprite.
-     * 
-     * @return Whether any tiles on route are blocked (true) or no blockages
-     *         (false).
-     */
-	private boolean collidesBottom() {
-		for(float step = 0; step < this.getWidth(); step += TILE_DIMS / 2)
-			if(isCellBlocked(this.getX() + step, this.getY()))
-				return true;
-		return false;
-    }
     
     /**
      * Sets the amount of time the sprite cannot rotate for.
