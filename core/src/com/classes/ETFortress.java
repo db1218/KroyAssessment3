@@ -34,12 +34,29 @@ public class ETFortress extends SimpleSprite {
      * Drawn with the given texture at the given position.
      * 
      * @param texture  The texture used to draw the ETFortress with.
+     * @param scaleX   The scaling in the x-axis.
+     * @param scaleY   The scaling in the y-axis.
      * @param xPos     The x-coordinate for the ETFortress.
      * @param yPos     The y-coordinate for the ETFortress.
      */
-    public ETFortress(Texture texture, float xPos, float yPos) {
+    public ETFortress(Texture texture, float scaleX, float scaleY, float xPos, float yPos) {
         super(texture);
+        this.setScale(scaleX, scaleY);
         this.setPosition(xPos, yPos);
+        this.create();
+    }
+
+    /**
+     * Overloaded constructor containing all possible parameters.
+     * Drawn with the given texture at the given position.
+     * 
+     * @param texture   The texture used to draw the ETFortress with.
+     * @param scaleX    The scaling in the x-axis.
+     * @param scaleY    The scaling in the y-axis.
+     */
+    public ETFortress(Texture texture, float scaleX, float scaleY) {
+        super(texture);
+        this.setScale(scaleX, scaleY);
         this.create();
     }
 
@@ -59,7 +76,7 @@ public class ETFortress extends SimpleSprite {
      */
     private void create() {
         this.getHealthBar().setMaxResource(ETFORTRESS_HEALTH);
-        this.setSize(ETFORTRESS_WIDTH, ETFORTRESS_HEIGHT);
+        this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 2);
     }
 

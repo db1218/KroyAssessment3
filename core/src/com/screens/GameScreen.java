@@ -39,6 +39,7 @@ import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
+import static com.config.Constants.TILE_DIMS;
 import static com.config.Constants.DEBUG_ENABLED;
 import static com.config.Constants.FiretruckOneProperties;
 import static com.config.Constants.FiretruckTwoProperties;
@@ -116,17 +117,18 @@ public class GameScreen implements Screen {
 		// Select background and foreground map layers, order matters
         MapLayers mapLayers = map.getLayers();
         this.foregroundLayers = new int[] {
-			mapLayers.getIndex("Trees"),
 			mapLayers.getIndex("Buildings")
         };
         this.backgroundLayers = new int[] {
+			mapLayers.getIndex("Trees"),
 			mapLayers.getIndex("River"),
 			mapLayers.getIndex("Road")
         };
 
 		// Initialise textures to use for spites
 		Texture firestationTexture = new Texture("FiretruckSlices/tile008.png");
-		Texture ETFortressTexture = new Texture("FiretruckSlices/tile009.png");
+		Texture cliffordsTowerTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower.png");
+		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture waterTexture = new Texture("temp_water.png");
 		this.projectileTexture = new Texture("FiretruckSlices/tile008.png");
 		
@@ -156,10 +158,8 @@ public class GameScreen implements Screen {
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
-		for (int i = 1; i <= 1; i++) {
-			ETFortress ETFortress = new ETFortress(ETFortressTexture, 1750 * i, 500);
-			this.ETFortresses.add(ETFortress);
-		}
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
 	}
 
 	/**
@@ -275,7 +275,7 @@ public class GameScreen implements Screen {
 		for (Projectile projectile : this.projectiles) {
 			projectile.update(batch);
 			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
-			if (projectile.isOutOfView(cameraPosition)) this.projectilesToRemove.add(projectile);
+			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
 		}
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
