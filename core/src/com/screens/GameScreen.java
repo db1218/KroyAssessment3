@@ -133,11 +133,15 @@ public class GameScreen implements Screen {
 		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
-		Texture waterTexture = new Texture("temp_water.png");
 		this.projectileTexture = new Texture("FiretruckSlices/tile008.png");
 		
-		// Create array of textures for firetruck animations
+		// Create arrays of textures for animations
+		ArrayList<Texture> waterFrames = new ArrayList<Texture>();
 		ArrayList<Texture> firetruckSlices = new ArrayList<Texture>();
+		for (int i = 1; i <= 3; i++) {
+			Texture texture = new Texture("waterSplash" + i + ".png");
+			waterFrames.add(texture);
+		}
 		for (int i = 19; i > 0; i--) {
 			if (i == 5) { // Texture 5 contains identical slices except the lights are different
 				Texture texture = new Texture("FiretruckSlices/tile05A.png");
@@ -157,8 +161,8 @@ public class GameScreen implements Screen {
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
-		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 80 * TILE_DIMS, 30 * TILE_DIMS));
-		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 80 * TILE_DIMS, 32 * TILE_DIMS));
+		this.firetrucks.add(new Firetruck(firetruckSlices, waterFrames, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 80 * TILE_DIMS, 30 * TILE_DIMS));
+		this.firetrucks.add(new Firetruck(firetruckSlices, waterFrames, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 80 * TILE_DIMS, 32 * TILE_DIMS));
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
