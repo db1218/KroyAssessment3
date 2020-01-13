@@ -157,8 +157,8 @@ public class GameScreen implements Screen {
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
-		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 1100, 650));
-		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 2200, 650));
+		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 80 * TILE_DIMS, 30 * TILE_DIMS));
+		this.firetrucks.add(new Firetruck(firetruckSlices, waterTexture, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 80 * TILE_DIMS, 32 * TILE_DIMS));
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
@@ -177,6 +177,10 @@ public class GameScreen implements Screen {
 
 		// Zoom delay is the time before the camera zooms out
 		this.zoomDelay = 0;
+
+		// Start the camera near the firestation
+		this.camera.position.x = 80 * TILE_DIMS;
+		this.camera.position.y = 30 * TILE_DIMS;
 
 		// Create array to collect offscreen projectiles that need removing
 		this.projectilesToRemove = new ArrayList<Projectile>();

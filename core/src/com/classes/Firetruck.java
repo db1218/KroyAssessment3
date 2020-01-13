@@ -101,6 +101,8 @@ public class Firetruck extends MovementSprite {
         this.setMaxSpeed(this.firetruckProperties[2]);
         this.setRestitution(this.firetruckProperties[3]);
         this.createWaterHose();
+        // Start the firetruck facing left
+        this.rotate(-90);
     }
 
     /**
