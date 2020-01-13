@@ -129,6 +129,8 @@ public class GameScreen implements Screen {
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
 		Texture cliffordsTowerTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower.png");
 		Texture cliffordsTowerWetTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower_wet.png");
+		Texture railstationTexture = new Texture("MapAssets/UniqueBuildings/railstation.png");
+		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
 		Texture waterTexture = new Texture("temp_water.png");
@@ -162,6 +164,7 @@ public class GameScreen implements Screen {
 		this.ETFortresses = new ArrayList<ETFortress>();
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, 1 * TILE_DIMS, 72.75f * TILE_DIMS));
 	}
 
 	/**
