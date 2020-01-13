@@ -320,9 +320,6 @@ public class GameScreen implements Screen {
 			}
 			// Check if it overlaps with an ETFortress
 			for (ETFortress ETFortress : this.ETFortresses) {
-				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), ETFortress.getHitBox(), seperationVector)) {
-					firetruckA.collisionOccurred(seperationVector.normal);
-				}
 				if (firetruckA.isInHoseRange(ETFortress.getHitBox())) {
 					ETFortress.getHealthBar().subtractResourceAmount(1);
 				}
@@ -354,7 +351,14 @@ public class GameScreen implements Screen {
 	 */
 	private Firetruck getFiretruckInFocus() {
 		for (Firetruck firetruck : this.firetrucks) {
-			if (firetruck.isFocused()) {
+			if (firetruck.isFocused() && firetruck.getHealthBar().getCurrentAmount() > 0) {
+				return firetruck;
+			}
+		}
+		// If no firetruck alive focus next one
+		for (Firetruck firetruck : this.firetrucks) {
+			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
+				firetruck.setFocus(firetruck.getFocusID());
 				return firetruck;
 			}
 		}
@@ -368,7 +372,9 @@ public class GameScreen implements Screen {
 	 */
 	private void setFiretruckFocus(int focusID) {
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.setFocus(focusID);
+			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
+				firetruck.setFocus(focusID);
+			}
 		}
 	}
 

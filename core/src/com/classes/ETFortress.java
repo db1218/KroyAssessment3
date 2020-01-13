@@ -102,7 +102,7 @@ public class ETFortress extends SimpleSprite {
      * @return boolean  Whether the ETFortress is ready to fire again (true) or not (false)
      */
     public boolean canShootProjectile() {
-        if (this.timeBetweenProjectiles < 120 && this.timeBetweenProjectiles % 30 == 0) {
+        if (this.getHealthBar().getCurrentAmount() > 0 && this.timeBetweenProjectiles < 120 && this.timeBetweenProjectiles % 30 == 0) {
             if (this.timeBetweenProjectiles <= 0) this.timeBetweenProjectiles = 150;
             return true;
         }

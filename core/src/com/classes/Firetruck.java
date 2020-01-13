@@ -108,58 +108,62 @@ public class Firetruck extends MovementSprite {
      * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
-        super.update(batch);
-        drawVoxelImage(batch);
-        if (this.isFocused) {
-            // Look for key press input, then accelerate the firetruck in that direction
-            if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-                super.applyAcceleration(Direction.LEFT);
+        if (this.getHealthBar().getCurrentAmount() > 0) {
+            super.update(batch);
+            drawVoxelImage(batch);
+            if (this.isFocused) {
+                // Look for key press input, then accelerate the firetruck in that direction
+                if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+                    super.applyAcceleration(Direction.LEFT);
+                }
+                if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+                    super.applyAcceleration(Direction.RIGHT);
+                }          
+                if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
+                    super.applyAcceleration(Direction.DOWN);
+                } 
+                if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+                    super.applyAcceleration(Direction.UP);
+                }
             }
-            if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
-                super.applyAcceleration(Direction.RIGHT);
-            }          
-            if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
-                super.applyAcceleration(Direction.DOWN);
-            } 
-            if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-                super.applyAcceleration(Direction.UP);
-            }
-        }
 
-        // If spraying
-        if (this.isSpraying) {
-            // Scale hose to show it
-            if (this.hoseRange.getScaleX() < this.firetruckProperties[4]) {
-                this.hoseRange.setScale(this.hoseRange.getScaleX() + 0.05f, this.hoseRange.getScaleY() + 0.05f);
-            } 
-            // Deplete water if spraying
-            if (this.waterBar.getCurrentAmount() > 0) {
-                this.waterBar.subtractResourceAmount(1);
+            // If spraying
+            if (this.isSpraying) {
+                // Scale hose to show it
+                if (this.hoseRange.getScaleX() < this.firetruckProperties[4]) {
+                    this.hoseRange.setScale(this.hoseRange.getScaleX() + 0.05f, this.hoseRange.getScaleY() + 0.05f);
+                } 
+                // Deplete water if spraying
+                if (this.waterBar.getCurrentAmount() > 0) {
+                    this.waterBar.subtractResourceAmount(1);
+                } else {
+                    this.toggleHose();
+                }
             } else {
-                this.toggleHose();
+                if (this.hoseRange.getScaleX() > 0) {
+                    this.hoseRange.setScale(this.hoseRange.getScaleX() - 0.05f, this.hoseRange.getScaleY() - 0.05f);
+                }
             }
+    
+            // Change batch aplha to match bar to fade hose in and out
+            batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.7f);
+            batch.draw(new TextureRegion(this.waterTexture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
+                this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX() / 2, this.hoseRange.getScaleY(), this.getRotation(), true);
+            // Return the batch to its original colours
+            batch.setColor(1.0f, 1.0f, 1.0f, 1f);
+
+            // Update the water bar and hose positions
+            this.waterBar.setPosition(this.getX(), this.getCentreY());
+            this.waterBar.update(batch);
+            this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
+            this.hoseRange.setRotation(this.getRotation());
+
+            // Decrease timeouts, used for keeping track of time
+            if (this.redLightDelay > 0) this.redLightDelay -= 1;
+            if (this.toggleDelay > 0) this.toggleDelay -= 1;
         } else {
-            if (this.hoseRange.getScaleX() > 0) {
-                this.hoseRange.setScale(this.hoseRange.getScaleX() - 0.05f, this.hoseRange.getScaleY() - 0.05f);
-            }
+            this.setPosition(-100, -100);
         }
- 
-         // Change batch aplha to match bar to fade hose in and out
-         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.7f);
-         batch.draw(new TextureRegion(this.waterTexture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
-             this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX() / 2, this.hoseRange.getScaleY(), this.getRotation(), true);
-         // Return the batch to its original colours
-         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
-
-        // Update the water bar and hose positions
-        this.waterBar.setPosition(this.getX(), this.getCentreY());
-        this.waterBar.update(batch);
-        this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
-        this.hoseRange.setRotation(this.getRotation());
-
-        // Decrease timeouts, used for keeping track of time
-        if (this.redLightDelay > 0) this.redLightDelay -= 1;
-        if (this.toggleDelay > 0) this.toggleDelay -= 1;
     }
 
     /**
@@ -268,6 +272,15 @@ public class Firetruck extends MovementSprite {
      */
     public boolean isFocused() {
         return this.isFocused;
+    }
+
+    /**
+     * Gets the firetruck's focus ID
+     * 
+     * @return The firetruck's focus ID
+     */
+    public int getFocusID() {
+        return this.focusID;
     }
 
     /**
