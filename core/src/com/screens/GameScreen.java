@@ -126,9 +126,11 @@ public class GameScreen implements Screen {
         };
 
 		// Initialise textures to use for spites
-		Texture firestationTexture = new Texture("FiretruckSlices/tile008.png");
+		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
 		Texture cliffordsTowerTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower.png");
+		Texture cliffordsTowerWetTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower_wet.png");
 		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
+		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
 		Texture waterTexture = new Texture("temp_water.png");
 		this.projectileTexture = new Texture("FiretruckSlices/tile008.png");
 		
@@ -149,7 +151,7 @@ public class GameScreen implements Screen {
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation 
-		this.firestation = new Firestation(firestationTexture, 1200, 500);
+		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS);
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
@@ -158,8 +160,8 @@ public class GameScreen implements Screen {
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
-		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
-		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
 	}
 
 	/**
