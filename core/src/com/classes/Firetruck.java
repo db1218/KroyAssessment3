@@ -5,11 +5,13 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
@@ -20,6 +22,8 @@ import com.classes.ResourceBar;
 import static com.config.Constants.Direction;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
+import static com.config.Constants.SCREEN_CENTRE_X;
+import static com.config.Constants.SCREEN_CENTRE_Y;
 
 // Java util import
 import java.util.ArrayList;
@@ -124,6 +128,34 @@ public class Firetruck extends MovementSprite {
             if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
                 super.applyAcceleration(Direction.UP);
             }
+
+            // Convert the two points into vectors
+            
+            Vector2 hoseVector = new Vector2((Gdx.input.getX()), (SCREEN_CENTRE_Y - Gdx.input.getY())); 
+            Vector2 centreVector = new Vector2(SCREEN_CENTRE_X, SCREEN_CENTRE_Y); 
+
+            // Work out the vector between them
+            hoseVector = centreVector.sub(hoseVector);
+            //hoseVector.rotate(180);
+
+            // Scale the vector by the speed we want it to travel
+            //hoseVector.scl(this.hoseWidth, this.hoseHeight);
+
+            System.out.println("Mouse " + (this.getX() / 2 + this.getWidth() - Gdx.input.getX()) + " " + (this.getCentreY() + this.getHeight() - SCREEN_CENTRE_Y - Gdx.input.getY()));
+            System.out.println("Firetruck " + this.getCentreX() + " " + this.getCentreY());
+            System.out.println("Result " + hoseVector.x + " " + hoseVector.y + " " + hoseVector.angle());
+
+            // Give the projectile the vector to travel at
+            //this.rotate(hoseVector.angle());
+            //this.setSpeed(hoseVector);
+
+            // Change batch aplha to match bar to fade hose in and out
+            batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.7f);
+            batch.draw(new TextureRegion(this.waterTexture), this.getCentreX(),this.getCentreY(), 0,0,
+                hoseVector.x, hoseVector.y, 1,1, hoseVector.angle(), false);
+            // Return the batch to its original colours
+            batch.setColor(1.0f, 1.0f, 1.0f, 1f);
+
         }
 
         // If spraying
@@ -143,13 +175,6 @@ public class Firetruck extends MovementSprite {
                 this.hoseRange.setScale(this.hoseRange.getScaleX() - 0.05f, this.hoseRange.getScaleY() - 0.05f);
             }
         }
- 
-         // Change batch aplha to match bar to fade hose in and out
-         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.7f);
-         batch.draw(new TextureRegion(this.waterTexture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
-             this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX() / 2, this.hoseRange.getScaleY(), this.getRotation(), true);
-         // Return the batch to its original colours
-         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
 
         // Update the water bar and hose positions
         this.waterBar.setPosition(this.getX(), this.getCentreY());
