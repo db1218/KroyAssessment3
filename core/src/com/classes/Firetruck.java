@@ -128,10 +128,10 @@ public class Firetruck extends MovementSprite {
             }
         }
       
-        // Deplete water if spraying
+        // Deplete water if spraying, toggle off when depleted
         if (this.isSpraying && this.waterBar.getCurrentAmount() > 0) {
             this.waterBar.subtractResourceAmount(1);
-        } else if (this.waterBar.getCurrentAmount() <= 0) {
+        } else if (this.isSpraying) {
             this.toggleHose();
         }
 
@@ -255,7 +255,7 @@ public class Firetruck extends MovementSprite {
     public void toggleHose() {
         if (this.toggleDelay <= 0) {
             this.toggleDelay = 20;
-            this.isSpraying = !this.isSpraying;
+            this.isSpraying = !this.isSpraying && this.waterBar.getCurrentAmount() > 0;
             this.waterBar.setFade(false, !this.isSpraying);
         }
     }
