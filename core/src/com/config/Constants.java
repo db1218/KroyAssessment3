@@ -66,6 +66,9 @@ public final class Constants {
     public static final float SCORE_X = SCREEN_WIDTH * 0.45f;
 
     // Sprite properties
+    // Damage
+    public static final int FIRETRUCK_DAMAGE = 1;
+    public static final int PROJECTILE_DAMAGE = 10;
     // Health
     public static final int ETFORTRESS_HEALTH = 1000;
     public static final int FIRESTATION_HEALTH = 1000;

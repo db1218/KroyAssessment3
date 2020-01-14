@@ -90,6 +90,10 @@ public class MainMenuScreen implements Screen {
 	 */
 	@Override
 	public void render(float delta) {
+		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
+		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
 		// Draw the button stage
 		stage.draw();
 	}
@@ -106,11 +110,6 @@ public class MainMenuScreen implements Screen {
 	public void show() {
 		// Allow stage to control screen inputs.
 		Gdx.input.setInputProcessor(stage);
-		
-		// clear the screen with a dark blue color. The arguments to glClearColor are the red, green
-		// blue and alpha component in the range [0,1] of the colour to be used to clear the screen.
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
-		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// Create table to arrange buttons.
 		Table buttonTable = new Table();

@@ -43,6 +43,8 @@ import static com.config.Constants.TILE_DIMS;
 import static com.config.Constants.DEBUG_ENABLED;
 import static com.config.Constants.FiretruckOneProperties;
 import static com.config.Constants.FiretruckTwoProperties;
+import static com.config.Constants.FIRETRUCK_DAMAGE;
+import static com.config.Constants.PROJECTILE_DAMAGE;
 
 /**
  * Display the main game.
@@ -320,6 +322,30 @@ public class GameScreen implements Screen {
 
 		// Check for any collisions
 		checkForCollisions();
+
+		// Check if the game should end
+		checkIfGameOver();
+	}
+
+	/**
+     * Checks to see if the player has won or lost the game. Navigates back to the main menu
+	 * if they won or lost.
+     */
+	private void checkIfGameOver() {
+		boolean gameWon = true, gameLost = true;
+		// Check if any firetrucks are still alive
+		for (Firetruck firetruck : this.firetrucks) {
+			if (firetruck.getHealthBar().getCurrentAmount() > 0) gameLost = false;
+		}
+		// Check if any fortresses are still alive
+		for (ETFortress ETFortress : this.ETFortresses) {
+			if (ETFortress.getHealthBar().getCurrentAmount() > 0) gameWon = false;
+		}
+		if (gameWon || gameLost) {
+			this.game.dispose();
+			dispose();
+			this.game.setScreen(new MainMenuScreen(this.game));
+		}
 	}
 
 	/**
@@ -334,13 +360,13 @@ public class GameScreen implements Screen {
 				// Check if the firetruck overlaps another firetruck, but not itself
 				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.getHitBox(), firetruckB.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
-					firetruckA.getHealthBar().subtractResourceAmount(5);
 				}
 			}
 			// Check if it overlaps with an ETFortress
 			for (ETFortress ETFortress : this.ETFortresses) {
-				if (firetruckA.isInHoseRange(ETFortress.getHitBox())) {
-					ETFortress.getHealthBar().subtractResourceAmount(1);
+				if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruckA.isInHoseRange(ETFortress.getHitBox())) {
+					ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+					this.score += 10;
 				}
 				if (ETFortress.isInRadius(firetruckA.getHitBox()) && ETFortress.canShootProjectile()) {
 					Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
@@ -351,7 +377,8 @@ public class GameScreen implements Screen {
 			// Check if firetruck is hit with a projectile
 			for (Projectile projectile : this.projectiles) {
 				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), projectile.getHitBox())) {
-					firetruckA.getHealthBar().subtractResourceAmount(10);
+					firetruckA.getHealthBar().subtractResourceAmount(PROJECTILE_DAMAGE);
+					if (this.score > 10) this.score -= 10;
 					projectilesToRemove.add(projectile);
 				}
 			}
