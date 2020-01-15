@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 // Tiled map imports fro LibGDX
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -69,7 +71,7 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
 
 	// Private values for the game
-	private int score;
+	private int score, time;
 	private float zoomDelay;
 	private Texture projectileTexture;
 
@@ -87,6 +89,7 @@ public class GameScreen implements Screen {
 	 * @param gam The game object.
 	 */
 	public GameScreen(final Kroy gam) {
+		// Assign the game to a property so it can be used when transitioning screens
 		this.game = gam;
 
 		// ---- 1) Create new instance for all the objects needed for the game ---- //
@@ -102,6 +105,15 @@ public class GameScreen implements Screen {
 
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<Projectile>();
+
+		// Decrease time every second, starting at 2 minutes
+		this.time = 2 * 60;
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				decreaseTime();
+			}
+		}, 1, 1 );
 
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
@@ -304,7 +316,8 @@ public class GameScreen implements Screen {
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
 		// Draw the score and FPS to the screen at given co-ordinates
-		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
+		game.drawFont("Score: " + this.score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
+		game.drawFont("Time: " + this.time, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + (SCORE_Y - 50) * camera.zoom);
 		if (DEBUG_ENABLED) game.drawFont("FPS: "
 			+ Gdx.graphics.getFramesPerSecond(),
 			cameraPosition.x + SCORE_X * 0.85f * camera.zoom,
@@ -383,10 +396,17 @@ public class GameScreen implements Screen {
 			}
 			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
 			// Allows multiple trucks to be in the radius and be repaired or refilled.
-			if ((firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
+			if (this.time > 0 && (firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
 				this.firestation.repair(firetruckA);
 			}
 		}
+	}
+
+	/**
+	 * Decreases time by 1, called every second by the timer
+	 */
+	private void decreaseTime() {
+		if (this.time > 0) this.time -= 1;
 	}
 
 	/**
