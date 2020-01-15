@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 
 //Import Kroy game
 import com.kroy.Kroy;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.classes.Projectile;
@@ -57,7 +57,7 @@ class ProjectileTest {
 		
 		// Create test projectile.
 		// TEXTURE NOT WORKING
-		Texture testTexture = new Texture("AlienProjectile.png");
+		Texture testTexture = new Texture("FiretruckRed/FiretruckRED (8).png");
 		Projectile testProjectile = new Projectile(testTexture, 0, 0);
 		
 		// Test projectile is out of view.
