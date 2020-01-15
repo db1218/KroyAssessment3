@@ -315,7 +315,7 @@ public class GameScreen implements Screen {
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
-		// Draw the score and FPS to the screen at given co-ordinates
+		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
 		game.drawFont("Time: " + this.time, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + (SCORE_Y - 50) * camera.zoom);
 		if (DEBUG_ENABLED) game.drawFont("FPS: "
