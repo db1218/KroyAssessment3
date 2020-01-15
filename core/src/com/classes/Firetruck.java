@@ -241,6 +241,15 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
+     * Gets whether the firetruck is spraying water.
+     * 
+     * @return Whether the firetruck is spraying water.
+     */
+    public boolean isSpraying() {
+        return this.isSpraying;
+    }
+
+    /**
      * Gets whether the firetruck has used any water.
      * 
      * @return Whether the firetruck has used any water.
