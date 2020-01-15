@@ -147,7 +147,7 @@ public class GameScreen implements Screen {
 		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
-		this.projectileTexture = new Texture("FiretruckRed/FiretruckRED (8).png");
+		this.projectileTexture = new Texture("alienProjectile.png");
 		
 		// Create arrays of textures for animations
 		ArrayList<Texture> waterFrames = new ArrayList<Texture>();
