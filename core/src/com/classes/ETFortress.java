@@ -14,6 +14,7 @@ import com.sprites.SimpleSprite;
 
 // Constants import
 import static com.config.Constants.ETFORTRESS_HEALTH;
+import static com.config.Constants.ETFORTRESS_HEALING;
 import static com.config.Constants.ETFORTRESS_HEIGHT;
 import static com.config.Constants.ETFORTRESS_WIDTH;
 
@@ -90,8 +91,13 @@ public class ETFortress extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
-        if (this.getHealthBar().getCurrentAmount() <= 0) this.removeSprite(this.destroyed);
+        // If ETFortress is destroyed
+        if (this.getHealthBar().getCurrentAmount() <= 0) {
+            this.removeSprite(this.destroyed);
+        }
+        // Set the detection radius
         this.detectionRange.setPosition(this.getCentreX(), this.getCentreY());
+        // Delay between each projectile
         if (this.timeBetweenProjectiles > 0) this.timeBetweenProjectiles -= 1;
     }
 

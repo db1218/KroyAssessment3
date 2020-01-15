@@ -70,8 +70,9 @@ public final class Constants {
     public static final int FIRETRUCK_DAMAGE = 1;
     public static final int PROJECTILE_DAMAGE = 10;
     // Health
-    public static final int ETFORTRESS_HEALTH = 1000;
-    public static final int FIRESTATION_HEALTH = 1000;
+    public static final int ETFORTRESS_HEALTH = 1000000;
+    public static final int ETFORTRESS_HEALING = ETFORTRESS_HEALTH / 900000;
+    public static final int FIRESTATION_HEALTH = 1000000;
     // Speed
     public static final float PROJECTILE_SPEED = 400;
     // Size

@@ -43,6 +43,7 @@ import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
 import static com.config.Constants.TILE_DIMS;
 import static com.config.Constants.DEBUG_ENABLED;
+import static com.config.Constants.ETFORTRESS_HEALING;
 import static com.config.Constants.FiretruckOneProperties;
 import static com.config.Constants.FiretruckTwoProperties;
 import static com.config.Constants.FIRETRUCK_DAMAGE;
@@ -71,7 +72,7 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
 
 	// Private values for the game
-	private int score, time;
+	private int score, time, lastUpdate;
 	private float zoomDelay;
 	private Texture projectileTexture;
 
@@ -106,8 +107,8 @@ public class GameScreen implements Screen {
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<Projectile>();
 
-		// Decrease time every second, starting at 2 minutes
-		this.time = 2 * 60;
+		// Decrease time every second, starting at 3 minutes
+		this.time = 3 * 60;
 		Timer.schedule(new Task() {
 			@Override
 			public void run() {
@@ -379,7 +380,12 @@ public class GameScreen implements Screen {
 				if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruckA.isInHoseRange(ETFortress.getHitBox())) {
 					ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
 					this.score += 10;
-				}
+				} else if (this.lastUpdate != this.time && ETFortress.getHealthBar().getCurrentAmount() > 0) {
+					// Heal ETFortresses every second if not taking damage
+				   ETFortress.getHealthBar().addResourceAmount(ETFORTRESS_HEALING);
+				   this.lastUpdate = this.time;
+			   }
+				
 				if (ETFortress.isInRadius(firetruckA.getHitBox()) && ETFortress.canShootProjectile()) {
 					Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
 					projectile.calculateTrajectory(firetruckA.getHitBox());
@@ -395,7 +401,7 @@ public class GameScreen implements Screen {
 				}
 			}
 			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
-			// Allows multiple trucks to be in the radius and be repaired or refilled.
+			// Allows multiple trucks to be in the radius and be repaired or refilled every second.
 			if (this.time > 0 && (firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
 				this.firestation.repair(firetruckA);
 			}
