@@ -21,6 +21,8 @@ import com.classes.ResourceBar;
 import static com.config.Constants.Direction;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
+import static com.config.Constants.SCREEN_CENTRE_X;
+import static com.config.Constants.SCREEN_CENTRE_Y;
 
 // Java util import
 import java.util.ArrayList;
@@ -126,6 +128,9 @@ public class Firetruck extends MovementSprite {
             if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
                 super.applyAcceleration(Direction.UP);
             }
+        } else if (this.isSpraying) {
+            // If not driving the truck, turn the hose off
+            this.toggleHose();
         }
       
         // Deplete water if spraying, toggle off when depleted
@@ -139,17 +144,25 @@ public class Firetruck extends MovementSprite {
         this.waterBar.setPosition(this.getX(), this.getCentreY());
         this.waterBar.update(batch);
 
-        // Update the hose size position
+        // Get the mouse input and get the angle from the truck to it. Get vector, normalise then get angle
+        Vector2 hoseVector = new Vector2(((this.getCentreX() - SCREEN_CENTRE_X) + Gdx.input.getX()), (this.getCentreY() + SCREEN_CENTRE_Y - Gdx.input.getY())); 
+        Vector2 centreVector = new Vector2(this.getCentreX(),this.getCentreY()); 
+
+        // Work out the vector between them
+        hoseVector = hoseVector.sub(centreVector);
+        hoseVector.nor();
+
+        // Update the hose size and position. Angle it towards the mouse
         float scale = this.isSpraying && this.hoseRange.getScaleX() < this.firetruckProperties[4] ?
             0.05f : !this.isSpraying && this.hoseRange.getScaleX() > 0 ? -0.05f : 0;
         this.hoseRange.setScale(this.hoseRange.getScaleX() + scale, this.hoseRange.getScaleY() + scale);
         this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
-        this.hoseRange.setRotation(this.getRotation());
+        this.hoseRange.setRotation(hoseVector.angle());
 
         // Change batch aplha to match bar to fade hose in and out
         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.9f);
         batch.draw(new TextureRegion(this.waterFrames.get(Math.round(this.animationTime / 10) % 3)), this.hoseRange.getX(), this.hoseRange.getY() - this.hoseHeight / 2,
-            0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), this.getRotation(), true);
+            0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), hoseVector.angle(), true);
         // Return the batch to its original colours
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
 
