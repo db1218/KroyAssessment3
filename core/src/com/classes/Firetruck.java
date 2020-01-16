@@ -5,7 +5,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -129,34 +128,9 @@ public class Firetruck extends MovementSprite {
             if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
                 super.applyAcceleration(Direction.UP);
             }
-
-            // Convert the two points into vectors
-            
-            Vector2 hoseVector = new Vector2((Gdx.input.getX()), (SCREEN_CENTRE_Y - Gdx.input.getY())); 
-            Vector2 centreVector = new Vector2(SCREEN_CENTRE_X, SCREEN_CENTRE_Y); 
-
-            // Work out the vector between them
-            hoseVector = centreVector.sub(hoseVector);
-            //hoseVector.rotate(180);
-
-            // Scale the vector by the speed we want it to travel
-            //hoseVector.scl(this.hoseWidth, this.hoseHeight);
-
-            System.out.println("Mouse " + (this.getX() / 2 + this.getWidth() - Gdx.input.getX()) + " " + (this.getCentreY() + this.getHeight() - SCREEN_CENTRE_Y - Gdx.input.getY()));
-            System.out.println("Firetruck " + this.getCentreX() + " " + this.getCentreY());
-            System.out.println("Result " + hoseVector.x + " " + hoseVector.y + " " + hoseVector.angle());
-
-            // Give the projectile the vector to travel at
-            //this.rotate(hoseVector.angle());
-            //this.setSpeed(hoseVector);
-
-            // Change batch aplha to match bar to fade hose in and out
-            batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.7f);
-            batch.draw(new TextureRegion(this.waterTexture), this.getCentreX(),this.getCentreY(), 0,0,
-                hoseVector.x, hoseVector.y, 1,1, hoseVector.angle(), false);
-            // Return the batch to its original colours
-            batch.setColor(1.0f, 1.0f, 1.0f, 1f);
-
+        } else if (this.isSpraying) {
+            // If not driving the truck, turn the hose off
+            this.toggleHose();
         }
       
         // Deplete water if spraying, toggle off when depleted
@@ -170,17 +144,25 @@ public class Firetruck extends MovementSprite {
         this.waterBar.setPosition(this.getX(), this.getCentreY());
         this.waterBar.update(batch);
 
-        // Update the hose size position
+        // Get the mouse input and get the angle from the truck to it. Get vector, normalise then get angle
+        Vector2 hoseVector = new Vector2(((this.getCentreX() - SCREEN_CENTRE_X) + Gdx.input.getX()), (this.getCentreY() + SCREEN_CENTRE_Y - Gdx.input.getY())); 
+        Vector2 centreVector = new Vector2(this.getCentreX(),this.getCentreY()); 
+
+        // Work out the vector between them
+        hoseVector = hoseVector.sub(centreVector);
+        hoseVector.nor();
+
+        // Update the hose size and position. Angle it towards the mouse
         float scale = this.isSpraying && this.hoseRange.getScaleX() < this.firetruckProperties[4] ?
             0.05f : !this.isSpraying && this.hoseRange.getScaleX() > 0 ? -0.05f : 0;
         this.hoseRange.setScale(this.hoseRange.getScaleX() + scale, this.hoseRange.getScaleY() + scale);
         this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
-        this.hoseRange.setRotation(this.getRotation());
+        this.hoseRange.setRotation(hoseVector.angle());
 
         // Change batch aplha to match bar to fade hose in and out
         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.9f);
         batch.draw(new TextureRegion(this.waterFrames.get(Math.round(this.animationTime / 10) % 3)), this.hoseRange.getX(), this.hoseRange.getY() - this.hoseHeight / 2,
-            0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), this.getRotation(), true);
+            0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), hoseVector.angle(), true);
         // Return the batch to its original colours
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
 
