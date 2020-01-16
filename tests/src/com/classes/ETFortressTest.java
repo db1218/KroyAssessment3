@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 // Import Java File type
 import java.io.File;
@@ -16,6 +17,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.kroy.Kroy;
 import com.classes.ETFortress;
 
+import com.testrunner.GdxTestRunner;
+
+@RunWith(GdxTestRunner.class)
 class ETFortressTest {
 
 	private static ETFortress TestClass;
@@ -28,7 +32,7 @@ class ETFortressTest {
 		// create sprite
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
-        TestClass = new ETFortress(texture, 1500, 500);
+        //TestClass = new ETFortress(texture, texture, 1500, 500);
     }
 
     /**

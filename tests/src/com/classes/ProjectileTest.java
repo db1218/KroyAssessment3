@@ -6,6 +6,7 @@ import static com.config.Constants.TILE_DIMS;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 //Import Kroy game
 import com.kroy.Kroy;
@@ -14,10 +15,14 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector3;
 import com.classes.Projectile;
 
+// Import test runner
+import com.testrunner.GdxTestRunner;
+
 /**
  * @author Joshua
  *
  */
+@RunWith(GdxTestRunner.class)
 class ProjectileTest {
 
 	/**
@@ -57,7 +62,8 @@ class ProjectileTest {
 		
 		// Create test projectile.
 		// TEXTURE NOT WORKING
-		Texture testTexture = new Texture("FiretruckRed/FiretruckRED (8).png");
+		assertTrue(Gdx.files.internal("../core/assets/button.png").exists());
+		Texture testTexture = new Texture("../core/assets/button.png");
 		Projectile testProjectile = new Projectile(testTexture, 0, 0);
 		
 		// Test projectile is out of view.

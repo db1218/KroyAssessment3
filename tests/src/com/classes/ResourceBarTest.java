@@ -3,9 +3,11 @@ package com.classes;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 //Import Kroy game
 import com.kroy.Kroy;
+import com.testrunner.GdxTestRunner;
 import com.badlogic.gdx.graphics.Color;
 import com.classes.ResourceBar;
 
@@ -13,6 +15,8 @@ import com.classes.ResourceBar;
  * @author Joshua
  *
  */
+
+@RunWith(GdxTestRunner.class)
 class ResourceBarTest {
 
 	/** 

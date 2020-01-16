@@ -1,24 +1,25 @@
 package com.classes;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.fail;
 
 // Import Java File type
 import java.io.File;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.runner.RunWith;
+
+import com.badlogic.gdx.graphics.Texture;
 //LibGDX imports
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
-//Import Kroy game
-import com.kroy.Kroy;
-import com.classes.Firetruck;
+import com.testrunner.GdxTestRunner;
 
+@RunWith(GdxTestRunner.class)
 class FiretruckTest {
 
     private static Firetruck TestClass;
@@ -32,7 +33,7 @@ class FiretruckTest {
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
         TiledMap map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-        TestClass = new Firetruck(texture, 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
+        //TestClass = new Firetruck((ArrayList) texture, (ArrayList) texture 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
     }
 
     /**

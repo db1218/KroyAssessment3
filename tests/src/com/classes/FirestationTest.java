@@ -8,6 +8,7 @@ import com.classes.Firestation;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 // Import Java File type
 import java.io.File;
@@ -16,6 +17,9 @@ import java.io.File;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 
+import com.testrunner.GdxTestRunner;
+
+@RunWith(GdxTestRunner.class)
 class FirestationTest {
 
 	private static Firestation TestClass;
