@@ -67,7 +67,7 @@ public class ResourceBar {
             this.bar.getColor().a -= this.fadeOut && this.bar.getColor().a > 0 ? 0.05 : 0;
         }
 
-        this.bar.draw(batch, 1);
+        if (this.currentResourceAmount > 0) this.bar.draw(batch, 1);
         // MUST return batch to correct alpha value
         // otherwise it fades all layers out
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);

@@ -14,6 +14,7 @@ import com.sprites.SimpleSprite;
 
 // Constants import
 import static com.config.Constants.ETFORTRESS_HEALTH;
+import static com.config.Constants.ETFORTRESS_HEALING;
 import static com.config.Constants.ETFORTRESS_HEIGHT;
 import static com.config.Constants.ETFORTRESS_WIDTH;
 
@@ -26,6 +27,7 @@ import static com.config.Constants.ETFORTRESS_WIDTH;
 public class ETFortress extends SimpleSprite {
 
     // Private values for this class to use
+    private Texture destroyed;
     private Circle detectionRange;
     private float timeBetweenProjectiles;
 
@@ -39,8 +41,9 @@ public class ETFortress extends SimpleSprite {
      * @param xPos     The x-coordinate for the ETFortress.
      * @param yPos     The y-coordinate for the ETFortress.
      */
-    public ETFortress(Texture texture, float scaleX, float scaleY, float xPos, float yPos) {
+    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos) {
         super(texture);
+        this.destroyed = destroyedTexture;
         this.setScale(scaleX, scaleY);
         this.setPosition(xPos, yPos);
         this.create();
@@ -54,8 +57,9 @@ public class ETFortress extends SimpleSprite {
      * @param scaleX    The scaling in the x-axis.
      * @param scaleY    The scaling in the y-axis.
      */
-    public ETFortress(Texture texture, float scaleX, float scaleY) {
+    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY) {
         super(texture);
+        this.destroyed = destroyedTexture;
         this.setScale(scaleX, scaleY);
         this.create();
     }
@@ -66,8 +70,9 @@ public class ETFortress extends SimpleSprite {
      * 
      * @param texture  The texture used to draw the ETFortress with.
      */
-    public ETFortress(Texture texture) {
+    public ETFortress(Texture texture, Texture destroyedTexture) {
         super(texture);
+        this.destroyed = destroyedTexture;
         this.create();
     }
 
@@ -86,7 +91,13 @@ public class ETFortress extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
+        // If ETFortress is destroyed
+        if (this.getHealthBar().getCurrentAmount() <= 0) {
+            this.removeSprite(this.destroyed);
+        }
+        // Set the detection radius
         this.detectionRange.setPosition(this.getCentreX(), this.getCentreY());
+        // Delay between each projectile
         if (this.timeBetweenProjectiles > 0) this.timeBetweenProjectiles -= 1;
     }
 
@@ -97,7 +108,7 @@ public class ETFortress extends SimpleSprite {
      * @return boolean  Whether the ETFortress is ready to fire again (true) or not (false)
      */
     public boolean canShootProjectile() {
-        if (this.timeBetweenProjectiles < 120 && this.timeBetweenProjectiles % 30 == 0) {
+        if (this.getHealthBar().getCurrentAmount() > 0 && this.timeBetweenProjectiles < 120 && this.timeBetweenProjectiles % 30 == 0) {
             if (this.timeBetweenProjectiles <= 0) this.timeBetweenProjectiles = 150;
             return true;
         }

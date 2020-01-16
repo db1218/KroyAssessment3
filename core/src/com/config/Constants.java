@@ -66,16 +66,20 @@ public final class Constants {
     public static final float SCORE_X = SCREEN_WIDTH * 0.45f;
 
     // Sprite properties
+    // Damage
+    public static final int FIRETRUCK_DAMAGE = 1;
+    public static final int PROJECTILE_DAMAGE = 10;
     // Health
-    public static final int ETFORTRESS_HEALTH = 1000;
-    public static final int FIRESTATION_HEALTH = 1000;
+    public static final int ETFORTRESS_HEALTH = 1000000;
+    public static final int ETFORTRESS_HEALING = ETFORTRESS_HEALTH / 900000;
+    public static final int FIRESTATION_HEALTH = 1000000;
     // Speed
     public static final float PROJECTILE_SPEED = 400;
     // Size
     public static final float FIRETRUCK_WIDTH =  2*TILE_DIMS;
     public static final float FIRETRUCK_HEIGHT = 1*TILE_DIMS;
-    public static final float FIRESTATION_WIDTH =5*TILE_DIMS;
-    public static final float FIRESTATION_HEIGHT=5*TILE_DIMS;
+    public static final float FIRESTATION_WIDTH = 9.5f*TILE_DIMS;
+    public static final float FIRESTATION_HEIGHT=5.5f*TILE_DIMS;
     public static final float ETFORTRESS_WIDTH = 5*TILE_DIMS;
     public static final float ETFORTRESS_HEIGHT =5*TILE_DIMS;
     public static final float PROJECTILE_WIDTH = 1*TILE_DIMS;
