@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -178,21 +178,25 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.util.ArrayList,float,float,com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int)">Firetruck</a></span>&#8203;(java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;textureSlices,
-         float&nbsp;xPos,
-         float&nbsp;yPos,
-         com.badlogic.gdx.maps.tiled.TiledMapTileLayer&nbsp;collisionLayer,
-         int&nbsp;ID)</code></th>
-<td class="colLast">
-<div class="block">Overloaded constructor containing all possible parameters.</div>
-</td>
-</tr>
-<tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.util.ArrayList,com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int)">Firetruck</a></span>&#8203;(java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;textureSlices,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.util.ArrayList,java.util.ArrayList,float%5B%5D,com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int)">Firetruck</a></span>&#8203;(java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;textureSlices,
+         java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;frames,
+         float[]&nbsp;properties,
          com.badlogic.gdx.maps.tiled.TiledMapTileLayer&nbsp;collisionLayer,
          int&nbsp;ID)</code></th>
 <td class="colLast">
 <div class="block">Simplfied constructor for the firetruck, that doesn't require a position.</div>
+</td>
+</tr>
+<tr class="rowColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(java.util.ArrayList,java.util.ArrayList,float%5B%5D,com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int,float,float)">Firetruck</a></span>&#8203;(java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;textureSlices,
+         java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;frames,
+         float[]&nbsp;properties,
+         com.badlogic.gdx.maps.tiled.TiledMapTileLayer&nbsp;collisionLayer,
+         int&nbsp;ID,
+         float&nbsp;xPos,
+         float&nbsp;yPos)</code></th>
+<td class="colLast">
+<div class="block">Overloaded constructor containing all possible parameters.</div>
 </td>
 </tr>
 </table>
@@ -228,36 +232,72 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 </td>
 </tr>
 <tr id="i2" class="altColor">
+<td class="colFirst"><code>int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getFocusID()">getFocusID</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets the firetruck's focus ID</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
+<td class="colFirst"><code><a href="ResourceBar.html" title="class in com.classes">ResourceBar</a></code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getWaterBar()">getWaterBar</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets the firetruck's water bar so it can be manipulated.</div>
+</td>
+</tr>
+<tr id="i4" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isDamaged()">isDamaged</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets whether the firetruck is damaged.</div>
 </td>
 </tr>
-<tr id="i3" class="rowColor">
+<tr id="i5" class="rowColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isFocused()">isFocused</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Gets whether the firetruck is in focus.</div>
 </td>
 </tr>
-<tr id="i4" class="altColor">
+<tr id="i6" class="altColor">
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isInHoseRange(com.badlogic.gdx.math.Polygon)">isInHoseRange</a></span>&#8203;(com.badlogic.gdx.math.Polygon&nbsp;polygon)</code></th>
 <td class="colLast">
 <div class="block">Checks if a polygon is within the range of the firetrucks hose.</div>
 </td>
 </tr>
-<tr id="i5" class="rowColor">
+<tr id="i7" class="rowColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isLowOnWater()">isLowOnWater</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets whether the firetruck has used any water.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isSpraying()">isSpraying</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Gets whether the firetruck is spraying water.</div>
+</td>
+</tr>
+<tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setFocus(int)">setFocus</a></span>&#8203;(int&nbsp;focus)</code></th>
 <td class="colLast">
 <div class="block">Sets the firetruck in focus if its ID matches the one to focus.</div>
 </td>
 </tr>
-<tr id="i6" class="altColor">
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></span>&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#toggleHose()">toggleHose</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Toggles the fireturck's hose to spray if off and stop if on.</div>
+</td>
+</tr>
+<tr id="i11" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(com.badlogic.gdx.graphics.g2d.Batch,com.badlogic.gdx.graphics.Camera)">update</a></span>&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch,
+      com.badlogic.gdx.graphics.Camera&nbsp;camera)</code></th>
 <td class="colLast">
 <div class="block">Update the position and direction of the firetruck every frame.</div>
 </td>
@@ -268,14 +308,14 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.sprites.<a href="../sprites/MovementSprite.html" title="class in com.sprites">MovementSprite</a></h3>
-<code><a href="../sprites/MovementSprite.html#accelerate(com.config.Constants.Direction)">accelerate</a>, <a href="../sprites/MovementSprite.html#collisionOccurred(com.badlogic.gdx.math.Vector2)">collisionOccurred</a>, <a href="../sprites/MovementSprite.html#getDirection()">getDirection</a>, <a href="../sprites/MovementSprite.html#getSpeedX()">getSpeedX</a>, <a href="../sprites/MovementSprite.html#getSpeedY()">getSpeedY</a>, <a href="../sprites/MovementSprite.html#setAccelerationRate(float)">setAccelerationRate</a>, <a href="../sprites/MovementSprite.html#setDirection(com.config.Constants.Direction)">setDirection</a>, <a href="../sprites/MovementSprite.html#setRestitution(float)">setRestitution</a>, <a href="../sprites/MovementSprite.html#setRotationLock(float)">setRotationLock</a>, <a href="../sprites/MovementSprite.html#setSpeedX(java.lang.Float)">setSpeedX</a>, <a href="../sprites/MovementSprite.html#setSpeedY(java.lang.Float)">setSpeedY</a></code></li>
+<code><a href="../sprites/MovementSprite.html#applyAcceleration(com.config.Constants.Direction)">applyAcceleration</a>, <a href="../sprites/MovementSprite.html#collisionOccurred(com.badlogic.gdx.math.Vector2)">collisionOccurred</a>, <a href="../sprites/MovementSprite.html#getMaxSpeed()">getMaxSpeed</a>, <a href="../sprites/MovementSprite.html#getSpeed()">getSpeed</a>, <a href="../sprites/MovementSprite.html#setAccelerationRate(float)">setAccelerationRate</a>, <a href="../sprites/MovementSprite.html#setDecelerationRate(float)">setDecelerationRate</a>, <a href="../sprites/MovementSprite.html#setMaxSpeed(float)">setMaxSpeed</a>, <a href="../sprites/MovementSprite.html#setRestitution(float)">setRestitution</a>, <a href="../sprites/MovementSprite.html#setRotationLock(float)">setRotationLock</a>, <a href="../sprites/MovementSprite.html#setSpeed(com.badlogic.gdx.math.Vector2)">setSpeed</a>, <a href="../sprites/MovementSprite.html#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.com.sprites.SimpleSprite">
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.sprites.<a href="../sprites/SimpleSprite.html" title="class in com.sprites">SimpleSprite</a></h3>
-<code><a href="../sprites/SimpleSprite.html#getCentreX()">getCentreX</a>, <a href="../sprites/SimpleSprite.html#getCentreY()">getCentreY</a>, <a href="../sprites/SimpleSprite.html#getHealthBar()">getHealthBar</a>, <a href="../sprites/SimpleSprite.html#getHeight()">getHeight</a>, <a href="../sprites/SimpleSprite.html#getHitBox()">getHitBox</a>, <a href="../sprites/SimpleSprite.html#getWidth()">getWidth</a>, <a href="../sprites/SimpleSprite.html#rotate(float)">rotate</a>, <a href="../sprites/SimpleSprite.html#setSize(float,float)">setSize</a></code></li>
+<code><a href="../sprites/SimpleSprite.html#getCentreX()">getCentreX</a>, <a href="../sprites/SimpleSprite.html#getCentreY()">getCentreY</a>, <a href="../sprites/SimpleSprite.html#getHealthBar()">getHealthBar</a>, <a href="../sprites/SimpleSprite.html#getHeight()">getHeight</a>, <a href="../sprites/SimpleSprite.html#getHitBox()">getHitBox</a>, <a href="../sprites/SimpleSprite.html#getInternalTime()">getInternalTime</a>, <a href="../sprites/SimpleSprite.html#getWidth()">getWidth</a>, <a href="../sprites/SimpleSprite.html#removeSprite(com.badlogic.gdx.graphics.Texture)">removeSprite</a>, <a href="../sprites/SimpleSprite.html#rotate(float)">rotate</a>, <a href="../sprites/SimpleSprite.html#setSize(float,float)">setSize</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.com.badlogic.gdx.graphics.g2d.Sprite">
@@ -314,17 +354,19 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(java.util.ArrayList,float,float,com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int)">
+<a id="&lt;init&gt;(java.util.ArrayList,java.util.ArrayList,float[],com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int,float,float)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>Firetruck</h4>
 <pre>public&nbsp;Firetruck&#8203;(java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;textureSlices,
-                 float&nbsp;xPos,
-                 float&nbsp;yPos,
+                 java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;frames,
+                 float[]&nbsp;properties,
                  com.badlogic.gdx.maps.tiled.TiledMapTileLayer&nbsp;collisionLayer,
-                 int&nbsp;ID)</pre>
+                 int&nbsp;ID,
+                 float&nbsp;xPos,
+                 float&nbsp;yPos)</pre>
 <div class="block">Overloaded constructor containing all possible parameters.
  Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
  It also requires an ID so that it can be focused with the camera. Drawn with the given
@@ -332,6 +374,8 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>textureSlices</code> - The array of textures used to draw the firetruck with.</dd>
+<dd><code>waterFrames</code> - The texture used to draw the water with.</dd>
+<dd><code>properties</code> - The properties of the truck inherited from Constants.</dd>
 <dd><code>collisionLayer</code> - The layer of the map the firetruck collides with.</dd>
 <dd><code>ID</code> - The ID of the truck (for object focus).</dd>
 <dd><code>xPos</code> - The x-coordinate for the firetruck.</dd>
@@ -339,13 +383,15 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 </dl>
 </li>
 </ul>
-<a id="&lt;init&gt;(java.util.ArrayList,com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int)">
+<a id="&lt;init&gt;(java.util.ArrayList,java.util.ArrayList,float[],com.badlogic.gdx.maps.tiled.TiledMapTileLayer,int)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>Firetruck</h4>
 <pre>public&nbsp;Firetruck&#8203;(java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;textureSlices,
+                 java.util.ArrayList&lt;com.badlogic.gdx.graphics.Texture&gt;&nbsp;frames,
+                 float[]&nbsp;properties,
                  com.badlogic.gdx.maps.tiled.TiledMapTileLayer&nbsp;collisionLayer,
                  int&nbsp;ID)</pre>
 <div class="block">Simplfied constructor for the firetruck, that doesn't require a position.
@@ -355,6 +401,8 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>textureSlices</code> - The array of textures used to draw the firetruck with.</dd>
+<dd><code>waterFrames</code> - The texture used to draw the water with.</dd>
+<dd><code>properties</code> - The properties of the truck inherited from Constants.</dd>
 <dd><code>collisionLayer</code> - The layer of the map the firetruck collides with.</dd>
 <dd><code>ID</code> - The ID of the truck (for object focus).</dd>
 </dl>
@@ -370,17 +418,19 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <!--   -->
 </a>
 <h3>Method Detail</h3>
-<a id="update(com.badlogic.gdx.graphics.g2d.Batch)">
+<a id="update(com.badlogic.gdx.graphics.g2d.Batch,com.badlogic.gdx.graphics.Camera)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>update</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;update&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</pre>
+<pre class="methodSignature">public&nbsp;void&nbsp;update&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch,
+                   com.badlogic.gdx.graphics.Camera&nbsp;camera)</pre>
 <div class="block">Update the position and direction of the firetruck every frame.</div>
 <dl>
-<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
-<dd><code><a href="../sprites/MovementSprite.html#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></code>&nbsp;in class&nbsp;<code><a href="../sprites/MovementSprite.html" title="class in com.sprites">MovementSprite</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>batch</code> - The batch to draw onto.</dd>
+<dd><code>camera</code> - Used to get the centre of the screen.</dd>
 </dl>
 </li>
 </ul>
@@ -395,6 +445,8 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>polygon</code> - The polygon that needs to be checked.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the polygon is in the hose's range</dd>
 </dl>
 </li>
 </ul>
@@ -412,6 +464,44 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 </dl>
 </li>
 </ul>
+<a id="isSpraying()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isSpraying</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isSpraying()</pre>
+<div class="block">Gets whether the firetruck is spraying water.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the firetruck is spraying water.</dd>
+</dl>
+</li>
+</ul>
+<a id="isLowOnWater()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isLowOnWater</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isLowOnWater()</pre>
+<div class="block">Gets whether the firetruck has used any water.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the firetruck has used any water.</dd>
+</dl>
+</li>
+</ul>
+<a id="toggleHose()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>toggleHose</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;toggleHose()</pre>
+<div class="block">Toggles the fireturck's hose to spray if off and stop if on.</div>
+</li>
+</ul>
 <a id="isFocused()">
 <!--   -->
 </a>
@@ -426,6 +516,20 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 </dl>
 </li>
 </ul>
+<a id="getFocusID()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getFocusID</h4>
+<pre class="methodSignature">public&nbsp;int&nbsp;getFocusID()</pre>
+<div class="block">Gets the firetruck's focus ID</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The firetruck's focus ID</dd>
+</dl>
+</li>
+</ul>
 <a id="setFocus(int)">
 <!--   -->
 </a>
@@ -437,6 +541,20 @@ extends <a href="../sprites/MovementSprite.html" title="class in com.sprites">Mo
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>focus</code> - The ID of the firetruck to focus on.</dd>
+</dl>
+</li>
+</ul>
+<a id="getWaterBar()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getWaterBar</h4>
+<pre class="methodSignature">public&nbsp;<a href="ResourceBar.html" title="class in com.classes">ResourceBar</a>&nbsp;getWaterBar()</pre>
+<div class="block">Gets the firetruck's water bar so it can be manipulated.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The firetruck's water bar.</dd>
 </dl>
 </li>
 </ul>

@@ -27,12 +27,6 @@
     catch(err) {
     }
 //-->
-var data = {"i0":9};
-var tabs = {65535:["t0","All Methods"],1:["t1","Static Methods"],8:["t4","Concrete Methods"]};
-var altColor = "altColor";
-var rowColor = "rowColor";
-var tableTab = "tableTab";
-var activeTableTab = "activeTableTab";
 var pathtoroot = "../../";
 var useModuleDirectories = true;
 loadScripts(document, 'script');</script>
@@ -97,7 +91,7 @@ loadScripts(document, 'script');</script>
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a id="skip.navbar.top">
@@ -178,13 +172,23 @@ extends java.lang.Object</pre>
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#BAR_FADE_DURATION">BAR_FADE_DURATION</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
 <td class="colFirst"><code>static java.lang.String</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#COLLISION_TILE">COLLISION_TILE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DEBUG_ENABLED">DEBUG_ENABLED</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ETFORTRESS_HEALING">ETFORTRESS_HEALING</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
@@ -193,12 +197,12 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ETFORTRESS_HEIGHT">ETFORTRESS_HEIGHT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#ETFORTRESS_WIDTH">ETFORTRESS_WIDTH</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -208,38 +212,48 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRESTATION_HEIGHT">FIRESTATION_HEIGHT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRESTATION_WIDTH">FIRESTATION_WIDTH</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_ACCELERATION">FIRETRUCK_ACCELERATION</a></span></code></th>
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_DAMAGE">FIRETRUCK_DAMAGE</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_HEALTH">FIRETRUCK_HEALTH</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_HEIGHT">FIRETRUCK_HEIGHT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
+<tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_REPAIR_SPEED">FIRETRUCK_REPAIR_SPEED</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
 <tr class="rowColor">
 <td class="colFirst"><code>static float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_RESTITUTION">FIRETRUCK_RESTITUTION</a></span></code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_WIDTH">FIRETRUCK_WIDTH</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
-<td class="colFirst"><code>static int</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FIRETRUCK_WIDTH">FIRETRUCK_WIDTH</a></span></code></th>
+<td class="colFirst"><code>static float[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FiretruckOneProperties">FiretruckOneProperties</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float[]</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FiretruckTwoProperties">FiretruckTwoProperties</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#FONT_Y">FONT_Y</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
@@ -253,7 +267,7 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MAP_HEIGHT">MAP_HEIGHT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -263,7 +277,7 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static int</code></td>
+<td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#MAP_WIDTH">MAP_WIDTH</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
@@ -278,38 +292,48 @@ extends java.lang.Object</pre>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="altColor">
+<td class="colFirst"><code>static int</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROJECTILE_DAMAGE">PROJECTILE_DAMAGE</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROJECTILE_HEIGHT">PROJECTILE_HEIGHT</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROJECTILE_SPEED">PROJECTILE_SPEED</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="rowColor">
+<td class="colFirst"><code>static float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#PROJECTILE_WIDTH">PROJECTILE_WIDTH</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
 <td class="colFirst"><code>static float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCORE_X">SCORE_X</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 <tr class="rowColor">
-<td class="colFirst"><code>static float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCORE_Y">SCORE_Y</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
-<td class="colFirst"><code>static float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCREEN_CENTRE_X">SCREEN_CENTRE_X</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="rowColor">
-<td class="colFirst"><code>static float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCREEN_CENTRE_Y">SCREEN_CENTRE_Y</a></span></code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCREEN_HEIGHT">SCREEN_HEIGHT</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="rowColor">
+<tr class="altColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#SCREEN_WIDTH">SCREEN_WIDTH</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
-<tr class="altColor">
+<tr class="rowColor">
 <td class="colFirst"><code>static int</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TILE_DIMS">TILE_DIMS</a></span></code></th>
+<td class="colLast">&nbsp;</td>
+</tr>
+<tr class="altColor">
+<td class="colFirst"><code>static float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#TIME_X">TIME_X</a></span></code></th>
 <td class="colLast">&nbsp;</td>
 </tr>
 </table>
@@ -323,19 +347,6 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Method Summary</h3>
-<table class="memberSummary">
-<caption><span id="t0" class="activeTableTab"><span>All Methods</span><span class="tabEnd">&nbsp;</span></span><span id="t1" class="tableTab"><span><a href="javascript:show(1);">Static Methods</a></span><span class="tabEnd">&nbsp;</span></span><span id="t4" class="tableTab"><span><a href="javascript:show(8);">Concrete Methods</a></span><span class="tabEnd">&nbsp;</span></span></caption>
-<tr>
-<th class="colFirst" scope="col">Modifier and Type</th>
-<th class="colSecond" scope="col">Method</th>
-<th class="colLast" scope="col">Description</th>
-</tr>
-<tr id="i0" class="altColor">
-<td class="colFirst"><code>static float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#DirectionToAngle(com.config.Constants.Direction)">DirectionToAngle</a></span>&#8203;(<a href="Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;dir)</code></th>
-<td class="colLast">&nbsp;</td>
-</tr>
-</table>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.java.lang.Object">
 <!--   -->
@@ -359,6 +370,24 @@ extends java.lang.Object</pre>
 <!--   -->
 </a>
 <h3>Field Detail</h3>
+<a id="FiretruckOneProperties">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FiretruckOneProperties</h4>
+<pre>public static final&nbsp;float[] FiretruckOneProperties</pre>
+</li>
+</ul>
+<a id="FiretruckTwoProperties">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FiretruckTwoProperties</h4>
+<pre>public static final&nbsp;float[] FiretruckTwoProperties</pre>
+</li>
+</ul>
 <a id="DEBUG_ENABLED">
 <!--   -->
 </a>
@@ -411,13 +440,26 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="MAP_SCALE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>MAP_SCALE</h4>
+<pre>public static final&nbsp;float MAP_SCALE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.MAP_SCALE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a id="MAP_WIDTH">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>MAP_WIDTH</h4>
-<pre>public static final&nbsp;int MAP_WIDTH</pre>
+<pre>public static final&nbsp;float MAP_WIDTH</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.MAP_WIDTH">Constant Field Values</a></dd>
@@ -430,23 +472,10 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>MAP_HEIGHT</h4>
-<pre>public static final&nbsp;int MAP_HEIGHT</pre>
+<pre>public static final&nbsp;float MAP_HEIGHT</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.MAP_HEIGHT">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a id="MAP_SCALE">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>MAP_SCALE</h4>
-<pre>public static final&nbsp;float MAP_SCALE</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.MAP_SCALE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -473,6 +502,32 @@ extends java.lang.Object</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.COLLISION_TILE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="BAR_FADE_DURATION">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>BAR_FADE_DURATION</h4>
+<pre>public static final&nbsp;float BAR_FADE_DURATION</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.BAR_FADE_DURATION">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="FIRETRUCK_REPAIR_SPEED">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>FIRETRUCK_REPAIR_SPEED</h4>
+<pre>public static final&nbsp;int FIRETRUCK_REPAIR_SPEED</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_REPAIR_SPEED">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -515,42 +570,16 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="SCREEN_CENTRE_X">
+<a id="FONT_Y">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>SCREEN_CENTRE_X</h4>
-<pre>public static final&nbsp;float SCREEN_CENTRE_X</pre>
+<h4>FONT_Y</h4>
+<pre>public static final&nbsp;float FONT_Y</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.SCREEN_CENTRE_X">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a id="SCREEN_CENTRE_Y">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SCREEN_CENTRE_Y</h4>
-<pre>public static final&nbsp;float SCREEN_CENTRE_Y</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.SCREEN_CENTRE_Y">Constant Field Values</a></dd>
-</dl>
-</li>
-</ul>
-<a id="SCORE_Y">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>SCORE_Y</h4>
-<pre>public static final&nbsp;float SCORE_Y</pre>
-<dl>
-<dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.SCORE_Y">Constant Field Values</a></dd>
+<dd><a href="../../constant-values.html#com.config.Constants.FONT_Y">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -567,29 +596,42 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="FIRETRUCK_RESTITUTION">
+<a id="TIME_X">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>FIRETRUCK_RESTITUTION</h4>
-<pre>public static final&nbsp;float FIRETRUCK_RESTITUTION</pre>
+<h4>TIME_X</h4>
+<pre>public static final&nbsp;float TIME_X</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_RESTITUTION">Constant Field Values</a></dd>
+<dd><a href="../../constant-values.html#com.config.Constants.TIME_X">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
-<a id="FIRETRUCK_ACCELERATION">
+<a id="FIRETRUCK_DAMAGE">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>FIRETRUCK_ACCELERATION</h4>
-<pre>public static final&nbsp;float FIRETRUCK_ACCELERATION</pre>
+<h4>FIRETRUCK_DAMAGE</h4>
+<pre>public static final&nbsp;int FIRETRUCK_DAMAGE</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_ACCELERATION">Constant Field Values</a></dd>
+<dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_DAMAGE">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="PROJECTILE_DAMAGE">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>PROJECTILE_DAMAGE</h4>
+<pre>public static final&nbsp;int PROJECTILE_DAMAGE</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.PROJECTILE_DAMAGE">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -606,6 +648,19 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
+<a id="ETFORTRESS_HEALING">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ETFORTRESS_HEALING</h4>
+<pre>public static final&nbsp;int ETFORTRESS_HEALING</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.ETFORTRESS_HEALING">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
 <a id="FIRESTATION_HEALTH">
 <!--   -->
 </a>
@@ -619,16 +674,16 @@ extends java.lang.Object</pre>
 </dl>
 </li>
 </ul>
-<a id="FIRETRUCK_HEALTH">
+<a id="PROJECTILE_SPEED">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>FIRETRUCK_HEALTH</h4>
-<pre>public static final&nbsp;int FIRETRUCK_HEALTH</pre>
+<h4>PROJECTILE_SPEED</h4>
+<pre>public static final&nbsp;float PROJECTILE_SPEED</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
-<dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_HEALTH">Constant Field Values</a></dd>
+<dd><a href="../../constant-values.html#com.config.Constants.PROJECTILE_SPEED">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
@@ -638,7 +693,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FIRETRUCK_WIDTH</h4>
-<pre>public static final&nbsp;int FIRETRUCK_WIDTH</pre>
+<pre>public static final&nbsp;float FIRETRUCK_WIDTH</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_WIDTH">Constant Field Values</a></dd>
@@ -651,7 +706,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FIRETRUCK_HEIGHT</h4>
-<pre>public static final&nbsp;int FIRETRUCK_HEIGHT</pre>
+<pre>public static final&nbsp;float FIRETRUCK_HEIGHT</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.FIRETRUCK_HEIGHT">Constant Field Values</a></dd>
@@ -664,7 +719,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FIRESTATION_WIDTH</h4>
-<pre>public static final&nbsp;int FIRESTATION_WIDTH</pre>
+<pre>public static final&nbsp;float FIRESTATION_WIDTH</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.FIRESTATION_WIDTH">Constant Field Values</a></dd>
@@ -677,7 +732,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>FIRESTATION_HEIGHT</h4>
-<pre>public static final&nbsp;int FIRESTATION_HEIGHT</pre>
+<pre>public static final&nbsp;float FIRESTATION_HEIGHT</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.FIRESTATION_HEIGHT">Constant Field Values</a></dd>
@@ -690,7 +745,7 @@ extends java.lang.Object</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>ETFORTRESS_WIDTH</h4>
-<pre>public static final&nbsp;int ETFORTRESS_WIDTH</pre>
+<pre>public static final&nbsp;float ETFORTRESS_WIDTH</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.ETFORTRESS_WIDTH">Constant Field Values</a></dd>
@@ -700,33 +755,40 @@ extends java.lang.Object</pre>
 <a id="ETFORTRESS_HEIGHT">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>ETFORTRESS_HEIGHT</h4>
-<pre>public static final&nbsp;int ETFORTRESS_HEIGHT</pre>
+<pre>public static final&nbsp;float ETFORTRESS_HEIGHT</pre>
 <dl>
 <dt><span class="seeLabel">See Also:</span></dt>
 <dd><a href="../../constant-values.html#com.config.Constants.ETFORTRESS_HEIGHT">Constant Field Values</a></dd>
 </dl>
 </li>
 </ul>
-</li>
-</ul>
-</section>
-<!-- ============ METHOD DETAIL ========== -->
-<section role="region">
-<ul class="blockList">
-<li class="blockList"><a id="method.detail">
+<a id="PROJECTILE_WIDTH">
 <!--   -->
 </a>
-<h3>Method Detail</h3>
-<a id="DirectionToAngle(com.config.Constants.Direction)">
+<ul class="blockList">
+<li class="blockList">
+<h4>PROJECTILE_WIDTH</h4>
+<pre>public static final&nbsp;float PROJECTILE_WIDTH</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.PROJECTILE_WIDTH">Constant Field Values</a></dd>
+</dl>
+</li>
+</ul>
+<a id="PROJECTILE_HEIGHT">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>DirectionToAngle</h4>
-<pre class="methodSignature">public static&nbsp;float&nbsp;DirectionToAngle&#8203;(<a href="Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;dir)</pre>
+<h4>PROJECTILE_HEIGHT</h4>
+<pre>public static final&nbsp;float PROJECTILE_HEIGHT</pre>
+<dl>
+<dt><span class="seeLabel">See Also:</span></dt>
+<dd><a href="../../constant-values.html#com.config.Constants.PROJECTILE_HEIGHT">Constant Field Values</a></dd>
+</dl>
 </li>
 </ul>
 </li>
@@ -789,7 +851,7 @@ extends java.lang.Object</pre>
 <li>Detail:&nbsp;</li>
 <li><a href="#field.detail">Field</a>&nbsp;|&nbsp;</li>
 <li>Constr&nbsp;|&nbsp;</li>
-<li><a href="#method.detail">Method</a></li>
+<li>Method</li>
 </ul>
 </div>
 <a id="skip.navbar.bottom">
