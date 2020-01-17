@@ -80,7 +80,6 @@ public class ETFortress extends SimpleSprite {
      */
     private void create() {
         this.getHealthBar().setMaxResource((int) (ETFORTRESS_HEALTH * Math.max(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY())));
-        System.out.println(this.getHealthBar().getMaxAmount());
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 2);
     }
