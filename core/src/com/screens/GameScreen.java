@@ -72,7 +72,7 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
 
 	// Private values for the game
-	private int score, time;
+	private int score, time, focusedID;
 	private float zoomDelay;
 	private Texture projectileTexture;
 
@@ -201,7 +201,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		// Set inital firetruck to focus the camera on
-		setFiretruckFocus(1);
+		this.focusedID = 1;
+		setFiretruckFocus(this.focusedID);
 
 		// Zoom delay is the time before the camera zooms out
 		this.zoomDelay = 0;
@@ -269,14 +270,15 @@ public class GameScreen implements Screen {
 		// ---- 2) Perform any checks for user input ---------------------- //
 
 		// Check for user input to see if the focused truck should change
-		if (Gdx.input.isKeyPressed(Keys.E)) {
+		if (Gdx.input.isKeyJustPressed(Keys.E)) {
 			focusedTruck.toggleHose();
 		}
-		if (Gdx.input.isKeyPressed(Keys.NUM_1)) {
-            setFiretruckFocus(1);
-		}
-		if (Gdx.input.isKeyPressed(Keys.NUM_2)) {
-            setFiretruckFocus(2);
+		if (Gdx.input.isKeyJustPressed(Keys.TAB)) {
+			this.focusedID += 1;
+			if (this.focusedID > this.firetrucks.size()) {
+				this.focusedID = 1;
+			}
+			setFiretruckFocus(this.focusedID); 
 		}
 
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
