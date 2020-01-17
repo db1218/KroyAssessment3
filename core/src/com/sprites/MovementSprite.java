@@ -126,8 +126,6 @@ public class MovementSprite extends SimpleSprite {
         } else {
             // Seperate the sprite from the tile
             collisionOccurred(this.speed.rotate(180).scl(0.05f));
-            this.setX(this.getX() - this.speed.x);
-            this.setY(this.getY() - this.speed.y);
         }
     }
 
@@ -173,14 +171,14 @@ public class MovementSprite extends SimpleSprite {
      */
     private boolean collidesWithBlockedTile(float x, float y) {
         // Vector to calculate rotated width and height
-        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(-this.getRotation());
+        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(360-this.getRotation());
         // Coordinates to check with a bit of leniance
-        int leftX =   (int) x + TILE_DIMS / 8;
-        int rightX =  (int) (x + Math.abs(size.x)) - TILE_DIMS / 8;
-        int bottomY = (int) y + TILE_DIMS / 8;
-        int topY =    (int) (y + Math.abs(size.y)) - TILE_DIMS / 8;
-        // Check neighbours and return if they're blocked
-        for ( int xPos = leftX; xPos <= rightX; xPos+= TILE_DIMS) {
+        int leftX =   (int) x;
+        int rightX =  (int) (x + Math.abs(size.x));
+        int bottomY = (int) y;
+        int topY =    (int) (y + Math.abs(size.y));
+        // Check all corners of the firetruck to see if they're in a blocked tile
+        for ( int xPos = leftX; xPos < rightX; xPos+= TILE_DIMS) {
             for ( int yPos = bottomY; yPos <= topY; yPos+= TILE_DIMS) {
                 Cell cell = collisionLayer.getCell(xPos / TILE_DIMS, yPos / TILE_DIMS);
 		        if (cell != null && cell.getTile() != null) return cell.getTile().getProperties().containsKey(COLLISION_TILE);

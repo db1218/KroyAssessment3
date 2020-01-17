@@ -35,15 +35,15 @@ import com.classes.ETFortress;
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
-import static com.config.Constants.SCORE_Y;
+import static com.config.Constants.FONT_Y;
 import static com.config.Constants.SCORE_X;
+import static com.config.Constants.TIME_X;
 import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
 import static com.config.Constants.TILE_DIMS;
 import static com.config.Constants.DEBUG_ENABLED;
-import static com.config.Constants.ETFORTRESS_HEALING;
 import static com.config.Constants.FiretruckOneProperties;
 import static com.config.Constants.FiretruckTwoProperties;
 import static com.config.Constants.FIRETRUCK_DAMAGE;
@@ -72,12 +72,13 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
 
 	// Private values for the game
-	private int score, time, lastUpdate;
+	private int score, time;
 	private float zoomDelay;
 	private Texture projectileTexture;
 
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
+	private ArrayList<Firetruck> firetrucksToRemove;
 	private ArrayList<ETFortress> ETFortresses;
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
@@ -132,10 +133,10 @@ public class GameScreen implements Screen {
 		// Select background and foreground map layers, order matters
         MapLayers mapLayers = map.getLayers();
         this.foregroundLayers = new int[] {
-			mapLayers.getIndex("Buildings")
+			mapLayers.getIndex("Buildings"),
+			mapLayers.getIndex("Trees"),
         };
         this.backgroundLayers = new int[] {
-			mapLayers.getIndex("Trees"),
 			mapLayers.getIndex("River"),
 			mapLayers.getIndex("Road")
         };
@@ -209,8 +210,9 @@ public class GameScreen implements Screen {
 		this.camera.position.x = 80 * TILE_DIMS;
 		this.camera.position.y = 30 * TILE_DIMS;
 
-		// Create array to collect offscreen projectiles that need removing
+		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
+		this.firetrucksToRemove = new ArrayList<Firetruck>();
 	}
 
 	/**
@@ -222,7 +224,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// ---- 1) Update camera and map properties each iteration -------- //
@@ -288,7 +290,8 @@ public class GameScreen implements Screen {
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update(batch);
+			firetruck.update(batch, this.camera);
+			if (firetruck.getHealthBar().getCurrentAmount() <= 0) this.firetrucksToRemove.add(firetruck);
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
 
@@ -317,12 +320,16 @@ public class GameScreen implements Screen {
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
-		game.drawFont("Score: " + this.score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
-		game.drawFont("Time: " + this.time, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + (SCORE_Y - 50) * camera.zoom);
+		game.drawFont("Score: " + this.score,
+			cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
+		game.drawFont("Time: " + this.time, 
+			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
 		if (DEBUG_ENABLED) game.drawFont("FPS: "
 			+ Gdx.graphics.getFramesPerSecond(),
-			cameraPosition.x + SCORE_X * 0.85f * camera.zoom,
-			cameraPosition.y + SCORE_Y * camera.zoom
+			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
 		);
 
 		// Finish rendering
@@ -331,8 +338,9 @@ public class GameScreen implements Screen {
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
-		// Remove projectiles that are off the screen
+		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
+		this.firetrucks.removeAll(this.firetrucksToRemove);
 
 		// Check for any collisions
 		checkForCollisions();
@@ -380,12 +388,7 @@ public class GameScreen implements Screen {
 				if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruckA.isInHoseRange(ETFortress.getHitBox())) {
 					ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
 					this.score += 10;
-				} else if (this.lastUpdate != this.time && ETFortress.getHealthBar().getCurrentAmount() > 0) {
-					// Heal ETFortresses every second if not taking damage
-				   ETFortress.getHealthBar().addResourceAmount(ETFORTRESS_HEALING);
-				   this.lastUpdate = this.time;
-			   }
-				
+				}
 				if (ETFortress.isInRadius(firetruckA.getHitBox()) && ETFortress.canShootProjectile()) {
 					Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
 					projectile.calculateTrajectory(firetruckA.getHitBox());
@@ -456,6 +459,9 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
+		this.camera.viewportHeight = height;
+		this.camera.viewportWidth = width;
+        this.camera.update();
 	}
 
 	/**

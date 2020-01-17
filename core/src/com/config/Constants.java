@@ -16,17 +16,17 @@ public final class Constants {
         300f, // MAX_SPEED
         0.8f, // RESTITUTION
         1.2f, // RANGE
-        1000, // WATER MAX
+        400,  // WATER MAX
     };
 
     // Firetruck Two properties
     public static final float[] FiretruckTwoProperties = {
         100,  // HEALTH
-        20f,  // ACCELERATION
+        15f,  // ACCELERATION
         400f, // MAX_SPEED
         0.6f, // RESTITUTION
-        1f,   // RANGE
-        750,  // WATER MAX
+        1.01f,// RANGE
+        300,  // WATER MAX
     };
 
      // Enums
@@ -52,27 +52,26 @@ public final class Constants {
 
     // Time durations
     public static final float BAR_FADE_DURATION = 3;
-    public static final int FIRETRUCK_REPAIR_SPEED = 50;
+    public static final int FIRETRUCK_REPAIR_SPEED = 75;
 
     // Camera settings
     public static final float LERP = 1.5f;
     public static final float MIN_ZOOM = 1f;
-    public static final float MAX_ZOOM = 2f;
+    public static final float MAX_ZOOM = 1.75f;
 
     // Screen elements sizing
-    public static final float SCREEN_CENTRE_X = SCREEN_WIDTH * 0.5f;
-    public static final float SCREEN_CENTRE_Y = SCREEN_HEIGHT * 0.5f;
-    public static final float SCORE_Y = SCREEN_HEIGHT * 0.45f;
-    public static final float SCORE_X = SCREEN_WIDTH * 0.45f;
+    public static final float FONT_Y = 0.45f;
+    public static final float SCORE_X = 0.47f;
+    public static final float TIME_X = 0.4f;
 
     // Sprite properties
     // Damage
-    public static final int FIRETRUCK_DAMAGE = 1;
+    public static final int FIRETRUCK_DAMAGE = 2;
     public static final int PROJECTILE_DAMAGE = 10;
     // Health
-    public static final int ETFORTRESS_HEALTH = 1000000;
-    public static final int ETFORTRESS_HEALING = ETFORTRESS_HEALTH / 900000;
-    public static final int FIRESTATION_HEALTH = 1000000;
+    public static final int ETFORTRESS_HEALTH = 2000;
+    public static final int ETFORTRESS_HEALING = 1;
+    public static final int FIRESTATION_HEALTH = 1000;
     // Speed
     public static final float PROJECTILE_SPEED = 400;
     // Size

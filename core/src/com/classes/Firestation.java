@@ -28,7 +28,6 @@ public class Firestation extends SimpleSprite {
 
     // Private values for this class to use
     private Circle repairRange;
-    private float repairTimeout;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -74,7 +73,6 @@ public class Firestation extends SimpleSprite {
     public void update(Batch batch) {
         super.update(batch);
         this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
-        if (this.repairTimeout >= 0) this.repairTimeout -= 1;
     }
 
     /**
@@ -83,10 +81,9 @@ public class Firestation extends SimpleSprite {
      * @param firetruck  The firetruck that will be repaired.
      */
     public void repair(Firetruck firetruck) {
-        if (this.repairTimeout <= 0) {
+        if (this.getInternalTime() % 10 == 0) {
             firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
             firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
-            this.repairTimeout = 10;
         }
     }
 

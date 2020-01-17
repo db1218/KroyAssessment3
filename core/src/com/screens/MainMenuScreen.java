@@ -101,6 +101,8 @@ public class MainMenuScreen implements Screen {
 	// Below are all required methods of the screen class
 	@Override
 	public void resize(int width, int height) {
+		viewport.update(width, height);
+        camera.update();
 	}
 
 	/**

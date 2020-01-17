@@ -211,9 +211,9 @@ public class ResourceBar {
                 this.currentResourceAmount = this.maxResourceAmount;
             } else {
                 this.currentResourceAmount += amount;
+                this.bar.setStyle(getResourceBarStyle());
             }
         }
-        this.bar.setStyle(getResourceBarStyle());
     }
 
     /**
@@ -229,8 +229,8 @@ public class ResourceBar {
                 this.currentResourceAmount = 0;
             } else {
                 this.currentResourceAmount -= amount;
+                this.bar.setStyle(getResourceBarStyle());
             }
         }
-        this.bar.setStyle(getResourceBarStyle());
     }
 }
