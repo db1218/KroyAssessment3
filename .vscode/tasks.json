@@ -19,6 +19,11 @@
             "command": "gradle junitPlatformTest"
         },
         {
+            "label": "Document_Code",
+            "type": "shell",
+            "command": "gradle javadoc"
+        },
+        {
             "label": "Build",
             "dependsOn":[
                 "Clear_Console",

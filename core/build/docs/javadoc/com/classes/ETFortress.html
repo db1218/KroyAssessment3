@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -173,13 +173,26 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture)">ETFortress</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture)</code></th>
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.graphics.Texture)">ETFortress</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+          com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture)</code></th>
 <td class="colLast">
 <div class="block">Simplfied constructor for the ETFortress, that doesn't require a position.</div>
 </td>
 </tr>
 <tr class="rowColor">
-<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture,float,float)">ETFortress</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.graphics.Texture,float,float)">ETFortress</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+          com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture,
+          float&nbsp;scaleX,
+          float&nbsp;scaleY)</code></th>
+<td class="colLast">
+<div class="block">Overloaded constructor containing all possible parameters.</div>
+</td>
+</tr>
+<tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.graphics.Texture,float,float,float,float)">ETFortress</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+          com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture,
+          float&nbsp;scaleX,
+          float&nbsp;scaleY,
           float&nbsp;xPos,
           float&nbsp;yPos)</code></th>
 <td class="colLast">
@@ -205,6 +218,27 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr id="i0" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#canShootProjectile()">canShootProjectile</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Check to see if the ETFortress should fire another projectile.</div>
+</td>
+</tr>
+<tr id="i1" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">drawDebug</a></span>&#8203;(com.badlogic.gdx.graphics.glutils.ShapeRenderer&nbsp;renderer)</code></th>
+<td class="colLast">
+<div class="block">Overloaded method for drawing debug information.</div>
+</td>
+</tr>
+<tr id="i2" class="altColor">
+<td class="colFirst"><code>boolean</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isInRadius(com.badlogic.gdx.math.Polygon)">isInRadius</a></span>&#8203;(com.badlogic.gdx.math.Polygon&nbsp;polygon)</code></th>
+<td class="colLast">
+<div class="block">Checks if a polygon is within the range of the firestation.</div>
+</td>
+</tr>
+<tr id="i3" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></span>&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</code></th>
 <td class="colLast">
@@ -217,7 +251,7 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.sprites.<a href="../sprites/SimpleSprite.html" title="class in com.sprites">SimpleSprite</a></h3>
-<code><a href="../sprites/SimpleSprite.html#dispose()">dispose</a>, <a href="../sprites/SimpleSprite.html#drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">drawDebug</a>, <a href="../sprites/SimpleSprite.html#getCentreX()">getCentreX</a>, <a href="../sprites/SimpleSprite.html#getCentreY()">getCentreY</a>, <a href="../sprites/SimpleSprite.html#getHealthBar()">getHealthBar</a>, <a href="../sprites/SimpleSprite.html#getHeight()">getHeight</a>, <a href="../sprites/SimpleSprite.html#getHitBox()">getHitBox</a>, <a href="../sprites/SimpleSprite.html#getWidth()">getWidth</a>, <a href="../sprites/SimpleSprite.html#rotate(float)">rotate</a>, <a href="../sprites/SimpleSprite.html#setSize(float,float)">setSize</a></code></li>
+<code><a href="../sprites/SimpleSprite.html#dispose()">dispose</a>, <a href="../sprites/SimpleSprite.html#getCentreX()">getCentreX</a>, <a href="../sprites/SimpleSprite.html#getCentreY()">getCentreY</a>, <a href="../sprites/SimpleSprite.html#getHealthBar()">getHealthBar</a>, <a href="../sprites/SimpleSprite.html#getHeight()">getHeight</a>, <a href="../sprites/SimpleSprite.html#getHitBox()">getHitBox</a>, <a href="../sprites/SimpleSprite.html#getInternalTime()">getInternalTime</a>, <a href="../sprites/SimpleSprite.html#getWidth()">getWidth</a>, <a href="../sprites/SimpleSprite.html#removeSprite(com.badlogic.gdx.graphics.Texture)">removeSprite</a>, <a href="../sprites/SimpleSprite.html#rotate(float)">rotate</a>, <a href="../sprites/SimpleSprite.html#setSize(float,float)">setSize</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.com.badlogic.gdx.graphics.g2d.Sprite">
@@ -256,13 +290,16 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <!--   -->
 </a>
 <h3>Constructor Detail</h3>
-<a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture,float,float)">
+<a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.graphics.Texture,float,float,float,float)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
 <h4>ETFortress</h4>
 <pre>public&nbsp;ETFortress&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+                  com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture,
+                  float&nbsp;scaleX,
+                  float&nbsp;scaleY,
                   float&nbsp;xPos,
                   float&nbsp;yPos)</pre>
 <div class="block">Overloaded constructor containing all possible parameters.
@@ -270,18 +307,41 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>texture</code> - The texture used to draw the ETFortress with.</dd>
+<dd><code>scaleX</code> - The scaling in the x-axis.</dd>
+<dd><code>scaleY</code> - The scaling in the y-axis.</dd>
 <dd><code>xPos</code> - The x-coordinate for the ETFortress.</dd>
 <dd><code>yPos</code> - The y-coordinate for the ETFortress.</dd>
 </dl>
 </li>
 </ul>
-<a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture)">
+<a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.graphics.Texture,float,float)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>ETFortress</h4>
+<pre>public&nbsp;ETFortress&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+                  com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture,
+                  float&nbsp;scaleX,
+                  float&nbsp;scaleY)</pre>
+<div class="block">Overloaded constructor containing all possible parameters.
+ Drawn with the given texture at the given position.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>texture</code> - The texture used to draw the ETFortress with.</dd>
+<dd><code>scaleX</code> - The scaling in the x-axis.</dd>
+<dd><code>scaleY</code> - The scaling in the y-axis.</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.graphics.Texture)">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
 <h4>ETFortress</h4>
-<pre>public&nbsp;ETFortress&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture)</pre>
+<pre>public&nbsp;ETFortress&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;texture,
+                  com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture)</pre>
 <div class="block">Simplfied constructor for the ETFortress, that doesn't require a position.
  Drawn with the given texture at (0,0).</div>
 <dl>
@@ -303,7 +363,7 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <a id="update(com.badlogic.gdx.graphics.g2d.Batch)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>update</h4>
 <pre class="methodSignature">public&nbsp;void&nbsp;update&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</pre>
@@ -311,6 +371,55 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="../sprites/SimpleSprite.html#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></code>&nbsp;in class&nbsp;<code><a href="../sprites/SimpleSprite.html" title="class in com.sprites">SimpleSprite</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>batch</code> - The batch to draw onto.</dd>
+</dl>
+</li>
+</ul>
+<a id="canShootProjectile()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>canShootProjectile</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;canShootProjectile()</pre>
+<div class="block">Check to see if the ETFortress should fire another projectile. The pattern the ETFortress
+ uses to fire can be modified here.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>boolean  Whether the ETFortress is ready to fire again (true) or not (false)</dd>
+</dl>
+</li>
+</ul>
+<a id="isInRadius(com.badlogic.gdx.math.Polygon)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>isInRadius</h4>
+<pre class="methodSignature">public&nbsp;boolean&nbsp;isInRadius&#8203;(com.badlogic.gdx.math.Polygon&nbsp;polygon)</pre>
+<div class="block">Checks if a polygon is within the range of the firestation.
+ Usually used to see if a firetruck is close enough to be repaired.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>polygon</code> - The polygon that needs to be checked.</dd>
+</dl>
+</li>
+</ul>
+<a id="drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>drawDebug</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;drawDebug&#8203;(com.badlogic.gdx.graphics.glutils.ShapeRenderer&nbsp;renderer)</pre>
+<div class="block">Overloaded method for drawing debug information. Draws the hitbox as well
+ as the range circle.</div>
+<dl>
+<dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
+<dd><code><a href="../sprites/SimpleSprite.html#drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">drawDebug</a></code>&nbsp;in class&nbsp;<code><a href="../sprites/SimpleSprite.html" title="class in com.sprites">SimpleSprite</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>renderer</code> - The renderer used to draw the hitbox and range indicator with.</dd>
 </dl>
 </li>
 </ul>

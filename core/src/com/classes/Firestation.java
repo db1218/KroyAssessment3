@@ -16,6 +16,7 @@ import com.sprites.SimpleSprite;
 import static com.config.Constants.FIRESTATION_HEALTH;
 import static com.config.Constants.FIRESTATION_HEIGHT;
 import static com.config.Constants.FIRESTATION_WIDTH;
+import static com.config.Constants.FIRETRUCK_REPAIR_SPEED;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -27,7 +28,6 @@ public class Firestation extends SimpleSprite {
 
     // Private values for this class to use
     private Circle repairRange;
-    private float repairTimeout;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -68,11 +68,11 @@ public class Firestation extends SimpleSprite {
     /**
      * Updates the firestation so that it is drawn every frame.
      * Also reduces the time before next repair can occur.
+     * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
         super.update(batch);
         this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
-        if (this.repairTimeout >= 0) this.repairTimeout -= 1;
     }
 
     /**
@@ -81,9 +81,9 @@ public class Firestation extends SimpleSprite {
      * @param firetruck  The firetruck that will be repaired.
      */
     public void repair(Firetruck firetruck) {
-        if (this.repairTimeout <= 0) {
-            firetruck.getHealthBar().addResourceAmount(1);
-            this.repairTimeout = 10;
+        if (this.getInternalTime() % 10 == 0) {
+            firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
+            firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
         }
     }
 

@@ -15,6 +15,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 
+//Import Kroy game
+import com.kroy.Kroy;
+import com.sprites.MovementSprite;
+
 class MovementSpriteTest {
 
 	private static MovementSprite TestClass;
@@ -28,7 +32,7 @@ class MovementSpriteTest {
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
         TiledMap map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-        TestClass = new MovementSprite(batch, texture, (TiledMapTileLayer) map.getLayers().get(0));
+        TestClass = new MovementSprite(texture, (TiledMapTileLayer) map.getLayers().get(0));
 	}
 	
 	/**

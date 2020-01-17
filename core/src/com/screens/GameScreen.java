@@ -12,6 +12,9 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 // Tiled map imports fro LibGDX
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -25,20 +28,26 @@ import java.util.ArrayList;
 // Class imports
 import com.kroy.Kroy;
 import com.classes.Firetruck;
+import com.classes.Projectile;
 import com.classes.Firestation;
 import com.classes.ETFortress;
 
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
-import static com.config.Constants.SCORE_Y;
+import static com.config.Constants.FONT_Y;
 import static com.config.Constants.SCORE_X;
+import static com.config.Constants.TIME_X;
 import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
-import static com.config.Constants.FIRETRUCK_ACCELERATION;
+import static com.config.Constants.TILE_DIMS;
 import static com.config.Constants.DEBUG_ENABLED;
+import static com.config.Constants.FiretruckOneProperties;
+import static com.config.Constants.FiretruckTwoProperties;
+import static com.config.Constants.FIRETRUCK_DAMAGE;
+import static com.config.Constants.PROJECTILE_DAMAGE;
 
 /**
  * Display the main game.
@@ -52,19 +61,27 @@ public class GameScreen implements Screen {
 	final Kroy game;
 
 	// Private values for game screen logic
-	private TiledMap map;
-	private OrthogonalTiledMapRenderer renderer;
 	private ShapeRenderer shapeRenderer;
 	private OrthographicCamera camera;
 	private Batch batch;
 
+	// Private values for tiled map
+	private TiledMap map;
+	private OrthogonalTiledMapRenderer renderer;
+	private int[] foregroundLayers;
+    private int[] backgroundLayers;
+
 	// Private values for the game
-	private int score;
+	private int score, time;
 	private float zoomDelay;
+	private Texture projectileTexture;
 
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
+	private ArrayList<Firetruck> firetrucksToRemove;
 	private ArrayList<ETFortress> ETFortresses;
+	private ArrayList<Projectile> projectiles;
+	private ArrayList<Projectile> projectilesToRemove;
 	private Firestation firestation;
 
 	/**
@@ -74,68 +91,108 @@ public class GameScreen implements Screen {
 	 * @param gam The game object.
 	 */
 	public GameScreen(final Kroy gam) {
+		// Assign the game to a property so it can be used when transitioning screens
 		this.game = gam;
 
 		// ---- 1) Create new instance for all the objects needed for the game ---- //
 		
 		// Create an orthographic camera
-		camera = new OrthographicCamera();
-		camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+		this.camera = new OrthographicCamera();
+		this.camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
 
 		// Load the map, set the unit scale
-		map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
-		renderer = new OrthogonalTiledMapRenderer(map, MAP_SCALE);
-		shapeRenderer = new ShapeRenderer();
+		this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
+		this.renderer = new OrthogonalTiledMapRenderer(map, MAP_SCALE);
+		this.shapeRenderer = new ShapeRenderer();
+
+		// Create an array to store all projectiles in motion
+		this.projectiles = new ArrayList<Projectile>();
+
+		// Decrease time every second, starting at 3 minutes
+		this.time = 3 * 60;
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				decreaseTime();
+			}
+		}, 1, 1 );
 
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
 		// Initialise map renderer as batch to draw textures to
-		batch = renderer.getBatch();
+		this.batch = renderer.getBatch();
 
 		// Set the game batch
-		this.game.setBatch(batch);
+		this.game.setBatch(this.batch);
 		
 		// Set the Batch to render in the coordinate system specified by the camera.
-		this.batch.setProjectionMatrix(camera.combined);
+		this.batch.setProjectionMatrix(this.camera.combined);
 
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
+		// Select background and foreground map layers, order matters
+        MapLayers mapLayers = map.getLayers();
+        this.foregroundLayers = new int[] {
+			mapLayers.getIndex("Buildings"),
+			mapLayers.getIndex("Trees"),
+        };
+        this.backgroundLayers = new int[] {
+			mapLayers.getIndex("River"),
+			mapLayers.getIndex("Road")
+        };
+
 		// Initialise textures to use for spites
-		Texture firestationTexture = new Texture("FiretruckSlices/tile008.png");
-		Texture ETFortressTexture = new Texture("FiretruckSlices/tile009.png");
+		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
+		Texture cliffordsTowerTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower.png");
+		Texture cliffordsTowerWetTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower_wet.png");
+		Texture railstationTexture = new Texture("MapAssets/UniqueBuildings/railstation.png");
+		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
+		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
+		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
+		this.projectileTexture = new Texture("alienProjectile.png");
 		
-		// Create array of textures for firetruck animations
-		ArrayList<Texture> firetruckSlices = new ArrayList<Texture>();
-		for (int i = 19; i > 0; i--) {
-			if (i == 5) { // Texture 5 contains identical slices except the lights are different
-				Texture texture = new Texture("FiretruckSlices/tile05A.png");
-				firetruckSlices.add(texture);
-				texture = new Texture("FiretruckSlices/tile05B.png");
-				firetruckSlices.add(texture);
+		// Create arrays of textures for animations
+		ArrayList<Texture> waterFrames = new ArrayList<Texture>();
+		ArrayList<Texture> firetruckBlue = new ArrayList<Texture>();
+		ArrayList<Texture> firetruckRed = new ArrayList<Texture>();
+
+		for (int i = 1; i <= 3; i++) {
+			Texture texture = new Texture("waterSplash" + i + ".png");
+			waterFrames.add(texture);
+		}
+		for (int i = 20; i > 0; i--) {
+			if (i == 6) { // Texture 5 contains identical slices except the lights are different
+				Texture blue = new Texture("FiretruckBlue/FiretruckBLUE (6) A.png");
+				Texture red = new Texture("FiretruckRed/FiretruckRED (6) A.png");
+				firetruckBlue.add(blue);
+				firetruckRed.add(red);
+				blue = new Texture("FiretruckBlue/FiretruckBLUE (6) B.png");
+				red = new Texture("FiretruckRed/FiretruckRED (6) B.png");
+				firetruckBlue.add(blue);
+				firetruckRed.add(red);
 			} else {
-				Texture texture = new Texture("FiretruckSlices/tile0" + (i < 10 ? "0" + i:i) + ".png");
-				firetruckSlices.add(texture);
+				Texture blue = new Texture("FiretruckBlue/FiretruckBLUE (" + i + ").png");
+				Texture red = new Texture("FiretruckRed/FiretruckRED (" + i + ").png");
+				firetruckBlue.add(blue);
+				firetruckRed.add(red);
 			}
 		}
 
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation 
-		this.firestation = new Firestation(firestationTexture, 1200, 500);
+		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS);
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
-		for (int i = 1; i <= 2; i++) {
-			Firetruck firetruck = new Firetruck(firetruckSlices, 1100 * i, 650, (TiledMapTileLayer) map.getLayers().get("Buildings"), i);
-			this.firetrucks.add(firetruck);
-		}
+		this.firetrucks.add(new Firetruck(firetruckBlue, waterFrames, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 80 * TILE_DIMS, 30 * TILE_DIMS));
+		this.firetrucks.add(new Firetruck(firetruckRed, waterFrames, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 80 * TILE_DIMS, 32 * TILE_DIMS));
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
-		for (int i = 1; i <= 1; i++) {
-			ETFortress ETFortress = new ETFortress(ETFortressTexture, 1750 * i, 500);
-			this.ETFortresses.add(ETFortress);
-		}
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, 1 * TILE_DIMS, 72.75f * TILE_DIMS));
 	}
 
 	/**
@@ -145,7 +202,17 @@ public class GameScreen implements Screen {
 	public void show() {
 		// Set inital firetruck to focus the camera on
 		setFiretruckFocus(1);
+
+		// Zoom delay is the time before the camera zooms out
 		this.zoomDelay = 0;
+
+		// Start the camera near the firestation
+		this.camera.position.x = 80 * TILE_DIMS;
+		this.camera.position.y = 30 * TILE_DIMS;
+
+		// Create array to collect entities that are no longer used
+		this.projectilesToRemove = new ArrayList<Projectile>();
+		this.firetrucksToRemove = new ArrayList<Firetruck>();
 	}
 
 	/**
@@ -157,93 +224,149 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// ---- 1) Update camera and map properties each iteration -------- //
 		
-		// Set the TiledMapRenderer view based on what the camera sees, and render the map
-		renderer.setView(camera);
-		renderer.render();
+		// Set the TiledMapRenderer view based on what the camera sees
+		renderer.setView(this.camera);
 
 		// Align the debug view with the camera
-		shapeRenderer.setProjectionMatrix(camera.combined);
+		shapeRenderer.setProjectionMatrix(this.camera.combined);
 
 		// Get the firetruck thats being driven so that the camera can follow it
 		Firetruck focusedTruck = getFiretruckInFocus();
 
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
-		Vector3 cameraPosition = camera.position;
+		Vector3 cameraPosition = this.camera.position;
 		float xDifference = focusedTruck.getCentreX() - cameraPosition.x;
 		float yDifference = focusedTruck.getCentreY() - cameraPosition.y;
 		cameraPosition.x += xDifference * LERP * delta;
 		cameraPosition.y += yDifference * LERP * delta;
 		
 		// Zoom the camera out when firetruck moves
-		float maxZoomHoldTime = MAX_ZOOM * 6, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
-		double speed = Math.max(Math.abs(focusedTruck.getSpeedX()), Math.abs(focusedTruck.getSpeedY()));
-		boolean isMoving = speed > FIRETRUCK_ACCELERATION * 10;
+		float maxZoomHoldTime = MAX_ZOOM * 4, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
+		double speed = Math.max(Math.abs(focusedTruck.getSpeed().x), Math.abs(focusedTruck.getSpeed().y));
+		boolean isMovingOrSpraying = speed > focusedTruck.getMaxSpeed() / 2  || focusedTruck.isSpraying();
 		// If moving, increase delay before zooming out up until the limit
-		if (isMoving && this.zoomDelay < maxZoomHoldTime) {
+		if (isMovingOrSpraying && this.zoomDelay < maxZoomHoldTime) {
 			this.zoomDelay += timeIncrement;
 		} else if (this.zoomDelay > MIN_ZOOM) {
 			this.zoomDelay -= 0.1f;
 		}
 		// If delay has been reached, zoom out, then hold until stationary
 		if (this.zoomDelay > maxZoomHoldTime / 4) {
-			camera.zoom = camera.zoom + zoomSpeed > MAX_ZOOM ? MAX_ZOOM : camera.zoom + zoomSpeed;
-		} else if (camera.zoom > MIN_ZOOM) {
-			camera.zoom -= zoomSpeed * 2;
+			this.camera.zoom = this.camera.zoom + zoomSpeed > MAX_ZOOM ? MAX_ZOOM : this.camera.zoom + zoomSpeed;
+		} else if (this.camera.zoom > MIN_ZOOM) {
+			this.camera.zoom -= zoomSpeed * 2;
 		}
-		camera.update();
+		this.camera.update();
+
+		// Set font scale
+		this.game.getFont().getData().setScale(this.camera.zoom * 1.5f);
 
 		// ---- 2) Perform any checks for user input ---------------------- //
 
 		// Check for user input to see if the focused truck should change
+		if (Gdx.input.isKeyPressed(Keys.E)) {
+			focusedTruck.toggleHose();
+		}
 		if (Gdx.input.isKeyPressed(Keys.NUM_1)) {
             setFiretruckFocus(1);
 		}
 		if (Gdx.input.isKeyPressed(Keys.NUM_2)) {
             setFiretruckFocus(2);
-        }
+		}
 
-		// ---- 3) Perform all render functions here ------------------------ //
+		// ---- 3) Draw background, firetruck then foreground layers ----- //
 
-		// Set font scale
-		this.game.getFont().getData().setScale(camera.zoom * 1.5f);
+		// Render background map layers
+		renderer.render(this.backgroundLayers);
 
-		// Ready the batch's for drawing
-		batch.begin();
+		// Render the firetrucks on top of the background
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
-		
-		// Draw the score and FPS to the screen at given co-ordinates
-		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
-		if (DEBUG_ENABLED) game.drawFont("FPS: "
-			+ Gdx.graphics.getFramesPerSecond(),
-			cameraPosition.x + SCORE_X * 0.85f * camera.zoom,
-			cameraPosition.y + SCORE_Y * camera.zoom
-		);
+		batch.begin();
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update(batch);
+			firetruck.update(batch, this.camera);
+			if (firetruck.getHealthBar().getCurrentAmount() <= 0) this.firetrucksToRemove.add(firetruck);
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
+
+		// Close layer 
+		batch.end();
+		if (DEBUG_ENABLED) shapeRenderer.end();
+
+		// Render map foreground layers
+		renderer.render(foregroundLayers);
+
+		// Render the remaining sprites, font last to be on top of all
+		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
+		batch.begin();
+
+		// Render sprites
 		for (ETFortress ETFortress : this.ETFortresses) {
 			ETFortress.update(batch);
 			if (DEBUG_ENABLED) ETFortress.drawDebug(shapeRenderer);
 		}
+		for (Projectile projectile : this.projectiles) {
+			projectile.update(batch);
+			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
+			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
+		}
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
-		
-		// Finish rendering 
-		if (DEBUG_ENABLED) shapeRenderer.end();
+
+		// Draw the score, time and FPS to the screen at given co-ordinates
+		game.drawFont("Score: " + this.score,
+			cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
+		game.drawFont("Time: " + this.time, 
+			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
+		if (DEBUG_ENABLED) game.drawFont("FPS: "
+			+ Gdx.graphics.getFramesPerSecond(),
+			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
+		);
+
+		// Finish rendering
 		batch.end();
+		if (DEBUG_ENABLED) shapeRenderer.end();
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
+		// Remove projectiles that are off the screen and firetrucks that are dead
+		this.projectiles.removeAll(this.projectilesToRemove);
+		this.firetrucks.removeAll(this.firetrucksToRemove);
+
 		// Check for any collisions
 		checkForCollisions();
+
+		// Check if the game should end
+		checkIfGameOver();
+	}
+
+	/**
+     * Checks to see if the player has won or lost the game. Navigates back to the main menu
+	 * if they won or lost.
+     */
+	private void checkIfGameOver() {
+		boolean gameWon = true, gameLost = true;
+		// Check if any firetrucks are still alive
+		for (Firetruck firetruck : this.firetrucks) {
+			if (firetruck.getHealthBar().getCurrentAmount() > 0) gameLost = false;
+		}
+		// Check if any fortresses are still alive
+		for (ETFortress ETFortress : this.ETFortresses) {
+			if (ETFortress.getHealthBar().getCurrentAmount() > 0) gameWon = false;
+		}
+		if (gameWon || gameLost) {
+			dispose();
+			this.game.setScreen(new MainMenuScreen(this.game));
+		}
 	}
 
 	/**
@@ -258,24 +381,41 @@ public class GameScreen implements Screen {
 				// Check if the firetruck overlaps another firetruck, but not itself
 				if (!firetruckA.equals(firetruckB) && Intersector.overlapConvexPolygons(firetruckA.getHitBox(), firetruckB.getHitBox(), seperationVector)) {
 					firetruckA.collisionOccurred(seperationVector.normal);
-					firetruckA.getHealthBar().subtractResourceAmount(5);
 				}
 			}
 			// Check if it overlaps with an ETFortress
 			for (ETFortress ETFortress : this.ETFortresses) {
-				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), ETFortress.getHitBox(), seperationVector)) {
-					firetruckA.collisionOccurred(seperationVector.normal);
+				if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruckA.isInHoseRange(ETFortress.getHitBox())) {
+					ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+					this.score += 10;
 				}
-				if (firetruckA.isInHoseRange(ETFortress.getHitBox())) {
-					ETFortress.getHealthBar().subtractResourceAmount(1);
+				if (ETFortress.isInRadius(firetruckA.getHitBox()) && ETFortress.canShootProjectile()) {
+					Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
+					projectile.calculateTrajectory(firetruckA.getHitBox());
+					this.projectiles.add(projectile);
+				}
+			}
+			// Check if firetruck is hit with a projectile
+			for (Projectile projectile : this.projectiles) {
+				if (Intersector.overlapConvexPolygons(firetruckA.getHitBox(), projectile.getHitBox())) {
+					firetruckA.getHealthBar().subtractResourceAmount(PROJECTILE_DAMAGE);
+					if (this.score > 10) this.score -= 10;
+					projectilesToRemove.add(projectile);
 				}
 			}
 			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
-			// Allows multiple trucks to be in the radius and be repaired.
-			if (firetruckA.isDamaged() && this.firestation.isInRadius(firetruckA.getHitBox())) {
+			// Allows multiple trucks to be in the radius and be repaired or refilled every second.
+			if (this.time > 0 && (firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
 				this.firestation.repair(firetruckA);
 			}
 		}
+	}
+
+	/**
+	 * Decreases time by 1, called every second by the timer
+	 */
+	private void decreaseTime() {
+		if (this.time > 0) this.time -= 1;
 	}
 
 	/**
@@ -285,7 +425,14 @@ public class GameScreen implements Screen {
 	 */
 	private Firetruck getFiretruckInFocus() {
 		for (Firetruck firetruck : this.firetrucks) {
-			if (firetruck.isFocused()) {
+			if (firetruck.isFocused() && firetruck.getHealthBar().getCurrentAmount() > 0) {
+				return firetruck;
+			}
+		}
+		// If no firetruck alive focus next one
+		for (Firetruck firetruck : this.firetrucks) {
+			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
+				firetruck.setFocus(firetruck.getFocusID());
 				return firetruck;
 			}
 		}
@@ -299,7 +446,9 @@ public class GameScreen implements Screen {
 	 */
 	private void setFiretruckFocus(int focusID) {
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.setFocus(focusID);
+			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
+				firetruck.setFocus(focusID);
+			}
 		}
 	}
 
@@ -310,6 +459,9 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
+		this.camera.viewportHeight = height;
+		this.camera.viewportWidth = width;
+        this.camera.update();
 	}
 
 	/**
@@ -338,6 +490,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void dispose() {
+		this.projectileTexture.dispose();
 		this.firestation.dispose();
 		for (Firetruck firetruck : this.firetrucks) {
 			firetruck.dispose();

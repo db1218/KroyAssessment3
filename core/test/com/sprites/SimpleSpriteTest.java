@@ -2,23 +2,28 @@ package com.sprites;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 class SimpleSpriteTest {
 
+	private SimpleSprite testClass;
+
 	@BeforeEach
 	void setUp() throws Exception {
+		testClass = new SimpleSprite(spriteTexture);
 	}
 
 	@Test
-	void testSimpleSpriteBatchTexture() {
+	void testSimpleSpriteTexture() {
 		fail("Not yet implemented");
 	}
 
 	@Test
-	void testSimpleSpriteBatchTextureFloatFloat() {
-		fail("Not yet implemented");
+	void testCreate() {
+		assertNotNull(testClass.getHitBox(), "Sprite does not have a hit box");
+		assertNull(testClass.getHealthBar(), "Sprite does not have a health bar");
 	}
 
 	@Test

@@ -6,7 +6,8 @@
             "request": "launch",
             "mainClass": "com.kroy.desktop.DesktopLauncher",
             "projectName": "desktop",
-            "preLaunchTask": "Build"
+            //"preLaunchTask": "Build",
+            //"postDebugTask": "Document_Code"
         }
     ]
 }
