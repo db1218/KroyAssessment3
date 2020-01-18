@@ -50,7 +50,7 @@ public class Firetruck extends MovementSprite {
      * texture at the given position.
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
-     * @param waterFrames        The texture used to draw the water with.
+     * @param frames         The texture used to draw the water with.
      * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
@@ -74,7 +74,7 @@ public class Firetruck extends MovementSprite {
      * texture at (0,0).
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
-     * @param waterFrames        The texture used to draw the water with.
+     * @param frames         The texture used to draw the water with.
      * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).

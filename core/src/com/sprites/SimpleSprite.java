@@ -29,7 +29,6 @@ public class SimpleSprite extends Sprite {
      * Constructor that creates a sprite at a given position using a given texture..
      * Creates a sprite at (0,0) using a given texture.
      * 
-     * @param spriteBatch    The batch that the sprite should be drawn on.
      * @param spriteTexture  The texture the sprite should use.
      */
     public SimpleSprite(Texture spriteTexture) {
@@ -81,7 +80,8 @@ public class SimpleSprite extends Sprite {
     }
 
     /**
-     * Enables drawing of the hitbox to it can be seen. 
+     * Enables drawing of the hitbox to it can be seen.
+     * @param destroyedTexture The flooded texture to replace the sprite with
      */
     public void removeSprite(Texture destroyedTexture) {
         this.texture = destroyedTexture;

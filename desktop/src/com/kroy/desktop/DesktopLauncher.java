@@ -19,7 +19,8 @@ public class DesktopLauncher {
 	/**
 	 * The entry point to the Kroy application, taking configuration information
 	 * and calling LwjglApplication - the main libGDX instance.
-	 * @param arg
+	 * 
+	 * @param arg 	Arguments needed to run the game
 	 */
 	public static void main (String[] arg) {
 		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
