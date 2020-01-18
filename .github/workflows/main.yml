@@ -2,7 +2,7 @@ name: Deploy
 on:
   push:
     branches:
-      - master
+      - firebaseDocumentation/master
 
 jobs:
   deploy:
@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Repo
-        uses: actions/checkout@master
+        uses: actions/checkout@firebaseDocumentation/master
       - name: Deploy to Firebase
-        uses: w9jds/firebase-action@master
+        uses: w9jds/firebase-action@firebaseDocumentation/master
         with:
           args: deploy --only hosting:salt-and-sepr
         env:

@@ -58,17 +58,17 @@ To be able to run tests in VSCode using the [Java Test Runner](https://marketpla
     </attributes>
 </classpathentry>
 ```
-### Maintaining Documentation
+## Maintaining Documentation
 
 The code has 100% Javadoc annotation coverage and can be found in two flavours. By default, the version found on the master branch does not have firebase support. However if you switch to the firebaseDocumentation/master branch you will find a repo setup with git actions that will automatically upload the generated Javadoc to a site of your choosing. 
 
-## Get my very own documentation site
+#### Get my very own documentation site
 
 If you would like to enable this feature, you will need to create a firebase project. Head to the [Firebase Homepage](https://firebase.google.com/) and sign in with a Google account. Then go to the console and create a new project. Install the [Firebase CLI](https://firebase.google.com/docs/cli?authuser=0#install_the_firebase_cli) then the final steps are to run
 ```
 firebase init
 ```
-follow the steps it outlines then lastly
+follow the steps it outlines, then lastly
 ```
 firebase deploy
 ```
