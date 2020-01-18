@@ -1,4 +1,6 @@
 {
+    // Enable these tasks to keep the gradle build up-to-date
+    // and automatically generate Javadoc from annotations
     "configurations": [
         {
             "type": "java",
