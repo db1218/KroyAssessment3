@@ -13,6 +13,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
+import com.badlogic.gdx.utils.Timer;
+import com.badlogic.gdx.utils.Timer.Task;
 
 // Tiled map imports fro LibGDX
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -33,8 +35,9 @@ import com.classes.ETFortress;
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
-import static com.config.Constants.SCORE_Y;
+import static com.config.Constants.FONT_Y;
 import static com.config.Constants.SCORE_X;
+import static com.config.Constants.TIME_X;
 import static com.config.Constants.LERP;
 import static com.config.Constants.MIN_ZOOM;
 import static com.config.Constants.MAX_ZOOM;
@@ -69,12 +72,13 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
 
 	// Private values for the game
-	private int score;
+	private int score, time, focusedID;
 	private float zoomDelay;
 	private Texture projectileTexture;
 
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
+	private ArrayList<Firetruck> firetrucksToRemove;
 	private ArrayList<ETFortress> ETFortresses;
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
@@ -87,6 +91,7 @@ public class GameScreen implements Screen {
 	 * @param gam The game object.
 	 */
 	public GameScreen(final Kroy gam) {
+		// Assign the game to a property so it can be used when transitioning screens
 		this.game = gam;
 
 		// ---- 1) Create new instance for all the objects needed for the game ---- //
@@ -102,6 +107,15 @@ public class GameScreen implements Screen {
 
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<Projectile>();
+
+		// Decrease time every second, starting at 3 minutes
+		this.time = 3 * 60;
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				decreaseTime();
+			}
+		}, 1, 1 );
 
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
@@ -119,10 +133,10 @@ public class GameScreen implements Screen {
 		// Select background and foreground map layers, order matters
         MapLayers mapLayers = map.getLayers();
         this.foregroundLayers = new int[] {
-			mapLayers.getIndex("Buildings")
+			mapLayers.getIndex("Buildings"),
+			mapLayers.getIndex("Trees"),
         };
         this.backgroundLayers = new int[] {
-			mapLayers.getIndex("Trees"),
 			mapLayers.getIndex("River"),
 			mapLayers.getIndex("Road")
         };
@@ -135,7 +149,7 @@ public class GameScreen implements Screen {
 		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
-		this.projectileTexture = new Texture("FiretruckRed/FiretruckRED (8).png");
+		this.projectileTexture = new Texture("alienProjectile.png");
 		
 		// Create arrays of textures for animations
 		ArrayList<Texture> waterFrames = new ArrayList<Texture>();
@@ -187,7 +201,8 @@ public class GameScreen implements Screen {
 	@Override
 	public void show() {
 		// Set inital firetruck to focus the camera on
-		setFiretruckFocus(1);
+		this.focusedID = 1;
+		setFiretruckFocus(this.focusedID);
 
 		// Zoom delay is the time before the camera zooms out
 		this.zoomDelay = 0;
@@ -196,8 +211,9 @@ public class GameScreen implements Screen {
 		this.camera.position.x = 80 * TILE_DIMS;
 		this.camera.position.y = 30 * TILE_DIMS;
 
-		// Create array to collect offscreen projectiles that need removing
+		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
+		this.firetrucksToRemove = new ArrayList<Firetruck>();
 	}
 
 	/**
@@ -209,7 +225,7 @@ public class GameScreen implements Screen {
 	public void render(float delta) {
 
 		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
-		Gdx.gl.glClearColor(0, 0, 0.2f, 1);
+		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// ---- 1) Update camera and map properties each iteration -------- //
@@ -233,9 +249,9 @@ public class GameScreen implements Screen {
 		// Zoom the camera out when firetruck moves
 		float maxZoomHoldTime = MAX_ZOOM * 4, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
 		double speed = Math.max(Math.abs(focusedTruck.getSpeed().x), Math.abs(focusedTruck.getSpeed().y));
-		boolean isMoving = speed > focusedTruck.getMaxSpeed() / 2;
+		boolean isMovingOrSpraying = speed > focusedTruck.getMaxSpeed() / 2  || focusedTruck.isSpraying();
 		// If moving, increase delay before zooming out up until the limit
-		if (isMoving && this.zoomDelay < maxZoomHoldTime) {
+		if (isMovingOrSpraying && this.zoomDelay < maxZoomHoldTime) {
 			this.zoomDelay += timeIncrement;
 		} else if (this.zoomDelay > MIN_ZOOM) {
 			this.zoomDelay -= 0.1f;
@@ -254,14 +270,15 @@ public class GameScreen implements Screen {
 		// ---- 2) Perform any checks for user input ---------------------- //
 
 		// Check for user input to see if the focused truck should change
-		if (Gdx.input.isKeyPressed(Keys.E)) {
+		if (Gdx.input.isKeyJustPressed(Keys.E)) {
 			focusedTruck.toggleHose();
 		}
-		if (Gdx.input.isKeyPressed(Keys.NUM_1)) {
-            setFiretruckFocus(1);
-		}
-		if (Gdx.input.isKeyPressed(Keys.NUM_2)) {
-            setFiretruckFocus(2);
+		if (Gdx.input.isKeyJustPressed(Keys.TAB)) {
+			this.focusedID += 1;
+			if (this.focusedID > this.firetrucks.size()) {
+				this.focusedID = 1;
+			}
+			setFiretruckFocus(this.focusedID); 
 		}
 
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
@@ -275,7 +292,8 @@ public class GameScreen implements Screen {
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update(batch);
+			firetruck.update(batch, this.camera);
+			if (firetruck.getHealthBar().getCurrentAmount() <= 0) this.firetrucksToRemove.add(firetruck);
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
 
@@ -303,12 +321,17 @@ public class GameScreen implements Screen {
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
-		// Draw the score and FPS to the screen at given co-ordinates
-		game.drawFont("Score: " + score, cameraPosition.x - SCORE_X * camera.zoom, cameraPosition.y + SCORE_Y * camera.zoom);
+		// Draw the score, time and FPS to the screen at given co-ordinates
+		game.drawFont("Score: " + this.score,
+			cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
+		game.drawFont("Time: " + this.time, 
+			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
 		if (DEBUG_ENABLED) game.drawFont("FPS: "
 			+ Gdx.graphics.getFramesPerSecond(),
-			cameraPosition.x + SCORE_X * 0.85f * camera.zoom,
-			cameraPosition.y + SCORE_Y * camera.zoom
+			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
 		);
 
 		// Finish rendering
@@ -317,8 +340,9 @@ public class GameScreen implements Screen {
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
-		// Remove projectiles that are off the screen
+		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
+		this.firetrucks.removeAll(this.firetrucksToRemove);
 
 		// Check for any collisions
 		checkForCollisions();
@@ -342,7 +366,6 @@ public class GameScreen implements Screen {
 			if (ETFortress.getHealthBar().getCurrentAmount() > 0) gameWon = false;
 		}
 		if (gameWon || gameLost) {
-			this.game.dispose();
 			dispose();
 			this.game.setScreen(new MainMenuScreen(this.game));
 		}
@@ -383,11 +406,18 @@ public class GameScreen implements Screen {
 				}
 			}
 			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
-			// Allows multiple trucks to be in the radius and be repaired or refilled.
-			if ((firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
+			// Allows multiple trucks to be in the radius and be repaired or refilled every second.
+			if (this.time > 0 && (firetruckA.isDamaged() || firetruckA.isLowOnWater()) && this.firestation.isInRadius(firetruckA.getHitBox())) {
 				this.firestation.repair(firetruckA);
 			}
 		}
+	}
+
+	/**
+	 * Decreases time by 1, called every second by the timer
+	 */
+	private void decreaseTime() {
+		if (this.time > 0) this.time -= 1;
 	}
 
 	/**
@@ -431,6 +461,9 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resize(int width, int height) {
+		this.camera.viewportHeight = height;
+		this.camera.viewportWidth = width;
+        this.camera.update();
 	}
 
 	/**

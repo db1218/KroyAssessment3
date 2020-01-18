@@ -21,7 +21,7 @@ public class SimpleSprite extends Sprite {
 
     // Private values to be used in this class only
     private Texture texture;
-    private float width, height;
+    private float width, height, internalTime;
     private ResourceBar healthBar;
     private Polygon hitBox;
 
@@ -29,7 +29,6 @@ public class SimpleSprite extends Sprite {
      * Constructor that creates a sprite at a given position using a given texture..
      * Creates a sprite at (0,0) using a given texture.
      * 
-     * @param spriteBatch    The batch that the sprite should be drawn on.
      * @param spriteTexture  The texture the sprite should use.
      */
     public SimpleSprite(Texture spriteTexture) {
@@ -45,7 +44,10 @@ public class SimpleSprite extends Sprite {
         // Use the longest side of the sprite as the bar width
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        // Rotate 90 to be same rotation as textures
         this.rotate(-90);
+        // Start internal time at 150, used for animations/timeouts
+        this.internalTime = 150;
     }
 
     /**
@@ -61,6 +63,12 @@ public class SimpleSprite extends Sprite {
         // Draw the sprite and update the healthbar
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
             this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
+        // Decrease internal time
+        if (this.internalTime > 0) {
+            this.internalTime -= 1;
+        } else if (this.getInternalTime() <= 0) {
+            this.internalTime = 150;
+        }
     }
 
     /**
@@ -72,7 +80,8 @@ public class SimpleSprite extends Sprite {
     }
 
     /**
-     * Enables drawing of the hitbox to it can be seen. 
+     * Enables drawing of the hitbox to it can be seen.
+     * @param destroyedTexture The flooded texture to replace the sprite with
      */
     public void removeSprite(Texture destroyedTexture) {
         this.texture = destroyedTexture;
@@ -109,6 +118,14 @@ public class SimpleSprite extends Sprite {
      */
     public ResourceBar getHealthBar() {
         return this.healthBar;
+    }
+
+    /**
+     * Get the internal time of the sprite.
+     * @return The internal time of the sprite.
+     */
+    public float getInternalTime() {
+        return this.internalTime;
     }
 
     /**

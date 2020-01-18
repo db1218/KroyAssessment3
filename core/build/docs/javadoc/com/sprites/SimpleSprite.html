@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10,"i12":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -224,7 +224,7 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code><a href="ResourceBar.html" title="class in com.sprites">ResourceBar</a></code></td>
+<td class="colFirst"><code><a href="../classes/ResourceBar.html" title="class in com.classes">ResourceBar</a></code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getHealthBar()">getHealthBar</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the health bar of the sprite.</div>
@@ -246,19 +246,33 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
 </tr>
 <tr id="i7" class="rowColor">
 <td class="colFirst"><code>float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getInternalTime()">getInternalTime</a></span>()</code></th>
+<td class="colLast">
+<div class="block">Get the internal time of the sprite.</div>
+</td>
+</tr>
+<tr id="i8" class="altColor">
+<td class="colFirst"><code>float</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getWidth()">getWidth</a></span>()</code></th>
 <td class="colLast">
 <div class="block">Get the current width of the sprite.</div>
 </td>
 </tr>
-<tr id="i8" class="altColor">
+<tr id="i9" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#removeSprite(com.badlogic.gdx.graphics.Texture)">removeSprite</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture)</code></th>
+<td class="colLast">
+<div class="block">Enables drawing of the hitbox to it can be seen.</div>
+</td>
+</tr>
+<tr id="i10" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#rotate(float)">rotate</a></span>&#8203;(float&nbsp;degrees)</code></th>
 <td class="colLast">
 <div class="block">Overrides Sprite class method to rotate the sprite and hitbox at once.</div>
 </td>
 </tr>
-<tr id="i9" class="rowColor">
+<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSize(float,float)">setSize</a></span>&#8203;(float&nbsp;width,
        float&nbsp;height)</code></th>
@@ -266,7 +280,7 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
 <div class="block">Overrides Sprite class method to keep seperate values for width and height.</div>
 </td>
 </tr>
-<tr id="i10" class="altColor">
+<tr id="i12" class="altColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></span>&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</code></th>
 <td class="colLast">
@@ -322,7 +336,6 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
  Creates a sprite at (0,0) using a given texture.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>spriteBatch</code> - The batch that the sprite should be drawn on.</dd>
 <dd><code>spriteTexture</code> - The texture the sprite should use.</dd>
 </dl>
 </li>
@@ -346,6 +359,10 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
 <pre class="methodSignature">public&nbsp;void&nbsp;update&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</pre>
 <div class="block">Update the sprite position, hitbox and health bar.
  Must be called every frame in order to draw the sprite.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>batch</code> - The batch to draw onto.</dd>
+</dl>
 </li>
 </ul>
 <a id="drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">
@@ -359,6 +376,20 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>renderer</code> - The shape renderer to draw onto.</dd>
+</dl>
+</li>
+</ul>
+<a id="removeSprite(com.badlogic.gdx.graphics.Texture)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>removeSprite</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;removeSprite&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;destroyedTexture)</pre>
+<div class="block">Enables drawing of the hitbox to it can be seen.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>destroyedTexture</code> - The flooded texture to replace the sprite with</dd>
 </dl>
 </li>
 </ul>
@@ -403,11 +434,25 @@ extends com.badlogic.gdx.graphics.g2d.Sprite</pre>
 <ul class="blockList">
 <li class="blockList">
 <h4>getHealthBar</h4>
-<pre class="methodSignature">public&nbsp;<a href="ResourceBar.html" title="class in com.sprites">ResourceBar</a>&nbsp;getHealthBar()</pre>
+<pre class="methodSignature">public&nbsp;<a href="../classes/ResourceBar.html" title="class in com.classes">ResourceBar</a>&nbsp;getHealthBar()</pre>
 <div class="block">Get the health bar of the sprite.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
 <dd>The health bar of the sprite.</dd>
+</dl>
+</li>
+</ul>
+<a id="getInternalTime()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getInternalTime</h4>
+<pre class="methodSignature">public&nbsp;float&nbsp;getInternalTime()</pre>
+<div class="block">Get the internal time of the sprite.</div>
+<dl>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>The internal time of the sprite.</dd>
 </dl>
 </li>
 </ul>

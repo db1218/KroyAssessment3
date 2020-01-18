@@ -113,21 +113,17 @@ public class MovementSprite extends SimpleSprite {
      * existing acceleration.
      */
     private void accelerate() {
-        // The coordinates the sprite will move into
-        float newX = this.getX() + this.speed.x * Gdx.graphics.getDeltaTime();
-        float newY = this.getY() + this.speed.y * Gdx.graphics.getDeltaTime();
         // Calculate whether it hits any boundaries
-        boolean collides = this.collisionLayer != null && collidesWithBlockedTile(newX, newY);
+        boolean collides = this.collisionLayer != null && collidesWithBlockedTile(this.getX(), this.getY());
         // Check if it collides with any tiles, then move the sprite
         if (!collides) {
-            this.setX(newX);
-            this.setY(newY);
+            this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
+            this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
             if (this.decelerationRate != 0) decelerate();
         } else {
-            // Seperate the sprite from the tile
+            // Seperate the sprite from the tile and stop sprite movement
             collisionOccurred(this.speed.rotate(180).scl(0.05f));
-            this.setX(this.getX() - this.speed.x);
-            this.setY(this.getY() - this.speed.y);
+            this.speed = new Vector2(0, 0);
         }
     }
 
@@ -160,7 +156,7 @@ public class MovementSprite extends SimpleSprite {
         // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
         this.speed.y *= -this.restitution;
         this.speed.x *= -this.restitution;
-        this.setRotationLock(0.25f);
+        this.setRotationLock(0.5f);
         this.setY(this.getY() + pushBackY);
         this.setX(this.getX() + pushBackX);
     }
@@ -173,15 +169,15 @@ public class MovementSprite extends SimpleSprite {
      */
     private boolean collidesWithBlockedTile(float x, float y) {
         // Vector to calculate rotated width and height
-        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(-this.getRotation());
+        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(360-this.getRotation());
         // Coordinates to check with a bit of leniance
-        int leftX =   (int) x + TILE_DIMS / 8;
-        int rightX =  (int) (x + Math.abs(size.x)) - TILE_DIMS / 8;
-        int bottomY = (int) y + TILE_DIMS / 8;
-        int topY =    (int) (y + Math.abs(size.y)) - TILE_DIMS / 8;
-        // Check neighbours and return if they're blocked
-        for ( int xPos = leftX; xPos <= rightX; xPos+= TILE_DIMS) {
-            for ( int yPos = bottomY; yPos <= topY; yPos+= TILE_DIMS) {
+        int leftX =   (int) x;
+        int rightX =  (int) (x + Math.abs(size.x));
+        int bottomY = (int) y;
+        int topY =    (int) (y + Math.abs(size.y));
+        // Check all corners of the firetruck to see if they're in a blocked tile
+        for ( int xPos = leftX; xPos < rightX; xPos+= TILE_DIMS / 8) {
+            for ( int yPos = bottomY; yPos < topY; yPos+= TILE_DIMS / 8) {
                 Cell cell = collisionLayer.getCell(xPos / TILE_DIMS, yPos / TILE_DIMS);
 		        if (cell != null && cell.getTile() != null) return cell.getTile().getProperties().containsKey(COLLISION_TILE);
             }
@@ -191,7 +187,7 @@ public class MovementSprite extends SimpleSprite {
     
     /**
      * Sets the amount of time the sprite cannot rotate for.
-     * @param milliseconds The duration the sprite cannot rotate in.
+     * @param duration The duration the sprite cannot rotate in.
      */
     public void setRotationLock(float duration) {
         if (duration > 0 && this.rotationLockTime <= 0) {

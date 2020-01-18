@@ -57,6 +57,8 @@ public class ResourceBar {
 
     /**
      * Draw the resource bar. Needs to be called every frame.
+     * 
+     * @param batch The batch to draw the resource bar onto.
      */
     public void update(Batch batch) {
         // Fade the bar in or out
@@ -131,7 +133,9 @@ public class ResourceBar {
 
     /** 
      * Fade the bar either in or out using it's alpha value.
-     * @param shouldFadeIn Whether to fade in (true) or out (false)
+     * 
+     * @param shouldFadeIn      Whether to fade in (true) or out (false)
+     * @param shouldFadeOut     Whether to fade out (true) or out (false)
      */
     public void setFade(boolean shouldFadeIn, boolean shouldFadeOut) {
         this.fadeIn = shouldFadeIn;
@@ -211,9 +215,9 @@ public class ResourceBar {
                 this.currentResourceAmount = this.maxResourceAmount;
             } else {
                 this.currentResourceAmount += amount;
+                this.bar.setStyle(getResourceBarStyle());
             }
         }
-        this.bar.setStyle(getResourceBarStyle());
     }
 
     /**
@@ -229,8 +233,8 @@ public class ResourceBar {
                 this.currentResourceAmount = 0;
             } else {
                 this.currentResourceAmount -= amount;
+                this.bar.setStyle(getResourceBarStyle());
             }
         }
-        this.bar.setStyle(getResourceBarStyle());
     }
 }

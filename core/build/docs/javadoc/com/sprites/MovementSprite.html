@@ -27,7 +27,7 @@
     catch(err) {
     }
 //-->
-var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10,"i11":10};
+var data = {"i0":10,"i1":10,"i2":10,"i3":10,"i4":10,"i5":10,"i6":10,"i7":10,"i8":10,"i9":10,"i10":10};
 var tabs = {65535:["t0","All Methods"],2:["t2","Instance Methods"],8:["t4","Concrete Methods"]};
 var altColor = "altColor";
 var rowColor = "rowColor";
@@ -147,7 +147,7 @@ $('.navPadding').css('padding-top', $('.fixedNav').css("height"));
 <li class="blockList">
 <dl>
 <dt>Direct Known Subclasses:</dt>
-<dd><code><a href="../classes/Firetruck.html" title="class in com.classes">Firetruck</a></code></dd>
+<dd><code><a href="../classes/Firetruck.html" title="class in com.classes">Firetruck</a></code>, <code><a href="../classes/Projectile.html" title="class in com.classes">Projectile</a></code></dd>
 </dl>
 <hr>
 <pre>public class <span class="typeNameLabel">MovementSprite</span>
@@ -177,6 +177,12 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 <th class="colLast" scope="col">Description</th>
 </tr>
 <tr class="altColor">
+<th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture)">MovementSprite</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;spriteTexture)</code></th>
+<td class="colLast">
+<div class="block">Creates a sprite capable of moving and but only colliding with other sprites.</div>
+</td>
+</tr>
+<tr class="rowColor">
 <th class="colConstructorName" scope="row"><code><span class="memberNameLink"><a href="#%3Cinit%3E(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.maps.tiled.TiledMapTileLayer)">MovementSprite</a></span>&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;spriteTexture,
               com.badlogic.gdx.maps.tiled.TiledMapTileLayer&nbsp;collisionLayer)</code></th>
 <td class="colLast">
@@ -203,7 +209,7 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 </tr>
 <tr id="i0" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#accelerate(com.config.Constants.Direction)">accelerate</a></span>&#8203;(<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;direction)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#applyAcceleration(com.config.Constants.Direction)">applyAcceleration</a></span>&#8203;(<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;direction)</code></th>
 <td class="colLast">
 <div class="block">Increases the speed of the sprite in the given direction.</div>
 </td>
@@ -216,38 +222,38 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 </td>
 </tr>
 <tr id="i2" class="altColor">
-<td class="colFirst"><code><a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a></code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getDirection()">getDirection</a></span>()</code></th>
+<td class="colFirst"><code>float</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getMaxSpeed()">getMaxSpeed</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Gets the current direction of the sprite.</div>
+<div class="block">Returns the max speed the sprite can accelerate to.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
-<td class="colFirst"><code>float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSpeedX()">getSpeedX</a></span>()</code></th>
+<td class="colFirst"><code>com.badlogic.gdx.math.Vector2</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSpeed()">getSpeed</a></span>()</code></th>
 <td class="colLast">
-<div class="block">Gets the current speed of the sprite in the X axis.</div>
+<div class="block">Gets the current speed of the sprite.</div>
 </td>
 </tr>
 <tr id="i4" class="altColor">
-<td class="colFirst"><code>float</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#getSpeedY()">getSpeedY</a></span>()</code></th>
-<td class="colLast">
-<div class="block">Gets the current speed of the sprite in the Y axis.</div>
-</td>
-</tr>
-<tr id="i5" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setAccelerationRate(float)">setAccelerationRate</a></span>&#8203;(float&nbsp;rate)</code></th>
 <td class="colLast">
 <div class="block">Sets the rate at which the sprite will accelerate.</div>
 </td>
 </tr>
+<tr id="i5" class="rowColor">
+<td class="colFirst"><code>void</code></td>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDecelerationRate(float)">setDecelerationRate</a></span>&#8203;(float&nbsp;rate)</code></th>
+<td class="colLast">
+<div class="block">Sets the rate at which the sprite will decelerate.</div>
+</td>
+</tr>
 <tr id="i6" class="altColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setDirection(com.config.Constants.Direction)">setDirection</a></span>&#8203;(<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;dir)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setMaxSpeed(float)">setMaxSpeed</a></span>&#8203;(float&nbsp;amount)</code></th>
 <td class="colLast">
-<div class="block">Sets the current direction of the sprite.</div>
+<div class="block">Sets the max speed the sprite can accelerate to.</div>
 </td>
 </tr>
 <tr id="i7" class="rowColor">
@@ -266,19 +272,12 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 </tr>
 <tr id="i9" class="rowColor">
 <td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSpeedX(java.lang.Float)">setSpeedX</a></span>&#8203;(java.lang.Float&nbsp;speed)</code></th>
+<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSpeed(com.badlogic.gdx.math.Vector2)">setSpeed</a></span>&#8203;(com.badlogic.gdx.math.Vector2&nbsp;speed)</code></th>
 <td class="colLast">
-<div class="block">Sets the current speed of the sprite in the X axis.</div>
+<div class="block">Sets the current speed of the sprite.</div>
 </td>
 </tr>
 <tr id="i10" class="altColor">
-<td class="colFirst"><code>void</code></td>
-<th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#setSpeedY(java.lang.Float)">setSpeedY</a></span>&#8203;(java.lang.Float&nbsp;speed)</code></th>
-<td class="colLast">
-<div class="block">Sets the current speed of the sprite in the Y axis.</div>
-</td>
-</tr>
-<tr id="i11" class="rowColor">
 <td class="colFirst"><code>void</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></span>&#8203;(com.badlogic.gdx.graphics.g2d.Batch&nbsp;batch)</code></th>
 <td class="colLast">
@@ -292,7 +291,7 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 <!--   -->
 </a>
 <h3>Methods inherited from class&nbsp;com.sprites.<a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a></h3>
-<code><a href="SimpleSprite.html#dispose()">dispose</a>, <a href="SimpleSprite.html#drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">drawDebug</a>, <a href="SimpleSprite.html#getCentreX()">getCentreX</a>, <a href="SimpleSprite.html#getCentreY()">getCentreY</a>, <a href="SimpleSprite.html#getHealthBar()">getHealthBar</a>, <a href="SimpleSprite.html#getHeight()">getHeight</a>, <a href="SimpleSprite.html#getHitBox()">getHitBox</a>, <a href="SimpleSprite.html#getWidth()">getWidth</a>, <a href="SimpleSprite.html#rotate(float)">rotate</a>, <a href="SimpleSprite.html#setSize(float,float)">setSize</a></code></li>
+<code><a href="SimpleSprite.html#dispose()">dispose</a>, <a href="SimpleSprite.html#drawDebug(com.badlogic.gdx.graphics.glutils.ShapeRenderer)">drawDebug</a>, <a href="SimpleSprite.html#getCentreX()">getCentreX</a>, <a href="SimpleSprite.html#getCentreY()">getCentreY</a>, <a href="SimpleSprite.html#getHealthBar()">getHealthBar</a>, <a href="SimpleSprite.html#getHeight()">getHeight</a>, <a href="SimpleSprite.html#getHitBox()">getHitBox</a>, <a href="SimpleSprite.html#getInternalTime()">getInternalTime</a>, <a href="SimpleSprite.html#getWidth()">getWidth</a>, <a href="SimpleSprite.html#removeSprite(com.badlogic.gdx.graphics.Texture)">removeSprite</a>, <a href="SimpleSprite.html#rotate(float)">rotate</a>, <a href="SimpleSprite.html#setSize(float,float)">setSize</a></code></li>
 </ul>
 <ul class="blockList">
 <li class="blockList"><a id="methods.inherited.from.class.com.badlogic.gdx.graphics.g2d.Sprite">
@@ -334,7 +333,7 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 <a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture,com.badlogic.gdx.maps.tiled.TiledMapTileLayer)">
 <!--   -->
 </a>
-<ul class="blockListLast">
+<ul class="blockList">
 <li class="blockList">
 <h4>MovementSprite</h4>
 <pre>public&nbsp;MovementSprite&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;spriteTexture,
@@ -344,6 +343,20 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>spriteTexture</code> - The texture the sprite should use.</dd>
 <dd><code>collisionLayer</code> - The layer of the map the sprite will collide with.</dd>
+</dl>
+</li>
+</ul>
+<a id="&lt;init&gt;(com.badlogic.gdx.graphics.Texture)">
+<!--   -->
+</a>
+<ul class="blockListLast">
+<li class="blockList">
+<h4>MovementSprite</h4>
+<pre>public&nbsp;MovementSprite&#8203;(com.badlogic.gdx.graphics.Texture&nbsp;spriteTexture)</pre>
+<div class="block">Creates a sprite capable of moving and but only colliding with other sprites.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>spriteTexture</code> - The texture the sprite should use.</dd>
 </dl>
 </li>
 </ul>
@@ -369,6 +382,22 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 <dl>
 <dt><span class="overrideSpecifyLabel">Overrides:</span></dt>
 <dd><code><a href="SimpleSprite.html#update(com.badlogic.gdx.graphics.g2d.Batch)">update</a></code>&nbsp;in class&nbsp;<code><a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a></code></dd>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>batch</code> - The batch to draw onto.</dd>
+</dl>
+</li>
+</ul>
+<a id="applyAcceleration(com.config.Constants.Direction)">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>applyAcceleration</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;applyAcceleration&#8203;(<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;direction)</pre>
+<div class="block">Increases the speed of the sprite in the given direction.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>direction</code> - The direction to accelerate in.</dd>
 </dl>
 </li>
 </ul>
@@ -396,21 +425,7 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 <div class="block">Sets the amount of time the sprite cannot rotate for.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>milliseconds</code> - The duration the sprite cannot rotate in.</dd>
-</dl>
-</li>
-</ul>
-<a id="accelerate(com.config.Constants.Direction)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>accelerate</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;accelerate&#8203;(<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;direction)</pre>
-<div class="block">Increases the speed of the sprite in the given direction.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>direction</code> - The direction to accelerate in.</dd>
+<dd><code>duration</code> - The duration the sprite cannot rotate in.</dd>
 </dl>
 </li>
 </ul>
@@ -442,87 +457,73 @@ extends <a href="SimpleSprite.html" title="class in com.sprites">SimpleSprite</a
 </dl>
 </li>
 </ul>
-<a id="setDirection(com.config.Constants.Direction)">
+<a id="setDecelerationRate(float)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setDirection</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setDirection&#8203;(<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;dir)</pre>
-<div class="block">Sets the current direction of the sprite.</div>
+<h4>setDecelerationRate</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setDecelerationRate&#8203;(float&nbsp;rate)</pre>
+<div class="block">Sets the rate at which the sprite will decelerate.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>dir</code> - The direction for the sprite.</dd>
+<dd><code>rate</code> - The deceleration rate for the sprite.</dd>
 </dl>
 </li>
 </ul>
-<a id="getDirection()">
+<a id="setMaxSpeed(float)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>getDirection</h4>
-<pre class="methodSignature">public&nbsp;<a href="../config/Constants.Direction.html" title="enum in com.config">Constants.Direction</a>&nbsp;getDirection()</pre>
-<div class="block">Gets the current direction of the sprite.</div>
+<h4>setMaxSpeed</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setMaxSpeed&#8203;(float&nbsp;amount)</pre>
+<div class="block">Sets the max speed the sprite can accelerate to.</div>
+<dl>
+<dt><span class="paramLabel">Parameters:</span></dt>
+<dd><code>amount</code> - The max speed value for the sprite.</dd>
+</dl>
+</li>
+</ul>
+<a id="getMaxSpeed()">
+<!--   -->
+</a>
+<ul class="blockList">
+<li class="blockList">
+<h4>getMaxSpeed</h4>
+<pre class="methodSignature">public&nbsp;float&nbsp;getMaxSpeed()</pre>
+<div class="block">Returns the max speed the sprite can accelerate to.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The direction of the sprite.</dd>
+<dd>The max speed value for the sprite.</dd>
 </dl>
 </li>
 </ul>
-<a id="setSpeedX(java.lang.Float)">
+<a id="setSpeed(com.badlogic.gdx.math.Vector2)">
 <!--   -->
 </a>
 <ul class="blockList">
 <li class="blockList">
-<h4>setSpeedX</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setSpeedX&#8203;(java.lang.Float&nbsp;speed)</pre>
-<div class="block">Sets the current speed of the sprite in the X axis.</div>
+<h4>setSpeed</h4>
+<pre class="methodSignature">public&nbsp;void&nbsp;setSpeed&#8203;(com.badlogic.gdx.math.Vector2&nbsp;speed)</pre>
+<div class="block">Sets the current speed of the sprite.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>speed</code> - The speed the sprite should travel.</dd>
 </dl>
 </li>
 </ul>
-<a id="getSpeedX()">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>getSpeedX</h4>
-<pre class="methodSignature">public&nbsp;float&nbsp;getSpeedX()</pre>
-<div class="block">Gets the current speed of the sprite in the X axis.</div>
-<dl>
-<dt><span class="returnLabel">Returns:</span></dt>
-<dd>The current speed of the sprite in the X axis.</dd>
-</dl>
-</li>
-</ul>
-<a id="setSpeedY(java.lang.Float)">
-<!--   -->
-</a>
-<ul class="blockList">
-<li class="blockList">
-<h4>setSpeedY</h4>
-<pre class="methodSignature">public&nbsp;void&nbsp;setSpeedY&#8203;(java.lang.Float&nbsp;speed)</pre>
-<div class="block">Sets the current speed of the sprite in the Y axis.</div>
-<dl>
-<dt><span class="paramLabel">Parameters:</span></dt>
-<dd><code>speed</code> - The speed the sprite should travel.</dd>
-</dl>
-</li>
-</ul>
-<a id="getSpeedY()">
+<a id="getSpeed()">
 <!--   -->
 </a>
 <ul class="blockListLast">
 <li class="blockList">
-<h4>getSpeedY</h4>
-<pre class="methodSignature">public&nbsp;float&nbsp;getSpeedY()</pre>
-<div class="block">Gets the current speed of the sprite in the Y axis.</div>
+<h4>getSpeed</h4>
+<pre class="methodSignature">public&nbsp;com.badlogic.gdx.math.Vector2&nbsp;getSpeed()</pre>
+<div class="block">Gets the current speed of the sprite.</div>
 <dl>
 <dt><span class="returnLabel">Returns:</span></dt>
-<dd>The current speed of the sprite in the Y axis.</dd>
+<dd>The current speed of the sprite.</dd>
 </dl>
 </li>
 </ul>
