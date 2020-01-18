@@ -92,6 +92,7 @@ public class Firestation extends SimpleSprite {
      * Usually used to see if a firetruck is close enough to be repaired.
      * 
      * @param polygon  The polygon that needs to be checked.
+     * @return         Whether the given polygon is in the radius of the Firestation
      */
     public boolean isInRadius(Polygon polygon) {
         float []vertices = polygon.getTransformedVertices();

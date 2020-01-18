@@ -34,11 +34,12 @@ public class ETFortress extends SimpleSprite {
      * Overloaded constructor containing all possible parameters.
      * Drawn with the given texture at the given position.
      * 
-     * @param texture  The texture used to draw the ETFortress with.
-     * @param scaleX   The scaling in the x-axis.
-     * @param scaleY   The scaling in the y-axis.
-     * @param xPos     The x-coordinate for the ETFortress.
-     * @param yPos     The y-coordinate for the ETFortress.
+     * @param texture           The texture used to draw the ETFortress with.
+     * @param destroyedTexture  The texture used to draw the ETFortress with. when it has been destroyed.
+     * @param scaleX            The scaling in the x-axis.
+     * @param scaleY            The scaling in the y-axis.
+     * @param xPos              The x-coordinate for the ETFortress.
+     * @param yPos              The y-coordinate for the ETFortress.
      */
     public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos) {
         super(texture);
@@ -52,9 +53,10 @@ public class ETFortress extends SimpleSprite {
      * Overloaded constructor containing all possible parameters.
      * Drawn with the given texture at the given position.
      * 
-     * @param texture   The texture used to draw the ETFortress with.
-     * @param scaleX    The scaling in the x-axis.
-     * @param scaleY    The scaling in the y-axis.
+     * @param texture           The texture used to draw the ETFortress with.
+     * @param destroyedTexture  The texture used to draw the ETFortress with. when it has been destroyed.
+     * @param scaleX            The scaling in the x-axis.
+     * @param scaleY            The scaling in the y-axis.
      */
     public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY) {
         super(texture);
@@ -67,7 +69,8 @@ public class ETFortress extends SimpleSprite {
      * Simplfied constructor for the ETFortress, that doesn't require a position.
      * Drawn with the given texture at (0,0).
      * 
-     * @param texture  The texture used to draw the ETFortress with.
+     * @param texture           The texture used to draw the ETFortress with.
+     * @param destroyedTexture  The texture used to draw the ETFortress with. when it has been destroyed.
      */
     public ETFortress(Texture texture, Texture destroyedTexture) {
         super(texture);
@@ -80,7 +83,6 @@ public class ETFortress extends SimpleSprite {
      */
     private void create() {
         this.getHealthBar().setMaxResource((int) (ETFORTRESS_HEALTH * Math.max(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY())));
-        System.out.println(this.getHealthBar().getMaxAmount());
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 2);
     }
@@ -117,10 +119,11 @@ public class ETFortress extends SimpleSprite {
     }
 
     /**
-     * Checks if a polygon is within the range of the firestation.
-     * Usually used to see if a firetruck is close enough to be repaired.
+     * Checks if a polygon is within the range of the ETFortress.
+     * Usually used to see if a firetruck is close enough to be attacked.
      * 
      * @param polygon  The polygon that needs to be checked.
+     * @return         Whether the given polygon is in the radius of the ETFortress
      */
     public boolean isInRadius(Polygon polygon) {
         float []vertices = polygon.getTransformedVertices();

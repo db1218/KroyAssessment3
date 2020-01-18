@@ -37,6 +37,8 @@ public class Projectile extends MovementSprite {
      * texture at the given position.
      * 
      * @param texture        The texture used to draw the projectile with.
+     * @param x              The x-coordinate the projectile will start at.
+     * @param y              The y-coordinate the projectile will start at.
      */
     public Projectile(Texture texture, float x, float y) {
         super(texture);
@@ -65,7 +67,7 @@ public class Projectile extends MovementSprite {
 
     /**
      * Calculates the trajectory from the projectiles starting point to the target point.
-     * @param Polygon The target the projectile is fired at
+     * @param target The target the projectile is fired at
      */
     public void calculateTrajectory(Polygon target) {
         // Convert the two points into vectors
@@ -87,7 +89,7 @@ public class Projectile extends MovementSprite {
     /**
      * Gets whether the projectile is ready to be removed. It needs to be offscreen
      * so it doesn't disappear in view.
-     * @param Vector3 The position of the camera, needed to calculate the edge of the screen
+     * @param cameraPosition The position of the camera, needed to calculate the edge of the screen
      * 
      * @return Whether the projectile can be removed.
      */

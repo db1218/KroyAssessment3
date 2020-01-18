@@ -2,12 +2,9 @@ package com.classes;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-//Import Kroy game
-import com.kroy.Kroy;
-import com.classes.Firestation;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 // Import Java File type
 import java.io.File;
@@ -16,9 +13,16 @@ import java.io.File;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.Texture;
 
-class FirestationTest {
+//Import Kroy game
+import com.kroy.Kroy;
+import com.classes.ETFortress;
 
-	private static Firestation TestClass;
+import com.testrunner.GdxTestRunner;
+
+@RunWith(GdxTestRunner.class)
+class ETFortressTest {
+
+	private static ETFortress TestClass;
 	
 	@BeforeEach
 	void setUp() throws Exception {
@@ -28,7 +32,7 @@ class FirestationTest {
 		// create sprite
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
-        TestClass = new Firestation(texture, 1500, 500);
+        //TestClass = new ETFortress(texture, texture, 1500, 500);
     }
 
     /**

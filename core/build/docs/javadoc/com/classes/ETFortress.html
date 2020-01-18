@@ -235,7 +235,7 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <td class="colFirst"><code>boolean</code></td>
 <th class="colSecond" scope="row"><code><span class="memberNameLink"><a href="#isInRadius(com.badlogic.gdx.math.Polygon)">isInRadius</a></span>&#8203;(com.badlogic.gdx.math.Polygon&nbsp;polygon)</code></th>
 <td class="colLast">
-<div class="block">Checks if a polygon is within the range of the firestation.</div>
+<div class="block">Checks if a polygon is within the range of the ETFortress.</div>
 </td>
 </tr>
 <tr id="i3" class="rowColor">
@@ -307,6 +307,7 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>texture</code> - The texture used to draw the ETFortress with.</dd>
+<dd><code>destroyedTexture</code> - The texture used to draw the ETFortress with. when it has been destroyed.</dd>
 <dd><code>scaleX</code> - The scaling in the x-axis.</dd>
 <dd><code>scaleY</code> - The scaling in the y-axis.</dd>
 <dd><code>xPos</code> - The x-coordinate for the ETFortress.</dd>
@@ -329,6 +330,7 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>texture</code> - The texture used to draw the ETFortress with.</dd>
+<dd><code>destroyedTexture</code> - The texture used to draw the ETFortress with. when it has been destroyed.</dd>
 <dd><code>scaleX</code> - The scaling in the x-axis.</dd>
 <dd><code>scaleY</code> - The scaling in the y-axis.</dd>
 </dl>
@@ -347,6 +349,7 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>texture</code> - The texture used to draw the ETFortress with.</dd>
+<dd><code>destroyedTexture</code> - The texture used to draw the ETFortress with. when it has been destroyed.</dd>
 </dl>
 </li>
 </ul>
@@ -398,11 +401,13 @@ extends <a href="../sprites/SimpleSprite.html" title="class in com.sprites">Simp
 <li class="blockList">
 <h4>isInRadius</h4>
 <pre class="methodSignature">public&nbsp;boolean&nbsp;isInRadius&#8203;(com.badlogic.gdx.math.Polygon&nbsp;polygon)</pre>
-<div class="block">Checks if a polygon is within the range of the firestation.
- Usually used to see if a firetruck is close enough to be repaired.</div>
+<div class="block">Checks if a polygon is within the range of the ETFortress.
+ Usually used to see if a firetruck is close enough to be attacked.</div>
 <dl>
 <dt><span class="paramLabel">Parameters:</span></dt>
 <dd><code>polygon</code> - The polygon that needs to be checked.</dd>
+<dt><span class="returnLabel">Returns:</span></dt>
+<dd>Whether the given polygon is in the radius of the ETFortress</dd>
 </dl>
 </li>
 </ul>
