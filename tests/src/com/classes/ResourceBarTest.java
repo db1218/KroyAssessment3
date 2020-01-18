@@ -3,23 +3,41 @@ package com.classes;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
+import org.junit.runner.RunWith;
 
 //Import Kroy game
 import com.kroy.Kroy;
+import com.testrunner.GdxTestRunner;
+import com.badlogic.gdx.graphics.Color;
 import com.classes.ResourceBar;
 
 /**
  * @author Joshua
  *
  */
+
+@RunWith(GdxTestRunner.class)
 class ResourceBarTest {
 
+	/** 
+	 * Test ResourceBar is created.
+	 * For a current resource amount to be returned, bar must have been created.
+	 */
+	@Test
+	void testResourceBarIsCreated() {
+		// Create resource bar
+		ResourceBar barToTest = new ResourceBar(50, 100);
+		barToTest.setMaxResource((int) 2);
+		// Test there is an amount.
+		assertEquals(barToTest.getCurrentAmount(), 2);
+	}
+	
 	/**
 	 * Test method for {@link com.classes.ResourceBar#ResourceBar(float, float)}.
 	 */
 	@Test
 	void testResourceBar() {
-		fail("Not yet implemented");
+		
 	}
 
 	/**

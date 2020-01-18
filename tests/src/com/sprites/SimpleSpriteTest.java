@@ -2,6 +2,8 @@ package com.sprites;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+import com.badlogic.gdx.graphics.Texture;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -12,7 +14,8 @@ class SimpleSpriteTest {
 
 	@BeforeEach
 	void setUp() throws Exception {
-		testClass = new SimpleSprite(spriteTexture);
+		Texture spriteTexture = new Texture("img.png");
+		//testClass = new SimpleSprite(spriteTexture);
 	}
 
 	@Test
