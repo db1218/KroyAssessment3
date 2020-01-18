@@ -1,7 +1,6 @@
 {
   "hosting": {
     "public": "core/build/docs/javadoc",
-    "target": "salt-and-sepr",
     "ignore": [
       "firebase.json",
       "**/.*",
