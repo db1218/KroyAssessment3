@@ -1,4 +1,6 @@
 {
+    // Enable these tasks to keep the gradle build up-to-date
+    // and automatically generate Javadoc from annotations
     "configurations": [
         {
             "type": "java",
@@ -6,7 +8,8 @@
             "request": "launch",
             "mainClass": "com.kroy.desktop.DesktopLauncher",
             "projectName": "desktop",
-            "preLaunchTask": "Build"
+            //"preLaunchTask": "Build",
+            //"postDebugTask": "Document_Code"
         }
     ]
 }
