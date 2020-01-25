@@ -117,6 +117,8 @@ public class GameScreen implements Screen {
 			}
 		}, 1, 1 );
 
+		Gdx.input.setInputProcessor(new GameInputHandler(this));
+
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
 		// Initialise map renderer as batch to draw textures to
@@ -202,7 +204,7 @@ public class GameScreen implements Screen {
 	public void show() {
 		// Set inital firetruck to focus the camera on
 		this.focusedID = 1;
-		setFiretruckFocus(this.focusedID);
+		setFireStationFocus(this.focusedID);
 
 		// Zoom delay is the time before the camera zooms out
 		this.zoomDelay = 0;
@@ -250,15 +252,15 @@ public class GameScreen implements Screen {
 		float maxZoomHoldTime = MAX_ZOOM * 4, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
 		double speed = Math.max(Math.abs(focusedTruck.getSpeed().x), Math.abs(focusedTruck.getSpeed().y));
 		boolean isMovingOrSpraying = speed > focusedTruck.getMaxSpeed() / 2  || focusedTruck.isSpraying();
-		// If moving, increase delay before zooming out up until the limit
-		if (isMovingOrSpraying && this.zoomDelay < maxZoomHoldTime) {
-			this.zoomDelay += timeIncrement;
-		} else if (this.zoomDelay > MIN_ZOOM) {
-			this.zoomDelay -= 0.1f;
-		}
+//		// If moving, increase delay before zooming out up until the limit
+//		if (isMovingOrSpraying && this.zoomDelay < maxZoomHoldTime) {
+//			this.zoomDelay += timeIncrement;
+//		} else if (this.zoomDelay > MIN_ZOOM) {
+//			this.zoomDelay -= 0.1f;
+//		}
 		// If delay has been reached, zoom out, then hold until stationary
 		if (this.zoomDelay > maxZoomHoldTime / 4) {
-			this.camera.zoom = this.camera.zoom + zoomSpeed > MAX_ZOOM ? MAX_ZOOM : this.camera.zoom + zoomSpeed;
+			this.camera.zoom = Math.min(this.camera.zoom + zoomSpeed, MAX_ZOOM);
 		} else if (this.camera.zoom > MIN_ZOOM) {
 			this.camera.zoom -= zoomSpeed * 2;
 		}
@@ -267,18 +269,13 @@ public class GameScreen implements Screen {
 		// Set font scale
 		this.game.getFont().getData().setScale(this.camera.zoom * 1.5f);
 
-		// ---- 2) Perform any checks for user input ---------------------- //
-
-		// Check for user input to see if the focused truck should change
-		if (Gdx.input.isKeyJustPressed(Keys.E)) {
-			focusedTruck.toggleHose();
-		}
 		if (Gdx.input.isKeyJustPressed(Keys.TAB)) {
+			System.out.println("hi");
 			this.focusedID += 1;
 			if (this.focusedID > this.firetrucks.size()) {
 				this.focusedID = 1;
 			}
-			setFiretruckFocus(this.focusedID); 
+			setFireStationFocus(this.focusedID);
 		}
 
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
@@ -425,7 +422,7 @@ public class GameScreen implements Screen {
 	 * 
 	 * @return The firetruck with user's focus.
 	 */
-	private Firetruck getFiretruckInFocus() {
+	public Firetruck getFiretruckInFocus() {
 		for (Firetruck firetruck : this.firetrucks) {
 			if (firetruck.isFocused() && firetruck.getHealthBar().getCurrentAmount() > 0) {
 				return firetruck;
@@ -446,7 +443,10 @@ public class GameScreen implements Screen {
 	 * 
 	 * @param focusID The ID of the firetruck to focus on.
 	 */
-	private void setFiretruckFocus(int focusID) {
+
+	public void setFireStationFocus(int focusID) {
+		/* TODO we want this method to move the camera to the station when a fire truck dies,
+		when it is there it should open the new station GUI */
 		for (Firetruck firetruck : this.firetrucks) {
 			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
 				firetruck.setFocus(focusID);
