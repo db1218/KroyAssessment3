@@ -98,7 +98,7 @@ public class Firestation extends SimpleSprite {
         float []vertices = polygon.getTransformedVertices();
         Vector2 center = new Vector2(this.repairRange.x, this.repairRange.y);
         float squareRadius = this.repairRange.radius * this.repairRange.radius;
-        for (int i = 0; i < vertices.length; i+=2){
+        for (int i = 0; i < vertices.length; i+=2) {
             if (i == 0){
                 if (Intersector.intersectSegmentCircle(new Vector2(vertices[vertices.length - 2], vertices[vertices.length - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
                     return true;

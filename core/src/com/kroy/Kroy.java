@@ -2,10 +2,12 @@ package com.kroy;
 
 // LibGDX imports
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 // Class imports
+import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
 
 /**
@@ -24,10 +26,11 @@ public class Kroy extends Game {
 	 * Display the main menu screen upon game start.
 	 */
 	public void create() {
+		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		// Use LibGDX's default Arial font.
 		this.font = new BitmapFont();
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new MainMenuScreen(this));
+		this.setScreen(new GameScreen(this));
 	}
 
 	/**

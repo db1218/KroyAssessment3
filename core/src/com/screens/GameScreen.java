@@ -3,7 +3,6 @@ package com.screens;
 // LibGDX imports
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -73,8 +72,9 @@ public class GameScreen implements Screen {
 
 	// Private values for the game
 	private int score, time, focusedID;
-	private float zoomDelay;
 	private Texture projectileTexture;
+
+	private float zoomTarget;
 
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
@@ -206,8 +206,8 @@ public class GameScreen implements Screen {
 		this.focusedID = 1;
 		setFireStationFocus(this.focusedID);
 
-		// Zoom delay is the time before the camera zooms out
-		this.zoomDelay = 0;
+		// Zoom that the user has set with their scroll wheel
+		this.zoomTarget = 1.2f;
 
 		// Start the camera near the firestation
 		this.camera.position.x = 80 * TILE_DIMS;
@@ -247,36 +247,17 @@ public class GameScreen implements Screen {
 		float yDifference = focusedTruck.getCentreY() - cameraPosition.y;
 		cameraPosition.x += xDifference * LERP * delta;
 		cameraPosition.y += yDifference * LERP * delta;
-		
-		// Zoom the camera out when firetruck moves
-		float maxZoomHoldTime = MAX_ZOOM * 4, zoomSpeed = MIN_ZOOM * 0.01f, timeIncrement = MIN_ZOOM * 0.1f; 
-		double speed = Math.max(Math.abs(focusedTruck.getSpeed().x), Math.abs(focusedTruck.getSpeed().y));
-		boolean isMovingOrSpraying = speed > focusedTruck.getMaxSpeed() / 2  || focusedTruck.isSpraying();
-//		// If moving, increase delay before zooming out up until the limit
-//		if (isMovingOrSpraying && this.zoomDelay < maxZoomHoldTime) {
-//			this.zoomDelay += timeIncrement;
-//		} else if (this.zoomDelay > MIN_ZOOM) {
-//			this.zoomDelay -= 0.1f;
-//		}
-		// If delay has been reached, zoom out, then hold until stationary
-		if (this.zoomDelay > maxZoomHoldTime / 4) {
-			this.camera.zoom = Math.min(this.camera.zoom + zoomSpeed, MAX_ZOOM);
-		} else if (this.camera.zoom > MIN_ZOOM) {
-			this.camera.zoom -= zoomSpeed * 2;
+
+		if (this.camera.zoom > zoomTarget) {
+			this.camera.zoom -= 0.005f;
+		} else if (this.camera.zoom < zoomTarget) {
+			this.camera.zoom += 0.005f;
 		}
+
 		this.camera.update();
 
 		// Set font scale
 		this.game.getFont().getData().setScale(this.camera.zoom * 1.5f);
-
-		if (Gdx.input.isKeyJustPressed(Keys.TAB)) {
-			System.out.println("hi");
-			this.focusedID += 1;
-			if (this.focusedID > this.firetrucks.size()) {
-				this.focusedID = 1;
-			}
-			setFireStationFocus(this.focusedID);
-		}
 
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
 
@@ -451,6 +432,12 @@ public class GameScreen implements Screen {
 			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
 				firetruck.setFocus(focusID);
 			}
+		}
+	}
+
+	public void cameraZoom(float zoom) {
+		if (this.zoomTarget + zoom < 2f && this.zoomTarget + zoom > 0.8f) {
+			this.zoomTarget += zoom;
 		}
 	}
 

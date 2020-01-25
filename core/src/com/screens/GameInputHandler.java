@@ -118,6 +118,7 @@ public class GameInputHandler implements InputProcessor {
      */
     @Override
     public boolean scrolled(int amount) {
-        return false;
+        gameScreen.cameraZoom(0.04f * amount);
+        return true;
     }
 }
