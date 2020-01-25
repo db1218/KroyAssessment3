@@ -248,9 +248,9 @@ public class GameScreen implements Screen {
 		cameraPosition.x += xDifference * LERP * delta;
 		cameraPosition.y += yDifference * LERP * delta;
 
-		if (this.camera.zoom > zoomTarget) {
+		if (this.camera.zoom - 0.005f > zoomTarget) {
 			this.camera.zoom -= 0.005f;
-		} else if (this.camera.zoom < zoomTarget) {
+		} else if (this.camera.zoom + 0.005f < zoomTarget) {
 			this.camera.zoom += 0.005f;
 		}
 
