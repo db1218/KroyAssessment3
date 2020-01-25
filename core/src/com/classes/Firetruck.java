@@ -43,6 +43,8 @@ public class Firetruck extends MovementSprite {
     private Polygon hoseRange;
     private ResourceBar waterBar;
 
+    private ShapeRenderer shapeRenderer;
+
     /**
      * Overloaded constructor containing all possible parameters.
      * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
@@ -65,6 +67,7 @@ public class Firetruck extends MovementSprite {
         this.firetruckProperties = properties;
         this.setPosition(xPos, yPos);
         this.create();
+        this.shapeRenderer = new ShapeRenderer();
     }
 
     /**
@@ -162,6 +165,7 @@ public class Firetruck extends MovementSprite {
         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.9f);
         batch.draw(new TextureRegion(this.waterFrames.get(Math.round(this.getInternalTime() / 10) % 3)), this.hoseRange.getX(), this.hoseRange.getY() - this.hoseHeight / 2,
             0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), hoseVector.angle(), true);
+
         // Return the batch to its original colours
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
 

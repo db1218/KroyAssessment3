@@ -6,10 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.config.Constants.Direction;
+import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 // Constants import
+import javax.sound.midi.SysexMessage;
+
 import static com.config.Constants.COLLISION_TILE;
 import static com.config.Constants.TILE_DIMS;
 
@@ -165,25 +169,34 @@ public class MovementSprite extends SimpleSprite {
      * Checks if the tile at a location is a "blocked" tile or not.
      * @param x The x-coordinate to check.
      * @param y The y-coordinate to check.
-     * @return Whether the sprite can enter the tile (true) or not (false).
+     * @return Whether the hits a collision object (true) or not (false)
      */
     private boolean collidesWithBlockedTile(float x, float y) {
         // Vector to calculate rotated width and height
-        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(360-this.getRotation());
+        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(360 - this.getRotation());
+
         // Coordinates to check with a bit of leniance
-        int leftX =   (int) x;
-        int rightX =  (int) (x + Math.abs(size.x));
-        int bottomY = (int) y;
-        int topY =    (int) (y + Math.abs(size.y));
+        Rectangle truckArea = new Rectangle(x, y, x + size.x, y + size.y);
+
         // Check all corners of the firetruck to see if they're in a blocked tile
-        for ( int xPos = leftX; xPos < rightX; xPos+= TILE_DIMS / 8) {
-            for ( int yPos = bottomY; yPos < topY; yPos+= TILE_DIMS / 8) {
-                Cell cell = collisionLayer.getCell(xPos / TILE_DIMS, yPos / TILE_DIMS);
-		        if (cell != null && cell.getTile() != null) return cell.getTile().getProperties().containsKey(COLLISION_TILE);
-            }
+
+        Vector2 bottomLeft = new Vector2(this.getX() / TILE_DIMS, this.getY() / TILE_DIMS);
+        Vector2 bottomRight = new Vector2(this.getX() / TILE_DIMS + this.getWidth() / TILE_DIMS, this.getY() / TILE_DIMS);
+        Vector2 topLeft = new Vector2(this.getX() / TILE_DIMS, this.getY() / TILE_DIMS + this.getHeight() / TILE_DIMS);
+        Vector2 topRight = new Vector2(this.getX() / TILE_DIMS + this.getWidth() / TILE_DIMS, this.getY() / TILE_DIMS + this.getHeight() / TILE_DIMS);
+
+        if (this.collisionLayer.getCell(((int) bottomLeft.x), ((int) bottomLeft.y)) == null) {
+            return true;
+        } else if (this.collisionLayer.getCell(((int) bottomRight.x), ((int) bottomRight.y)) == null) {
+            return true;
+        } else if (this.collisionLayer.getCell(((int) topLeft.x), ((int) topLeft.y)) == null) {
+            return true;
+        } else if (this.collisionLayer.getCell(((int) topRight.x), ((int) topRight.y)) == null) {
+            return true;
+        } else {
+            return false;
         }
-        return false;
-	}
+    }
     
     /**
      * Sets the amount of time the sprite cannot rotate for.
