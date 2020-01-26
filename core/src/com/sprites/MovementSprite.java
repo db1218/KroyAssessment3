@@ -6,13 +6,17 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Array;
 import com.config.Constants.Direction;
 import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 // Constants import
 import javax.sound.midi.SysexMessage;
+
+import java.util.ArrayList;
 
 import static com.config.Constants.COLLISION_TILE;
 import static com.config.Constants.TILE_DIMS;
@@ -69,11 +73,13 @@ public class MovementSprite extends SimpleSprite {
      * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
-        super.update(batch);
         // Calculate the acceleration on the sprite and apply it
         accelerate();
+
         // Rotate sprite to face the direction its moving in
         updateRotation();
+
+        super.update(batch);
         // Update rotationLockout if set
         if (this.rotationLockTime >= 0) this.rotationLockTime -= 1; 
     }
@@ -118,7 +124,7 @@ public class MovementSprite extends SimpleSprite {
      */
     private void accelerate() {
         // Calculate whether it hits any boundaries
-        boolean collides = this.collisionLayer != null && collidesWithBlockedTile(this.getX(), this.getY());
+        boolean collides = this.collisionLayer != null && collidesWithBlockedTile();
         // Check if it collides with any tiles, then move the sprite
         if (!collides) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
@@ -167,35 +173,31 @@ public class MovementSprite extends SimpleSprite {
 
     /**
      * Checks if the tile at a location is a "blocked" tile or not.
-     * @param x The x-coordinate to check.
-     * @param y The y-coordinate to check.
      * @return Whether the hits a collision object (true) or not (false)
      */
-    private boolean collidesWithBlockedTile(float x, float y) {
-        // Vector to calculate rotated width and height
-        Vector2 size = new Vector2(this.getWidth(), this.getHeight()).rotate(360 - this.getRotation());
+    private boolean collidesWithBlockedTile() {
+        Array<Vector2> vertices = getPolygonVertices(super.getHitBox());
 
-        // Coordinates to check with a bit of leniance
-        Rectangle truckArea = new Rectangle(x, y, x + size.x, y + size.y);
-
-        // Check all corners of the firetruck to see if they're in a blocked tile
-
-        Vector2 bottomLeft = new Vector2(this.getX() / TILE_DIMS, this.getY() / TILE_DIMS);
-        Vector2 bottomRight = new Vector2(this.getX() / TILE_DIMS + this.getWidth() / TILE_DIMS, this.getY() / TILE_DIMS);
-        Vector2 topLeft = new Vector2(this.getX() / TILE_DIMS, this.getY() / TILE_DIMS + this.getHeight() / TILE_DIMS);
-        Vector2 topRight = new Vector2(this.getX() / TILE_DIMS + this.getWidth() / TILE_DIMS, this.getY() / TILE_DIMS + this.getHeight() / TILE_DIMS);
-
-        if (this.collisionLayer.getCell(((int) bottomLeft.x), ((int) bottomLeft.y)) == null) {
-            return true;
-        } else if (this.collisionLayer.getCell(((int) bottomRight.x), ((int) bottomRight.y)) == null) {
-            return true;
-        } else if (this.collisionLayer.getCell(((int) topLeft.x), ((int) topLeft.y)) == null) {
-            return true;
-        } else if (this.collisionLayer.getCell(((int) topRight.x), ((int) topRight.y)) == null) {
-            return true;
-        } else {
-            return false;
+        for (Vector2 vertex : vertices) {
+            System.out.println(vertex.x/TILE_DIMS);
+            System.out.println(vertex.x/TILE_DIMS);
+            if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+                return true;
+            }
         }
+        return false;
+    }
+
+    Array<Vector2> getPolygonVertices(Polygon polygon) {
+        float[] vertices = polygon.getTransformedVertices();
+
+        Array<Vector2> result = new Array<>();
+        for (int i = 0; i < vertices.length/2; i++) {
+            float x = vertices[i * 2];
+            float y = vertices[i * 2 + 1];
+            result.add(new Vector2(x, y));
+        }
+        return result;
     }
     
     /**

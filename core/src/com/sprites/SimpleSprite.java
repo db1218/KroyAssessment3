@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
 // Class import
+import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.classes.ResourceBar;
 
 /**
