@@ -15,11 +15,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
+import com.config.Constants;
 import com.sprites.MovementSprite;
 import com.classes.ResourceBar;
 
 // Constants imports
 import static com.config.Constants.Direction;
+import static com.config.Constants.Direction2;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
 
@@ -113,22 +115,26 @@ public class Firetruck extends MovementSprite {
      * @param batch  The batch to draw onto.
      * @param camera Used to get the centre of the screen.
      */
-    public void update(Batch batch, Camera camera) {
+    public void update(Batch batch, Camera camera, float delta) {
         super.update(batch);
         drawVoxelImage(batch);
         if (this.isFocused) {
             // Look for key press input, then accelerate the firetruck in that direction
             if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-                super.applyAcceleration(Direction.LEFT);
+//                super.applyAcceleration(Direction.LEFT);
+                super.move(Direction2.LEFT, delta);
             }
             if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
-                super.applyAcceleration(Direction.RIGHT);
+//                super.applyAcceleration(Direction.RIGHT);
+                super.move(Direction2.RIGHT, delta);
             }          
             if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
-                super.applyAcceleration(Direction.DOWN);
+//                super.applyAcceleration(Direction.DOWN);
+                super.move(Direction2.BACKWARDS, delta);
             } 
             if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-                super.applyAcceleration(Direction.UP);
+//                super.applyAcceleration(Direction.UP);
+                super.move(Direction2.FORWARDS, delta);
             }
         } else if (this.isSpraying) {
             // If not driving the truck, turn the hose off

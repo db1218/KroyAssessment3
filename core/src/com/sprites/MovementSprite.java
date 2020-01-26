@@ -6,11 +6,14 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.config.Constants;
 import com.config.Constants.Direction;
+import com.config.Constants.Direction2;
 //import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 // Constants import
@@ -63,7 +66,7 @@ public class MovementSprite extends SimpleSprite {
         this.accelerationRate = 10;
         this.decelerationRate = 6;
         this.rotationLockTime = 0;
-        this.restitution = 0.8f;
+        this.restitution = 0.1f;
         this.maxSpeed = 200;
     }
 
@@ -77,7 +80,7 @@ public class MovementSprite extends SimpleSprite {
         accelerate();
 
         // Rotate sprite to face the direction its moving in
-        updateRotation();
+//        updateRotation();
 
         super.update(batch);
         // Update rotationLockout if set
@@ -101,6 +104,21 @@ public class MovementSprite extends SimpleSprite {
         if (this.speed.x > -this.maxSpeed && direction == Direction.LEFT) {
             this.speed.x -= this.accelerationRate;
         }
+    }
+
+    protected void move(Direction2 direction, float delta) {
+        if (this.speed.y < this.maxSpeed && this.speed.x < this.maxSpeed && direction == Direction2.FORWARDS) {
+            this.speed.x = this.maxSpeed * MathUtils.cosDeg(this.getRotation());
+            this.speed.y = this.maxSpeed * MathUtils.sinDeg(this.getRotation());
+        } else if (this.speed.y > -this.maxSpeed && direction == Direction2.BACKWARDS) {
+            this.speed.x = -1 * this.maxSpeed * MathUtils.cosDeg(this.getRotation());
+            this.speed.y = -1 * this.maxSpeed * MathUtils.sinDeg(this.getRotation());
+        } else if (direction == Direction2.RIGHT) {
+            this.rotate(-90 * delta * 1.5f);
+        } else if (direction == Direction2.LEFT) {
+            this.rotate(90 * delta * 1.5f);
+        }
+        System.out.println(this.speed);
     }
 
     /**
@@ -176,11 +194,7 @@ public class MovementSprite extends SimpleSprite {
      * @return Whether the hits a collision object (true) or not (false)
      */
     private boolean collidesWithBlockedTile() {
-        Array<Vector2> vertices = getPolygonVertices(super.getHitBox());
-
-        for (Vector2 vertex : vertices) {
-            System.out.println(vertex.x/TILE_DIMS);
-            System.out.println(vertex.x/TILE_DIMS);
+        for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
             if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
                 return true;
             }

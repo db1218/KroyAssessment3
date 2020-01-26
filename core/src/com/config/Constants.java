@@ -38,6 +38,14 @@ public final class Constants {
          STATIC
     }
 
+    public static enum Direction2 {
+        FORWARDS,
+        BACKWARDS,
+        LEFT,
+        RIGHT,
+        STATIC
+    }
+
     public enum TruckColours{
          RED ("RED", "Red"),
         BLUE ("BLUE", "Blue"),
@@ -77,7 +85,7 @@ public final class Constants {
     public static final int FIRETRUCK_REPAIR_SPEED = 75;
 
     // Camera settings
-    public static final float LERP = 1.5f;
+    public static final float LERP = 3.0f;
     public static final float MIN_ZOOM = 1f;
     public static final float MAX_ZOOM = 1.75f;
 

@@ -252,7 +252,7 @@ public class GameScreen implements Screen {
 
 		// Call the update function of the sprites to draw and update them
 		for (Firetruck firetruck : this.firetrucks) {
-			firetruck.update(batch, this.camera);
+			firetruck.update(batch, this.camera, delta);
 			if (firetruck.getHealthBar().getCurrentAmount() <= 0) this.firetrucksToRemove.add(firetruck);
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
