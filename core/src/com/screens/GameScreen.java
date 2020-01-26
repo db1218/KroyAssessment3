@@ -25,6 +25,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import java.util.ArrayList;
 
 // Class imports
+import com.config.Constants;
 import com.kroy.Kroy;
 import com.classes.Firetruck;
 import com.classes.Projectile;
@@ -50,12 +51,12 @@ import static com.config.Constants.PROJECTILE_DAMAGE;
 
 /**
  * Display the main game.
- * 
+ *
  * @author Archie
  * @since 23/11/2019
  */
 public class GameScreen implements Screen {
-	  
+
 	// A constant variable to store the game
 	final Kroy game;
 
@@ -84,10 +85,11 @@ public class GameScreen implements Screen {
 	private ArrayList<Projectile> projectilesToRemove;
 	private Firestation firestation;
 
+	private ArrayList<Texture> waterFrames;
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
-	 * 
+	 *
 	 * @param gam The game object.
 	 */
 	public GameScreen(final Kroy gam) {
@@ -95,7 +97,7 @@ public class GameScreen implements Screen {
 		this.game = gam;
 
 		// ---- 1) Create new instance for all the objects needed for the game ---- //
-		
+
 		// Create an orthographic camera
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
@@ -126,7 +128,7 @@ public class GameScreen implements Screen {
 
 		// Set the game batch
 		this.game.setBatch(this.batch);
-		
+
 		// Set the Batch to render in the coordinate system specified by the camera.
 		this.batch.setProjectionMatrix(this.camera.combined);
 
@@ -152,44 +154,23 @@ public class GameScreen implements Screen {
 		Texture yorkMinisterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinisterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
 		this.projectileTexture = new Texture("alienProjectile.png");
-		
+
 		// Create arrays of textures for animations
-		ArrayList<Texture> waterFrames = new ArrayList<Texture>();
-		ArrayList<Texture> firetruckBlue = new ArrayList<Texture>();
-		ArrayList<Texture> firetruckRed = new ArrayList<Texture>();
+		waterFrames = new ArrayList<Texture>();
 
 		for (int i = 1; i <= 3; i++) {
 			Texture texture = new Texture("waterSplash" + i + ".png");
 			waterFrames.add(texture);
 		}
-		for (int i = 20; i > 0; i--) {
-			if (i == 6) { // Texture 5 contains identical slices except the lights are different
-				Texture blue = new Texture("FiretruckBlue/FiretruckBLUE (6) A.png");
-				Texture red = new Texture("FiretruckRed/FiretruckRED (6) A.png");
-				firetruckBlue.add(blue);
-				firetruckRed.add(red);
-				blue = new Texture("FiretruckBlue/FiretruckBLUE (6) B.png");
-				red = new Texture("FiretruckRed/FiretruckRED (6) B.png");
-				firetruckBlue.add(blue);
-				firetruckRed.add(red);
-			} else {
-				Texture blue = new Texture("FiretruckBlue/FiretruckBLUE (" + i + ").png");
-				Texture red = new Texture("FiretruckRed/FiretruckRED (" + i + ").png");
-				firetruckBlue.add(blue);
-				firetruckRed.add(red);
-			}
-		}
 
 		// ---- 4) Create entities that will be around for entire game duration - //
 
-		// Create a new firestation 
+		// Create a new firestation
 		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS);
 
 		// Initialise firetrucks array and add firetrucks to it
 		this.firetrucks = new ArrayList<Firetruck>();
-		this.firetrucks.add(new Firetruck(firetruckBlue, waterFrames, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision2"), 1, firestation.getX() - 10, 30 * TILE_DIMS));
-//		this.firetrucks.add(new Firetruck(firetruckBlue, waterFrames, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 1, 80 * TILE_DIMS, 30 * TILE_DIMS));
-//		this.firetrucks.add(new Firetruck(firetruckRed, waterFrames, FiretruckTwoProperties, (TiledMapTileLayer) map.getLayers().get("Collision"), 2, 80 * TILE_DIMS, 32 * TILE_DIMS));
+		spawn(Constants.TruckColours.RED, 1);
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
@@ -221,7 +202,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Render function to display all elements in the main game.
-	 * 
+	 *
 	 * @param delta The delta time of the game, updated every game second rather than frame.
 	 */
 	@Override
@@ -232,7 +213,7 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		// ---- 1) Update camera and map properties each iteration -------- //
-		
+
 		// Set the TiledMapRenderer view based on what the camera sees
 		renderer.setView(this.camera);
 
@@ -276,7 +257,7 @@ public class GameScreen implements Screen {
 			if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
 		}
 
-		// Close layer 
+		// Close layer
 		batch.end();
 		if (DEBUG_ENABLED) shapeRenderer.end();
 
@@ -304,7 +285,7 @@ public class GameScreen implements Screen {
 		game.drawFont("Score: " + this.score,
 			cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
 			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
-		game.drawFont("Time: " + this.time, 
+		game.drawFont("Time: " + this.time,
 			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
 			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
 		if (DEBUG_ENABLED) game.drawFont("FPS: "
@@ -401,7 +382,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Get the firetruck the user is currently controlling.
-	 * 
+	 *
 	 * @return The firetruck with user's focus.
 	 */
 	public Firetruck getFiretruckInFocus() {
@@ -422,7 +403,7 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Set which firetruck the user is currently controlling.
-	 * 
+	 *
 	 * @param focusID The ID of the firetruck to focus on.
 	 */
 
@@ -488,6 +469,22 @@ public class GameScreen implements Screen {
 		for (ETFortress ETFortress : this.ETFortresses) {
 			ETFortress.dispose();
 		}
+	}
+
+	public void spawn(Constants.TruckColours colour, int ID){
+		ArrayList<Texture> truckTextures = new ArrayList<Texture>();
+		for (int i = 20; i > 0; i--) {
+			if (i == 6) { // Texture 5 contains identical slices except the lights are different
+				Texture texture = new Texture("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " (6) A.png");
+				truckTextures.add(texture);
+				texture = new Texture("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " (6) B.png");
+				truckTextures.add(texture);
+			} else {
+				Texture texture = new Texture("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " (" + i + ").png");
+				truckTextures.add(texture);
+			}
+		}
+		this.firetrucks.add(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision2"), ID, firestation.getX() - 10, 30 * TILE_DIMS));
 	}
 
 }

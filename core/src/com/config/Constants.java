@@ -34,7 +34,29 @@ public final class Constants {
         UP,
         DOWN,
         LEFT,
-        RIGHT
+        RIGHT,
+         STATIC
+    }
+
+    public enum TruckColours{
+         RED ("RED", "Red"),
+        BLUE ("BLUE", "Blue"),
+        YELLOW ("YELLOW", "Yellow");
+
+         private final String colourUpper;
+         private  final String colourLower;
+
+         TruckColours(String upper, String lower){
+             this.colourUpper = upper;
+             this.colourLower = lower;
+         }
+
+        public String getColourUpper() {
+             return this.colourUpper;
+        }
+        public String getColourLower(){
+             return this.colourLower;
+        }
     }
 
     // Debug mode
