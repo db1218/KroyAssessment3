@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
+import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
@@ -34,7 +35,7 @@ public class MovementSprite extends SimpleSprite {
     // Private values to be used in this class only
     private float accelerationRate, decelerationRate, maxSpeed, restitution, rotationLockTime;
     private Vector2 speed;
-    private TiledMapTileLayer collisionLayer;
+    private TiledMapTileLayer collisionLayer, carparkLayer;
 
     /**
      * Creates a sprite capable of moving and colliding with the tiledMap and other sprites.
@@ -42,9 +43,10 @@ public class MovementSprite extends SimpleSprite {
      * @param spriteTexture  The texture the sprite should use.
      * @param collisionLayer The layer of the map the sprite will collide with.
      */
-    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer) {
+    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer) {
         super(spriteTexture);
         this.collisionLayer = collisionLayer;
+        this.carparkLayer = carparkLayer;
         this.create();
     }
 
@@ -127,9 +129,12 @@ public class MovementSprite extends SimpleSprite {
      */
     private void accelerate() {
         // Calculate whether it hits any boundaries
-        boolean collides = this.collisionLayer != null && collidesWithBlockedTile();
+        boolean collidesBlocked = this.collisionLayer != null && collidesWithTile(this.collisionLayer);
+        boolean collidesCarpark = this.carparkLayer != null && collidesWithTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
-        if (!collides) {
+        if (collidesCarpark) {
+            System.out.println("carpark");
+        } else if (!collidesBlocked) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
             this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
             if (this.decelerationRate != 0) decelerate();
@@ -174,13 +179,15 @@ public class MovementSprite extends SimpleSprite {
         this.setX(this.getX() + pushBackX);
     }
 
+
+
     /**
      * Checks if the tile at a location is a "blocked" tile or not.
      * @return Whether the hits a collision object (true) or not (false)
      */
-    private boolean collidesWithBlockedTile() {
+    private boolean collidesWithTile(TiledMapTileLayer layer) {
         for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
-            if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+            if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
                 return true;
             }
         }

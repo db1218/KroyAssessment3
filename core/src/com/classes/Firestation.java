@@ -1,6 +1,7 @@
 package com.classes;
 
 // LibGDX imports
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
@@ -13,10 +14,10 @@ import com.badlogic.gdx.graphics.Texture;
 import com.sprites.SimpleSprite;
 
 // Constants import
-import static com.config.Constants.FIRESTATION_HEALTH;
-import static com.config.Constants.FIRESTATION_HEIGHT;
-import static com.config.Constants.FIRESTATION_WIDTH;
-import static com.config.Constants.FIRETRUCK_REPAIR_SPEED;
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static com.config.Constants.*;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -28,6 +29,9 @@ public class Firestation extends SimpleSprite {
 
     // Private values for this class to use
     private Circle repairRange;
+
+    private ArrayList<Firetruck> firetrucks;
+    private ArrayList<Firetruck> firetrucksToRemove;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -63,6 +67,8 @@ public class Firestation extends SimpleSprite {
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
+        this.firetrucks = new ArrayList<>();
+        this.firetrucksToRemove = new ArrayList<>();
     }
 
     /**
@@ -120,5 +126,29 @@ public class Firestation extends SimpleSprite {
     public void drawDebug(ShapeRenderer renderer) {
         super.drawDebug(renderer);
         renderer.circle(this.repairRange.x, this.repairRange.y, this.repairRange.radius);
+    }
+
+    public void addFiretruck(Firetruck firetruck) {
+        this.firetrucks.add(firetruck);
+    }
+
+    public void removeFiretrucks() {
+        this.firetrucks.removeAll(this.firetrucksToRemove);
+    }
+
+    public void updateFiretrucks(Batch batch, float delta, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
+        for (Firetruck firetruck : this.firetrucks) {
+            firetruck.update(batch, camera, delta);
+            if (firetruck.getHealthBar().getCurrentAmount() <= 0) this.firetrucksToRemove.add(firetruck);
+            if (DEBUG_ENABLED) firetruck.drawDebug(shapeRenderer);
+        }
+    }
+
+    public boolean hasAvaliableFiretrucks() {
+        return this.firetrucks.size() > 0;
+    }
+
+    public ArrayList<Firetruck> getFiretrucks() {
+        return this.firetrucks;
     }
 }

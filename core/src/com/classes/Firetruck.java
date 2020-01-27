@@ -61,8 +61,8 @@ public class Firetruck extends MovementSprite {
      * @param xPos           The x-coordinate for the firetruck.
      * @param yPos           The y-coordinate for the firetruck.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, int ID, float xPos, float yPos) {
-        super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
+    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, int ID, float xPos, float yPos) {
+        super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer);
         this.focusID = ID;
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
@@ -84,8 +84,8 @@ public class Firetruck extends MovementSprite {
      * @param collisionLayer The layer of the map the firetruck collides with.
      * @param ID             The ID of the truck (for object focus).
      */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, int ID) {
-        super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
+    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, int ID) {
+        super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer);
         this.focusID = ID;
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
