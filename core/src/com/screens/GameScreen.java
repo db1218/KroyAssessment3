@@ -39,13 +39,10 @@ import static com.config.Constants.FONT_Y;
 import static com.config.Constants.SCORE_X;
 import static com.config.Constants.TIME_X;
 import static com.config.Constants.LERP;
-import static com.config.Constants.MIN_ZOOM;
-import static com.config.Constants.MAX_ZOOM;
 import static com.config.Constants.MAP_SCALE;
 import static com.config.Constants.TILE_DIMS;
 import static com.config.Constants.DEBUG_ENABLED;
 import static com.config.Constants.FiretruckOneProperties;
-import static com.config.Constants.FiretruckTwoProperties;
 import static com.config.Constants.FIRETRUCK_DAMAGE;
 import static com.config.Constants.PROJECTILE_DAMAGE;
 
@@ -168,7 +165,8 @@ public class GameScreen implements Screen {
 		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS);
 
 		// Initialise firetrucks array and add firetrucks to it
-		spawn(Constants.TruckColours.RED, 1);
+		constructFireTruck(Constants.TruckColours.RED, true);
+		constructFireTruck(Constants.TruckColours.BLUE, false);
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
@@ -184,7 +182,7 @@ public class GameScreen implements Screen {
 	public void show() {
 		// Set inital firetruck to focus the camera on
 		this.focusedID = 1;
-		setFireStationFocus(this.focusedID);
+//		setFireStationFocus(this.focusedID);
 
 		// Zoom that the user has set with their scroll wheel
 		this.zoomTarget = 1.2f;
@@ -218,7 +216,7 @@ public class GameScreen implements Screen {
 		shapeRenderer.setProjectionMatrix(this.camera.combined);
 
 		// Get the firetruck thats being driven so that the camera can follow it
-		Firetruck focusedTruck = getFiretruckInFocus();
+		Firetruck focusedTruck = this.firestation.getActiveFireTruck();
 
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
 		Vector3 cameraPosition = this.camera.position;
@@ -248,7 +246,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 
 		// Call the update function of the sprites to draw and update them
-		firestation.updateFiretrucks(this.batch, delta, this.shapeRenderer, this.camera);
+		firestation.updateFiretrucks(this.batch, this.shapeRenderer, this.camera);
 
 		// Close layer
 		batch.end();
@@ -295,7 +293,6 @@ public class GameScreen implements Screen {
 
 		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
-		this.firestation.removeFiretrucks();
 
 		// Check for any collisions
 		checkForCollisions();
@@ -311,7 +308,7 @@ public class GameScreen implements Screen {
 	private void checkIfGameOver() {
 		boolean gameWon = true, gameLost = true;
 		// Check if any firetrucks are still alive
-		if (this.firestation.hasAvaliableFiretrucks()) gameLost = false;
+		if (this.firestation.hasParkedFiretrucks() || this.firestation.getActiveFireTruck().isAlive()) gameLost = false;
 
 		// Check if any fortresses are still alive
 		for (ETFortress ETFortress : this.ETFortresses) {
@@ -327,36 +324,32 @@ public class GameScreen implements Screen {
      * Checks to see if any collisions have occurred
      */
 	private void checkForCollisions() {
-		// Vector to store the minimum movement to seperate two sprites
-		Intersector.MinimumTranslationVector seperationVector = new Intersector.MinimumTranslationVector();
 		// Check each firetruck to see if it has collided with anything
-		for (Firetruck firetruck : this.firestation.getFiretrucks()) {
-			// Check if it overlaps with an ETFortress
-			for (ETFortress ETFortress : this.ETFortresses) {
-				if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(ETFortress.getHitBox())) {
-					ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
-					this.score += 10;
-				}
-				if (ETFortress.isInRadius(firetruck.getHitBox()) && ETFortress.canShootProjectile()) {
-					Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
-					projectile.calculateTrajectory(firetruck.getHitBox());
-					this.projectiles.add(projectile);
-				}
+		Firetruck firetruck = this.firestation.getActiveFireTruck();
+		// Check if it overlaps with an ETFortress
+		for (ETFortress ETFortress : this.ETFortresses) {
+			if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(ETFortress.getHitBox())) {
+				ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+				this.score += 10;
 			}
-			// Check if firetruck is hit with a projectile
-			for (Projectile projectile : this.projectiles) {
-				if (Intersector.overlapConvexPolygons(firetruck.getHitBox(), projectile.getHitBox())) {
-					firetruck.getHealthBar().subtractResourceAmount(PROJECTILE_DAMAGE);
-					if (this.score > 10) this.score -= 10;
-					projectilesToRemove.add(projectile);
-				}
-			}
-			// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
-			// Allows multiple trucks to be in the radius and be repaired or refilled every second.
-			if (this.time > 0 && (firetruck.isDamaged() || firetruck.isLowOnWater()) && this.firestation.isInRadius(firetruck.getHitBox())) {
-				this.firestation.repair(firetruck);
+			if (ETFortress.isInRadius(firetruck.getHitBox()) && ETFortress.canShootProjectile()) {
+				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
+				projectile.calculateTrajectory(firetruck.getHitBox());
+				this.projectiles.add(projectile);
 			}
 		}
+		// Check if firetruck is hit with a projectile
+		for (Projectile projectile : this.projectiles) {
+			if (Intersector.overlapConvexPolygons(firetruck.getHitBox(), projectile.getHitBox())) {
+				firetruck.getHealthBar().subtractResourceAmount(PROJECTILE_DAMAGE);
+				if (this.score > 10) this.score -= 10;
+				projectilesToRemove.add(projectile);
+			}
+		}
+		// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
+		// Allows multiple trucks to be in the radius and be repaired or refilled every second.
+		this.firestation.checkRepairRefill(this.time);
+
 	}
 
 	/**
@@ -366,42 +359,21 @@ public class GameScreen implements Screen {
 		if (this.time > 0) this.time -= 1;
 	}
 
-	/**
-	 * Get the firetruck the user is currently controlling.
-	 *
-	 * @return The firetruck with user's focus.
-	 */
-	public Firetruck getFiretruckInFocus() {
-		for (Firetruck firetruck : firestation.getFiretrucks()) {
-			if (firetruck.isFocused() && firetruck.getHealthBar().getCurrentAmount() > 0) {
-				return firetruck;
-			}
-		}
-		// If no firetruck alive focus next one
-		for (Firetruck firetruck : firestation.getFiretrucks()) {
-			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
-				firetruck.setFocus(firetruck.getFocusID());
-				return firetruck;
-			}
-		}
-		return this.firestation.getFiretrucks().get(0);
-	}
+//	/**
+//	 * Set which firetruck the user is currently controlling.
+//	 *
+//	 * @param focusID The ID of the firetruck to focus on.
+//	 */
 
-	/**
-	 * Set which firetruck the user is currently controlling.
-	 *
-	 * @param focusID The ID of the firetruck to focus on.
-	 */
-
-	public void setFireStationFocus(int focusID) {
-		/* TODO we want this method to move the camera to the station when a fire truck dies,
-		when it is there it should open the new station GUI */
-		for (Firetruck firetruck : this.firestation.getFiretrucks()) {
-			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
-				firetruck.setFocus(focusID);
-			}
-		}
-	}
+//	public void setFireStationFocus(int focusID) {
+//		/* TODO we want this method to move the camera to the station when a fire truck dies,
+//		when it is there it should open the new station GUI */
+//		for (Firetruck firetruck : this.firestation.getFiretrucks()) {
+//			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
+//				firetruck.setFocus(focusID);
+//			}
+//		}
+//	}
 
 	public void cameraZoom(float zoom) {
 		if (this.zoomTarget + zoom < 2f && this.zoomTarget + zoom > 0.8f) {
@@ -448,16 +420,17 @@ public class GameScreen implements Screen {
 	@Override
 	public void dispose() {
 		this.projectileTexture.dispose();
-		this.firestation.dispose();
-		for (Firetruck firetruck : this.firestation.getFiretrucks()) {
+		for (Firetruck firetruck : this.firestation.getParkedFireTrucks()) {
 			firetruck.dispose();
 		}
+		this.firestation.getActiveFireTruck().dispose();
+		this.firestation.dispose();
 		for (ETFortress ETFortress : this.ETFortresses) {
 			ETFortress.dispose();
 		}
 	}
 
-	public void spawn(Constants.TruckColours colour, int ID){
+	private void constructFireTruck(Constants.TruckColours colour, boolean isActive) {
 		ArrayList<Texture> truckTextures = new ArrayList<Texture>();
 		for (int i = 20; i > 0; i--) {
 			if (i == 6) { // Texture 5 contains identical slices except the lights are different
@@ -470,7 +443,20 @@ public class GameScreen implements Screen {
 				truckTextures.add(texture);
 			}
 		}
-		this.firestation.addFiretruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties, (TiledMapTileLayer) map.getLayers().get("Collision2"), (TiledMapTileLayer) map.getLayers().get("Carpark"), ID, firestation.getX() - 10, 30 * TILE_DIMS));
+		if (isActive) {
+			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
+					(TiledMapTileLayer) map.getLayers().get("Collision2"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+					 this.firestation));
+		} else {
+			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
+					(TiledMapTileLayer) map.getLayers().get("Collision2"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+					this.firestation));
+		}
+
+	}
+
+	Firestation getFirestation() {
+		return this.firestation;
 	}
 
 }

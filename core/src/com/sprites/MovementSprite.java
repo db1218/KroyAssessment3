@@ -12,6 +12,7 @@ import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
+import com.classes.Firestation;
 import com.config.Constants;
 import com.config.Constants.Direction;
 import com.config.Constants.Direction2;
@@ -35,6 +36,7 @@ public class MovementSprite extends SimpleSprite {
     // Private values to be used in this class only
     private float accelerationRate, decelerationRate, maxSpeed, restitution, rotationLockTime;
     private Vector2 speed;
+    private Firestation fireStation;
     private TiledMapTileLayer collisionLayer, carparkLayer;
 
     /**
@@ -43,10 +45,11 @@ public class MovementSprite extends SimpleSprite {
      * @param spriteTexture  The texture the sprite should use.
      * @param collisionLayer The layer of the map the sprite will collide with.
      */
-    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer) {
+    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation) {
         super(spriteTexture);
         this.collisionLayer = collisionLayer;
         this.carparkLayer = carparkLayer;
+        this.fireStation = fireStation;
         this.create();
     }
 
@@ -133,7 +136,7 @@ public class MovementSprite extends SimpleSprite {
         boolean collidesCarpark = this.carparkLayer != null && collidesWithTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
         if (collidesCarpark) {
-            System.out.println("carpark");
+            this.fireStation.openCarparkMenu();
         } else if (!collidesBlocked) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
             this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());

@@ -15,13 +15,10 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
-import com.config.Constants;
 import com.sprites.MovementSprite;
-import com.classes.ResourceBar;
 
 // Constants imports
 import static com.config.Constants.Direction;
-import static com.config.Constants.Direction2;
 import static com.config.Constants.FIRETRUCK_HEIGHT;
 import static com.config.Constants.FIRETRUCK_WIDTH;
 
@@ -45,6 +42,10 @@ public class Firetruck extends MovementSprite {
     private Polygon hoseRange;
     private ResourceBar waterBar;
 
+    private boolean alive;
+
+    private Firestation fireStation;
+
     private ShapeRenderer shapeRenderer;
 
     /**
@@ -57,40 +58,16 @@ public class Firetruck extends MovementSprite {
      * @param frames         The texture used to draw the water with.
      * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
-     * @param ID             The ID of the truck (for object focus).
-     * @param xPos           The x-coordinate for the firetruck.
-     * @param yPos           The y-coordinate for the firetruck.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, int ID, float xPos, float yPos) {
-        super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer);
-        this.focusID = ID;
+    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation) {
+        super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer, fireStation);
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
         this.firetruckProperties = properties;
-        this.setPosition(xPos, yPos);
+        this.setPosition(fireStation.getSpawnLocation().x, fireStation.getSpawnLocation().y);
+        this.fireStation = fireStation;
         this.create();
         this.shapeRenderer = new ShapeRenderer();
-    }
-
-    /**
-     * Simplfied constructor for the firetruck, that doesn't require a position.
-     * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
-     * It also requires an ID so that it can be focused with the camera. Drawn with the given
-     * texture at (0,0).
-     * 
-     * @param textureSlices  The array of textures used to draw the firetruck with.
-     * @param frames         The texture used to draw the water with.
-     * @param properties     The properties of the truck inherited from Constants.
-     * @param collisionLayer The layer of the map the firetruck collides with.
-     * @param ID             The ID of the truck (for object focus).
-     */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, int ID) {
-        super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer);
-        this.focusID = ID;
-        this.waterFrames = frames;
-        this.firetruckSlices = textureSlices;
-        this.firetruckProperties = properties;
-        this.create();
     }
 
     /**
@@ -106,6 +83,8 @@ public class Firetruck extends MovementSprite {
         this.setMaxSpeed(this.firetruckProperties[2]);
         this.setRestitution(this.firetruckProperties[3]);
         this.createWaterHose();
+        this.alive = true;
+
         // Start the firetruck facing left
         this.rotate(-90);
     }
@@ -115,28 +94,23 @@ public class Firetruck extends MovementSprite {
      * @param batch  The batch to draw onto.
      * @param camera Used to get the centre of the screen.
      */
-    public void update(Batch batch, Camera camera, float delta) {
+    public void update(Batch batch, Camera camera) {
         super.update(batch);
         drawVoxelImage(batch);
-        if (this.isFocused) {
-            // Look for key press input, then accelerate the firetruck in that direction
-            if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
-                super.applyAcceleration(Direction.LEFT);
-            }
-            if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
-                super.applyAcceleration(Direction.RIGHT);
-            }
-            if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
-                super.applyAcceleration(Direction.DOWN);
-            }
-            if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
-                super.applyAcceleration(Direction.UP);
-            }
-        } else if (this.isSpraying) {
-            // If not driving the truck, turn the hose off
-            this.toggleHose();
+        // Look for key press input, then accelerate the firetruck in that direction
+        if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
+            super.applyAcceleration(Direction.LEFT);
         }
-      
+        if (Gdx.input.isKeyPressed(Keys.RIGHT) || Gdx.input.isKeyPressed(Keys.D)) {
+            super.applyAcceleration(Direction.RIGHT);
+        }
+        if (Gdx.input.isKeyPressed(Keys.DOWN) || Gdx.input.isKeyPressed(Keys.S)) {
+            super.applyAcceleration(Direction.DOWN);
+        }
+        if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
+            super.applyAcceleration(Direction.UP);
+        }
+
         // Deplete water if spraying, toggle off when depleted
         if (this.isSpraying && this.waterBar.getCurrentAmount() > 0) {
             this.waterBar.subtractResourceAmount(1);
@@ -280,36 +254,7 @@ public class Firetruck extends MovementSprite {
             this.toggleDelay = 20;
             this.isSpraying = !this.isSpraying && this.waterBar.getCurrentAmount() > 0;
             this.waterBar.setFade(false, !this.isSpraying);
-        }
-    }
-
-    /**
-     * Gets whether the firetruck is in focus.
-     * 
-     * @return Whether the firetruck is in focus (true) or not (false).
-     */
-    public boolean isFocused() {
-        return this.isFocused;
-    }
-
-    /**
-     * Gets the firetruck's focus ID
-     * 
-     * @return The firetruck's focus ID
-     */
-    public int getFocusID() {
-        return this.focusID;
-    }
-
-    /**
-     * Sets the firetruck in focus if its ID matches the one to focus.
-     * @param focus The ID of the firetruck to focus on.
-     */
-    public void setFocus(int focus) {
-        if (focus == focusID) {
-            this.isFocused = true;
-        } else {
-            this.isFocused = false;
+            System.out.println(this.waterBar.getCurrentAmount());
         }
     }
 
@@ -332,6 +277,18 @@ public class Firetruck extends MovementSprite {
     public void drawDebug(ShapeRenderer renderer) {
         super.drawDebug(renderer);
         renderer.polygon(this.hoseRange.getTransformedVertices());
+    }
+
+    public void destroyed() {
+        this.alive = false;
+    }
+
+    public boolean isAlive() {
+        return this.alive;
+    }
+
+    void resetRotation() {
+        super.setRotation(0);
     }
 
     /**

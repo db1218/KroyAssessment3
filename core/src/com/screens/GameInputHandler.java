@@ -63,7 +63,8 @@ public class GameInputHandler implements InputProcessor {
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         if (button == 0) {
-            gameScreen.getFiretruckInFocus().toggleHose();
+            System.out.println("touch down");
+            gameScreen.getFirestation().getActiveFireTruck().toggleHose();
         }
         return true;
     }
@@ -80,7 +81,8 @@ public class GameInputHandler implements InputProcessor {
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         if (button == 0) {
-            gameScreen.getFiretruckInFocus().toggleHose();
+            System.out.println("touch up");
+            gameScreen.getFirestation().getActiveFireTruck().toggleHose();
         }
         return true;
     }

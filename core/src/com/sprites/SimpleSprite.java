@@ -114,6 +114,12 @@ public class SimpleSprite extends Sprite {
         this.hitBox.rotate(degrees);
     }
 
+    @Override
+    public void setRotation(float degrees) {
+        super.setRotation(degrees);
+        this.hitBox.setRotation(degrees);
+    }
+
     /**
      * Get the health bar of the sprite.
      * @return The health bar of the sprite.
