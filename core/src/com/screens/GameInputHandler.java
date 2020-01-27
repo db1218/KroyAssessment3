@@ -1,5 +1,6 @@
 package com.screens;
 
+import com.PathFinding.GeneratePathGame;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
@@ -24,6 +25,10 @@ public class GameInputHandler implements InputProcessor {
             case Input.Keys.ESCAPE:
                 Gdx.app.exit();
                 System.exit(1);
+                break;
+            case Input.Keys.S:
+                GeneratePathGame path = new GeneratePathGame();
+                path.output();
                 break;
         }
         return true;
