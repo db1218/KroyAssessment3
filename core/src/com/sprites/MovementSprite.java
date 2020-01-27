@@ -33,6 +33,7 @@ public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
     private float accelerationRate, decelerationRate, maxSpeed, restitution, rotationLockTime;
+    private boolean canMoveUp, canMoveDown, canMoveLeft, canMoveRight;
     private Vector2 speed;
     private TiledMapTileLayer collisionLayer;
 
@@ -45,6 +46,10 @@ public class MovementSprite extends SimpleSprite {
     public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteTexture);
         this.collisionLayer = collisionLayer;
+        this.canMoveUp = true;
+        this.canMoveDown = true;
+        this.canMoveLeft = true;
+        this.canMoveRight = true;
         this.create();
     }
 
@@ -108,8 +113,12 @@ public class MovementSprite extends SimpleSprite {
 
     protected void move(Direction2 direction, float delta) {
         if (this.speed.y < this.maxSpeed && this.speed.x < this.maxSpeed && direction == Direction2.FORWARDS) {
-            this.speed.x = this.maxSpeed * MathUtils.cosDeg(this.getRotation());
-            this.speed.y = this.maxSpeed * MathUtils.sinDeg(this.getRotation());
+            if (canMoveRight && canMoveLeft) {
+                this.speed.x = this.maxSpeed * MathUtils.cosDeg(this.getRotation());
+            }
+            if (canMoveUp && canMoveDown) {
+                this.speed.y = this.maxSpeed * MathUtils.sinDeg(this.getRotation());
+            }
         } else if (this.speed.y > -this.maxSpeed && direction == Direction2.BACKWARDS) {
             this.speed.x = -1 * this.maxSpeed * MathUtils.cosDeg(this.getRotation());
             this.speed.y = -1 * this.maxSpeed * MathUtils.sinDeg(this.getRotation());
@@ -150,8 +159,8 @@ public class MovementSprite extends SimpleSprite {
             if (this.decelerationRate != 0) decelerate();
         } else {
             // Seperate the sprite from the tile and stop sprite movement
-            collisionOccurred(this.speed.rotate(180).scl(0.05f));
-            this.speed = new Vector2(0, 0);
+//            collisionOccurred(this.speed.rotate(180).scl(0.05f));
+//            this.speed = new Vector2(0, 0);
         }
     }
 
@@ -196,7 +205,21 @@ public class MovementSprite extends SimpleSprite {
     private boolean collidesWithBlockedTile() {
         for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
             if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+                if (vertex.x > this.getX()) {
+                    this.canMoveRight = false;
+                } else if (vertex.x > this.getX()) {
+                    this.canMoveLeft = false;
+                } else if (vertex.y > this.getY()) {
+                    this.canMoveUp = false;
+                } else if (vertex.y > this.getY()) {
+                    this.canMoveDown = false;
+                }
                 return true;
+            } else {
+                this.canMoveRight = true;
+                this.canMoveLeft = true;
+                this.canMoveUp = true;
+                this.canMoveDown = true;
             }
         }
         return false;
