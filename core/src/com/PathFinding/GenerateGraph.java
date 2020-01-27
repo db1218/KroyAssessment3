@@ -4,11 +4,13 @@ import com.badlogic.gdx.ApplicationAdapter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 
-public class GeneratePathGame extends ApplicationAdapter {
+import java.util.Random;
+
+public class GenerateGraph extends ApplicationAdapter {
     MapGraph cityGraph;
     GraphPath<Junction> cityPath;
 
-    public GeneratePathGame(){
+    public GenerateGraph(){
         cityGraph = new MapGraph();
 
         Junction startJunction = new Junction(300,25, "S");
@@ -51,25 +53,22 @@ public class GeneratePathGame extends ApplicationAdapter {
         cityGraph.connectJunctions(jCity, kCity);
         cityGraph.connectJunctions(kCity, goalCity);
         cityGraph.connectJunctions(startJunction, eCity);
-     //   cityGraph.connectJunctions(eCity, goalCity);
+        cityGraph.connectJunctions(eCity, goalCity);
 
         cityPath = cityGraph.findPath(startJunction, goalCity);
     }
 
-    public void output(){
-        for(Road road: cityGraph.roads){
-         //   Gdx.app.log("road", String.valueOf(road));
-        }
-
-        for (Junction junction : cityGraph.junctions){
-            System.out.print(junction);
-        }
-
-        for (Junction junction : cityPath){
-            Gdx.app.log("junction", String.valueOf(junction.name));
-        }
+    public GraphPath<Junction> generateRandomGraph(int nodeIndex){
+        Junction one = cityGraph.getJunction(nodeIndex);
+        Junction two = generateRandomDestination();
+        GraphPath<Junction> randomPath = cityGraph.findPath(one, two);
+        return randomPath;
     }
 
-
+    private Junction generateRandomDestination(){
+        Random rand = new Random();
+        int n = rand.nextInt(cityGraph.getNodeCount());
+        return cityGraph.getJunction(n);
+    }
 
 }
