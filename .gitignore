@@ -241,3 +241,4 @@ gradle-app.setting
 **/build/
 
 # End of https://www.gitignore.io/api/osx,java,gradle,eclipse,intellij,netbeans
+.idea/

@@ -150,6 +150,7 @@ public class MovementSprite extends SimpleSprite {
      * existing acceleration.
      */
     private void accelerate() {
+        System.out.println(this.speed);
         // Calculate whether it hits any boundaries
         boolean collides = this.collisionLayer != null && collidesWithBlockedTile();
         // Check if it collides with any tiles, then move the sprite
@@ -160,7 +161,7 @@ public class MovementSprite extends SimpleSprite {
         } else {
             // Seperate the sprite from the tile and stop sprite movement
 //            collisionOccurred(this.speed.rotate(180).scl(0.05f));
-//            this.speed = new Vector2(0, 0);
+            this.speed = new Vector2(0, 0);
         }
     }
 
@@ -205,13 +206,13 @@ public class MovementSprite extends SimpleSprite {
     private boolean collidesWithBlockedTile() {
         for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
             if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
-                if (vertex.x > this.getX()) {
+                if (vertex.x > this.getCentreX()) {
                     this.canMoveRight = false;
-                } else if (vertex.x > this.getX()) {
+                } else if (vertex.x > this.getCentreX()) {
                     this.canMoveLeft = false;
-                } else if (vertex.y > this.getY()) {
+                } else if (vertex.y > this.getCentreY()) {
                     this.canMoveUp = false;
-                } else if (vertex.y > this.getY()) {
+                } else if (vertex.y > this.getCentreY()) {
                     this.canMoveDown = false;
                 }
                 return true;
@@ -227,7 +228,6 @@ public class MovementSprite extends SimpleSprite {
 
     Array<Vector2> getPolygonVertices(Polygon polygon) {
         float[] vertices = polygon.getTransformedVertices();
-
         Array<Vector2> result = new Array<>();
         for (int i = 0; i < vertices.length/2; i++) {
             float x = vertices[i * 2];
