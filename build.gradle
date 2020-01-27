@@ -110,5 +110,6 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
         api "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+        api "com.badlogicgames.gdx:gdx-ai:1.8.1"
     }
 }
