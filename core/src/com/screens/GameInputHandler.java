@@ -1,8 +1,10 @@
 package com.screens;
 
+import com.PathFinding.GenerateGraph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.badlogic.gdx.ai.pfa.GraphPath;
 
 public class GameInputHandler implements InputProcessor {
 
@@ -24,6 +26,10 @@ public class GameInputHandler implements InputProcessor {
             case Input.Keys.ESCAPE:
                 Gdx.app.exit();
                 System.exit(1);
+                break;
+            case Input.Keys.S:
+                GenerateGraph path = new GenerateGraph();
+                GraphPath p = path.generateRandomGraph(0);
                 break;
         }
         return true;
