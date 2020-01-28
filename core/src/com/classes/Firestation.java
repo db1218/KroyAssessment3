@@ -104,10 +104,6 @@ public class Firestation extends SimpleSprite {
 
     public void carparkStuff() {
         if (this.hasParkedFiretrucks()) {
-            Firetruck firetruckToSpawn = this.parkedFireTrucks.get(0);
-            this.parkedFireTrucks.remove(0);
-            this.parkedFireTrucks.add(this.activeFireTruck);
-            this.activeFireTruck = firetruckToSpawn;
             respawnFiretruck();
         }
     }
@@ -164,5 +160,12 @@ public class Firestation extends SimpleSprite {
             this.carparkStuff();
         }
         this.carparkScreen.openCarpark(bool);
+    }
+
+    public void changeFiretruck(int index) {
+        Firetruck previous = activeFireTruck;
+        activeFireTruck = parkedFireTrucks.get(index);
+        parkedFireTrucks.remove(index);
+        parkedFireTrucks.add(index, previous);
     }
 }

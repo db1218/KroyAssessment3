@@ -6,16 +6,23 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.classes.Firestation;
 import com.classes.Firetruck;
 import com.kroy.Kroy;
 import javafx.scene.control.TablePositionBuilder;
+
+import javax.xml.soap.Text;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
@@ -29,7 +36,7 @@ public class CarparkScreen implements Screen {
     private Viewport viewport;
 
     private TextButton quitButton;
-    private TextButton selectButton;
+    private ArrayList<ImageButton> selectButtons;
 
     private Firestation firestation;
     private Stage stage;
@@ -39,7 +46,6 @@ public class CarparkScreen implements Screen {
     private Table mainTable;
     private Table previewTable;
     private Table selectorTable;
-    private Image selectedTruck;
     private Label stats;
 
     public CarparkScreen(Firestation firestation, Kroy game, GameScreen gameScreen) {
@@ -64,10 +70,6 @@ public class CarparkScreen implements Screen {
         quitButton = new TextButton("Close", skin);
         quitButton.setTransform(true);
         quitButton.scaleBy(0.25f);
-
-        selectButton = new TextButton("Select", skin);
-        selectButton.setTransform(true);
-        selectButton.scaleBy(0.25f);
 
         stats = new Label("Stats", skin);
 
@@ -101,7 +103,6 @@ public class CarparkScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-
         this.refresh();
 
         quitButton.addListener(new ClickListener() {
@@ -112,14 +113,33 @@ public class CarparkScreen implements Screen {
             }
         });
 
+        for (int i=0; i<selectButtons.size(); i++) {
+            ImageButton button = selectButtons.get(i);
+            int index = i;
+            button.addListener(new ClickListener() {
+                @Override
+                public void clicked(InputEvent event, float x, float y) {
+                    firestation.changeFiretruck(index);
+                    show();
+                }
+            });
+        }
 
     }
 
     public void refresh() {
-
         mainTable.clear();
         previewTable.clear();
         selectorTable.clear();
+
+        selectButtons = new ArrayList<>();
+        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
+            Drawable drawable = new TextureRegionDrawable(new TextureRegion(firestation.getParkedFireTrucks().get(i).getFireTruckTexture()));
+            ImageButton button = new ImageButton(drawable);
+            button.setTransform(true);
+            button.scaleBy(0.25f);
+            selectButtons.add(button);
+        }
 
         mainTable.row().colspan(3).expand().fill();
         mainTable.add(previewTable).expand().fill();
@@ -130,8 +150,8 @@ public class CarparkScreen implements Screen {
         mainTable.add(selectorTable);
         selectorTable.row().colspan(6).expand();
         System.out.println(firestation.getParkedFireTrucks().size());
-        for (Firetruck firetruck : firestation.getParkedFireTrucks()) {
-            selectorTable.add(firetruck.getFireTruckImage()).size(150, 75);
+        for (ImageButton button : selectButtons) {
+            selectorTable.add(button).size(150,75);
         }
         mainTable.row().colspan(1).pad(40).expandX();
         mainTable.add(quitButton).height(40).width(150).center();

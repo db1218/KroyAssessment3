@@ -186,11 +186,12 @@ public class Firetruck extends MovementSprite {
         return this.firetruckSlices.get(index);
     }
 
-    public Image getFireTruckImage() {
-        System.out.println(this.firetruckProperties[0]);
-        Image rotated = new Image(new Texture(Gdx.files.internal("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " Full.png")));
+    public Texture getFireTruckTexture() {
+        return new Texture(Gdx.files.internal("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " Full.png"));
+    }
 
-        return rotated;
+    public Image getFireTruckImage() {
+        return new Image(getFireTruckTexture());
     }
 
     /**
