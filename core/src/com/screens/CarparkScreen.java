@@ -1,6 +1,7 @@
 package com.screens;
 
 import com.badlogic.gdx.*;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Input;
@@ -82,13 +84,10 @@ public class CarparkScreen implements Screen {
         // Create table to arrange buttons.
         mainTable = new Table(skin);
         mainTable.setFillParent(true);
-        mainTable.setDebug(true);
 
         previewTable = new Table(skin);
-        previewTable.setDebug(true);
 
         selectorTable = new Table(skin);
-        selectorTable.setDebug(true);
 
         stage = new Stage(viewport);
     }
@@ -98,10 +97,12 @@ public class CarparkScreen implements Screen {
      */
     @Override
     public void show() {
+        stage.setDebugAll(true);
         Gdx.input.setInputProcessor(stage);
 
         stats = new StatsLabel("Stats", skin, firestation.getActiveFireTruck());
         stats.updateText();
+        stats.setAlignment(Align.right);
         Firetruck activeFiretruck = firestation.getActiveFireTruck();
 
         selectButtons = new ArrayList<>();
@@ -119,7 +120,7 @@ public class CarparkScreen implements Screen {
         mainTable.add(previewTable).expand().fill();
         previewTable.row().colspan(2).expand().fill().pad(40);
         previewTable.add(firestation.getActiveFireTruck().getFireTruckImage()).size(300, 150);
-        previewTable.add(stats).expand();
+        previewTable.add(stats);
         mainTable.row().colspan(3).expand().fill().padLeft(40).padRight(40);
         mainTable.add(selectorTable);
         selectorTable.row().colspan(6).expand();

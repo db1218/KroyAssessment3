@@ -299,6 +299,10 @@ public class Firetruck extends MovementSprite {
         return this.alive;
     }
 
+    public float getRange() {
+        return this.firetruckProperties[4];
+    }
+
     void resetRotation() {
         super.setRotation(0);
     }

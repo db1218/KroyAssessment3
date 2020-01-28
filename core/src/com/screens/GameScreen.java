@@ -33,18 +33,8 @@ import com.classes.Firestation;
 import com.classes.ETFortress;
 
 // Constants import
-import static com.config.Constants.SCREEN_HEIGHT;
-import static com.config.Constants.SCREEN_WIDTH;
-import static com.config.Constants.FONT_Y;
-import static com.config.Constants.SCORE_X;
-import static com.config.Constants.TIME_X;
-import static com.config.Constants.LERP;
-import static com.config.Constants.MAP_SCALE;
-import static com.config.Constants.TILE_DIMS;
-import static com.config.Constants.DEBUG_ENABLED;
-import static com.config.Constants.FiretruckOneProperties;
-import static com.config.Constants.FIRETRUCK_DAMAGE;
-import static com.config.Constants.PROJECTILE_DAMAGE;
+import static com.config.Constants.*;
+
 
 /**
  * Display the main game.
@@ -55,7 +45,7 @@ import static com.config.Constants.PROJECTILE_DAMAGE;
 public class GameScreen implements Screen {
 
 	// A constant variable to store the game
-	final Kroy game;
+	final Kroy game;;
 
 	// Private values for game screen logic
 	private ShapeRenderer shapeRenderer;
@@ -168,11 +158,11 @@ public class GameScreen implements Screen {
 		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS, game, this);
 
 		// Initialise firetrucks array and add firetrucks to it
-		constructFireTruck(Constants.TruckColours.RED, true);
-		constructFireTruck(Constants.TruckColours.BLUE, false);
-		constructFireTruck(Constants.TruckColours.BLUE, false);
-		constructFireTruck(Constants.TruckColours.BLUE, false);
-		constructFireTruck(Constants.TruckColours.BLUE, false);
+		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
+		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
+		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckOneProperties);
+		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckOneProperties);
+		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
@@ -443,14 +433,14 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private void constructFireTruck(Constants.TruckColours colour, boolean isActive) {
+	private void constructFireTruck(Constants.TruckColours colour, boolean isActive, float[] firetruckProperties) {
 		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(colour);
 		if (isActive) {
-			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
+			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, firetruckProperties,
 					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
 					 this.firestation, colour));
 		} else {
-			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
+			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, firetruckProperties,
 					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
 					this.firestation, colour));
 		}

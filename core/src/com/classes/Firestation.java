@@ -151,17 +151,6 @@ public class Firestation extends SimpleSprite {
         }
     }
 
-    public void repairRefillInCarpark() {
-        for (Firetruck firetruck : parkedFireTrucks) {
-            if ((firetruck.isDamaged() || firetruck.isLowOnWater())) {
-                this.repairRefill(firetruck);
-            }
-        }
-        if (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater()) {
-            this.repairRefill(activeFireTruck);
-        }
-    }
-
     public boolean isCarparkOpen() {
         return this.carparkScreen.isOpen();
     }
