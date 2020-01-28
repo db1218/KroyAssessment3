@@ -15,6 +15,9 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
+import com.config.Constants;
 import com.sprites.MovementSprite;
 
 // Constants imports
@@ -33,6 +36,7 @@ import java.util.ArrayList;
  */
 public class Firetruck extends MovementSprite {
 
+    private final Constants.TruckColours colour;
     // Private values to be used in this class only
     private Boolean isFocused, isSpraying;
     private int focusID, internalTime, toggleDelay;
@@ -59,7 +63,7 @@ public class Firetruck extends MovementSprite {
      * @param properties     The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation) {
+    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation, Constants.TruckColours colour) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer, fireStation);
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
@@ -68,6 +72,7 @@ public class Firetruck extends MovementSprite {
         this.fireStation = fireStation;
         this.create();
         this.shapeRenderer = new ShapeRenderer();
+        this.colour = colour;
     }
 
     /**
@@ -181,6 +186,13 @@ public class Firetruck extends MovementSprite {
         return this.firetruckSlices.get(index);
     }
 
+    public Image getFireTruckImage() {
+        System.out.println(this.firetruckProperties[0]);
+        Image rotated = new Image(new Texture(Gdx.files.internal("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " Full.png")));
+
+        return rotated;
+    }
+
     /**
      * Creates the polygon for the hose and the water bar to store the firetruck's
      * water level.
@@ -254,7 +266,6 @@ public class Firetruck extends MovementSprite {
             this.toggleDelay = 20;
             this.isSpraying = !this.isSpraying && this.waterBar.getCurrentAmount() > 0;
             this.waterBar.setFade(false, !this.isSpraying);
-            System.out.println(this.waterBar.getCurrentAmount());
         }
     }
 

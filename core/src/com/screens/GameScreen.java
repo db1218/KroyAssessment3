@@ -69,7 +69,8 @@ public class GameScreen implements Screen {
     private int[] backgroundLayers;
 
 	// Private values for the game
-	private int score, time, focusedID;
+	private int score;
+	private int time;
 	private Texture projectileTexture;
 
 	private float zoomTarget;
@@ -81,16 +82,18 @@ public class GameScreen implements Screen {
 	private ArrayList<Projectile> projectilesToRemove;
 	private Firestation firestation;
 
+	private GameInputHandler gameInputHandler;
+
 	private ArrayList<Texture> waterFrames;
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
 	 *
-	 * @param gam The game object.
+	 * @param game The game object.
 	 */
-	public GameScreen(final Kroy gam) {
+	public GameScreen(final Kroy game) {
 		// Assign the game to a property so it can be used when transitioning screens
-		this.game = gam;
+		this.game = game;
 
 		// ---- 1) Create new instance for all the objects needed for the game ---- //
 
@@ -115,7 +118,7 @@ public class GameScreen implements Screen {
 			}
 		}, 1, 1 );
 
-		Gdx.input.setInputProcessor(new GameInputHandler(this));
+		gameInputHandler = new GameInputHandler(this);
 
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
@@ -162,10 +165,13 @@ public class GameScreen implements Screen {
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation
-		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS);
+		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS, game, this);
 
 		// Initialise firetrucks array and add firetrucks to it
 		constructFireTruck(Constants.TruckColours.RED, true);
+		constructFireTruck(Constants.TruckColours.BLUE, false);
+		constructFireTruck(Constants.TruckColours.BLUE, false);
+		constructFireTruck(Constants.TruckColours.BLUE, false);
 		constructFireTruck(Constants.TruckColours.BLUE, false);
 
 		// Initialise ETFortresses array and add ETFortresses to it
@@ -180,10 +186,6 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-		// Set inital firetruck to focus the camera on
-		this.focusedID = 1;
-//		setFireStationFocus(this.focusedID);
-
 		// Zoom that the user has set with their scroll wheel
 		this.zoomTarget = 1.2f;
 
@@ -193,6 +195,8 @@ public class GameScreen implements Screen {
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
+
+		Gdx.input.setInputProcessor(gameInputHandler);
 	}
 
 	/**
@@ -274,15 +278,15 @@ public class GameScreen implements Screen {
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score,
-			cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
-			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
+				cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
+				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
 		game.drawFont("Time: " + this.time,
-			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
-			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
+				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
 		if (DEBUG_ENABLED) game.drawFont("FPS: "
-			+ Gdx.graphics.getFramesPerSecond(),
-			cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
-			cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
+						+ Gdx.graphics.getFramesPerSecond(),
+				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
+				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
 		);
 
 		// Finish rendering
@@ -299,6 +303,15 @@ public class GameScreen implements Screen {
 
 		// Check if the game should end
 		checkIfGameOver();
+
+		checkIfCarpark();
+
+	}
+
+	private void checkIfCarpark() {
+		if (this.firestation.isCarparkOpen()) {
+			game.setScreen(this.firestation.getCarparkScreen());
+		}
 	}
 
 	/**
@@ -431,6 +444,19 @@ public class GameScreen implements Screen {
 	}
 
 	private void constructFireTruck(Constants.TruckColours colour, boolean isActive) {
+		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(colour);
+		if (isActive) {
+			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
+					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+					 this.firestation, colour));
+		} else {
+			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
+					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+					this.firestation, colour));
+		}
+	}
+
+	private ArrayList<Texture> buildFiretuckTextures(Constants.TruckColours colour) {
 		ArrayList<Texture> truckTextures = new ArrayList<Texture>();
 		for (int i = 20; i > 0; i--) {
 			if (i == 6) { // Texture 5 contains identical slices except the lights are different
@@ -443,16 +469,7 @@ public class GameScreen implements Screen {
 				truckTextures.add(texture);
 			}
 		}
-		if (isActive) {
-			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
-					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
-					 this.firestation));
-		} else {
-			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
-					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
-					this.firestation));
-		}
-
+		return truckTextures;
 	}
 
 	Firestation getFirestation() {

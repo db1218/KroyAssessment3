@@ -5,12 +5,13 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
+import com.kroy.Kroy;
+import com.screens.CarparkScreen;
+import com.screens.GameScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
@@ -32,6 +33,8 @@ public class Firestation extends SimpleSprite {
     private Firetruck activeFireTruck;
     private Vector2 spawnLocation;
 
+    private CarparkScreen carparkScreen;
+
     private ArrayList<Firetruck> parkedFireTrucks;
 
     /**
@@ -42,23 +45,15 @@ public class Firestation extends SimpleSprite {
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Texture texture, float xPos, float yPos) {
+    public Firestation(Texture texture, float xPos, float yPos, Kroy game, GameScreen gameScreen) {
         super(texture);
         this.setPosition(xPos, yPos);
-        this.create();
-    }
-
-    /**
-     * Sets the health of the Firestation and its size provided in CONSTANTS.
-     * Also creates a circle to indicate the range firetrucks should be within
-     * in order to be repaired by the firestation.
-     */
-    private void create() {
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
         this.spawnLocation = new Vector2(80 * TILE_DIMS, 24.5f * TILE_DIMS);
+        this.carparkScreen = new CarparkScreen(this, game, gameScreen);
     }
 
     /**
@@ -95,16 +90,19 @@ public class Firestation extends SimpleSprite {
     }
 
     public void updateFiretrucks(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
-        System.out.println(this.parkedFireTrucks.get(0).isAlive());
         this.activeFireTruck.update(batch, camera);
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
         if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
             this.activeFireTruck.destroyed();
-            this.openCarparkMenu();
+            this.openCarpark(true);
         }
     }
 
-    public void openCarparkMenu() {
+    public CarparkScreen getCarparkScreen() {
+        return this.carparkScreen;
+    }
+
+    public void carparkStuff() {
         if (this.hasParkedFiretrucks()) {
             Firetruck firetruckToSpawn = this.parkedFireTrucks.get(0);
             this.parkedFireTrucks.remove(0);
@@ -155,5 +153,16 @@ public class Firestation extends SimpleSprite {
                 this.repairRefill(firetruck);
             }
         }
+    }
+
+    public boolean isCarparkOpen() {
+        return this.carparkScreen.isOpen();
+    }
+
+    public void openCarpark(boolean bool) {
+        if (!bool) {
+            this.carparkStuff();
+        }
+        this.carparkScreen.openCarpark(bool);
     }
 }

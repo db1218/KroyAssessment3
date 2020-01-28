@@ -5,25 +5,15 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
 import com.classes.Firestation;
-import com.config.Constants;
 import com.config.Constants.Direction;
-import com.config.Constants.Direction2;
 //import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 // Constants import
-import javax.sound.midi.SysexMessage;
 
-import java.util.ArrayList;
-
-import static com.config.Constants.COLLISION_TILE;
 import static com.config.Constants.TILE_DIMS;
 
 /**
@@ -136,7 +126,7 @@ public class MovementSprite extends SimpleSprite {
         boolean collidesCarpark = this.carparkLayer != null && collidesWithTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
         if (collidesCarpark) {
-            this.fireStation.openCarparkMenu();
+            this.fireStation.openCarpark(true);
         } else if (!collidesBlocked) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
             this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
