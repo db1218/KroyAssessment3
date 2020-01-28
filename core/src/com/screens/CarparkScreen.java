@@ -3,7 +3,6 @@ package com.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -18,11 +17,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.classes.Firestation;
 import com.classes.Firetruck;
 import com.kroy.Kroy;
-import javafx.scene.control.TablePositionBuilder;
 
-import javax.xml.soap.Text;
 import java.util.ArrayList;
-import java.util.Collection;
 
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
@@ -30,13 +26,14 @@ import static com.config.Constants.SCREEN_WIDTH;
 public class CarparkScreen implements Screen {
 
     private final Kroy game;
+    private Skin skin;
     private GameScreen gameScreen;
 
     private OrthographicCamera camera;
     private Viewport viewport;
 
     private TextButton quitButton;
-    private ArrayList<ImageButton> selectButtons;
+    private ArrayList<Button> selectButtons;
 
     private Firestation firestation;
     private Stage stage;
@@ -65,13 +62,11 @@ public class CarparkScreen implements Screen {
         viewport.apply();
 
         TextureAtlas atlas = new TextureAtlas("skin/uiskin.atlas");
-        Skin skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
+        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
 
         quitButton = new TextButton("Close", skin);
         quitButton.setTransform(true);
         quitButton.scaleBy(0.25f);
-
-        stats = new Label("Stats", skin);
 
         Container<Table> tableContainer = new Container<Table>();
 
@@ -114,7 +109,7 @@ public class CarparkScreen implements Screen {
         });
 
         for (int i=0; i<selectButtons.size(); i++) {
-            ImageButton button = selectButtons.get(i);
+            Button button = selectButtons.get(i);
             int index = i;
             button.addListener(new ClickListener() {
                 @Override
@@ -132,14 +127,18 @@ public class CarparkScreen implements Screen {
         previewTable.clear();
         selectorTable.clear();
 
-        selectButtons = new ArrayList<>();
+        Firetruck activeFiretruck = firestation.getActiveFireTruck();
+
+        selectButtons = new ArrayList<Button>();
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
             Drawable drawable = new TextureRegionDrawable(new TextureRegion(firestation.getParkedFireTrucks().get(i).getFireTruckTexture()));
-            ImageButton button = new ImageButton(drawable);
-            button.setTransform(true);
-            button.scaleBy(0.25f);
+            Button button = new Button(drawable);
             selectButtons.add(button);
         }
+
+        stats = new Label("Stats \nThis truck is cool " +
+                "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
+                "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount(), skin);
 
         mainTable.row().colspan(3).expand().fill();
         mainTable.add(previewTable).expand().fill();
@@ -150,8 +149,8 @@ public class CarparkScreen implements Screen {
         mainTable.add(selectorTable);
         selectorTable.row().colspan(6).expand();
         System.out.println(firestation.getParkedFireTrucks().size());
-        for (ImageButton button : selectButtons) {
-            selectorTable.add(button).size(150,75);
+        for (Button button : selectButtons) {
+            selectorTable.add(button).size(150, 75);
         }
         mainTable.row().colspan(1).pad(40).expandX();
         mainTable.add(quitButton).height(40).width(150).center();
