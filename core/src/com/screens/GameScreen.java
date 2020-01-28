@@ -133,12 +133,12 @@ public class GameScreen implements Screen {
 		// Select background and foreground map layers, order matters
         MapLayers mapLayers = map.getLayers();
         this.foregroundLayers = new int[] {
-			mapLayers.getIndex("Buildings"),
-			mapLayers.getIndex("Trees"),
+			mapLayers.getIndex("Buildings")
         };
         this.backgroundLayers = new int[] {
 			mapLayers.getIndex("River"),
-			mapLayers.getIndex("Road")
+			mapLayers.getIndex("Road"),
+			mapLayers.getIndex("Trees")
         };
 
 		// Initialise textures to use for spites
@@ -445,11 +445,11 @@ public class GameScreen implements Screen {
 		}
 		if (isActive) {
 			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
-					(TiledMapTileLayer) map.getLayers().get("Collision2"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
 					 this.firestation));
 		} else {
 			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, FiretruckOneProperties,
-					(TiledMapTileLayer) map.getLayers().get("Collision2"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
 					this.firestation));
 		}
 
