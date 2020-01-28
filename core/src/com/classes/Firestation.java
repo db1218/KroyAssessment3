@@ -40,7 +40,7 @@ public class Firestation extends SimpleSprite {
     /**
      * Overloaded constructor containing all possible parameters.
      * Drawn with the given texture at the given position.
-     * 
+     *
      * @param texture  The texture used to draw the Firestation with.
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
@@ -148,6 +148,17 @@ public class Firestation extends SimpleSprite {
             if (time > 0 && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
                 this.repairRefill(firetruck);
             }
+        }
+    }
+
+    public void repairRefillInCarpark() {
+        for (Firetruck firetruck : parkedFireTrucks) {
+            if ((firetruck.isDamaged() || firetruck.isLowOnWater())) {
+                this.repairRefill(firetruck);
+            }
+        }
+        if (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater()) {
+            this.repairRefill(activeFireTruck);
         }
     }
 

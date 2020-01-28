@@ -6,16 +6,17 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.scenes.scene2d.InputEvent;
-import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.badlogic.gdx.Input;
 import com.classes.Firestation;
 import com.classes.Firetruck;
+import com.classes.StatsLabel;
 import com.kroy.Kroy;
 
 import java.util.ArrayList;
@@ -43,7 +44,7 @@ public class CarparkScreen implements Screen {
     private Table mainTable;
     private Table previewTable;
     private Table selectorTable;
-    private Label stats;
+    private StatsLabel stats;
 
     public CarparkScreen(Firestation firestation, Kroy game, GameScreen gameScreen) {
         this.game = game;
@@ -89,7 +90,7 @@ public class CarparkScreen implements Screen {
         selectorTable = new Table(skin);
         selectorTable.setDebug(true);
 
-        stage = new Stage(new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera));
+        stage = new Stage(viewport);
     }
 
     /**
@@ -98,7 +99,39 @@ public class CarparkScreen implements Screen {
     @Override
     public void show() {
         Gdx.input.setInputProcessor(stage);
-        this.refresh();
+
+        stats = new StatsLabel("Stats", skin, firestation.getActiveFireTruck());
+        stats.updateText();
+        Firetruck activeFiretruck = firestation.getActiveFireTruck();
+
+        selectButtons = new ArrayList<>();
+        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
+            Drawable drawable = new TextureRegionDrawable(new TextureRegion(firestation.getParkedFireTrucks().get(i).getFireTruckTexture()));
+            Button button = new Button(drawable);
+            selectButtons.add(button);
+        }
+
+        mainTable.clear();
+        previewTable.clear();
+        selectorTable.clear();
+
+        mainTable.row().colspan(3).expand().fill();
+        mainTable.add(previewTable).expand().fill();
+        previewTable.row().colspan(2).expand().fill().pad(40);
+        previewTable.add(firestation.getActiveFireTruck().getFireTruckImage()).size(300, 150);
+        previewTable.add(stats).expand();
+        mainTable.row().colspan(3).expand().fill().padLeft(40).padRight(40);
+        mainTable.add(selectorTable);
+        selectorTable.row().colspan(6).expand();
+
+        for (Button button : selectButtons) {
+            selectorTable.add(button).size(150, 75);
+        }
+
+        mainTable.row().colspan(1).pad(40).expandX();
+        mainTable.add(quitButton).height(40).width(150).center();
+
+        stage.addActor(mainTable);
 
         quitButton.addListener(new ClickListener() {
             @Override
@@ -107,6 +140,7 @@ public class CarparkScreen implements Screen {
                 game.setScreen(gameScreen);
             }
         });
+
 
         for (int i=0; i<selectButtons.size(); i++) {
             Button button = selectButtons.get(i);
@@ -120,49 +154,28 @@ public class CarparkScreen implements Screen {
             });
         }
 
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode)
+            {
+                if (keycode == Input.Keys.ESCAPE) {
+                    firestation.openCarpark(false);
+                    game.setScreen(gameScreen);
+                }
+                return true;
+            }
+        });
+
     }
 
-    public void refresh() {
-        mainTable.clear();
-        previewTable.clear();
-        selectorTable.clear();
 
-        Firetruck activeFiretruck = firestation.getActiveFireTruck();
-
-        selectButtons = new ArrayList<Button>();
-        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
-            Drawable drawable = new TextureRegionDrawable(new TextureRegion(firestation.getParkedFireTrucks().get(i).getFireTruckTexture()));
-            Button button = new Button(drawable);
-            selectButtons.add(button);
-        }
-
-        stats = new Label("Stats \nThis truck is cool " +
-                "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
-                "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount(), skin);
-
-        mainTable.row().colspan(3).expand().fill();
-        mainTable.add(previewTable).expand().fill();
-        previewTable.row().colspan(2).expand().fill().pad(40);
-        previewTable.add(firestation.getActiveFireTruck().getFireTruckImage()).size(300, 150);
-        previewTable.add(stats).expand();
-        mainTable.row().colspan(3).expand().fill().padLeft(40).padRight(40);
-        mainTable.add(selectorTable);
-        selectorTable.row().colspan(6).expand();
-        System.out.println(firestation.getParkedFireTrucks().size());
-        for (Button button : selectButtons) {
-            selectorTable.add(button).size(150, 75);
-        }
-        mainTable.row().colspan(1).pad(40).expandX();
-        mainTable.add(quitButton).height(40).width(150).center();
-
-        stage.addActor(mainTable);
-    }
 
     public void render(float delta) {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
         Gdx.gl.glClearColor(0, 0, 0, 1f);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+        stage.act(delta);
         stage.draw();
     }
 
