@@ -304,10 +304,6 @@ public class Firetruck extends MovementSprite {
         return this.firetruckProperties[4];
     }
 
-    void resetRotation() {
-        super.setRotation(0);
-    }
-
     public String getColour() {
         return colour.getColourLower();
     }

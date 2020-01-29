@@ -38,6 +38,8 @@ public class Firestation extends SimpleSprite {
 
     private CarparkScreen carparkScreen;
     private boolean isMenuOpen;
+    private Texture destroyed;
+    private boolean isDestroyed;
 
     private ArrayList<Firetruck> parkedFireTrucks;
 
@@ -49,8 +51,9 @@ public class Firestation extends SimpleSprite {
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Texture texture, float xPos, float yPos, Kroy game, GameScreen gameScreen) {
+    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, Kroy game, GameScreen gameScreen) {
         super(texture);
+        this.destroyed = destroyedTexture;
         this.setPosition(xPos, yPos);
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
@@ -59,6 +62,7 @@ public class Firestation extends SimpleSprite {
         this.spawnLocation = new Vector2(80 * TILE_DIMS, 24.5f * TILE_DIMS);
         this.carparkScreen = new CarparkScreen(this, game, gameScreen);
         this.game = game;
+        this.isDestroyed = false;
     }
 
     /**
@@ -68,6 +72,9 @@ public class Firestation extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
+        if (this.isDestroyed) {
+            this.removeSprite(this.destroyed);
+        }
         this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
     }
 
@@ -77,10 +84,7 @@ public class Firestation extends SimpleSprite {
      * @param firetruck  The firetruck that will be repaired.
      */
     public void repairRefill(Firetruck firetruck) {
-        System.out.println(this.getInternalTime());
         if (this.getInternalTime() % 10 == 0) {
-         //   System.out.println("refill! =================");
-         //   System.out.println(this.getInternalTime());
             firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
             firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
         }
@@ -118,7 +122,6 @@ public class Firestation extends SimpleSprite {
 
     private void respawnFiretruck() {
         this.activeFireTruck.setPosition(spawnLocation.x, spawnLocation.y);
-        this.activeFireTruck.resetRotation();
         this.activeFireTruck.setSpeed(new Vector2(0, 0));
     }
 
@@ -156,6 +159,9 @@ public class Firestation extends SimpleSprite {
             if (time > 0 && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
                 this.repairRefill(firetruck);
             }
+        }
+        if (time == 0) {
+            this.isDestroyed = true;
         }
     }
 

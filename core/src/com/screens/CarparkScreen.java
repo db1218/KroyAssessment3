@@ -4,8 +4,10 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -70,6 +72,7 @@ public class CarparkScreen implements Screen {
         stage = new Stage(viewport);
 
         shapeRenderer = new ShapeRenderer();
+
     }
 
     /**
@@ -87,10 +90,9 @@ public class CarparkScreen implements Screen {
                 "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() +
                 "\n" +
                 "\nMaximum Speed: " + activeFiretruck.getMaxSpeed() +
-                "\nRange: " + activeFiretruck.getRange(), skin);
+                "\nRange: " + activeFiretruck.getRange(), game.getLabelStyle());
 
         activeStats.setAlignment(Align.center);
-        activeStats.setFontScale(2);
 
         ArrayList<Button> selectImageButtons = new ArrayList<>();
         ArrayList<TextButton> selectTextButtons = new ArrayList<>();
@@ -133,21 +135,18 @@ public class CarparkScreen implements Screen {
         HorizontalGroup hg = new HorizontalGroup();
         hg.expand();
         hg.center();
+        mainTable.add(hg).expand().fill();
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
             Stack stack = new Stack();
-            Button temp1 = selectImageButtons.get(i);
-            temp1.setSize(200, 100);
-            TextButton temp2 = selectTextButtons.get(i);
             VerticalGroup vg = new VerticalGroup();
             vg.center();
             vg.pad(40);
-            vg.addActor(temp1);
+            vg.addActor(selectImageButtons.get(i));
             vg.addActor(selectTextButtons.get(i));
             stack.addActor(new BackgroundBox(200, 100, Color.DARK_GRAY));
             stack.addActor(vg);
             hg.addActor(stack);
         }
-        mainTable.add(hg).expand().fill();
 
         // close button
         mainTable.row().padBottom(80).expand();

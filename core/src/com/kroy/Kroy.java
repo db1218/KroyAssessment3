@@ -3,10 +3,13 @@ package com.kroy;
 // LibGDX imports
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 // Class imports
+import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
 
@@ -23,6 +26,7 @@ public class Kroy extends Game {
 	// Batches to store drawn elements
   	public Batch batch;
 	public BitmapFont font;
+	public Label.LabelStyle labelStyle;
 
 	/**
 	 * Display the main menu screen upon game start.
@@ -30,7 +34,8 @@ public class Kroy extends Game {
 	public void create() {
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		// Use LibGDX's default Arial font.
-		this.font = new BitmapFont();
+		this.setTTF();
+
 		// Instantly transition to the main menu screen when game starts
 		this.setScreen(new MainMenuScreen(this));
 	}
@@ -92,5 +97,26 @@ public class Kroy extends Game {
 				this.font.draw(this.batch, text[i], x[i], y[i]);
 			}
 		}
+	}
+
+	private void setTTF() {
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Xolonium-Regular.ttf"));
+		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
+		parameter.size = 15;
+		parameter.borderWidth = 1;
+		parameter.color = Color.WHITE;
+		parameter.shadowOffsetX = 3;
+		parameter.shadowOffsetY = 3;
+		parameter.shadowColor = Color.DARK_GRAY;
+		this.font = generator.generateFont(parameter); // font size 24 pixels
+		generator.dispose();
+
+		Label.LabelStyle labelStyle = new Label.LabelStyle();
+		labelStyle.font = font;
+		this.labelStyle = labelStyle;
+	}
+
+	public Label.LabelStyle getLabelStyle() {
+		return this.labelStyle;
 	}
 }
