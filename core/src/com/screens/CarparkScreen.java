@@ -16,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Input;
+import com.CustomActors.BackgroundBox;
 import com.classes.Firestation;
 import com.classes.Firetruck;
 import com.kroy.Kroy;
@@ -76,7 +77,7 @@ public class CarparkScreen implements Screen {
      */
     @Override
     public void show() {
-        stage.setDebugAll(true);
+        stage.setDebugAll(false);
         Gdx.input.setInputProcessor(stage);
 
         activeFiretruck = firestation.getActiveFireTruck();
@@ -133,6 +134,7 @@ public class CarparkScreen implements Screen {
         hg.expand();
         hg.center();
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
+            Stack stack = new Stack();
             Button temp1 = selectImageButtons.get(i);
             temp1.setSize(200, 100);
             TextButton temp2 = selectTextButtons.get(i);
@@ -140,9 +142,10 @@ public class CarparkScreen implements Screen {
             vg.center();
             vg.pad(40);
             vg.addActor(temp1);
-            vg.addActor(temp2);
             vg.addActor(selectTextButtons.get(i));
-            hg.addActor(vg);
+            stack.addActor(new BackgroundBox(200, 100, Color.DARK_GRAY));
+            stack.addActor(vg);
+            hg.addActor(stack);
         }
         mainTable.add(hg).expand().fill();
 
