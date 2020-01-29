@@ -1,10 +1,8 @@
 package com.screens;
 
-import com.PathFinding.GenerateGraph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.ai.pfa.GraphPath;
 
 public class GameInputHandler implements InputProcessor {
 

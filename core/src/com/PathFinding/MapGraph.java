@@ -27,14 +27,13 @@ public class MapGraph implements IndexedGraph<Junction> {
     public void connectJunctions(Junction fromJunction, Junction toJunction){
         Road road = new Road(fromJunction, toJunction);
         if (!cityMap.containsKey(fromJunction)){
-            cityMap.put(fromJunction, new Array<Connection<Junction>>());
+            cityMap.put(fromJunction, new Array<>());
         }
         cityMap.get(fromJunction).add(road);
         roads.add(road);
     }
 
     public GraphPath<Junction> findPath(Junction startJunction, Junction goalJunction){
-        //GraphPath<Junction> junctionPath = new DefaultGraphPath<>();
         GraphPath<Junction> junctionPath = new DefaultGraphPath<Junction>();
         new IndexedAStarPathFinder<>(this).searchNodePath(startJunction, goalJunction, mapHeuristic, junctionPath);
         return junctionPath;
@@ -56,10 +55,6 @@ public class MapGraph implements IndexedGraph<Junction> {
             return cityMap.get(fromNode);
         }
         return new Array<>(0);
-    }
-
-    public Junction getJunction(int n) {
-        return junctions.get(n);
     }
 
     public Array<Junction> getJunctions(){
