@@ -307,6 +307,10 @@ public class Firetruck extends MovementSprite {
         super.setRotation(0);
     }
 
+    public String getColour() {
+        return colour.getColourLower();
+    }
+
     /**
      * Dispose of all textures used by this class and its parents.
      */

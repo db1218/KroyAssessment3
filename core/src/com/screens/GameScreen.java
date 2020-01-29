@@ -160,6 +160,7 @@ public class GameScreen implements Screen {
 		// Initialise firetrucks array and add firetrucks to it
 		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
 		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
+		constructFireTruck(TruckColours.YELLOW, false, FiretruckOneProperties);
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();

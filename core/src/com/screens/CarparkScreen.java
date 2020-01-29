@@ -93,7 +93,7 @@ public class CarparkScreen implements Screen {
             Button imageButton = new Button(drawable);
             selectImageButtons.add(imageButton);
 
-            TextButton textButton = new TextButton("Fire Truck " + (i+1), skin);
+            TextButton textButton = new TextButton(firetruck.getColour() + " Fire Truck", skin);
             textButton.setSize(150,40);
             selectTextButtons.add(textButton);
         }
