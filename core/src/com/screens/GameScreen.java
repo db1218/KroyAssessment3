@@ -31,6 +31,7 @@ import com.classes.Firetruck;
 import com.classes.Projectile;
 import com.classes.Firestation;
 import com.classes.ETFortress;
+import com.sprites.MovementSprite;
 
 // Constants import
 import static com.config.Constants.SCREEN_HEIGHT;
@@ -77,6 +78,8 @@ public class GameScreen implements Screen {
 
 	private float zoomTarget;
 
+	private Timer collisionTask;
+
 	// Private arrays to group sprites
 	private ArrayList<Firetruck> firetrucks;
 	private ArrayList<Firetruck> firetrucksToRemove;
@@ -117,7 +120,7 @@ public class GameScreen implements Screen {
 			public void run() {
 				decreaseTime();
 			}
-		}, 1, 1 );
+		}, 1, 1);
 
 		Gdx.input.setInputProcessor(new GameInputHandler(this));
 
@@ -135,15 +138,15 @@ public class GameScreen implements Screen {
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
 		// Select background and foreground map layers, order matters
-        MapLayers mapLayers = map.getLayers();
-        this.foregroundLayers = new int[] {
-			mapLayers.getIndex("Buildings"),
-			mapLayers.getIndex("Trees"),
-        };
-        this.backgroundLayers = new int[] {
-			mapLayers.getIndex("River"),
-			mapLayers.getIndex("Road")
-        };
+		MapLayers mapLayers = map.getLayers();
+		this.foregroundLayers = new int[]{
+				mapLayers.getIndex("Buildings"),
+				mapLayers.getIndex("Trees"),
+		};
+		this.backgroundLayers = new int[]{
+				mapLayers.getIndex("River"),
+				mapLayers.getIndex("Road")
+		};
 
 		// Initialise textures to use for spites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
@@ -177,7 +180,18 @@ public class GameScreen implements Screen {
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, 1 * TILE_DIMS, 72.75f * TILE_DIMS));
+
+		collisionTask = new Timer();
+		collisionTask.scheduleTask(new Task()
+		{
+			@Override
+			public void run() {
+				checkForCollisions();
+			}
+		}, .5f, .5f);
+
 	}
+
 
 	/**
 	 * Actions to perform on first render cycle of the game
@@ -305,7 +319,7 @@ public class GameScreen implements Screen {
 		this.firetrucks.removeAll(this.firetrucksToRemove);
 
 		// Check for any collisions
-		checkForCollisions();
+		//checkForCollisions();
 
 		// Check if the game should end
 		checkIfGameOver();

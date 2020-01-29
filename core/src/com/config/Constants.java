@@ -114,4 +114,6 @@ public final class Constants {
     public static final float PROJECTILE_WIDTH = 1*TILE_DIMS;
     public static final float PROJECTILE_HEIGHT =0.5f*TILE_DIMS;
 
+    public static final float FIRETRUCK_BOUNCEBACK = 5f;
+
 }

@@ -127,16 +127,21 @@ public class MovementSprite extends SimpleSprite {
      */
     private void accelerate() {
         // Calculate whether it hits any boundaries
-        boolean collides = this.collisionLayer != null && collidesWithBlockedTile();
+        int collisions = collidesWithBlockedTile();
         // Check if it collides with any tiles, then move the sprite
-        if (!collides) {
+        if (collisions == 0) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
             this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
             if (this.decelerationRate != 0) decelerate();
+        } else if (collisions == 1){
+            // Separate the sprite from the tile and stop sprite movement
+            if (Math.abs(this.speed.x) > Math.abs(this.speed.y)) {
+                this.speed = new Vector2(this.speed.x, -this.speed.y);
+            } else {
+                this.speed = new Vector2(-this.speed.x, this.speed.y);
+            }
         } else {
-            // Seperate the sprite from the tile and stop sprite movement
-            collisionOccurred(this.speed.rotate(180).scl(0.05f));
-            this.speed = new Vector2(0, 0);
+            this.speed = new Vector2(-this.speed.x, -(this.speed.y + 3f));
         }
     }
 
@@ -160,31 +165,24 @@ public class MovementSprite extends SimpleSprite {
 
     /**
      * Checks what direction the sprite is facing and bounces it the opposite way.
-     * @param seperationVector Vector containing the minimum distance needed to travel to seperate two sprites.
+     * @param separationVector Vector containing the minimum distance needed to travel to seperate two sprites.
      */
-    public void collisionOccurred(Vector2 seperationVector) {
-        // Calculate how far to push the sprite back
-        float pushBackX = seperationVector.x;
-        float pushBackY = seperationVector.y;
-        // For each direction, reverse the speed and set the sprite back a few coordinates out of the collision
-        this.speed.y *= -this.restitution;
-        this.speed.x *= -this.restitution;
-        this.setRotationLock(0.5f);
-        this.setY(this.getY() + pushBackY);
-        this.setX(this.getX() + pushBackX);
+    public void collisionOccurred(Vector2 separationVector) {
+        //this.rotate(-this.speed.x * Constants.FIRETRUCK_BOUNCEBACK * Gdx.graphics.getDeltaTime());
     }
 
     /**
      * Checks if the tile at a location is a "blocked" tile or not.
      * @return Whether the hits a collision object (true) or not (false)
      */
-    private boolean collidesWithBlockedTile() {
+    private int collidesWithBlockedTile() {
+        int collisions = 0;
         for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
             if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
-                return true;
+                collisions++;
             }
         }
-        return false;
+        return collisions;
     }
 
     Array<Vector2> getPolygonVertices(Polygon polygon) {
@@ -194,6 +192,7 @@ public class MovementSprite extends SimpleSprite {
             float x = vertices[i * 2];
             float y = vertices[i * 2 + 1];
             result.add(new Vector2(x, y));
+            System.out.println("Vertex : " + x + ", " + y);
         }
         return result;
     }
