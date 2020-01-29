@@ -27,6 +27,7 @@ public class DesktopLauncher {
 		config.title = GAME_NAME;
 		config.width = SCREEN_WIDTH;
 		config.height = SCREEN_HEIGHT;
+		config.vSyncEnabled = true;
 		new LwjglApplication(new Kroy(), config);
 	}
 }
