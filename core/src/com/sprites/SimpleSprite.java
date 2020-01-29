@@ -46,6 +46,7 @@ public class SimpleSprite extends Sprite {
         // Use the longest side of the sprite as the bar width
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+
         // Rotate 90 to be same rotation as textures
         this.rotate(-90);
         // Start internal time at 150, used for animations/timeouts
@@ -102,6 +103,12 @@ public class SimpleSprite extends Sprite {
         this.height = height;
         this.create();
         this.hitBox.setOrigin(width/2, height/2);
+    }
+
+    public void setTruckHitBox() {
+        this.hitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
+        this.hitBox.setOrigin(width/2, height/2);
+        this.hitBox.rotate(-90);
     }
 
     /**

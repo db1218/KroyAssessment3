@@ -122,26 +122,25 @@ public class MovementSprite extends SimpleSprite {
      */
     private void accelerate() {
         // Calculate whether it hits any boundaries
-        int collisions = collidesWithBlockedTile();
-        boolean collidesCarpark = this.carparkLayer != null && collidesWithTile(this.carparkLayer);
+        int collisions = collidesWithBlockedTile(this.collisionLayer);
+        int collidesCarpark = collidesWithBlockedTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
-        if (collidesCarpark) {
+        if (collidesCarpark > 0) {
             System.out.println("Open menu");
             this.fireStation.openMenu(true);
-        } else if (!collidesBlocked) {
-        if (collisions == 0) {
+        } else if (collisions == 0) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
             this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
             if (this.decelerationRate != 0) decelerate();
         } else if (collisions == 1){
             // Separate the sprite from the tile and stop sprite movement
             if (Math.abs(this.speed.x) > Math.abs(this.speed.y)) {
-                this.speed = new Vector2(this.speed.x, -this.speed.y);
+                this.speed = new Vector2(this.speed.x*.75f, -this.speed.y*.50f);
             } else {
-                this.speed = new Vector2(-this.speed.x, this.speed.y);
+                this.speed = new Vector2(-this.speed.x*.50f, this.speed.y*.75f);
             }
         } else {
-            this.speed = new Vector2(-this.speed.x, -(this.speed.y + 3f));
+            this.speed = new Vector2(-this.speed.x, -(this.speed.y*1.3f));
         }
     }
 
@@ -177,10 +176,10 @@ public class MovementSprite extends SimpleSprite {
      * Checks if the tile at a location is a "blocked" tile or not.
      * @return Whether the hits a collision object (true) or not (false)
      */
-    private int collidesWithBlockedTile() {
+    private int collidesWithBlockedTile(TiledMapTileLayer layer) {
         int collisions = 0;
         for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
-            if (this.collisionLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+            if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
                 collisions++;
             }
         }

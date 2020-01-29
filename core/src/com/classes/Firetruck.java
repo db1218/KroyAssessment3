@@ -82,6 +82,7 @@ public class Firetruck extends MovementSprite {
     private void create() {
         this.isSpraying = true;
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
+        super.setTruckHitBox();
         this.getHealthBar().setMaxResource((int) this.firetruckProperties[0]);
         this.setAccelerationRate(this.firetruckProperties[1]);
         this.setDecelerationRate(this.firetruckProperties[1] * 0.6f);
