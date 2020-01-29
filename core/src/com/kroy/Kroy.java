@@ -10,6 +10,8 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
 
+import java.awt.*;
+
 /**
  * Entry point to the main game, called by DesktopLauncher.
  * 
@@ -30,7 +32,7 @@ public class Kroy extends Game {
 		// Use LibGDX's default Arial font.
 		this.font = new BitmapFont();
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new GameScreen(this));
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	/**

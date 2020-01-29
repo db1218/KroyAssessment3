@@ -17,9 +17,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Input;
 import com.classes.Firestation;
 import com.classes.Firetruck;
-import com.classes.StatsLabel;
 import com.kroy.Kroy;
-import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
 import java.util.ArrayList;
 
@@ -75,12 +73,20 @@ public class CarparkScreen implements Screen {
      */
     @Override
     public void show() {
-        stage.setDebugAll(true);
+        stage.setDebugAll(false);
         Gdx.input.setInputProcessor(stage);
 
-        StatsLabel stats = new StatsLabel("Stats", skin, firestation.getActiveFireTruck());
-        stats.updateText();
-        stats.setAlignment(Align.center);
+        Firetruck activeFiretruck = firestation.getActiveFireTruck();
+
+        Label activeStats = new Label(activeFiretruck.getColour() + " fire truck's Stats\n" +
+                "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
+                "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() +
+                "\n" +
+                "\nMaximum Speed: " + activeFiretruck.getMaxSpeed() +
+                "\nRange: " + activeFiretruck.getRange(), skin);
+
+        activeStats.setAlignment(Align.center);
+        activeStats.setFontScale(2);
 
         ArrayList<Button> selectImageButtons = new ArrayList<>();
         ArrayList<TextButton> selectTextButtons = new ArrayList<>();
@@ -90,11 +96,18 @@ public class CarparkScreen implements Screen {
             Drawable drawable = new TextureRegionDrawable(new TextureRegion(firetruck.getFireTruckTexture()));
             drawable.setMinWidth(150);
             drawable.setMinHeight(75);
-            Button imageButton = new Button(drawable);
-            selectImageButtons.add(imageButton);
 
+            Button imageButton = new Button(drawable);
             TextButton textButton = new TextButton(firetruck.getColour() + " Fire Truck", skin);
             textButton.setSize(150,40);
+
+            if (!firetruck.isAlive()) {
+                textButton.setTouchable(Touchable.disabled);
+                textButton.setColor(Color.DARK_GRAY);
+                imageButton.setColor(Color.DARK_GRAY);
+            }
+
+            selectImageButtons.add(imageButton);
             selectTextButtons.add(textButton);
         }
 
@@ -109,7 +122,7 @@ public class CarparkScreen implements Screen {
 
         // image preview
         previewTable.add(firestation.getActiveFireTruck().getFireTruckImage()).size(300, 150);
-        previewTable.add(stats);
+        previewTable.add(activeStats);
 
         // truck selector
         mainTable.row().colspan(3).expand().padLeft(40).padRight(40);
