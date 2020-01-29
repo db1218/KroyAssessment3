@@ -49,10 +49,10 @@ public class MainMenuScreen implements Screen {
 	 * The constructor for the main menu screen. All game logic for the main
 	 * menu screen is contained.
 	 *
-	 * @param gam The game object.
+	 * @param game The game object.
 	 */
-	public MainMenuScreen(final Kroy gam) {
-		game = gam;
+	public MainMenuScreen(final Kroy game) {
+		this.game = game;
 
 		atlas = new TextureAtlas("skin/uiskin.atlas");
 		skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
@@ -69,7 +69,7 @@ public class MainMenuScreen implements Screen {
 		batch.setProjectionMatrix(camera.combined);
 
 		// Set font scale
-		game.getFont().getData().setScale(1.5f);
+		this.game.getFont().getData().setScale(1.5f);
 
 		// Create a viewport
 		viewport = new FitViewport(SCREEN_WIDTH, SCREEN_HEIGHT, camera);

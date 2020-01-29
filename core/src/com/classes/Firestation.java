@@ -1,22 +1,24 @@
 package com.classes;
 
 // LibGDX imports
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
+import com.kroy.Kroy;
+import com.screens.CarparkScreen;
+import com.screens.GameScreen;
+import com.screens.MainMenuScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
-import static com.config.Constants.FIRESTATION_HEALTH;
-import static com.config.Constants.FIRESTATION_HEIGHT;
-import static com.config.Constants.FIRESTATION_WIDTH;
-import static com.config.Constants.FIRETRUCK_REPAIR_SPEED;
+import java.util.ArrayList;
+
+import static com.config.Constants.*;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -26,43 +28,37 @@ import static com.config.Constants.FIRETRUCK_REPAIR_SPEED;
  */
 public class Firestation extends SimpleSprite {
 
+    private Kroy game;
+
     // Private values for this class to use
     private Circle repairRange;
+
+    private Firetruck activeFireTruck;
+    private Vector2 spawnLocation;
+
+    private CarparkScreen carparkScreen;
+    private boolean isMenuOpen;
+
+    private ArrayList<Firetruck> parkedFireTrucks;
 
     /**
      * Overloaded constructor containing all possible parameters.
      * Drawn with the given texture at the given position.
-     * 
+     *
      * @param texture  The texture used to draw the Firestation with.
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Texture texture, float xPos, float yPos) {
+    public Firestation(Texture texture, float xPos, float yPos, Kroy game, GameScreen gameScreen) {
         super(texture);
         this.setPosition(xPos, yPos);
-        this.create();
-    }
-
-    /**
-     * Simplfied constructor for the Firestation, that doesn't require a position.
-     * Drawn with the given texture at (0,0).
-     * 
-     * @param texture  The texture used to draw the Firestation with.
-     */
-    public Firestation(Texture texture) {
-        super(texture);
-        this.create();
-    }
-
-    /**
-     * Sets the health of the Firestation and its size provided in CONSTANTS.
-     * Also creates a circle to indicate the range firetrucks should be within
-     * in order to be repaired by the firestation.
-     */
-    private void create() {
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
+        this.parkedFireTrucks = new ArrayList<>();
+        this.spawnLocation = new Vector2(80 * TILE_DIMS, 24.5f * TILE_DIMS);
+        this.carparkScreen = new CarparkScreen(this, game, gameScreen);
+        this.game = game;
     }
 
     /**
@@ -80,34 +76,11 @@ public class Firestation extends SimpleSprite {
      * 
      * @param firetruck  The firetruck that will be repaired.
      */
-    public void repair(Firetruck firetruck) {
+    public void repairRefill(Firetruck firetruck) {
         if (this.getInternalTime() % 10 == 0) {
             firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
             firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
         }
-    }
-
-    /**
-     * Checks if a polygon is within the range of the firestation.
-     * Usually used to see if a firetruck is close enough to be repaired.
-     * 
-     * @param polygon  The polygon that needs to be checked.
-     * @return         Whether the given polygon is in the radius of the Firestation
-     */
-    public boolean isInRadius(Polygon polygon) {
-        float []vertices = polygon.getTransformedVertices();
-        Vector2 center = new Vector2(this.repairRange.x, this.repairRange.y);
-        float squareRadius = this.repairRange.radius * this.repairRange.radius;
-        for (int i = 0; i < vertices.length; i+=2) {
-            if (i == 0){
-                if (Intersector.intersectSegmentCircle(new Vector2(vertices[vertices.length - 2], vertices[vertices.length - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
-                    return true;
-            } else {
-                if (Intersector.intersectSegmentCircle(new Vector2(vertices[i-2], vertices[i-1]), new Vector2(vertices[i], vertices[i+1]), center, squareRadius))
-                    return true;
-            }
-        }
-        return polygon.contains(this.repairRange.x, this.repairRange.y);
     }
 
     /**
@@ -119,6 +92,87 @@ public class Firestation extends SimpleSprite {
     @Override
     public void drawDebug(ShapeRenderer renderer) {
         super.drawDebug(renderer);
-        renderer.circle(this.repairRange.x, this.repairRange.y, this.repairRange.radius);
+    }
+
+    public void updateFiretruck(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
+        this.activeFireTruck.update(batch, camera);
+        if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
+        if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
+            this.activeFireTruck.destroyed();
+            if (getAliveFiretruckID() == -1) {
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            } else {
+                changeFiretruck(getAliveFiretruckID());
+                this.openMenu(true);
+            }
+        }
+    }
+
+    public CarparkScreen getCarparkScreen() {
+        return this.carparkScreen;
+    }
+
+    private void respawnFiretruck() {
+        this.activeFireTruck.setPosition(spawnLocation.x, spawnLocation.y);
+        this.activeFireTruck.resetRotation();
+        this.activeFireTruck.setSpeed(new Vector2(0, 0));
+    }
+
+    public boolean hasParkedFiretrucks() {
+        return getAliveFiretruckID() >= 0;
+    }
+
+    public void setActiveFireTruck(Firetruck fireTruck) {
+        this.activeFireTruck = fireTruck;
+    }
+
+    public Firetruck getActiveFireTruck() {
+        return this.activeFireTruck;
+    }
+
+    public ArrayList<Firetruck> getParkedFireTrucks() {
+        return this.parkedFireTrucks;
+    }
+
+    public void parkFireTruck(Firetruck firetruck) {
+        this.parkedFireTrucks.add(firetruck);
+    }
+
+    public Vector2 getSpawnLocation() {
+        return this.spawnLocation;
+    }
+
+    public void checkRepairRefill(int time) {
+        for (Firetruck firetruck : parkedFireTrucks) {
+            if (time > 0 && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
+                this.repairRefill(firetruck);
+            }
+        }
+    }
+
+    public boolean isMenuOpen() {
+        return this.isMenuOpen;
+    }
+
+    public void openMenu(boolean isOpen) {
+        this.isMenuOpen = isOpen;
+        if (!isOpen) respawnFiretruck();
+    }
+
+    private int getAliveFiretruckID() {
+        for (int i=0; i < parkedFireTrucks.size(); i++) {
+            if (parkedFireTrucks.get(i).isAlive()) {
+                return i;
+            }
+        }
+        return -1;
+    }
+
+    public void changeFiretruck(int index) {
+        Firetruck previous = activeFireTruck;
+        activeFireTruck = parkedFireTrucks.get(index);
+        parkedFireTrucks.remove(index);
+        parkedFireTrucks.add(index, previous);
     }
 }

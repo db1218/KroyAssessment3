@@ -1,6 +1,7 @@
 package com.sprites;
 
 // LibGDX imports
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -63,7 +64,7 @@ public class SimpleSprite extends Sprite {
         this.healthBar.update(batch);
         // Draw the sprite and update the healthbar
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
-            this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
+                this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
         // Decrease internal time
         if (this.internalTime > 0) {
             this.internalTime -= 1;
@@ -111,6 +112,12 @@ public class SimpleSprite extends Sprite {
     public void rotate(float degrees) {
         super.rotate(degrees);
         this.hitBox.rotate(degrees);
+    }
+
+    @Override
+    public void setRotation(float degrees) {
+        super.setRotation(degrees);
+        this.hitBox.setRotation(degrees);
     }
 
     /**

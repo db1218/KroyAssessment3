@@ -32,7 +32,7 @@ class FirestationTest {
 		// create sprite
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
-        TestClass = new Firestation(texture, 1500, 500);
+//        TestClass = new Firestation(texture, 1500, 500);
     }
 
     /**

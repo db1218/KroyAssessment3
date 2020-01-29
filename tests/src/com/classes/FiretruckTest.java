@@ -33,7 +33,7 @@ class FiretruckTest {
 		batch = new SpriteBatch();
         texture = new Texture("badlogic.jpg");
         TiledMap map = new TmxMapLoader().load("MapAssets/KroyMap.tmx");
-        //TestClass = new Firetruck((ArrayList) texture, (ArrayList) texture 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
+        TestClass = new Firetruck((ArrayList) texture, (ArrayList) texture 1000, 500, (TiledMapTileLayer) map.getLayers().get("River"), 1);
     }
 
     /**

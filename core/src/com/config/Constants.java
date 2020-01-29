@@ -38,26 +38,18 @@ public final class Constants {
          STATIC
     }
 
-    public static enum Direction2 {
-        FORWARDS,
-        BACKWARDS,
-        LEFT,
-        RIGHT,
-        STATIC
-    }
-
     public enum TruckColours{
-         RED ("RED", "Red"),
+        RED ("RED", "Red"),
         BLUE ("BLUE", "Blue"),
         YELLOW ("YELLOW", "Yellow");
 
-         private final String colourUpper;
-         private  final String colourLower;
+        private final String colourUpper;
+        private  final String colourLower;
 
-         TruckColours(String upper, String lower){
-             this.colourUpper = upper;
-             this.colourLower = lower;
-         }
+        TruckColours(String upper, String lower) {
+            this.colourUpper = upper;
+            this.colourLower = lower;
+        }
 
         public String getColourUpper() {
              return this.colourUpper;
