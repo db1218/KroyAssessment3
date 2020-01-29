@@ -375,7 +375,7 @@ public class GameScreen implements Screen {
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
 		Allows multiple trucks to be in the radius and be repaired or refilled every second.*/
-		this.firestation.checkRepairRefill(this.time);
+		this.firestation.checkRepairRefill(this.time, false);
 
 	}
 
@@ -543,6 +543,10 @@ public class GameScreen implements Screen {
 		mapGraph.connectJunctions(six, nine);
 		mapGraph.connectJunctions(six, seven);
 		mapGraph.connectJunctions(six, two);
+	}
+
+	public int getTime() {
+		return this.time;
 	}
 
 }

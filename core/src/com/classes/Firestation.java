@@ -14,7 +14,6 @@ import com.screens.CarparkScreen;
 import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
 import com.sprites.SimpleSprite;
-//import sun.applet.Main;
 
 // Constants import
 import java.util.ArrayList;
@@ -23,7 +22,7 @@ import static com.config.Constants.*;
 
 /**
  * The Firestation implementation, a static sprite in the game.
- * 
+ *
  * @author Archie
  * @since 17/12/2019
  */
@@ -74,11 +73,14 @@ public class Firestation extends SimpleSprite {
 
     /**
      * Repair a firetruck over time.
-     * 
+     *
      * @param firetruck  The firetruck that will be repaired.
      */
     public void repairRefill(Firetruck firetruck) {
+        System.out.println(this.getInternalTime());
         if (this.getInternalTime() % 10 == 0) {
+            System.out.println("refill! =================");
+            System.out.println(this.getInternalTime());
             firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
             firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
         }
@@ -87,7 +89,7 @@ public class Firestation extends SimpleSprite {
     /**
      * Overloaded method for drawing debug information. Draws the hitbox as well
      * as the range circle.
-     * 
+     *
      * @param renderer  The renderer used to draw the hitbox and range indicator with.
      */
     @Override
@@ -144,7 +146,12 @@ public class Firestation extends SimpleSprite {
         return this.spawnLocation;
     }
 
-    public void checkRepairRefill(int time) {
+    public void checkRepairRefill(int time, boolean includeActive) {
+        if (includeActive) {
+            if (time > 0 && (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater())) {
+                this.repairRefill(activeFireTruck);
+            }
+        }
         for (Firetruck firetruck : parkedFireTrucks) {
             if (time > 0 && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
                 this.repairRefill(firetruck);
