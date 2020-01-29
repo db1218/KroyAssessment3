@@ -304,8 +304,7 @@ public class GameScreen implements Screen {
 		game.drawFont("Time: " + this.time,
 				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
 				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
-		if (DEBUG_ENABLED) game.drawFont("FPS: "
-						+ Gdx.graphics.getFramesPerSecond(),
+		if (DEBUG_ENABLED) game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(),
 				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
 				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
 		);
