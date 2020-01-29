@@ -12,7 +12,9 @@ import com.badlogic.gdx.graphics.Texture;
 import com.kroy.Kroy;
 import com.screens.CarparkScreen;
 import com.screens.GameScreen;
+import com.screens.MainMenuScreen;
 import com.sprites.SimpleSprite;
+import sun.applet.Main;
 
 // Constants import
 import java.util.ArrayList;
@@ -27,6 +29,8 @@ import static com.config.Constants.*;
  */
 public class Firestation extends SimpleSprite {
 
+    private Kroy game;
+
     // Private values for this class to use
     private Circle repairRange;
 
@@ -34,6 +38,7 @@ public class Firestation extends SimpleSprite {
     private Vector2 spawnLocation;
 
     private CarparkScreen carparkScreen;
+    private boolean isMenuOpen;
 
     private ArrayList<Firetruck> parkedFireTrucks;
 
@@ -54,6 +59,7 @@ public class Firestation extends SimpleSprite {
         this.parkedFireTrucks = new ArrayList<>();
         this.spawnLocation = new Vector2(80 * TILE_DIMS, 24.5f * TILE_DIMS);
         this.carparkScreen = new CarparkScreen(this, game, gameScreen);
+        this.game = game;
     }
 
     /**
@@ -89,23 +95,23 @@ public class Firestation extends SimpleSprite {
         super.drawDebug(renderer);
     }
 
-    public void updateFiretrucks(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
+    public void updateFiretruck(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
         this.activeFireTruck.update(batch, camera);
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
         if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
             this.activeFireTruck.destroyed();
-            this.openCarpark(true);
+            if (getAliveFiretruckID() == -1) {
+                game.setScreen(new MainMenuScreen(game));
+                dispose();
+            } else {
+                changeFiretruck(getAliveFiretruckID());
+                this.openMenu(true);
+            }
         }
     }
 
     public CarparkScreen getCarparkScreen() {
         return this.carparkScreen;
-    }
-
-    public void carparkStuff() {
-        if (this.hasParkedFiretrucks()) {
-            respawnFiretruck();
-        }
     }
 
     private void respawnFiretruck() {
@@ -115,12 +121,7 @@ public class Firestation extends SimpleSprite {
     }
 
     public boolean hasParkedFiretrucks() {
-        for (Firetruck firetruck : this.parkedFireTrucks) {
-            if (firetruck.isAlive()) {
-                return true;
-            }
-        }
-        return false;
+        return getAliveFiretruckID() >= 0;
     }
 
     public void setActiveFireTruck(Firetruck fireTruck) {
@@ -151,15 +152,22 @@ public class Firestation extends SimpleSprite {
         }
     }
 
-    public boolean isCarparkOpen() {
-        return this.carparkScreen.isOpen();
+    public boolean isMenuOpen() {
+        return this.isMenuOpen;
     }
 
-    public void openCarpark(boolean bool) {
-        if (!bool) {
-            this.carparkStuff();
+    public void openMenu(boolean isOpen) {
+        this.isMenuOpen = isOpen;
+        if (!isOpen) respawnFiretruck();
+    }
+
+    private int getAliveFiretruckID() {
+        for (int i=0; i < parkedFireTrucks.size(); i++) {
+            if (parkedFireTrucks.get(i).isAlive()) {
+                return i;
+            }
         }
-        this.carparkScreen.openCarpark(bool);
+        return -1;
     }
 
     public void changeFiretruck(int index) {

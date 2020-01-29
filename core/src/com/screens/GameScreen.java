@@ -89,7 +89,7 @@ public class GameScreen implements Screen {
 
 		// Create an orthographic camera
 		this.camera = new OrthographicCamera();
-		this.camera.setToOrtho(false, SCREEN_WIDTH, SCREEN_HEIGHT);
+		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 		// Load the map, set the unit scale
 		this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
@@ -160,9 +160,6 @@ public class GameScreen implements Screen {
 		// Initialise firetrucks array and add firetrucks to it
 		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
 		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
-		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckOneProperties);
-		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckOneProperties);
-		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
@@ -180,8 +177,8 @@ public class GameScreen implements Screen {
 		this.zoomTarget = 1.2f;
 
 		// Start the camera near the firestation
-		this.camera.position.x = 80 * TILE_DIMS;
-		this.camera.position.y = 30 * TILE_DIMS;
+		this.camera.setToOrtho(false);
+		this.camera.position.set(firestation.getSpawnLocation().x, firestation.getSpawnLocation().y, 0);
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
@@ -240,7 +237,7 @@ public class GameScreen implements Screen {
 		batch.begin();
 
 		// Call the update function of the sprites to draw and update them
-		firestation.updateFiretrucks(this.batch, this.shapeRenderer, this.camera);
+		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
 
 		// Close layer
 		batch.end();
@@ -295,11 +292,10 @@ public class GameScreen implements Screen {
 		checkIfGameOver();
 
 		checkIfCarpark();
-
 	}
 
 	private void checkIfCarpark() {
-		if (this.firestation.isCarparkOpen()) {
+		if (this.firestation.isMenuOpen()) {
 			game.setScreen(this.firestation.getCarparkScreen());
 		}
 	}
@@ -349,8 +345,8 @@ public class GameScreen implements Screen {
 				projectilesToRemove.add(projectile);
 			}
 		}
-		// Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
-		// Allows multiple trucks to be in the radius and be repaired or refilled every second.
+		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
+		Allows multiple trucks to be in the radius and be repaired or refilled every second.*/
 		this.firestation.checkRepairRefill(this.time);
 
 	}
@@ -361,22 +357,6 @@ public class GameScreen implements Screen {
 	private void decreaseTime() {
 		if (this.time > 0) this.time -= 1;
 	}
-
-//	/**
-//	 * Set which firetruck the user is currently controlling.
-//	 *
-//	 * @param focusID The ID of the firetruck to focus on.
-//	 */
-
-//	public void setFireStationFocus(int focusID) {
-//		/* TODO we want this method to move the camera to the station when a fire truck dies,
-//		when it is there it should open the new station GUI */
-//		for (Firetruck firetruck : this.firestation.getFiretrucks()) {
-//			if (firetruck.getHealthBar().getCurrentAmount() > 0) {
-//				firetruck.setFocus(focusID);
-//			}
-//		}
-//	}
 
 	public void cameraZoom(float zoom) {
 		if (this.zoomTarget + zoom < 2f && this.zoomTarget + zoom > 0.8f) {

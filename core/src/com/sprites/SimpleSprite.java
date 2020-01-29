@@ -64,7 +64,7 @@ public class SimpleSprite extends Sprite {
         this.healthBar.update(batch);
         // Draw the sprite and update the healthbar
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
-            this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
+                this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
         // Decrease internal time
         if (this.internalTime > 0) {
             this.internalTime -= 1;

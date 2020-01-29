@@ -16,6 +16,7 @@ public class StatsLabel extends Label {
         super(text, skin);
         this.firetruck = firetruck;
         this.setColor(Color.BLUE);
+        this.scaleBy(100);
         this.setScale(100);
     }
 
