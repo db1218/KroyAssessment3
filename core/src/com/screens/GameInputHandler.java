@@ -27,10 +27,9 @@ public class GameInputHandler implements InputProcessor {
                 Gdx.app.exit();
                 System.exit(1);
                 break;
-            case Input.Keys.S:
-                GenerateGraph path = new GenerateGraph();
-                GraphPath p = path.generateRandomGraph(0);
-                break;
+            case Input.Keys.G:
+                Gdx.app.log("X", String.valueOf(gameScreen.getTruck().getCentreX()));
+                Gdx.app.log("Y", String.valueOf(gameScreen.getTruck().getCentreY()));
         }
         return true;
     }

@@ -1,6 +1,8 @@
 package com.screens;
 
 // LibGDX imports
+import com.PathFinding.Junction;
+import com.PathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -9,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
@@ -20,17 +23,19 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 // Java util imports
 import java.util.ArrayList;
 
 // Class imports
+import com.classes.*;
 import com.config.Constants;
 import com.kroy.Kroy;
-import com.classes.Firetruck;
-import com.classes.Projectile;
-import com.classes.Firestation;
-import com.classes.ETFortress;
 
 // Constants import
 import static com.config.Constants.*;
@@ -71,6 +76,12 @@ public class GameScreen implements Screen {
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
 	private Firestation firestation;
+
+	private Patrols patrol;
+
+	MapGraph mapGraph;
+	GraphPath<Junction> cityPath;
+	ArrayList<Junction> junctionsInMap;
 
 	private GameInputHandler gameInputHandler;
 
@@ -162,11 +173,17 @@ public class GameScreen implements Screen {
 		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
 		constructFireTruck(TruckColours.YELLOW, false, FiretruckOneProperties);
 
+
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, 1 * TILE_DIMS, 72.75f * TILE_DIMS));
+
+		this.junctionsInMap = new ArrayList<>();
+		mapGraph = new MapGraph();
+		populateMap();
+		this.patrol = new Patrols(mapGraph);
 	}
 
 	/**
@@ -222,7 +239,7 @@ public class GameScreen implements Screen {
 		} else if (this.camera.zoom + 0.005f < zoomTarget) {
 			this.camera.zoom += 0.005f;
 		}
-
+	//	this.camera.zoom = MAX_ZOOM;
 		this.camera.update();
 
 		// Set font scale
@@ -264,6 +281,7 @@ public class GameScreen implements Screen {
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
+
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score,
 				cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
@@ -279,7 +297,16 @@ public class GameScreen implements Screen {
 
 		// Finish rendering
 		batch.end();
+
 		if (DEBUG_ENABLED) shapeRenderer.end();
+
+		shapeRenderer.begin(ShapeType.Filled);
+		Circle circle = this.patrol.getCircle();
+		patrol.step();
+		shapeRenderer.circle(circle.x, circle.y, circle.radius);
+		Gdx.app.log("circle position x", String.valueOf(circle.x));
+		Gdx.app.log("circle position y", String.valueOf(circle.y));
+		shapeRenderer.end();
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
@@ -445,6 +472,77 @@ public class GameScreen implements Screen {
 
 	Firestation getFirestation() {
 		return this.firestation;
+	}
+
+	Firetruck getTruck() {
+		return this.firestation.getActiveFireTruck();
+	}
+
+	private void populateMap(){
+		Junction one = new Junction(4987, 572, "bottom right corner");
+		junctionsInMap.add(one);
+		Junction two = new Junction(3743, 572, "Bottom 4 junction R.H.S");
+		junctionsInMap.add(two);
+		Junction three = new Junction(2728, 572, " Bottom turn left to dead end");
+		junctionsInMap.add(three);
+		Junction four = new Junction(2538, 572, "Bottom turn up to four junction");
+		junctionsInMap.add(four);
+		Junction five = new Junction(1069, 572, "bottom 5 left 4 junction");
+		junctionsInMap.add(five);
+		Junction six = new Junction(3745, 1199, "bottom left of fire station");
+		junctionsInMap.add(six);
+		Junction seven = new Junction(4123, 1199, "bottom right of fire station");
+		junctionsInMap.add(seven);
+		Junction eight = new Junction(4128, 1910, "Top right of fire station");
+		junctionsInMap.add(eight);
+		Junction nine = new Junction(3738, 1918, "Top left of fire station");
+		junctionsInMap.add(nine);
+		Junction ten = new Junction(3412, 1920, "Across bridge turn up to tower");
+		junctionsInMap.add(ten);
+		Junction eleven = new Junction(2544, 1920, "4 junction bottom right of tower");
+		junctionsInMap.add(eleven);
+		Junction twelve = new Junction(2160, 1959, "to left of 4 junction bottom right of tower");
+		junctionsInMap.add(twelve);
+
+		mapGraph.addJunction(one);
+		mapGraph.addJunction(two);
+		mapGraph.addJunction(three);
+		mapGraph.addJunction(four);
+		mapGraph.addJunction(five);
+		mapGraph.addJunction(six);
+		mapGraph.addJunction(seven);
+		mapGraph.addJunction(eight);
+		mapGraph.addJunction(nine);
+		mapGraph.addJunction(ten);
+		mapGraph.addJunction(eleven);
+		mapGraph.addJunction(twelve);
+
+		mapGraph.connectJunctions(one, two);
+		mapGraph.connectJunctions(two, one);
+		mapGraph.connectJunctions(two, six);
+		mapGraph.connectJunctions(two, three);
+		mapGraph.connectJunctions(three, two);
+		mapGraph.connectJunctions(three, four);
+		mapGraph.connectJunctions(four, three);
+		mapGraph.connectJunctions(four, five);
+		mapGraph.connectJunctions(four, eleven);
+		mapGraph.connectJunctions(five, four);
+		mapGraph.connectJunctions(eleven, four);
+		mapGraph.connectJunctions(eleven, ten);
+		mapGraph.connectJunctions(eleven, twelve);
+		mapGraph.connectJunctions(twelve, eleven);
+		mapGraph.connectJunctions(ten, eleven);
+		mapGraph.connectJunctions(ten, nine);
+		mapGraph.connectJunctions(nine, ten);
+		mapGraph.connectJunctions(nine, eight);
+		mapGraph.connectJunctions(nine, six);
+		mapGraph.connectJunctions(eight, nine);
+		mapGraph.connectJunctions(eight, seven);
+		mapGraph.connectJunctions(seven, eight);
+		mapGraph.connectJunctions(seven, six);
+		mapGraph.connectJunctions(six, nine);
+		mapGraph.connectJunctions(six, seven);
+		mapGraph.connectJunctions(six, two);
 	}
 
 }
