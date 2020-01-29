@@ -34,7 +34,8 @@ public class MapGraph implements IndexedGraph<Junction> {
     }
 
     public GraphPath<Junction> findPath(Junction startJunction, Junction goalJunction){
-        GraphPath<Junction> junctionPath = new DefaultGraphPath<>();
+        //GraphPath<Junction> junctionPath = new DefaultGraphPath<>();
+        GraphPath<Junction> junctionPath = new DefaultGraphPath<Junction>();
         new IndexedAStarPathFinder<>(this).searchNodePath(startJunction, goalJunction, mapHeuristic, junctionPath);
         return junctionPath;
     }

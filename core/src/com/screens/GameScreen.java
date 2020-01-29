@@ -183,7 +183,7 @@ public class GameScreen implements Screen {
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
 		populateMap();
-		this.patrol = new Patrols(mapGraph);
+		this.patrol = new Patrols(mapGraph.getJunctions().random(), mapGraph);
 	}
 
 	/**
@@ -480,29 +480,29 @@ public class GameScreen implements Screen {
 
 	private void populateMap(){
 		Junction one = new Junction(4987, 572, "bottom right corner");
-		junctionsInMap.add(one);
+	//	junctionsInMap.add(one);
 		Junction two = new Junction(3743, 572, "Bottom 4 junction R.H.S");
-		junctionsInMap.add(two);
+	//	junctionsInMap.add(two);
 		Junction three = new Junction(2728, 572, " Bottom turn left to dead end");
-		junctionsInMap.add(three);
+	//	junctionsInMap.add(three);
 		Junction four = new Junction(2538, 572, "Bottom turn up to four junction");
-		junctionsInMap.add(four);
+	//	junctionsInMap.add(four);
 		Junction five = new Junction(1069, 572, "bottom 5 left 4 junction");
-		junctionsInMap.add(five);
+	//	junctionsInMap.add(five);
 		Junction six = new Junction(3745, 1199, "bottom left of fire station");
-		junctionsInMap.add(six);
+	//	junctionsInMap.add(six);
 		Junction seven = new Junction(4123, 1199, "bottom right of fire station");
-		junctionsInMap.add(seven);
+	//	junctionsInMap.add(seven);
 		Junction eight = new Junction(4128, 1910, "Top right of fire station");
-		junctionsInMap.add(eight);
+	//	junctionsInMap.add(eight);
 		Junction nine = new Junction(3738, 1918, "Top left of fire station");
-		junctionsInMap.add(nine);
+	//	junctionsInMap.add(nine);
 		Junction ten = new Junction(3412, 1920, "Across bridge turn up to tower");
-		junctionsInMap.add(ten);
+	//	junctionsInMap.add(ten);
 		Junction eleven = new Junction(2544, 1920, "4 junction bottom right of tower");
-		junctionsInMap.add(eleven);
+	//	junctionsInMap.add(eleven);
 		Junction twelve = new Junction(2160, 1959, "to left of 4 junction bottom right of tower");
-		junctionsInMap.add(twelve);
+	//	junctionsInMap.add(twelve);
 
 		mapGraph.addJunction(one);
 		mapGraph.addJunction(two);
@@ -518,7 +518,7 @@ public class GameScreen implements Screen {
 		mapGraph.addJunction(twelve);
 
 		mapGraph.connectJunctions(one, two);
-		mapGraph.connectJunctions(two, one);
+	 	mapGraph.connectJunctions(two, one);
 		mapGraph.connectJunctions(two, six);
 		mapGraph.connectJunctions(two, three);
 		mapGraph.connectJunctions(three, two);
