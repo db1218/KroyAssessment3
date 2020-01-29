@@ -151,6 +151,7 @@ public class GameScreen implements Screen {
 
 		// Initialise textures to use for spites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
+		Texture firestationDestroyedTexture = new Texture("MapAssets/UniqueBuildings/firestation_destroyed.png");
 		Texture cliffordsTowerTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower.png");
 		Texture cliffordsTowerWetTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower_wet.png");
 		Texture railstationTexture = new Texture("MapAssets/UniqueBuildings/railstation.png");
@@ -170,7 +171,7 @@ public class GameScreen implements Screen {
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation
-		this.firestation = new Firestation(firestationTexture, 77 * TILE_DIMS, 36 * TILE_DIMS, game, this);
+		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77 * TILE_DIMS, 36 * TILE_DIMS, game, this);
 
 		// Initialise firetrucks array and add firetrucks to it
 		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
