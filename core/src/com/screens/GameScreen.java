@@ -171,7 +171,7 @@ public class GameScreen implements Screen {
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation
-		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77 * TILE_DIMS, 36 * TILE_DIMS, game, this);
+		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS, game, this);
 
 		// Initialise firetrucks array and add firetrucks to it
 		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
