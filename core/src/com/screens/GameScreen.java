@@ -1,14 +1,19 @@
 package com.screens;
 
 // LibGDX imports
+import com.PathFinding.Junction;
+import com.PathFinding.MapGraph;
+import com.PathFinding.Road;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
@@ -20,18 +25,19 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.ai.pfa.GraphPath;
+import com.badlogic.gdx.math.Vector2;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 // Java util imports
 import java.util.ArrayList;
 
 // Class imports
+import com.classes.*;
 import com.config.Constants;
 import com.kroy.Kroy;
-import com.classes.Firetruck;
-import com.classes.Projectile;
-import com.classes.Firestation;
-import com.classes.ETFortress;
-import com.sprites.MovementSprite;
 
 // Constants import
 import static com.config.Constants.*;
@@ -74,6 +80,12 @@ public class GameScreen implements Screen {
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
 	private Firestation firestation;
+
+	private Patrols patrol;
+
+	MapGraph mapGraph;
+	GraphPath<Junction> cityPath;
+	ArrayList<Junction> junctionsInMap;
 
 	private GameInputHandler gameInputHandler;
 
@@ -165,11 +177,17 @@ public class GameScreen implements Screen {
 		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
 		constructFireTruck(TruckColours.YELLOW, false, FiretruckOneProperties);
 
+
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, 1 * TILE_DIMS, 72.75f * TILE_DIMS));
+
+		this.junctionsInMap = new ArrayList<>();
+		mapGraph = new MapGraph();
+		populateMap();
+		this.patrol = new Patrols(mapGraph.getJunctions().random(), mapGraph);
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -236,7 +254,7 @@ public class GameScreen implements Screen {
 		} else if (this.camera.zoom + 0.005f < zoomTarget) {
 			this.camera.zoom += 0.005f;
 		}
-
+	//	this.camera.zoom = MAX_ZOOM;
 		this.camera.update();
 
 		// Set font scale
@@ -278,6 +296,7 @@ public class GameScreen implements Screen {
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
+
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score,
 				cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
@@ -293,7 +312,29 @@ public class GameScreen implements Screen {
 
 		// Finish rendering
 		batch.end();
+
 		if (DEBUG_ENABLED) shapeRenderer.end();
+
+		shapeRenderer.begin(ShapeType.Filled);
+
+		if(DEBUG_ENABLED) { // Draws all the nodes and the paths between them
+			shapeRenderer.setColor(Color.RED);
+			for (Road road : mapGraph.getRoads()) {
+				shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
+				//shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
+			}
+			for (Junction junction : mapGraph.getJunctions()) {
+				shapeRenderer.circle(junction.getX(), junction.getY(), 30);
+			}
+		}
+		shapeRenderer.setColor(Color.WHITE);
+
+		Circle circle = this.patrol.getCircle();
+		patrol.step();
+		shapeRenderer.circle(circle.x, circle.y, circle.radius);
+	//	Gdx.app.log("circle position x", String.valueOf(circle.x));
+	//	Gdx.app.log("circle position y", String.valueOf(circle.y));
+		shapeRenderer.end();
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
@@ -362,7 +403,7 @@ public class GameScreen implements Screen {
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
 		Allows multiple trucks to be in the radius and be repaired or refilled every second.*/
-		this.firestation.checkRepairRefill(this.time);
+		this.firestation.checkRepairRefill(this.time, false);
 
 	}
 
@@ -459,6 +500,293 @@ public class GameScreen implements Screen {
 
 	Firestation getFirestation() {
 		return this.firestation;
+	}
+
+	Firetruck getTruck() {
+		return this.firestation.getActiveFireTruck();
+	}
+
+	private void populateMap(){
+		Junction one = new Junction(4987, 572, "bottom right corner");
+	//	junctionsInMap.add(one);
+		Junction two = new Junction(3743, 572, "Bottom 4 junction R.H.S");
+	//	junctionsInMap.add(two);
+		Junction three = new Junction(2728, 572, " Bottom turn left to dead end");
+	//	junctionsInMap.add(three);
+		Junction four = new Junction(2538, 572, "Bottom turn up to four junction");
+	//	junctionsInMap.add(four);
+		Junction five = new Junction(1069, 572, "bottom 5 left 4 junction");
+	//	junctionsInMap.add(five);
+		Junction six = new Junction(3745, 1199, "bottom left of fire station");
+	//	junctionsInMap.add(six);
+		Junction seven = new Junction(4123, 1199, "bottom right of fire station");
+	//	junctionsInMap.add(seven);
+		Junction eight = new Junction(4128, 1910, "Top right of fire station");
+	//	junctionsInMap.add(eight);
+		Junction nine = new Junction(3738, 1918, "Top left of fire station");
+	//	junctionsInMap.add(nine);
+		Junction ten = new Junction(3412, 1920, "Across bridge turn up to tower");
+	//	junctionsInMap.add(ten);
+		Junction eleven = new Junction(3406, 2204, "First corner to fortress coming up from bridge");
+	//	junctionsInMap.add(eleven);
+		Junction twelve = new Junction(3223, 2223, "second corner to attack fortress after coming up from bridge");
+	//	junctionsInMap.add(twelve);
+		Junction thirteen = new Junction(3256, 2787, "Bottom left of island");
+		Junction fourteen = new Junction (3885, 2784, "Bottom right of island");
+		Junction fifteen = new Junction (3889, 3018, "Top right of island");
+		Junction sixteen = new Junction (3274, 3021, "Top left of island");
+		Junction seventeen = new Junction (4129, 2100, "T junction top right of fire station");
+		Junction eighteen = new Junction (4554, 2106, "First bend after right from t-junction top right of station");
+		Junction nineteen = new Junction (4558, 2333, "Second bend after right from t-juncion top right of fire station");
+		Junction twenty = new Junction (4991, 2345, "Mid 4 junction on right hand side");
+		Junction twentyOne = new Junction (3887, 2111, "left of fortress");
+		Junction twentyTwo = new Junction(2546, 1920, "4 junction mid left hand side");
+		Junction twentyThree = new Junction(2546, 3016, "Up from 4 junction mid left hand side");
+		Junction twentyFour = new Junction(2785, 3016, "up and right from 4 junction mid left hand side");
+		Junction twentyFive = new Junction (2789, 2794, "Turn left from bottom left of island");
+		Junction twentySix = new Junction(2162, 1964, "Turn left from 4 junction mid left hand side");
+		Junction twentySeven = new Junction(2162, 2205, "Bottom right of block on left hand side");
+		Junction twentyEight = new Junction (2162, 3165, "Top right of block on left hand side");
+		Junction twentyNine = new Junction (1149, 3168, "right of fork on left hand side");
+		Junction thirty = new Junction (958, 3168, "Middle of fork on left hand side");
+		Junction thirtyOne = new Junction (718, 3168, "Right of fork on left hand side");
+		Junction thirtyTwo = new Junction (718, 4203, "Top left hand of map");
+		Junction thirtyThree = new Junction (966, 2210, "Bottom left of block on left hand side");
+		Junction thirtyFour = new Junction (1052, 2207, "Up from bottom right 4 junction");
+		Junction thirtyFive = new Junction (1157, 4261, "Left from top right 4 junction");
+		Junction thirtySix = new Junction (1921, 4270, "Top right 4 junction");
+		Junction thirtySeven = new Junction (1921, 3592, "Bottom from top 4 junction");
+		Junction thirtyEight = new Junction (2161, 3592, "Middle junction between 37 and 39, top left");
+		Junction thirtyNine = new Junction (3037, 3590, "2nd bottom from bottom left of fortress");
+		Junction forty = new Junction (3026, 3739, "Bottom left of fortress");
+		Junction fortyOne = new Junction (3077, 3025, "2nd left from top left of island");
+		Junction fortyTwo = new Junction (4220, 3736, "Bottom right of fortress left");
+		Junction fortyThree = new Junction (4228, 4502, "Right of fortress");
+		Junction fortyFour = new Junction (4228, 4930, "Top right of fortress");
+		Junction fortyFive = new Junction (3030, 4947, "Top 4 junction");
+		Junction fortySix = new Junction (2439, 4948, "Left of mid top 4 junction");
+		Junction fortySeven = new Junction (2450, 4278, "Right of the top left mid 4 junction");
+		Junction fortyEight = new Junction (4991, 4506, "Top right 4 junction");
+
+		mapGraph.addJunction(one);
+		mapGraph.addJunction(two);
+		mapGraph.addJunction(three);
+		mapGraph.addJunction(four);
+		mapGraph.addJunction(five);
+		mapGraph.addJunction(six);
+		mapGraph.addJunction(seven);
+		mapGraph.addJunction(eight);
+		mapGraph.addJunction(nine);
+		mapGraph.addJunction(ten);
+		mapGraph.addJunction(eleven);
+		mapGraph.addJunction(twelve);
+		mapGraph.addJunction(thirteen);
+		mapGraph.addJunction(fourteen);
+		mapGraph.addJunction(fifteen);
+		mapGraph.addJunction(sixteen);
+		mapGraph.addJunction(seventeen);
+		mapGraph.addJunction(eighteen);
+		mapGraph.addJunction(nineteen);
+		mapGraph.addJunction(twenty);
+		mapGraph.addJunction(twentyOne);
+		mapGraph.addJunction(twentyTwo);
+		mapGraph.addJunction(twentyThree);
+		mapGraph.addJunction(twentyFour);
+		mapGraph.addJunction(twentyFive);
+		mapGraph.addJunction(twentySix);
+		mapGraph.addJunction(twentySeven);
+		mapGraph.addJunction(twentyEight);
+		mapGraph.addJunction(twentyNine);
+		mapGraph.addJunction(thirty);
+		mapGraph.addJunction(thirtyOne);
+		mapGraph.addJunction(thirtyTwo);
+		mapGraph.addJunction(thirtyThree);
+		mapGraph.addJunction(thirtyFour);
+		mapGraph.addJunction(thirtyFive);
+		mapGraph.addJunction(thirtySix);
+		mapGraph.addJunction(thirtySeven);
+		mapGraph.addJunction(thirtyEight);
+		mapGraph.addJunction(thirtyNine);
+		mapGraph.addJunction(forty);
+		mapGraph.addJunction(fortyOne);
+		mapGraph.addJunction(fortyTwo);
+		mapGraph.addJunction(fortyThree);
+		mapGraph.addJunction(fortyFour);
+		mapGraph.addJunction(fortyFive);
+		mapGraph.addJunction(fortySix);
+		mapGraph.addJunction(fortySeven);
+		mapGraph.addJunction(fortyEight);
+
+		mapGraph.connectJunctions(one, two);
+		mapGraph.connectJunctions(one, twenty);
+
+	 	mapGraph.connectJunctions(two, one);
+		mapGraph.connectJunctions(two, six);
+		mapGraph.connectJunctions(two, three);
+
+		mapGraph.connectJunctions(three, two);
+		mapGraph.connectJunctions(three, four);
+
+		mapGraph.connectJunctions(four, three);
+		mapGraph.connectJunctions(four, five);
+		mapGraph.connectJunctions(four, twentyTwo);
+
+		mapGraph.connectJunctions(five, four);
+		mapGraph.connectJunctions(five, thirtyFour);
+
+		mapGraph.connectJunctions(six, two);
+		mapGraph.connectJunctions(six, seven);
+		mapGraph.connectJunctions(six, nine);
+
+		mapGraph.connectJunctions(seven, six);
+		mapGraph.connectJunctions(seven, eight);
+
+		mapGraph.connectJunctions(eight, seven);
+		mapGraph.connectJunctions(eight, nine);
+		mapGraph.connectJunctions(eight, seventeen);
+
+		mapGraph.connectJunctions(nine, six);
+		mapGraph.connectJunctions(nine, eight);
+		mapGraph.connectJunctions(nine, ten);
+
+		mapGraph.connectJunctions(ten, nine);
+		mapGraph.connectJunctions(ten, eleven);
+		mapGraph.connectJunctions(ten, twentyTwo);
+
+		mapGraph.connectJunctions(eleven, ten);
+		mapGraph.connectJunctions(eleven, twelve);
+
+		mapGraph.connectJunctions(twelve, eleven);
+		mapGraph.connectJunctions(twelve, thirteen);
+
+		mapGraph.connectJunctions(thirteen, fourteen);
+		mapGraph.connectJunctions(thirteen, sixteen);
+		mapGraph.connectJunctions(thirteen, twelve);
+		mapGraph.connectJunctions(thirteen, twentyFive);
+
+		mapGraph.connectJunctions(fourteen, thirteen);
+		mapGraph.connectJunctions(fourteen, fifteen);
+		mapGraph.connectJunctions(fourteen, twentyOne);
+
+		mapGraph.connectJunctions(fifteen, fourteen);
+		mapGraph.connectJunctions(fifteen, sixteen);
+
+		mapGraph.connectJunctions(sixteen, thirteen);
+		mapGraph.connectJunctions(sixteen, fifteen);
+		mapGraph.connectJunctions(sixteen, fortyOne);
+
+		mapGraph.connectJunctions(seventeen, eight);
+		mapGraph.connectJunctions(seventeen, eighteen);
+		mapGraph.connectJunctions(seventeen, twentyOne);
+
+		mapGraph.connectJunctions(eighteen, seventeen);
+		mapGraph.connectJunctions(eighteen, nineteen);
+
+		mapGraph.connectJunctions(nineteen, eighteen);
+		mapGraph.connectJunctions(nineteen, twenty);
+
+		mapGraph.connectJunctions(twenty, one);
+		mapGraph.connectJunctions(twenty, nineteen);
+		mapGraph.connectJunctions(twenty, fortyEight);
+
+		mapGraph.connectJunctions(twentyOne, fourteen);
+		mapGraph.connectJunctions(twentyOne, seventeen);
+
+		mapGraph.connectJunctions(twentyTwo, four);
+		mapGraph.connectJunctions(twentyTwo, ten);
+		mapGraph.connectJunctions(twentyTwo, twentyThree);
+		mapGraph.connectJunctions(twentyTwo, twentySix);
+
+		mapGraph.connectJunctions(twentyThree, twentyTwo);
+		mapGraph.connectJunctions(twentyThree, twentyFour);
+
+		mapGraph.connectJunctions(twentyFour, twentyThree);
+		mapGraph.connectJunctions(twentyFour, twentyFive);
+
+		mapGraph.connectJunctions(twentyFive, twentyFour);
+		mapGraph.connectJunctions(twentyFive, thirteen);
+
+		mapGraph.connectJunctions(twentySix, twentyTwo);
+		mapGraph.connectJunctions(twentySix, twentySeven);
+
+		mapGraph.connectJunctions(twentySeven, twentySix);
+		mapGraph.connectJunctions(twentySeven, twentyEight);
+		mapGraph.connectJunctions(twentySeven, thirtyFour);
+
+		mapGraph.connectJunctions(twentyEight, twentySeven);
+		mapGraph.connectJunctions(twentyEight, twentyNine);
+		mapGraph.connectJunctions(twentyEight, thirtyEight);
+
+		mapGraph.connectJunctions(twentyNine, twentyEight);
+		mapGraph.connectJunctions(twentyNine, thirty);
+
+		mapGraph.connectJunctions(thirty, twentyNine);
+		mapGraph.connectJunctions(thirty, thirtyThree);
+		mapGraph.connectJunctions(thirty, thirtyOne);
+
+		mapGraph.connectJunctions(thirtyOne, thirty);
+		mapGraph.connectJunctions(thirtyOne, thirtyTwo);
+
+		mapGraph.connectJunctions(thirtyTwo, thirtyOne);
+
+		mapGraph.connectJunctions(thirtyThree, thirty);
+		mapGraph.connectJunctions(thirtyThree, thirtyFour);
+
+		mapGraph.connectJunctions(thirtyFour, thirtyThree);
+		mapGraph.connectJunctions(thirtyFour, twentySeven);
+		mapGraph.connectJunctions(thirtyFour, five);
+
+		mapGraph.connectJunctions(thirtyFive, twentyNine);
+		mapGraph.connectJunctions(thirtyFive, thirtySix);
+
+		mapGraph.connectJunctions(thirtySix, thirtyFive);
+		mapGraph.connectJunctions(thirtySix, thirtySeven);
+		mapGraph.connectJunctions(thirtySix, fortySeven);
+
+		mapGraph.connectJunctions(thirtySeven, thirtySix);
+		mapGraph.connectJunctions(thirtySeven, thirtyEight);
+
+		mapGraph.connectJunctions(thirtyEight, thirtySeven);
+		mapGraph.connectJunctions(thirtyEight, twentyEight);
+		mapGraph.connectJunctions(thirtyEight, thirtyNine);
+
+		mapGraph.connectJunctions(thirtyNine, forty);
+		mapGraph.connectJunctions(thirtyNine, thirtyEight);
+		mapGraph.connectJunctions(thirtyNine, fortyOne);
+
+		mapGraph.connectJunctions(forty, thirtyNine );
+		mapGraph.connectJunctions(forty, fortyTwo);
+		mapGraph.connectJunctions(forty, fortyFive);
+
+		mapGraph.connectJunctions(fortyOne, sixteen);
+		mapGraph.connectJunctions(fortyOne, thirtyNine);
+
+		mapGraph.connectJunctions(fortyTwo, forty);
+		mapGraph.connectJunctions(fortyTwo, fortyThree);
+
+		mapGraph.connectJunctions(fortyThree, fortyTwo);
+		mapGraph.connectJunctions(fortyThree, fortyFour);
+		mapGraph.connectJunctions(fortyThree, fortyEight);
+
+		mapGraph.connectJunctions(fortyFour, fortyThree);
+		mapGraph.connectJunctions(fortyFour, fortyFive);
+
+		mapGraph.connectJunctions(fortyFive, forty);
+		mapGraph.connectJunctions(fortyFive, fortyFour);
+		mapGraph.connectJunctions(fortyFive, fortySix);
+
+		mapGraph.connectJunctions(fortySix, fortyFive);
+		mapGraph.connectJunctions(fortySix, fortySeven);
+
+		mapGraph.connectJunctions(fortySeven, fortySix);
+		mapGraph.connectJunctions(fortySeven, thirtySix);
+
+		mapGraph.connectJunctions(fortyEight, twenty);
+		mapGraph.connectJunctions(fortyEight, fortyThree);
+	}
+
+	public int getTime() {
+		return this.time;
 	}
 
 }

@@ -1,14 +1,13 @@
 package com.screens;
 
-import com.PathFinding.GenerateGraph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.ai.pfa.GraphPath;
 
 public class GameInputHandler implements InputProcessor {
 
     private GameScreen gameScreen;
+    int i = 46;
 
     public GameInputHandler(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -27,10 +26,11 @@ public class GameInputHandler implements InputProcessor {
                 Gdx.app.exit();
                 System.exit(1);
                 break;
-            case Input.Keys.S:
-                GenerateGraph path = new GenerateGraph();
-                GraphPath p = path.generateRandomGraph(0);
-                break;
+            case Input.Keys.G:
+                Gdx.app.log("int", String.valueOf(i));
+                Gdx.app.log("X", String.valueOf(gameScreen.getTruck().getCentreX()));
+                Gdx.app.log("Y", String.valueOf(gameScreen.getTruck().getCentreY()));
+                i++;
         }
         return true;
     }

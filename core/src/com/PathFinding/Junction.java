@@ -6,7 +6,6 @@ public class Junction {
     float x;
     float y;
     String name;
-    Vector2 location;
 
     int index;
 
@@ -14,11 +13,26 @@ public class Junction {
         this.x = x;
         this.y = y;
         this.name = name;
-        this.location = new Vector2(x,y);
     }
 
     public void setIndex(int index){
         this.index = index;
+    }
+
+    public float getX(){
+        return this.x;
+    }
+
+    public float getY(){
+        return this.y;
+    }
+
+    public Vector2 getVector(){
+        return new Vector2(x,y);
+    }
+
+    public String getName(){
+        return this.name;
     }
 
 }

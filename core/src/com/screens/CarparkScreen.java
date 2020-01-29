@@ -2,6 +2,7 @@ package com.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -15,6 +16,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.FitViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Input;
+import com.CustomActors.BackgroundBox;
 import com.classes.Firestation;
 import com.classes.Firetruck;
 import com.kroy.Kroy;
@@ -33,11 +35,13 @@ public class CarparkScreen implements Screen {
     private ShapeRenderer shapeRenderer;
 
     private Firestation firestation;
+    private Firetruck activeFiretruck;
     private Stage stage;
 
     private Table mainTable;
     private Table previewTable;
     private TextButton quitButton;
+    private Label activeStats;
 
     public CarparkScreen(Firestation firestation, Kroy game, GameScreen gameScreen) {
         this.game = game;
@@ -76,9 +80,9 @@ public class CarparkScreen implements Screen {
         stage.setDebugAll(false);
         Gdx.input.setInputProcessor(stage);
 
-        Firetruck activeFiretruck = firestation.getActiveFireTruck();
+        activeFiretruck = firestation.getActiveFireTruck();
 
-        Label activeStats = new Label(activeFiretruck.getColour() + " fire truck's Stats\n" +
+        activeStats = new Label(activeFiretruck.getColour() + " fire truck's Stats\n" +
                 "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
                 "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() +
                 "\n" +
@@ -130,6 +134,7 @@ public class CarparkScreen implements Screen {
         hg.expand();
         hg.center();
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
+            Stack stack = new Stack();
             Button temp1 = selectImageButtons.get(i);
             temp1.setSize(200, 100);
             TextButton temp2 = selectTextButtons.get(i);
@@ -137,14 +142,15 @@ public class CarparkScreen implements Screen {
             vg.center();
             vg.pad(40);
             vg.addActor(temp1);
-            vg.addActor(temp2);
             vg.addActor(selectTextButtons.get(i));
-            hg.addActor(vg);
+            stack.addActor(new BackgroundBox(200, 100, Color.DARK_GRAY));
+            stack.addActor(vg);
+            hg.addActor(stack);
         }
         mainTable.add(hg).expand().fill();
 
         // close button
-        mainTable.row().padBottom(80).expandX();
+        mainTable.row().padBottom(80).expand();
         mainTable.add(quitButton).height(40).width(150).center();
 
         stage.addActor(mainTable);
@@ -194,14 +200,26 @@ public class CarparkScreen implements Screen {
 
     public void render(float delta) {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
-//        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
+        Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
         shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
         shapeRenderer.setColor(new Color(0, 0, 0, 0.1f));
         shapeRenderer.rect(40, 40, Gdx.graphics.getWidth()-80, Gdx.graphics.getHeight()-80);
         shapeRenderer.end();
-//        Gdx.gl.glDisable(GL20.GL_BLEND);
+        Gdx.gl.glDisable(GL20.GL_BLEND);
         stage.act(delta);
         stage.draw();
+        this.firestation.decreaseInternalTime();
+        this.firestation.checkRepairRefill(gameScreen.getTime(), true);
+        this.updateStats();
+    }
+
+    private void updateStats() {
+        activeStats.setText(activeFiretruck.getColour() + " fire truck's Stats\n" +
+                "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
+                "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() +
+                "\n" +
+                "\nMaximum Speed: " + activeFiretruck.getMaxSpeed() +
+                "\nRange: " + activeFiretruck.getRange());
     }
 
     /**

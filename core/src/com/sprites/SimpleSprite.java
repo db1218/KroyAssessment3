@@ -15,7 +15,7 @@ import com.classes.ResourceBar;
 
 /**
  * Simplify and add functionality to the sprite object provided by libGDX.
- * 
+ *
  * @author Archie
  * @since 17/12/2019
  */
@@ -30,7 +30,7 @@ public class SimpleSprite extends Sprite {
     /**
      * Constructor that creates a sprite at a given position using a given texture..
      * Creates a sprite at (0,0) using a given texture.
-     * 
+     *
      * @param spriteTexture  The texture the sprite should use.
      */
     public SimpleSprite(Texture spriteTexture) {
@@ -67,10 +67,15 @@ public class SimpleSprite extends Sprite {
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
                 this.getWidth(), this.getHeight(), 1, 1, this.getRotation(), true);
         // Decrease internal time
+        this.decreaseInternalTime();
+    }
+
+    public void decreaseInternalTime() {
         if (this.internalTime > 0) {
             this.internalTime -= 1;
         } else if (this.getInternalTime() <= 0) {
             this.internalTime = 150;
+           // System.out.println("reset internal time");
         }
     }
 
@@ -78,7 +83,7 @@ public class SimpleSprite extends Sprite {
      * Enables drawing of the hitbox to it can be seen. 
      * @param renderer   The shape renderer to draw onto.
      */
-    public void drawDebug(ShapeRenderer renderer) { 
+    public void drawDebug(ShapeRenderer renderer) {
         renderer.polygon(this.hitBox.getTransformedVertices());
     }
 
@@ -173,7 +178,7 @@ public class SimpleSprite extends Sprite {
      */
     public float getCentreX() {
         // Add half sprite width to get centre
-        return this.getX() + this.getWidth() / 2; 
+        return this.getX() + this.getWidth() / 2;
     }
 
     /**
