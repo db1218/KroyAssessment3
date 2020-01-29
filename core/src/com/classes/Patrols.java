@@ -8,6 +8,7 @@ import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 
+
 public class Patrols {
 
     MapGraph mapGraph;

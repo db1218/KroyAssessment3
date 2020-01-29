@@ -60,4 +60,6 @@ public class MapGraph implements IndexedGraph<Junction> {
     public Array<Junction> getJunctions(){
         return this.junctions;
     }
+
+    public Array<Road> getRoads() {return this.roads; }
 }

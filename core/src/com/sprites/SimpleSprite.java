@@ -74,7 +74,7 @@ public class SimpleSprite extends Sprite {
             this.internalTime -= 1;
         } else if (this.getInternalTime() <= 0) {
             this.internalTime = 150;
-            System.out.println("reset internal time");
+           // System.out.println("reset internal time");
         }
     }
 

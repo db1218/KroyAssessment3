@@ -79,8 +79,8 @@ public class Firestation extends SimpleSprite {
     public void repairRefill(Firetruck firetruck) {
         System.out.println(this.getInternalTime());
         if (this.getInternalTime() % 10 == 0) {
-            System.out.println("refill! =================");
-            System.out.println(this.getInternalTime());
+         //   System.out.println("refill! =================");
+         //   System.out.println(this.getInternalTime());
             firetruck.getHealthBar().addResourceAmount((int) firetruck.getHealthBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
             firetruck.getWaterBar().addResourceAmount((int) firetruck.getWaterBar().getMaxAmount() / FIRETRUCK_REPAIR_SPEED);
         }

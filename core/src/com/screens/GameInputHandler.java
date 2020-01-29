@@ -7,6 +7,7 @@ import com.badlogic.gdx.InputProcessor;
 public class GameInputHandler implements InputProcessor {
 
     private GameScreen gameScreen;
+    int i = 46;
 
     public GameInputHandler(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -26,8 +27,10 @@ public class GameInputHandler implements InputProcessor {
                 System.exit(1);
                 break;
             case Input.Keys.G:
+                Gdx.app.log("int", String.valueOf(i));
                 Gdx.app.log("X", String.valueOf(gameScreen.getTruck().getCentreX()));
                 Gdx.app.log("Y", String.valueOf(gameScreen.getTruck().getCentreY()));
+                i++;
         }
         return true;
     }
