@@ -342,7 +342,7 @@ public class GameScreen implements Screen {
 		this.projectiles.removeAll(this.projectilesToRemove);
 
 		// Check for any collisions
-		//checkForCollisions();
+		checkForCollisions();
 
 		// Check if the game should end
 		checkIfGameOver();
