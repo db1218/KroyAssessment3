@@ -23,7 +23,6 @@ public class PatrolMovementSprite extends SimpleSprite {
 
     float speed;
     Junction previousJunction;
-    Junction past;
     Queue<Junction> pathQueue;
     ArrayList<Texture> textureSlices;
 
@@ -57,7 +56,7 @@ public class PatrolMovementSprite extends SimpleSprite {
         for (int i = 0; i < junctionPath.getCount(); i++){
             pathQueue.addLast(junctionPath.get(i));
         }
-
+        // updateRotation();
         setSpeedToNextCity();
     }
 
@@ -91,7 +90,6 @@ public class PatrolMovementSprite extends SimpleSprite {
     }
 
     private void reachNextJunction() {
-        this.past = this.previousJunction;
         Junction nextJunction = pathQueue.first();
 
         this.x = nextJunction.getX();

@@ -83,11 +83,6 @@ public class MovementSprite extends SimpleSprite {
         if (this.rotationLockTime >= 0) this.rotationLockTime -= 1; 
     }
 
-    public void update(Batch batch, Boolean patrol){
-
-        super.update(batch);
-    }
-
     /**
      * Increases the speed of the sprite in the given direction.
      * @param direction The direction to accelerate in.
