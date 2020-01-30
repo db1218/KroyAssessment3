@@ -270,9 +270,6 @@ public class GameScreen implements Screen {
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		batch.begin();
 
-		// Call the update function of the sprites to draw and update them
-		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
-
 		// Close layer
 		batch.end();
 		if (DEBUG_ENABLED) shapeRenderer.end();
@@ -294,6 +291,8 @@ public class GameScreen implements Screen {
 			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
 			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
 		}
+		// Call the update function of the sprites to draw and update them
+		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
 		this.firestation.update(batch);
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
