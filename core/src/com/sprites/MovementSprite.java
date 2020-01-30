@@ -178,9 +178,11 @@ public class MovementSprite extends SimpleSprite {
      */
     private int collidesWithBlockedTile(TiledMapTileLayer layer) {
         int collisions = 0;
-        for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
-            if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
-                collisions++;
+        if (layer != null) {
+            for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
+                if (layer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))) != null) {
+                    collisions++;
+                }
             }
         }
         return collisions;

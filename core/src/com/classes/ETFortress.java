@@ -113,7 +113,7 @@ public class ETFortress extends SimpleSprite {
      */
     public boolean canShootProjectile() {
         if (this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0) {
-            //return true;
+            return true;
         }
         return false;
     }

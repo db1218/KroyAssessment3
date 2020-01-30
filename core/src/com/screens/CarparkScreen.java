@@ -21,6 +21,7 @@ import com.badlogic.gdx.Input;
 import com.CustomActors.BackgroundBox;
 import com.classes.Firestation;
 import com.classes.Firetruck;
+import com.config.Constants;
 import com.kroy.Kroy;
 
 import java.util.ArrayList;
@@ -80,7 +81,7 @@ public class CarparkScreen implements Screen {
      */
     @Override
     public void show() {
-        stage.setDebugAll(false);
+        stage.setDebugAll(Constants.DEBUG_ENABLED);
         Gdx.input.setInputProcessor(stage);
 
         activeFiretruck = firestation.getActiveFireTruck();
