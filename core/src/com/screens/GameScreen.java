@@ -13,7 +13,6 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
@@ -26,10 +25,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import com.badlogic.gdx.ai.pfa.GraphPath;
-import com.badlogic.gdx.math.Vector2;
-
-import java.util.ArrayList;
-import java.util.Random;
 
 // Java util imports
 import java.util.ArrayList;
@@ -187,8 +182,10 @@ public class GameScreen implements Screen {
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
+		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
 		populateMap();
-		this.patrol = new Patrols(mapGraph.getJunctions().random(), mapGraph);
+		// mapGraph.getJunctions().random()
+		this.patrol = new Patrols(patrolTexture, mapGraph.getJunctions().get(0), mapGraph);
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -255,7 +252,7 @@ public class GameScreen implements Screen {
 		} else if (this.camera.zoom + 0.005f < zoomTarget) {
 			this.camera.zoom += 0.005f;
 		}
-	//	this.camera.zoom = MAX_ZOOM;
+
 		this.camera.update();
 
 		// Set font scale
@@ -270,6 +267,10 @@ public class GameScreen implements Screen {
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		batch.begin();
 
+		// Call the update function of the sprites to draw and update them
+		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
+		patrol.update(this.batch);
+
 		// Close layer
 		batch.end();
 		if (DEBUG_ENABLED) shapeRenderer.end();
@@ -280,6 +281,7 @@ public class GameScreen implements Screen {
 		// Render the remaining sprites, font last to be on top of all
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		batch.begin();
+
 
 		// Render sprites
 		for (ETFortress ETFortress : this.ETFortresses) {
@@ -294,6 +296,7 @@ public class GameScreen implements Screen {
 		// Call the update function of the sprites to draw and update them
 		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
 		this.firestation.update(batch);
+
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
 
@@ -320,7 +323,7 @@ public class GameScreen implements Screen {
 			shapeRenderer.setColor(Color.RED);
 			for (Road road : mapGraph.getRoads()) {
 				shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
-				//shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
+				shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
 			}
 			for (Junction junction : mapGraph.getJunctions()) {
 				shapeRenderer.circle(junction.getX(), junction.getY(), 30);
@@ -328,11 +331,7 @@ public class GameScreen implements Screen {
 		}
 		shapeRenderer.setColor(Color.WHITE);
 
-		Circle circle = this.patrol.getCircle();
-		patrol.step();
-		shapeRenderer.circle(circle.x, circle.y, circle.radius);
-	//	Gdx.app.log("circle position x", String.valueOf(circle.x));
-	//	Gdx.app.log("circle position y", String.valueOf(circle.y));
+
 		shapeRenderer.end();
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
@@ -507,29 +506,17 @@ public class GameScreen implements Screen {
 
 	private void populateMap(){
 		Junction one = new Junction(4987, 572, "bottom right corner");
-	//	junctionsInMap.add(one);
 		Junction two = new Junction(3743, 572, "Bottom 4 junction R.H.S");
-	//	junctionsInMap.add(two);
 		Junction three = new Junction(2728, 572, " Bottom turn left to dead end");
-	//	junctionsInMap.add(three);
 		Junction four = new Junction(2538, 572, "Bottom turn up to four junction");
-	//	junctionsInMap.add(four);
 		Junction five = new Junction(1069, 572, "bottom 5 left 4 junction");
-	//	junctionsInMap.add(five);
 		Junction six = new Junction(3745, 1199, "bottom left of fire station");
-	//	junctionsInMap.add(six);
 		Junction seven = new Junction(4123, 1199, "bottom right of fire station");
-	//	junctionsInMap.add(seven);
 		Junction eight = new Junction(4128, 1910, "Top right of fire station");
-	//	junctionsInMap.add(eight);
 		Junction nine = new Junction(3738, 1918, "Top left of fire station");
-	//	junctionsInMap.add(nine);
 		Junction ten = new Junction(3412, 1920, "Across bridge turn up to tower");
-	//	junctionsInMap.add(ten);
 		Junction eleven = new Junction(3406, 2204, "First corner to fortress coming up from bridge");
-	//	junctionsInMap.add(eleven);
 		Junction twelve = new Junction(3223, 2223, "second corner to attack fortress after coming up from bridge");
-	//	junctionsInMap.add(twelve);
 		Junction thirteen = new Junction(3256, 2787, "Bottom left of island");
 		Junction fourteen = new Junction (3885, 2784, "Bottom right of island");
 		Junction fifteen = new Junction (3889, 3018, "Top right of island");

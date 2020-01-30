@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -82,6 +83,11 @@ public class MovementSprite extends SimpleSprite {
         if (this.rotationLockTime >= 0) this.rotationLockTime -= 1; 
     }
 
+    public void update(Batch batch, Boolean patrol){
+
+        super.update(batch);
+    }
+
     /**
      * Increases the speed of the sprite in the given direction.
      * @param direction The direction to accelerate in.
@@ -115,6 +121,7 @@ public class MovementSprite extends SimpleSprite {
             this.rotate(angle * rotationSpeed * Gdx.graphics.getDeltaTime());
         }
     }
+
 
     /**
      * Apply acceleration to the sprite, based on collision boundaries and
@@ -195,7 +202,6 @@ public class MovementSprite extends SimpleSprite {
             float x = vertices[i * 2];
             float y = vertices[i * 2 + 1];
             result.add(new Vector2(x, y));
-            System.out.println("Vertex : " + x + ", " + y);
         }
         return result;
     }

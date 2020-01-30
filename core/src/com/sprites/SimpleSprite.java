@@ -62,6 +62,7 @@ public class SimpleSprite extends Sprite {
         // Keep the healthbar and hitbox located on the sprite
         this.healthBar.setPosition(this.getX(), this.getY());
         this.hitBox.setPosition(this.getX(), this.getY());
+
         this.healthBar.update(batch);
         // Draw the sprite and update the healthbar
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
