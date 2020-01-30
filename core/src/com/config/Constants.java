@@ -11,7 +11,7 @@ public final class Constants {
 
     // Firetruck One properties.
     public static final float[] FiretruckOneProperties = {
-        100,  // HEALTH
+        140,  // HEALTH
         10f,  // ACCELERATION
         300f, // MAX_SPEED
         0.8f, // RESTITUTION

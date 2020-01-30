@@ -350,7 +350,7 @@ public class GameScreen implements Screen {
 		checkIfCarpark();
 	}
 
-	private void checkIfCarpark() {
+	public void checkIfCarpark() {
 		if (this.firestation.isMenuOpen()) {
 			game.setScreen(this.firestation.getCarparkScreen());
 		}
@@ -360,7 +360,7 @@ public class GameScreen implements Screen {
      * Checks to see if the player has won or lost the game. Navigates back to the main menu
 	 * if they won or lost.
      */
-	private void checkIfGameOver() {
+	public void checkIfGameOver() {
 		boolean gameWon = true, gameLost = true;
 		// Check if any firetrucks are still alive
 		if (this.firestation.hasParkedFiretrucks() || this.firestation.getActiveFireTruck().isAlive()) gameLost = false;
@@ -378,7 +378,7 @@ public class GameScreen implements Screen {
 	/**
      * Checks to see if any collisions have occurred
      */
-	private void checkForCollisions() {
+	public void checkForCollisions() {
 		// Check each firetruck to see if it has collided with anything
 		Firetruck firetruck = this.firestation.getActiveFireTruck();
 		// Check if it overlaps with an ETFortress
@@ -469,7 +469,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private void constructFireTruck(Constants.TruckColours colour, boolean isActive, float[] firetruckProperties) {
+	public void constructFireTruck(Constants.TruckColours colour, boolean isActive, float[] firetruckProperties) {
 		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(colour);
 		if (isActive) {
 			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, firetruckProperties,

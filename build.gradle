@@ -10,14 +10,12 @@ buildscript {
         google()
     }
     dependencies {
-        classpath 'org.junit.platform:junit-platform-gradle-plugin:1.0.2'
         classpath "com.badlogicgames.gdx:gdx-ai:1.8.1"
     }
 }
 
 allprojects {
     apply plugin: "java-library"
-    apply plugin: 'org.junit.platform.gradle.plugin'
 
     version = '1.0'
     ext {
@@ -27,8 +25,6 @@ allprojects {
         box2DLightsVersion = '1.4'
         ashleyVersion = '1.7.0'
         aiVersion = '1.8.0'
-        junitPlatformVersion = '1.0.2'
-        junitJupiterVersion  = '5.0.2'
     }
 
     repositories {
@@ -40,48 +36,12 @@ allprojects {
         maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
  
-    jar {
-        baseName = 'junit5-gradle-consumer'
-        version = '1.0.0-SNAPSHOT'
-    }
     
     compileTestJava {
         sourceCompatibility = 1.8
         targetCompatibility = 1.8
         options.compilerArgs += '-parameters'
     }
-    
-    junitPlatform {
-        // platformVersion '1.0.2'
-        filters {
-            engines {
-                // include 'junit-jupiter', 'junit-vintage'
-                // exclude 'custom-engine'
-            }
-            tags {
-                // include 'fast'
-                exclude 'slow'
-            }
-            // includeClassNamePattern '.*Test'
-        }
-        // configurationParameter 'junit.jupiter.conditions.deactivate', '*'
-        // enableStandardTestTask true
-        // reportsDir file('build/test-results/junit-platform') // this is the default
-    }
-    
-    dependencies {
-        // JUnit Jupiter API and TestEngine implementation
-        testCompile("org.junit.jupiter:junit-jupiter-api:${junitJupiterVersion}")
-        testRuntime("org.junit.jupiter:junit-jupiter-engine:${junitJupiterVersion}")
-
-        // To avoid compiler warnings about @API annotations in JUnit code
-        testCompileOnly('org.apiguardian:apiguardian-api:1.0.0')
-    }
-
-    test {
-        useJUnitPlatform()
-    }
-
 }
 
 project(":desktop") {
@@ -95,8 +55,8 @@ project(":desktop") {
         api "com.badlogicgames.gdx:gdx-tools:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-bullet-platform:$gdxVersion:natives-desktop"
         api "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop";
-        api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-        api "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+        //api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+        //api "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
     }
 }
 
@@ -109,7 +69,28 @@ project(":core") {
         api "com.badlogicgames.gdx:gdx-bullet:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
         api "com.badlogicgames.gdx:gdx-ai:1.8.1"
-        api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
-        api "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+        //api "org.junit.jupiter:junit-jupiter-api:$junitJupiterVersion"
+        //api "org.junit.jupiter:junit-jupiter-engine:$junitJupiterVersion"
+    }
+}
+project(":tests") {
+    apply plugin: "java"
+
+    sourceSets.test.java.srcDirs = ["src/"]
+
+    dependencies {
+
+        compile project(":core")
+
+        compile "junit:junit:4.12"
+        compile "org.mockito:mockito-core:2.7.22"
+        compile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+
+        testCompile "junit:junit:4.12"
+        testCompile "org.mockito:mockito-core:2.7.22"
+        testCompile "com.badlogicgames.gdx:gdx-backend-headless:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        testCompile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
     }
 }
