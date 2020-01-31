@@ -2,116 +2,50 @@ package com.classes;
 
 import com.PathFinding.Junction;
 import com.PathFinding.MapGraph;
-import com.badlogic.gdx.ai.pfa.GraphPath;
-import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.utils.Queue;
-import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.sprites.PatrolMovementSprite;
+
+import java.util.ArrayList;
 
 
-public class Patrols {
+public class Patrols extends PatrolMovementSprite {
 
-    MapGraph mapGraph;
+    ArrayList<Texture> textureSlices;
 
-    Circle circle;
-    float x;
-    float y;
-
-    float deltaX;
-    float deltaY;
-
-    float speed;
-    Junction previousJunction;
-    Queue<Junction> pathQueue;
-
-    public Patrols(Junction start, MapGraph mapGraph){
-        this.mapGraph = mapGraph;
-
-        this.x = start.getX();
-        this.y = start.getY();
-        this.speed = 2.0f;
-        this.pathQueue = new Queue<>();
-        this.previousJunction = start;
-
-        this.circle = new Circle();
-        this.circle.x = this.x;
-        this.circle.y = this.y;
-        this.circle.radius = 30;
-        Junction goal = mapGraph.getJunctions().random();
-
-        setGoal(goal);
-
-        this.deltaX = 0;
-        this.deltaY = 0f;
+    public Patrols(ArrayList<Texture> textureSlices, Junction start, MapGraph mapGraph){
+        super(textureSlices, start, mapGraph);
+        this.getHealthBar().setMaxResource((int) 10);
+        this.textureSlices = textureSlices;
     }
 
-    public Circle getCircle(){
-        return this.circle;
+    public void update(Batch batch) {
+        super.update(batch);
+        drawVoxelImage(batch);
     }
 
-
-    public void setGoal(Junction goal){
-        GraphPath<Junction> junctionPath = mapGraph.findPath(previousJunction, goal);
-
-        for (int i = 0; i < junctionPath.getCount(); i++){
-            pathQueue.addLast(junctionPath.get(i));
-        }
-
-        setSpeedToNextCity();
-    }
-
-    private void setSpeedToNextCity(){
-        Junction nextJunction = pathQueue.first();
-        float angle = MathUtils.atan2(nextJunction.getY() - previousJunction.getY(), nextJunction.getX() - previousJunction.getX());
-        deltaX = MathUtils.cos(angle) * this.speed;
-        deltaY = MathUtils.sin(angle) * this.speed;
-    }
-
-    public void step() {
-        this.x += deltaX;
-        this.y += deltaY;
-        this.circle.x = this.x;
-        this.circle.y = this.y;
-        checkCollision();
-    }
-
-    private void checkCollision() {
-        if (pathQueue.size > 0) {
-            Junction targetJunction = pathQueue.first();
-            if (Vector2.dst(x, y, targetJunction.getX(), targetJunction.getY()) < 5) {
-                reachNextJunction();
-            }
+    // Place holder until we get a sprite //
+    private void drawVoxelImage(Batch batch) {
+        int slicesLength = textureSlices.size() - 1;
+        float width = 100, height = 50;
+        for (int i = 0; i < slicesLength; i++) {
+            Texture texture = animateLights(i);
+            batch.draw(new TextureRegion(texture), this.getX(), (this.getY() - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, this.getRotation(), true);
         }
     }
 
-    private void reachNextJunction() {
-        Junction nextJunction = pathQueue.first();
-
-        this.x = nextJunction.getX();
-        this.y = nextJunction.getY();
-
-        this.previousJunction = nextJunction;
-        pathQueue.removeFirst();
-
-        if (pathQueue.size == 0) {
-            reachDestination();
-        } else {
-            setSpeedToNextCity();
+    // Place holder until we get a sprite //
+    private Texture animateLights(int index) {
+        if (index == 14) { // The index of the texture containing the first light colour
+            Texture texture = this.getInternalTime() / 5 > 15 ? textureSlices.get(index + 1) : textureSlices.get(index);
+            return texture;
+        } else if (index > 14) { // Offset remaining in order to not repeat a texture
+            return textureSlices.get(index + 1);
         }
+        return this.textureSlices.get(index);
     }
-
-    private void reachDestination(){
-        deltaX = 0;
-        deltaY = 0;
-
-        Junction newGoal;
-
-        do {
-            newGoal = mapGraph.getJunctions().random();
-        } while (newGoal == previousJunction);
-
-        setGoal(newGoal);
-        }
 }
 
 

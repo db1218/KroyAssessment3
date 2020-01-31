@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
@@ -116,6 +117,7 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
+
     /**
      * Apply acceleration to the sprite, based on collision boundaries and
      * existing acceleration.
@@ -126,7 +128,7 @@ public class MovementSprite extends SimpleSprite {
         int collidesCarpark = collidesWithBlockedTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
         if (collidesCarpark > 0) {
-            System.out.println("Open menu");
+            System.out.println("Open menu: " + collidesCarpark + " collisions");
             this.fireStation.openMenu(true);
         } else if (collisions == 0) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
@@ -195,7 +197,6 @@ public class MovementSprite extends SimpleSprite {
             float x = vertices[i * 2];
             float y = vertices[i * 2 + 1];
             result.add(new Vector2(x, y));
-            System.out.println("Vertex : " + x + ", " + y);
         }
         return result;
     }

@@ -62,6 +62,7 @@ public class SimpleSprite extends Sprite {
         // Keep the healthbar and hitbox located on the sprite
         this.healthBar.setPosition(this.getX(), this.getY());
         this.hitBox.setPosition(this.getX(), this.getY());
+
         this.healthBar.update(batch);
         // Draw the sprite and update the healthbar
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
@@ -110,10 +111,10 @@ public class SimpleSprite extends Sprite {
         this.hitBox.setOrigin(width/2, height/2);
     }
 
-    public void setTruckHitBox() {
+    public void setTruckHitBox(float rotation) {
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
         this.hitBox.setOrigin(width/2, height/2);
-        this.hitBox.rotate(-90);
+        this.hitBox.rotate(rotation);
     }
 
     /**
@@ -196,5 +197,4 @@ public class SimpleSprite extends Sprite {
     public void dispose() {
         texture.dispose();
     }
-
 }

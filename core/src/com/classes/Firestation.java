@@ -122,6 +122,7 @@ public class Firestation extends SimpleSprite {
 
     private void respawnFiretruck() {
         this.activeFireTruck.setPosition(spawnLocation.x, spawnLocation.y);
+        this.activeFireTruck.resetPosition();
         this.activeFireTruck.setSpeed(new Vector2(0, 0));
     }
 
@@ -171,6 +172,7 @@ public class Firestation extends SimpleSprite {
 
     public void openMenu(boolean isOpen) {
         this.isMenuOpen = isOpen;
+        if (this.activeFireTruck.isSpraying() && isOpen) this.activeFireTruck.toggleHose();
         if (!isOpen) respawnFiretruck();
     }
 
