@@ -159,6 +159,7 @@ public class CarparkScreen implements Screen {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 firestation.openMenu(false);
+                System.out.println("Switching to game screen");
                 game.setScreen(gameScreen);
             }
         });
@@ -189,7 +190,6 @@ public class CarparkScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         firestation.changeFiretruck(index);
-                        System.out.println(firestation.getActiveFireTruck().isAlive());
                         show();
                     }
                 });

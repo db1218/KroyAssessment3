@@ -128,7 +128,7 @@ public class MovementSprite extends SimpleSprite {
         int collidesCarpark = collidesWithBlockedTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
         if (collidesCarpark > 0) {
-            System.out.println("Open menu");
+            System.out.println("Open menu: " + collidesCarpark + " collisions");
             this.fireStation.openMenu(true);
         } else if (collisions == 0) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());

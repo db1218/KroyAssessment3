@@ -111,10 +111,10 @@ public class SimpleSprite extends Sprite {
         this.hitBox.setOrigin(width/2, height/2);
     }
 
-    public void setTruckHitBox() {
+    public void setTruckHitBox(float rotation) {
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
         this.hitBox.setOrigin(width/2, height/2);
-        this.hitBox.rotate(-90);
+        this.hitBox.rotate(rotation);
     }
 
     /**
@@ -197,5 +197,4 @@ public class SimpleSprite extends Sprite {
     public void dispose() {
         texture.dispose();
     }
-
 }

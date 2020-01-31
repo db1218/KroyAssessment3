@@ -31,6 +31,9 @@ public class GameInputHandler implements InputProcessor {
                 Gdx.app.log("X", String.valueOf(gameScreen.getTruck().getCentreX()));
                 Gdx.app.log("Y", String.valueOf(gameScreen.getTruck().getCentreY()));
                 i++;
+                break;
+            case Input.Keys.SPACE:
+                gameScreen.getFirestation().getActiveFireTruck().toggleHose();
         }
         return true;
     }
