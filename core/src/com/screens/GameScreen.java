@@ -28,6 +28,7 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 
 // Java util imports
 import java.util.ArrayList;
+import java.util.Iterator;
 
 // Class imports
 import com.classes.*;
@@ -74,6 +75,7 @@ public class GameScreen implements Screen {
 	private ArrayList<ETFortress> ETFortresses;
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
+	private ArrayList<Patrols> ETPatrols;
 	private Firestation firestation;
 
 	private Patrols patrol;
@@ -185,7 +187,9 @@ public class GameScreen implements Screen {
 		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
 		populateMap();
 		// mapGraph.getJunctions().random()
+		ETPatrols = new ArrayList<>();
 		this.patrol = new Patrols(patrolTexture, mapGraph.getJunctions().get(0), mapGraph);
+		this.ETPatrols.add(patrol);
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -291,7 +295,10 @@ public class GameScreen implements Screen {
 		}
 		// Call the update function of the sprites to draw and update them
 		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
-		patrol.update(this.batch);
+
+		for (Patrols patrol : this.ETPatrols) {
+			patrol.update(this.batch);
+		}
 		this.firestation.update(batch);
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
@@ -312,6 +319,7 @@ public class GameScreen implements Screen {
 		// Finish rendering
 		batch.end();
 
+
 		if (DEBUG_ENABLED) shapeRenderer.end();
 
 		shapeRenderer.begin(ShapeType.Filled);
@@ -328,8 +336,13 @@ public class GameScreen implements Screen {
 		}
 		shapeRenderer.setColor(Color.WHITE);
 
-
 		shapeRenderer.end();
+
+		shapeRenderer.begin(ShapeType.Filled);
+		this.patrol.getDetectionRange();
+		//shapeRenderer.circle(this.patrol.getDetectionRange().x,this.patrol.getDetectionRange().y, this.patrol.getDetectionRange().radius);
+		shapeRenderer.end();
+
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
@@ -388,6 +401,28 @@ public class GameScreen implements Screen {
 				this.projectiles.add(projectile);
 			}
 		}
+
+		// Checks to see if a patrol is dead and removes it if it has died
+		for (Iterator<Patrols> it = this.ETPatrols.iterator(); it.hasNext();) {
+			if (it.next().isDead()) {
+				it.remove();
+			}
+		}
+
+		// Checks if a patrol has attacked a fire truck and vice versa
+		for (Patrols patrol : this.ETPatrols) {
+			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getHitBox())) {
+				patrol.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+				this.score += 10;
+			}
+			if (patrol.isInRadius(firetruck.getHitBox()) && patrol.canShootProjectile()) {
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY());
+				projectile.calculateTrajectory(firetruck.getHitBox());
+				this.projectiles.add(projectile);
+			}
+		}
+
+
 		// Check if firetruck is hit with a projectile
 		for (Projectile projectile : this.projectiles) {
 			if (Intersector.overlapConvexPolygons(firetruck.getHitBox(), projectile.getHitBox())) {

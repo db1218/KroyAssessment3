@@ -5,6 +5,7 @@ import com.PathFinding.MapGraph;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Queue;
@@ -14,6 +15,8 @@ import java.util.ArrayList;
 public class PatrolMovementSprite extends SimpleSprite {
 
     MapGraph mapGraph;
+
+    Circle circle;
 
     float x;
     float y;
@@ -30,12 +33,15 @@ public class PatrolMovementSprite extends SimpleSprite {
         super(textureSlices.get(textureSlices.size() - 1));
         this.mapGraph = mapGraph;
         this.textureSlices = textureSlices;
-
+        this.setCenter(start.getX(), start.getY());
         this.x = start.getX();
         this.y = start.getY();
         this.speed = 2.0f;
         this.pathQueue = new Queue<>();
         this.previousJunction = start;
+     //   this.circle = new Circle();
+     //   this.circle.setPosition(this.x - 100, this.y);
+     //   this.circle.setRadius(40);
 
         Junction goal = mapGraph.getJunctions().random();
 
@@ -74,9 +80,19 @@ public class PatrolMovementSprite extends SimpleSprite {
         this.setRotation((float) angleDEG);
     }
 
+    private void wanderAngle(){
+
+    }
+
+    private void isTruckInRange(){
+
+    }
+
     public void step() {
         this.x += deltaX;
         this.y += deltaY;
+//        circle.x += deltaX;
+   //     circle.y += deltaY;
         checkCollision();
     }
 
@@ -122,6 +138,8 @@ public class PatrolMovementSprite extends SimpleSprite {
     public float getX(){ return this.x; }
 
     public float getY(){ return this.y; }
+
+    public Circle getCircle() {return this.circle; }
 
 
 }
