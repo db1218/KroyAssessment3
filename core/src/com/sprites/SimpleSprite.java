@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.Texture;
 
 // Class import
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.classes.ResourceBar;
 
@@ -26,6 +27,7 @@ public class SimpleSprite extends Sprite {
     private float width, height, internalTime;
     private ResourceBar healthBar;
     private Polygon hitBox;
+    private Vector2 centre;
 
     /**
      * Constructor that creates a sprite at a given position using a given texture..
@@ -36,6 +38,7 @@ public class SimpleSprite extends Sprite {
     public SimpleSprite(Texture spriteTexture) {
         super(spriteTexture);
         this.texture = spriteTexture;
+        this.centre = new Vector2(this.getCentreX(), this.getCentreY());
         this.create();
     }
 
@@ -46,7 +49,6 @@ public class SimpleSprite extends Sprite {
         // Use the longest side of the sprite as the bar width
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
-
         // Rotate 90 to be same rotation as textures
         this.rotate(-90);
         // Start internal time at 150, used for animations/timeouts
@@ -62,7 +64,7 @@ public class SimpleSprite extends Sprite {
         // Keep the healthbar and hitbox located on the sprite
         this.healthBar.setPosition(this.getX(), this.getY());
         this.hitBox.setPosition(this.getX(), this.getY());
-
+        this.centre = new Vector2(this.getCentreX(), this.getCentreY());
         this.healthBar.update(batch);
         // Draw the sprite and update the healthbar
         batch.draw(new TextureRegion(this.texture), this.getX(), this.getY(), this.getWidth() / 2, this.getHeight() / 2,
@@ -76,7 +78,6 @@ public class SimpleSprite extends Sprite {
             this.internalTime -= 1;
         } else if (this.getInternalTime() <= 0) {
             this.internalTime = 150;
-           // System.out.println("reset internal time");
         }
     }
 
@@ -189,6 +190,10 @@ public class SimpleSprite extends Sprite {
     public float getCentreY() {
         //Add half sprite height to get centre
         return this.getY() + this.getHeight() / 2;
+    }
+
+    public Vector2 getCentre() {
+        return this.centre;
     }
 
     /**

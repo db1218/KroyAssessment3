@@ -29,6 +29,7 @@ public class ETFortress extends SimpleSprite {
     // Private values for this class to use
     private Texture destroyed;
     private Circle detectionRange;
+    private boolean flooded;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -44,6 +45,7 @@ public class ETFortress extends SimpleSprite {
     public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos) {
         super(texture);
         this.destroyed = destroyedTexture;
+        this.flooded = false;
         this.setScale(scaleX, scaleY);
         this.setPosition(xPos, yPos);
         this.create();
@@ -97,6 +99,7 @@ public class ETFortress extends SimpleSprite {
         // If ETFortress is damaged, heal over time
         if (this.getHealthBar().getCurrentAmount() <= 0) {
             this.removeSprite(this.destroyed);
+            this.flooded = true;
         } else if (this.getInternalTime() % 150 == 0 && this.getHealthBar().getCurrentAmount() != this.getHealthBar().getMaxAmount()) {
             // Heal ETFortresses every second if not taking damage
 			this.getHealthBar().addResourceAmount(ETFORTRESS_HEALING);
@@ -152,5 +155,9 @@ public class ETFortress extends SimpleSprite {
     public void drawDebug(ShapeRenderer renderer) {
         super.drawDebug(renderer);
         renderer.circle(this.detectionRange.x, this.detectionRange.y, this.detectionRange.radius);
+    }
+
+    public boolean isFlooded() {
+        return this.flooded;
     }
 }

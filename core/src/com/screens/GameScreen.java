@@ -268,21 +268,15 @@ public class GameScreen implements Screen {
 		// Render background map layers
 		renderer.render(this.backgroundLayers);
 
-		// Render the firetrucks on top of the background
-		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
-		batch.begin();
-
-		// Close layer
-		batch.end();
-		if (DEBUG_ENABLED) shapeRenderer.end();
-
 		// Render map foreground layers
 		renderer.render(foregroundLayers);
+
+		// Render the arrow
+		firestation.updateActiveArrow(shapeRenderer, ETFortresses);
 
 		// Render the remaining sprites, font last to be on top of all
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		batch.begin();
-
 
 		// Render sprites
 		for (ETFortress ETFortress : this.ETFortresses) {
@@ -294,6 +288,7 @@ public class GameScreen implements Screen {
 			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
 			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
 		}
+
 		// Call the update function of the sprites to draw and update them
 		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
 
@@ -303,7 +298,6 @@ public class GameScreen implements Screen {
 		this.firestation.update(batch);
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
-
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score,
