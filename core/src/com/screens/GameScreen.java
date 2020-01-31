@@ -149,7 +149,7 @@ public class GameScreen implements Screen {
 			mapLayers.getIndex("Trees")
         };
 
-		// Initialise textures to use for spites
+		// Initialise textures to use for sprites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
 		Texture firestationDestroyedTexture = new Texture("MapAssets/UniqueBuildings/firestation_destroyed.png");
 		Texture cliffordsTowerTexture = new Texture("MapAssets/UniqueBuildings/cliffordstower.png");

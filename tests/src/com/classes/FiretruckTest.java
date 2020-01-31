@@ -3,10 +3,13 @@ package com.classes;
 import static com.config.Constants.FiretruckOneProperties;
 import static com.config.Constants.FiretruckTwoProperties;
 import static com.screens.GameScreen.*;
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotEquals;
 
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.config.Constants;
 import org.junit.Rule;
 import org.junit.Test;
@@ -20,11 +23,17 @@ import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import javax.xml.soap.Text;
+import java.util.ArrayList;
+
 @RunWith(GdxTestRunner.class)
 public class FiretruckTest {
 
     @Mock
     GameScreen gameScreenMock;
+    Firestation firestation;
+    TiledMapTileLayer t1, t2;
+    ArrayList<Texture> a1, a2;
 
 
     @Rule
@@ -64,8 +73,22 @@ public class FiretruckTest {
     }
 
     @Test
-    public void reserveEmpties() {
-        gameScreenMock.constructFireTruck(Constants.TruckColours.BLUE, true, FiretruckOneProperties);
+    public void resourceBarDecreases() {
+        ResourceBar resource = new ResourceBar(10f, 2f);
+        resource.subtractResourceAmount(10);
+
+        assertEquals((int)resource.getCurrentAmount(), 90);
     }
+
+    @Test
+    public void resourceBarIncreases() {
+        ResourceBar resource = new ResourceBar(10f, 2f);
+        resource.subtractResourceAmount(20);
+        resource.addResourceAmount(15);
+
+        assertEquals((int)resource.getCurrentAmount(), 95);
+    }
+
+
 
 }
