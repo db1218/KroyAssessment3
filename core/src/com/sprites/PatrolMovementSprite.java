@@ -29,19 +29,14 @@ public class PatrolMovementSprite extends SimpleSprite {
     Queue<Junction> pathQueue;
     ArrayList<Texture> textureSlices;
 
-    public PatrolMovementSprite(ArrayList<Texture> textureSlices, Junction start, MapGraph mapGraph){
-        super(textureSlices.get(textureSlices.size() - 1));
+    public PatrolMovementSprite(Texture spriteTexture, Junction start, MapGraph mapGraph){
+        super(spriteTexture);
         this.mapGraph = mapGraph;
-        this.textureSlices = textureSlices;
-        this.setCenter(start.getX(), start.getY());
         this.x = start.getX();
         this.y = start.getY();
         this.speed = 2.0f;
         this.pathQueue = new Queue<>();
         this.previousJunction = start;
-     //   this.circle = new Circle();
-     //   this.circle.setPosition(this.x - 100, this.y);
-     //   this.circle.setRadius(40);
 
         Junction goal = mapGraph.getJunctions().random();
 

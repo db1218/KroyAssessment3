@@ -21,11 +21,12 @@ public class Patrols extends PatrolMovementSprite {
     private  boolean isDead;
 
     public Patrols(ArrayList<Texture> textureSlices, Junction start, MapGraph mapGraph){
-        super(textureSlices, start, mapGraph);
-        this.getHealthBar().setMaxResource((int) 10);
+        super(textureSlices.get(textureSlices.size() - 1), start, mapGraph);
+        this.getHealthBar().setMaxResource(25);
         this.textureSlices = textureSlices;
         this.isDead = false;
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 15);
+
     }
 
     public void update(Batch batch) {

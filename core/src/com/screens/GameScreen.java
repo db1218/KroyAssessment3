@@ -28,6 +28,7 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 
 // Java util imports
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 
 // Class imports
@@ -48,7 +49,7 @@ import static com.config.Constants.*;
 public class GameScreen implements Screen {
 
 	// A constant variable to store the game
-	final Kroy game;;
+	final Kroy game;
 
 	// Private values for game screen logic
 	private ShapeRenderer shapeRenderer;
@@ -78,7 +79,6 @@ public class GameScreen implements Screen {
 	private ArrayList<Patrols> ETPatrols;
 	private Firestation firestation;
 
-	private Patrols patrol;
 
 	MapGraph mapGraph;
 	GraphPath<Junction> cityPath;
@@ -184,12 +184,13 @@ public class GameScreen implements Screen {
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
-		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
 		populateMap();
-		// mapGraph.getJunctions().random()
+
 		ETPatrols = new ArrayList<>();
-		this.patrol = new Patrols(patrolTexture, mapGraph.getJunctions().get(0), mapGraph);
-		this.ETPatrols.add(patrol);
+
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -327,22 +328,16 @@ public class GameScreen implements Screen {
 		if(DEBUG_ENABLED) { // Draws all the nodes and the paths between them
 			shapeRenderer.setColor(Color.RED);
 			for (Road road : mapGraph.getRoads()) {
-				shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
-				shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
+			//	shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
+			//	shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
 			}
 			for (Junction junction : mapGraph.getJunctions()) {
-				shapeRenderer.circle(junction.getX(), junction.getY(), 30);
+			//	shapeRenderer.circle(junction.getX(), junction.getY(), 30);
 			}
 		}
 		shapeRenderer.setColor(Color.WHITE);
 
 		shapeRenderer.end();
-
-		shapeRenderer.begin(ShapeType.Filled);
-		this.patrol.getDetectionRange();
-		//shapeRenderer.circle(this.patrol.getDetectionRange().x,this.patrol.getDetectionRange().y, this.patrol.getDetectionRange().radius);
-		shapeRenderer.end();
-
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
@@ -401,6 +396,7 @@ public class GameScreen implements Screen {
 				this.projectiles.add(projectile);
 			}
 		}
+
 
 		// Checks to see if a patrol is dead and removes it if it has died
 		for (Iterator<Patrols> it = this.ETPatrols.iterator(); it.hasNext();) {
@@ -526,6 +522,12 @@ public class GameScreen implements Screen {
 			}
 		}
 		return truckTextures;
+	}
+
+	private void spawnPatrol(){
+		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
+		Patrols patrol = new Patrols(patrolTexture, mapGraph.getJunctions().random(), mapGraph);
+		this.ETPatrols.add(patrol);
 	}
 
 	Firestation getFirestation() {
