@@ -42,6 +42,7 @@ public class Firetruck extends MovementSprite {
     private ETFortress nearestFortress;
     private Arrow arrow;
     private boolean viewArrow;
+    private TiledMapTileLayer carparkLayer;
 
     private boolean alive;
 
@@ -63,12 +64,13 @@ public class Firetruck extends MovementSprite {
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
         this.firetruckProperties = properties;
-        this.setPosition(fireStation.getSpawnLocation().x, fireStation.getSpawnLocation().y);
+        this.setPosition(fireStation.getCarparkScreen().getRespawn().getLocation().x, fireStation.getCarparkScreen().getRespawn().getLocation().y);
         this.fireStation = fireStation;
         this.create();
         this.colour = colour;
         this.arrow = new Arrow(15, 50, 100, 50);
         this.viewArrow = false;
+        this.carparkLayer = carparkLayer;
     }
 
     /**
@@ -98,6 +100,7 @@ public class Firetruck extends MovementSprite {
      */
     public void update(Batch batch, Camera camera) {
         super.update(batch);
+        checkCarparkCollision();
         drawVoxelImage(batch);
         // Look for key press input, then accelerate the firetruck in that direction
         if (Gdx.input.isKeyPressed(Keys.LEFT) || Gdx.input.isKeyPressed(Keys.A)) {
@@ -150,6 +153,40 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
+
+    }
+
+    public void checkCarparkCollision() {
+        if (carparkLayer != null) {
+            for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
+                if (carparkLayer.getCell((int) (vertex.x / TILE_DIMS), (int) (vertex.y / TILE_DIMS)) != null) {
+                    if (carparkLayer.getCell((int) (vertex.x / TILE_DIMS), (int) (vertex.y / TILE_DIMS)).getTile().getProperties().get("carpark") != null) {
+                        int carparkNum = ((int) carparkLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))).getTile().getProperties().get("carpark"));
+                        this.setRespawnLocation(carparkNum);
+                        this.fireStation.openMenu(true);
+                    }
+                }
+            }
+        }
+    }
+
+    public void setRespawnLocation(int number) {
+        switch (number) {
+            case 0:
+                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Main1);
+                break;
+            case 1:
+                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Lower);
+                break;
+            case 2:
+                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Upper1);
+                break;
+            case 3:
+                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Upper2);
+                break;
+            case 4:
+                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Main2);
+        }
     }
 
     public void updateArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
@@ -187,8 +224,7 @@ public class Firetruck extends MovementSprite {
      */
     private Texture animateLights(int index) {
         if (index == 14) { // The index of the texture containing the first light colour
-            Texture texture = this.getInternalTime() / 5 > 15 ? this.firetruckSlices.get(index + 1) : this.firetruckSlices.get(index);
-            return texture;
+            return this.getInternalTime() / 5 > 15 ? this.firetruckSlices.get(index + 1) : this.firetruckSlices.get(index);
         } else if (index > 14) { // Offset remaining in order to not repeat a texture
             return this.firetruckSlices.get(index + 1);
         }
@@ -203,10 +239,9 @@ public class Firetruck extends MovementSprite {
         return new Image(getFireTruckTexture());
     }
 
-    protected void resetPosition() {
-        super.setPosition(fireStation.getSpawnLocation().x, fireStation.getSpawnLocation().y);
-        super.setRotation(0);
-        super.setTruckHitBox(180);
+    protected void resetRotation() {
+        super.setRotation(0 + this.fireStation.getCarparkScreen().getRespawn().getRotation());
+        super.setTruckHitBox(180 + this.fireStation.getCarparkScreen().getRespawn().getRotation());
     }
 
     public void setNearestFortress(ArrayList<ETFortress> fortresses) {

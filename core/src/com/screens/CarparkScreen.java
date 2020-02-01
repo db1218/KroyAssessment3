@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -25,6 +26,8 @@ import com.config.Constants;
 import com.kroy.Kroy;
 
 import java.util.ArrayList;
+
+import static com.config.Constants.TILE_DIMS;
 
 public class CarparkScreen implements Screen {
 
@@ -45,6 +48,8 @@ public class CarparkScreen implements Screen {
     private Table previewTable;
     private TextButton quitButton;
     private Label activeStats;
+
+    private Constants.CarparkEntrances respawn;
 
     public CarparkScreen(Firestation firestation, Kroy game, GameScreen gameScreen) {
         this.game = game;
@@ -74,6 +79,7 @@ public class CarparkScreen implements Screen {
 
         shapeRenderer = new ShapeRenderer();
 
+        this.respawn = Constants.CarparkEntrances.Main1;
     }
 
     /**
@@ -81,6 +87,7 @@ public class CarparkScreen implements Screen {
      */
     @Override
     public void show() {
+        camera.zoom = 1.2f;
         stage.setDebugAll(Constants.DEBUG_ENABLED);
         Gdx.input.setInputProcessor(stage);
 
@@ -222,6 +229,15 @@ public class CarparkScreen implements Screen {
                 "\nRange: " + activeFiretruck.getRange());
     }
 
+    public Constants.CarparkEntrances getRespawn() {
+        return this.respawn;
+    }
+
+    public void setRespawn(Constants.CarparkEntrances entrance) {
+        this.respawn = entrance;
+    }
+
+
     /**
      * @param width
      * @param height
@@ -262,5 +278,4 @@ public class CarparkScreen implements Screen {
         shapeRenderer.dispose();
 
     }
-
 }

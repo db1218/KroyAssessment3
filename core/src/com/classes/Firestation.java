@@ -34,7 +34,6 @@ public class Firestation extends SimpleSprite {
     private Circle repairRange;
 
     private Firetruck activeFireTruck;
-    private Vector2 spawnLocation;
 
     private CarparkScreen carparkScreen;
     private boolean isMenuOpen;
@@ -59,7 +58,6 @@ public class Firestation extends SimpleSprite {
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
-        this.spawnLocation = new Vector2(80 * TILE_DIMS, 24.5f * TILE_DIMS);
         this.carparkScreen = new CarparkScreen(this, game, gameScreen);
         this.game = game;
         this.isDestroyed = false;
@@ -126,8 +124,8 @@ public class Firestation extends SimpleSprite {
     }
 
     private void respawnFiretruck() {
-        this.activeFireTruck.setPosition(spawnLocation.x, spawnLocation.y);
-        this.activeFireTruck.resetPosition();
+        this.activeFireTruck.setPosition(carparkScreen.getRespawn().getLocation().x, carparkScreen.getRespawn().getLocation().y);
+        this.activeFireTruck.resetRotation();
         this.activeFireTruck.setSpeed(new Vector2(0, 0));
     }
 
@@ -149,10 +147,6 @@ public class Firestation extends SimpleSprite {
 
     public void parkFireTruck(Firetruck firetruck) {
         this.parkedFireTrucks.add(firetruck);
-    }
-
-    public Vector2 getSpawnLocation() {
-        return this.spawnLocation;
     }
 
     public void checkRepairRefill(int time, boolean includeActive) {

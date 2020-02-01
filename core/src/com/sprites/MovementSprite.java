@@ -29,6 +29,7 @@ public class MovementSprite extends SimpleSprite {
     private Vector2 speed;
     private Firestation fireStation;
     private TiledMapTileLayer collisionLayer, carparkLayer;
+    private int carpark;
 
     /**
      * Creates a sprite capable of moving and colliding with the tiledMap and other sprites.
@@ -125,12 +126,8 @@ public class MovementSprite extends SimpleSprite {
     private void accelerate() {
         // Calculate whether it hits any boundaries
         int collisions = collidesWithBlockedTile(this.collisionLayer);
-        int collidesCarpark = collidesWithBlockedTile(this.carparkLayer);
         // Check if it collides with any tiles, then move the sprite
-        if (collidesCarpark > 0) {
-            System.out.println("Open menu: " + collidesCarpark + " collisions");
-            this.fireStation.openMenu(true);
-        } else if (collisions == 0) {
+        if (collisions == 0) {
             this.setX(this.getX() + this.speed.x * Gdx.graphics.getDeltaTime());
             this.setY(this.getY() + this.speed.y * Gdx.graphics.getDeltaTime());
             if (this.decelerationRate != 0) decelerate();
@@ -190,7 +187,7 @@ public class MovementSprite extends SimpleSprite {
         return collisions;
     }
 
-    Array<Vector2> getPolygonVertices(Polygon polygon) {
+    protected Array<Vector2> getPolygonVertices(Polygon polygon) {
         float[] vertices = polygon.getTransformedVertices();
         Array<Vector2> result = new Array<>();
         for (int i = 0; i < vertices.length/2; i++) {

@@ -1,5 +1,7 @@
 package com.config;
 
+import com.badlogic.gdx.math.Vector2;
+
 /**
  * Game constants for use by Kroy.
  */
@@ -59,8 +61,32 @@ public final class Constants {
         }
     }
 
+    public enum CarparkEntrances {
+        Main1(new Vector2(80.5f * TILE_DIMS, 24.5f * TILE_DIMS), 0),
+        Main2(new Vector2(85 * TILE_DIMS, 30.5f * TILE_DIMS), 90),
+        Lower(new Vector2(52 * TILE_DIMS, 22.5f * TILE_DIMS), 90),
+        Upper1(new Vector2(52 * TILE_DIMS, 52.5f * TILE_DIMS), 90),
+        Upper2(new Vector2(44 * TILE_DIMS, 52 * TILE_DIMS), 90);
+
+        private final Vector2 location;
+        private final float rotation;
+
+        CarparkEntrances(Vector2 location, float rotation) {
+            this.location = location;
+            this.rotation = rotation;
+        }
+
+        public Vector2 getLocation() {
+            return this.location;
+        }
+
+        public float getRotation() {
+            return this.rotation;
+        }
+    }
+
     // Debug mode
-    public static final boolean DEBUG_ENABLED = false;
+    public static final boolean DEBUG_ENABLED = true;
 
     // Game settings
     public static final String GAME_NAME = "Kroy";

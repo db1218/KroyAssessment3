@@ -14,6 +14,7 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.utils.Timer;
@@ -71,14 +72,13 @@ public class GameScreen implements Screen {
 
 	private Timer collisionTask;
 
-	// Private arrays to group sprites
-	private ArrayList<Firetruck> firetrucksToRemove;
 	private ArrayList<ETFortress> ETFortresses;
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
 	private ArrayList<Patrols> ETPatrols;
 	private Firestation firestation;
 
+	private TiledMapTileLayer carparkLayer;
 
 	MapGraph mapGraph;
 	GraphPath<Junction> cityPath;
@@ -138,13 +138,16 @@ public class GameScreen implements Screen {
 		// Select background and foreground map layers, order matters
         MapLayers mapLayers = map.getLayers();
         this.foregroundLayers = new int[] {
-			mapLayers.getIndex("Buildings")
+			mapLayers.getIndex("Buildings"),
+			mapLayers.getIndex("Carpark")
         };
         this.backgroundLayers = new int[] {
 			mapLayers.getIndex("River"),
 			mapLayers.getIndex("Road"),
 			mapLayers.getIndex("Trees")
         };
+
+        this.carparkLayer = (TiledMapTileLayer) map.getLayers().get("Carpark");
 
 		// Initialise textures to use for sprites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
@@ -214,7 +217,8 @@ public class GameScreen implements Screen {
 
 		// Start the camera near the firestation
 		this.camera.setToOrtho(false);
-		this.camera.position.set(firestation.getSpawnLocation().x, firestation.getSpawnLocation().y, 0);
+		this.camera.zoom = 2f;
+		this.camera.position.set(this.firestation.getCarparkScreen().getRespawn().getLocation().x, this.firestation.getCarparkScreen().getRespawn().getLocation().y, 0);
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
@@ -266,7 +270,7 @@ public class GameScreen implements Screen {
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
 
 		// Render background map layers
-		renderer.render(this.backgroundLayers);
+		renderer.render(backgroundLayers);
 
 		// Render map foreground layers
 		renderer.render(foregroundLayers);
@@ -348,9 +352,11 @@ public class GameScreen implements Screen {
 	}
 
 	public void checkIfCarpark() {
-		if (this.firestation.isMenuOpen()) {
-			game.setScreen(this.firestation.getCarparkScreen());
-		}
+		if (this.firestation.isMenuOpen()) game.setScreen(this.firestation.getCarparkScreen());
+	}
+
+	public TiledMapTileLayer getCarparkLayer() {
+		return carparkLayer;
 	}
 
 	/**
