@@ -89,6 +89,4 @@ public class FiretruckTest {
         assertEquals((int)resource.getCurrentAmount(), 95);
     }
 
-
-
 }
