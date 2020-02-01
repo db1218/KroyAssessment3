@@ -331,10 +331,10 @@ public class GameScreen implements Screen {
 		if(DEBUG_ENABLED) { // Draws all the nodes and the paths between them
 			shapeRenderer.setColor(Color.RED);
 			for (Road road : mapGraph.getRoads()) {
-				if (mapGraph.isTravelled(road.getFromNode(), road.getToNode())){
+			//	if (mapGraph.isTravelled(road.getFromNode(), road.getToNode())){
 					//	shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
-					shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(),3);
-				}
+					//shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(),3);
+				//}
 			}
 			for (Junction junction : mapGraph.getJunctions()) {
 			//	shapeRenderer.circle(junction.getX(), junction.getY(), 30);
