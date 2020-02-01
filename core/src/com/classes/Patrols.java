@@ -49,7 +49,7 @@ public class Patrols extends PatrolMovementSprite {
     // Place holder until we get a sprite //
     private void drawsVoxelImage(Batch batch) {
         int slicesLength = textureSlices.size() - 1;
-        float width = 100, height = 50;
+        float width = 100, height = 100;
         for (int i = 0; i < slicesLength; i++) {
             Texture texture = animateLights(i);
             batch.draw(new TextureRegion(texture), this.getX(), (this.getY() - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, this.getRotation(), true);
