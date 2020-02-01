@@ -25,8 +25,7 @@ public class Patrols extends PatrolMovementSprite {
         this.getHealthBar().setMaxResource(25);
         this.textureSlices = textureSlices;
         this.isDead = false;
-        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 15);
-
+        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 3);
     }
 
     public void update(Batch batch) {
@@ -48,12 +47,23 @@ public class Patrols extends PatrolMovementSprite {
     }
 
     // Place holder until we get a sprite //
-    private void drawVoxelImage(Batch batch) {
+    private void drawsVoxelImage(Batch batch) {
         int slicesLength = textureSlices.size() - 1;
         float width = 100, height = 50;
         for (int i = 0; i < slicesLength; i++) {
             Texture texture = animateLights(i);
             batch.draw(new TextureRegion(texture), this.getX(), (this.getY() - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, this.getRotation(), true);
+        }
+    }
+
+    private void drawVoxelImage(Batch batch) {
+        // Length of array containing image slices
+        int slicesLength = this.textureSlices.size() - 1;
+        float x = getX(), y = getY(), angle = this.getRotation();
+        float width = this.getWidth(), height = this.getHeight();
+        for (int i = 0; i < slicesLength; i++) {
+            Texture texture = animateLights(i);
+            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
         }
     }
 
@@ -107,6 +117,7 @@ public class Patrols extends PatrolMovementSprite {
     public boolean isDead(){
         return this.isDead;
     }
+
 }
 
 

@@ -42,6 +42,7 @@ public class ResourceBar {
         this.create();
     }
 
+
     /**
      * Creates a new progress bar and sets the inital values for all properties needed.
      */

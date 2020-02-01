@@ -8,11 +8,14 @@ public class Road implements Connection<Junction> {
     Junction fromJunction;
     Junction toJunction;
     float cost;
+    boolean isTravelled;
+
 
     public Road(Junction fromJunction, Junction toJunction){
         this.fromJunction = fromJunction;
         this.toJunction = toJunction;
         cost = Vector2.dst(fromJunction.x, fromJunction.y, toJunction.x, toJunction.y);
+        this.isTravelled = false;
     }
 
     @Override
@@ -29,4 +32,21 @@ public class Road implements Connection<Junction> {
     public Junction getToNode() {
         return this.toJunction;
     }
+
+    public boolean isTravelled() {
+        return this.isTravelled;
+    }
+
+    public void setTravelled(Boolean b){
+        this.isTravelled = b;
+    }
+
+    public Road getHell(Junction fromJunction, Junction toJunction){
+        if (this.fromJunction == fromJunction && this.toJunction == toJunction){
+            return this;
+        }
+        return null;
+    }
+
+
 }

@@ -194,6 +194,11 @@ public class GameScreen implements Screen {
 		spawnPatrol();
 		spawnPatrol();
 		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -326,12 +331,15 @@ public class GameScreen implements Screen {
 		if(DEBUG_ENABLED) { // Draws all the nodes and the paths between them
 			shapeRenderer.setColor(Color.RED);
 			for (Road road : mapGraph.getRoads()) {
-			//	shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
-			//	shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
+				if (mapGraph.isTravelled(road.getFromNode(), road.getToNode())){
+					//	shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
+					shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(),3);
+				}
 			}
 			for (Junction junction : mapGraph.getJunctions()) {
 			//	shapeRenderer.circle(junction.getX(), junction.getY(), 30);
 			}
+
 		}
 		shapeRenderer.setColor(Color.WHITE);
 
@@ -525,9 +533,19 @@ public class GameScreen implements Screen {
 	}
 
 	private void spawnPatrol(){
-		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
+		ArrayList<Texture> patrolTexture = buildPatrolTextures();
 		Patrols patrol = new Patrols(patrolTexture, mapGraph.getJunctions().random(), mapGraph);
 		this.ETPatrols.add(patrol);
+	}
+
+	private ArrayList<Texture> buildPatrolTextures(){
+		ArrayList<Texture> patrolTextures = new ArrayList<Texture>();
+		for (int i = 99; i >= 0; i--){
+			String numberFormat = String.format("%03d", i);
+			Texture texture = new Texture("AlienSlices/tile" + numberFormat + ".png");
+			patrolTextures.add(texture);
+		}
+		return patrolTextures;
 	}
 
 	Firestation getFirestation() {
@@ -803,6 +821,10 @@ public class GameScreen implements Screen {
 
 		mapGraph.connectJunctions(fortyEight, twenty);
 		mapGraph.connectJunctions(fortyEight, fortyThree);
+	}
+
+	public MapGraph getMapGraph() {
+		return mapGraph;
 	}
 
 	public int getTime() {
