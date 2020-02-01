@@ -2,31 +2,25 @@ package com.classes;
 
 // LibGDX imports
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Polygon;
-import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.config.Constants;
 import com.sprites.MovementSprite;
 
 // Constants imports
-import static com.config.Constants.Direction;
-import static com.config.Constants.FIRETRUCK_HEIGHT;
-import static com.config.Constants.FIRETRUCK_WIDTH;
 
 // Java util import
 import java.util.ArrayList;
+
+import static com.config.Constants.*;
 
 /**
  * The Firetruck implementation. A sprite capable of moving and colliding with other sprites.
@@ -38,19 +32,20 @@ public class Firetruck extends MovementSprite {
 
     private final Constants.TruckColours colour;
     // Private values to be used in this class only
-    private Boolean isFocused, isSpraying;
-    private int focusID, internalTime, toggleDelay;
+    private Boolean isSpraying;
+    private int toggleDelay;
     private float hoseWidth, hoseHeight;
     private float[] firetruckProperties;
     private ArrayList<Texture> firetruckSlices, waterFrames;
     private Polygon hoseRange;
     private ResourceBar waterBar;
+    private ETFortress nearestFortress;
+    private Arrow arrow;
+    private boolean viewArrow;
 
     private boolean alive;
 
     private Firestation fireStation;
-
-    private ShapeRenderer shapeRenderer;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -71,8 +66,9 @@ public class Firetruck extends MovementSprite {
         this.setPosition(fireStation.getSpawnLocation().x, fireStation.getSpawnLocation().y);
         this.fireStation = fireStation;
         this.create();
-        this.shapeRenderer = new ShapeRenderer();
         this.colour = colour;
+        this.arrow = new Arrow(15, 50, 100, 50);
+        this.viewArrow = false;
     }
 
     /**
@@ -116,6 +112,7 @@ public class Firetruck extends MovementSprite {
         if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
             super.applyAcceleration(Direction.UP);
         }
+        viewArrow = Gdx.input.isKeyPressed(Keys.E);
 
         // Deplete water if spraying, toggle off when depleted
         if (this.isSpraying && this.waterBar.getCurrentAmount() > 0) {
@@ -153,6 +150,17 @@ public class Firetruck extends MovementSprite {
 
         // Decrease timeout, used for keeping track of time between toggle presses
         if (this.toggleDelay > 0) this.toggleDelay -= 1;
+    }
+
+    public void updateArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
+        setNearestFortress(fortresses);
+        if (viewArrow && this.nearestFortress != null) {
+            arrow.setPosition(this.getCentreX(), this.getCentreY());
+            arrow.aimAtTarget(this.nearestFortress.getCentre());
+            shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
+            shapeRenderer.polygon(arrow.getTransformedVertices());
+            shapeRenderer.end();
+        }
     }
 
     /**
@@ -199,6 +207,20 @@ public class Firetruck extends MovementSprite {
         super.setPosition(fireStation.getSpawnLocation().x, fireStation.getSpawnLocation().y);
         super.setRotation(0);
         super.setTruckHitBox(180);
+    }
+
+    public void setNearestFortress(ArrayList<ETFortress> fortresses) {
+        ETFortress nearest = null;
+        for (ETFortress fortress : fortresses) {
+            if (!fortress.isFlooded()) {
+                if (nearest == null) {
+                    nearest = fortress;
+                } else if (fortress.getCentre().dst(this.getCentre()) < nearest.getCentre().dst(this.getCentre())) {
+                    nearest = fortress;
+                }
+            }
+        }
+        this.nearestFortress = nearest;
     }
 
     /**

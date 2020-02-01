@@ -114,6 +114,11 @@ public class Firestation extends SimpleSprite {
                 this.openMenu(true);
             }
         }
+
+    }
+
+    public void updateActiveArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
+        this.activeFireTruck.updateArrow(shapeRenderer, fortresses);
     }
 
     public CarparkScreen getCarparkScreen() {

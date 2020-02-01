@@ -28,6 +28,8 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 
 // Java util imports
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 
 // Class imports
 import com.classes.*;
@@ -47,7 +49,7 @@ import static com.config.Constants.*;
 public class GameScreen implements Screen {
 
 	// A constant variable to store the game
-	final Kroy game;;
+	final Kroy game;
 
 	// Private values for game screen logic
 	private ShapeRenderer shapeRenderer;
@@ -74,9 +76,9 @@ public class GameScreen implements Screen {
 	private ArrayList<ETFortress> ETFortresses;
 	private ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
+	private ArrayList<Patrols> ETPatrols;
 	private Firestation firestation;
 
-	private Patrols patrol;
 
 	MapGraph mapGraph;
 	GraphPath<Junction> cityPath;
@@ -182,10 +184,13 @@ public class GameScreen implements Screen {
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
-		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
 		populateMap();
-		// mapGraph.getJunctions().random()
-		this.patrol = new Patrols(patrolTexture, mapGraph.getJunctions().get(0), mapGraph);
+
+		ETPatrols = new ArrayList<>();
+
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -263,21 +268,15 @@ public class GameScreen implements Screen {
 		// Render background map layers
 		renderer.render(this.backgroundLayers);
 
-		// Render the firetrucks on top of the background
-		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
-		batch.begin();
-
-		// Close layer
-		batch.end();
-		if (DEBUG_ENABLED) shapeRenderer.end();
-
 		// Render map foreground layers
 		renderer.render(foregroundLayers);
+
+		// Render the arrow
+		firestation.updateActiveArrow(shapeRenderer, ETFortresses);
 
 		// Render the remaining sprites, font last to be on top of all
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
 		batch.begin();
-
 
 		// Render sprites
 		for (ETFortress ETFortress : this.ETFortresses) {
@@ -289,13 +288,16 @@ public class GameScreen implements Screen {
 			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
 			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
 		}
+
 		// Call the update function of the sprites to draw and update them
 		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
-		patrol.update(this.batch);
+
+		for (Patrols patrol : this.ETPatrols) {
+			patrol.update(this.batch);
+		}
 		this.firestation.update(batch);
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
-
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score,
@@ -312,6 +314,7 @@ public class GameScreen implements Screen {
 		// Finish rendering
 		batch.end();
 
+
 		if (DEBUG_ENABLED) shapeRenderer.end();
 
 		shapeRenderer.begin(ShapeType.Filled);
@@ -319,15 +322,14 @@ public class GameScreen implements Screen {
 		if(DEBUG_ENABLED) { // Draws all the nodes and the paths between them
 			shapeRenderer.setColor(Color.RED);
 			for (Road road : mapGraph.getRoads()) {
-				shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
-				shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
+			//	shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
+			//	shapeRenderer.line(road.getFromNode().getVector(), road.getToNode().getVector());
 			}
 			for (Junction junction : mapGraph.getJunctions()) {
-				shapeRenderer.circle(junction.getX(), junction.getY(), 30);
+			//	shapeRenderer.circle(junction.getX(), junction.getY(), 30);
 			}
 		}
 		shapeRenderer.setColor(Color.WHITE);
-
 
 		shapeRenderer.end();
 
@@ -388,6 +390,29 @@ public class GameScreen implements Screen {
 				this.projectiles.add(projectile);
 			}
 		}
+
+
+		// Checks to see if a patrol is dead and removes it if it has died
+		for (Iterator<Patrols> it = this.ETPatrols.iterator(); it.hasNext();) {
+			if (it.next().isDead()) {
+				it.remove();
+			}
+		}
+
+		// Checks if a patrol has attacked a fire truck and vice versa
+		for (Patrols patrol : this.ETPatrols) {
+			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getHitBox())) {
+				patrol.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+				this.score += 10;
+			}
+			if (patrol.isInRadius(firetruck.getHitBox()) && patrol.canShootProjectile()) {
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY());
+				projectile.calculateTrajectory(firetruck.getHitBox());
+				this.projectiles.add(projectile);
+			}
+		}
+
+
 		// Check if firetruck is hit with a projectile
 		for (Projectile projectile : this.projectiles) {
 			if (Intersector.overlapConvexPolygons(firetruck.getHitBox(), projectile.getHitBox())) {
@@ -491,6 +516,12 @@ public class GameScreen implements Screen {
 			}
 		}
 		return truckTextures;
+	}
+
+	private void spawnPatrol(){
+		ArrayList<Texture> patrolTexture = buildFiretuckTextures(TruckColours.BLUE);
+		Patrols patrol = new Patrols(patrolTexture, mapGraph.getJunctions().random(), mapGraph);
+		this.ETPatrols.add(patrol);
 	}
 
 	Firestation getFirestation() {
