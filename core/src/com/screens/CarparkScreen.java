@@ -1,22 +1,17 @@
 package com.screens;
 
 import com.badlogic.gdx.*;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.GL20;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.viewport.FitViewport;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.badlogic.gdx.Input;
 import com.CustomActors.BackgroundBox;
@@ -24,10 +19,7 @@ import com.classes.Firestation;
 import com.classes.Firetruck;
 import com.config.Constants;
 import com.kroy.Kroy;
-
 import java.util.ArrayList;
-
-import static com.config.Constants.TILE_DIMS;
 
 public class CarparkScreen implements Screen {
 
@@ -38,6 +30,8 @@ public class CarparkScreen implements Screen {
     private OrthographicCamera camera;
     private Viewport viewport;
 
+    private Image background;
+
     private ShapeRenderer shapeRenderer;
 
     private Firestation firestation;
@@ -47,7 +41,9 @@ public class CarparkScreen implements Screen {
     private Table mainTable;
     private Table previewTable;
     private TextButton quitButton;
-    private Label activeStats;
+
+    private ArrayList<Label> activeStatsLabel;
+    private ArrayList<Label> activeStatsValue;
 
     private Constants.CarparkEntrances respawn;
 
@@ -59,8 +55,10 @@ public class CarparkScreen implements Screen {
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
-        viewport = new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), camera);
+        viewport = new ScreenViewport(camera);
         viewport.apply();
+
+        background = new Image(new Texture(Gdx.files.internal("garage.jpg")));
 
         TextureAtlas atlas = new TextureAtlas("skin/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
@@ -71,7 +69,6 @@ public class CarparkScreen implements Screen {
 
         // Create table to arrange buttons.
         mainTable = new Table(skin);
-        mainTable.setFillParent(true);
 
         previewTable = new Table(skin);
 
@@ -80,6 +77,10 @@ public class CarparkScreen implements Screen {
         shapeRenderer = new ShapeRenderer();
 
         this.respawn = Constants.CarparkEntrances.Main1;
+
+        activeStatsLabel = new ArrayList<Label>();
+        activeStatsValue = new ArrayList<Label>();
+        generateStatLabels();
     }
 
     /**
@@ -87,20 +88,11 @@ public class CarparkScreen implements Screen {
      */
     @Override
     public void show() {
-        camera.zoom = 1.2f;
         stage.setDebugAll(Constants.DEBUG_ENABLED);
         Gdx.input.setInputProcessor(stage);
 
         activeFiretruck = firestation.getActiveFireTruck();
-
-        activeStats = new Label(activeFiretruck.getColour() + " fire truck's Stats\n" +
-                "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
-                "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() +
-                "\n" +
-                "\nMaximum Speed: " + activeFiretruck.getMaxSpeed() +
-                "\nRange: " + activeFiretruck.getRange(), game.getLabelStyle());
-
-        activeStats.setAlignment(Align.center);
+        updateStatValues();
 
         ArrayList<Button> selectImageButtons = new ArrayList<>();
         ArrayList<TextButton> selectTextButtons = new ArrayList<>();
@@ -129,44 +121,80 @@ public class CarparkScreen implements Screen {
         previewTable.clear();
 
         // selected truck
-        mainTable.row();
         mainTable.add(previewTable).expand().fill();
 
-        previewTable.row().colspan(2).expand().pad(40);
+        previewTable.row().colspan(2).expand();
 
         // image preview
         previewTable.add(firestation.getActiveFireTruck().getFireTruckImage()).size(300, 150);
-        previewTable.add(activeStats);
+        Stack statsStack = new Stack();
+        statsStack.add(new BackgroundBox(300, 300, Color.DARK_GRAY, 10));
+        Table tableStats = new Table();
+        tableStats.pad(50);
+        statsStack.add(tableStats);
+
+        Stack nameStack = new Stack();
+        nameStack.add(new BackgroundBox(300, 25, Color.GRAY));
+        Label name = activeStatsValue.get(0);
+        name.setAlignment(Align.center);
+        nameStack.add(name);
+        tableStats.add(nameStack).colspan(2).padBottom(20).fillX();
+
+        for (int i=1; i<activeStatsLabel.size(); i++) {
+            Label label = activeStatsLabel.get(i);
+            Label value = activeStatsValue.get(i);
+            label.setAlignment(Align.left);
+            value.setAlignment(Align.right);
+
+            tableStats.row().padBottom(10).expandX().fillX();
+
+            Stack labelStack = new Stack();
+            labelStack.add(new BackgroundBox(100, 25, Color.GRAY));
+            labelStack.add(label);
+            tableStats.add(labelStack).left();
+
+            Stack valueStack = new Stack();
+            valueStack.add(new BackgroundBox(100, 25, Color.GRAY));
+            valueStack.add(value);
+            tableStats.add(valueStack).right();
+        }
+        previewTable.add(statsStack);
 
         // truck selector
-        mainTable.row().colspan(3).expand().padLeft(40).padRight(40);
+        mainTable.row().colspan(3).expandX();
+        Stack selectorStack = new Stack();
+        selectorStack.add(new BackgroundBox(100, 100, Color.DARK_GRAY, 40));
         HorizontalGroup hg = new HorizontalGroup();
+        hg.pad(50);
         hg.expand();
         hg.center();
-        mainTable.add(hg).expand().fill();
+        hg.space(30);
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
             Stack stack = new Stack();
-            VerticalGroup vg = new VerticalGroup();
-            vg.center();
-            vg.pad(40);
-            vg.addActor(selectImageButtons.get(i));
-            vg.addActor(selectTextButtons.get(i));
-            stack.addActor(new BackgroundBox(200, 100, Color.DARK_GRAY));
-            stack.addActor(vg);
+            VerticalGroup vgTruck = new VerticalGroup();
+            vgTruck.center();
+            vgTruck.pad(30);
+            vgTruck.addActor(selectImageButtons.get(i));
+            vgTruck.addActor(selectTextButtons.get(i));
+            stack.addActor(new BackgroundBox(200, 100, Color.GRAY, 10));
+            stack.addActor(vgTruck);
             hg.addActor(stack);
         }
+        selectorStack.add(hg);
+        mainTable.add(selectorStack);
 
         // close button
         mainTable.row().padBottom(80).expand();
         mainTable.add(quitButton).height(40).width(150).center();
 
+        stage.addActor(background);
         stage.addActor(mainTable);
+        mainTable.setFillParent(true);
 
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 firestation.openMenu(false);
-                System.out.println("Switching to game screen");
                 game.setScreen(gameScreen);
             }
         });
@@ -207,26 +235,32 @@ public class CarparkScreen implements Screen {
 
     public void render(float delta) {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
+        Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
         Gdx.graphics.getGL20().glEnable(GL20.GL_BLEND);
-        shapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        shapeRenderer.setColor(new Color(0, 0, 0, 0.1f));
-        shapeRenderer.rect(40, 40, Gdx.graphics.getWidth()-80, Gdx.graphics.getHeight()-80);
-        shapeRenderer.end();
         Gdx.gl.glDisable(GL20.GL_BLEND);
         stage.act(delta);
         stage.draw();
         this.firestation.decreaseInternalTime();
         this.firestation.checkRepairRefill(gameScreen.getTime(), true);
-        this.updateStats();
+        this.updateStatValues();
     }
 
-    private void updateStats() {
-        activeStats.setText(activeFiretruck.getColour() + " fire truck's Stats\n" +
-                "\nHealth: " + activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() +
-                "\nWater: " + activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() +
-                "\n" +
-                "\nMaximum Speed: " + activeFiretruck.getMaxSpeed() +
-                "\nRange: " + activeFiretruck.getRange());
+    private void updateStatValues() {
+        activeStatsValue.clear();
+        activeStatsValue.add(new Label(activeFiretruck.getColour() + " fire truck's Stats", game.getLabelStyle()));
+        activeStatsValue.add(new Label(activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount(), game.getLabelStyle()));
+        activeStatsValue.add(new Label(activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount(), game.getLabelStyle()));
+        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()), game.getLabelStyle()));
+        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()), game.getLabelStyle()));
+    }
+
+    private void generateStatLabels() {
+        activeStatsLabel.add(null);
+        activeStatsLabel.add(new Label("Health: ", game.getLabelStyle()));
+        activeStatsLabel.add(new Label("Water: ", game.getLabelStyle()));
+        activeStatsLabel.add(new Label("Speed: ", game.getLabelStyle()));
+        activeStatsLabel.add(new Label("Range: ", game.getLabelStyle()));
     }
 
     public Constants.CarparkEntrances getRespawn() {

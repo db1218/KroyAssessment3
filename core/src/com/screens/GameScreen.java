@@ -177,6 +177,7 @@ public class GameScreen implements Screen {
 		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
 		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
 		constructFireTruck(TruckColours.YELLOW, false, FiretruckOneProperties);
+		constructFireTruck(TruckColours.RED, false, FiretruckTwoProperties);
 
 
 		// Initialise ETFortresses array and add ETFortresses to it

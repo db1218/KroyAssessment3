@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
 
 // Class imports
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.screens.GameScreen;
@@ -25,6 +26,7 @@ public class Kroy extends Game {
 
 	// Batches to store drawn elements
   	public Batch batch;
+  	public SpriteBatch spriteBatch;
 	public BitmapFont font;
 	public Label.LabelStyle labelStyle;
 
@@ -35,6 +37,7 @@ public class Kroy extends Game {
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
 		// Use LibGDX's default Arial font.
 		this.setTTF();
+		this.spriteBatch = new SpriteBatch();
 
 		// Instantly transition to the main menu screen when game starts
 		this.setScreen(new MainMenuScreen(this));
