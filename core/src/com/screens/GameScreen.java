@@ -408,11 +408,11 @@ public class GameScreen implements Screen {
 
 
 		// Checks to see if a patrol is dead and removes it if it has died
-		for (Iterator<Patrols> it = this.ETPatrols.iterator(); it.hasNext();) {
-			if (it.next().isDead()) {
-			//	it.next().removeDead(mapGraph);
-				it.next().getDetectionRange();
-				it.remove();
+		for (int i=0; i<this.ETPatrols.size(); i++) {
+			Patrols patrol = this.ETPatrols.get(i);
+			if (patrol.isDead()) {
+				patrol.removeDead(mapGraph);
+				this.ETPatrols.remove(patrol);
 			}
 		}
 
