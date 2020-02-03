@@ -19,12 +19,14 @@ public class Patrols extends PatrolMovementSprite {
     ArrayList<Texture> textureSlices;
     private Circle detectionRange;
     private  boolean isDead;
+    String name;
 
-    public Patrols(ArrayList<Texture> textureSlices, Junction start, MapGraph mapGraph){
-        super(textureSlices.get(textureSlices.size() - 1), start, mapGraph);
+    public Patrols(ArrayList<Texture> textureSlices, Junction start, MapGraph mapGraph, String name){
+        super(textureSlices.get(textureSlices.size() - 1), start, mapGraph, name);
         this.getHealthBar().setMaxResource(25);
         this.textureSlices = textureSlices;
         this.isDead = false;
+        this.name = name;
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 3);
     }
 
@@ -120,6 +122,10 @@ public class Patrols extends PatrolMovementSprite {
 
     public void removeDead(MapGraph mapGraph){
         mapGraph.removeDead(super.getThis());
+    }
+
+    public String getName(){
+        return this.name;
     }
 
 }

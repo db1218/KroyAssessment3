@@ -189,14 +189,14 @@ public class GameScreen implements Screen {
 
 		ETPatrols = new ArrayList<>();
 
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
+		spawnPatrol("Looby");
+		spawnPatrol("Daniel");
+		spawnPatrol("Emilien");
+		spawnPatrol("Kathryn");
+		spawnPatrol("Callum");
+		spawnPatrol("Ravi");
+		spawnPatrol("JJ");
+		spawnPatrol("Lilian");
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -422,7 +422,7 @@ public class GameScreen implements Screen {
 			if (patrol.isInRadius(firetruck.getHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY());
 				projectile.calculateTrajectory(firetruck.getHitBox());
-				this.projectiles.add(projectile);
+			//	this.projectiles.add(projectile);
 			}
 		}
 
@@ -531,9 +531,9 @@ public class GameScreen implements Screen {
 		return truckTextures;
 	}
 
-	private void spawnPatrol(){
+	private void spawnPatrol(String name){
 		ArrayList<Texture> patrolTexture = buildPatrolTextures();
-		Patrols patrol = new Patrols(patrolTexture, mapGraph.getJunctions().random(), mapGraph);
+		Patrols patrol = new Patrols(patrolTexture, mapGraph.getJunctions().random(), mapGraph, name);
 		this.ETPatrols.add(patrol);
 	}
 
