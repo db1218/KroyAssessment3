@@ -1,8 +1,6 @@
 package com.classes;
 
-import com.PathFinding.Junction;
 import com.PathFinding.MapGraph;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -19,43 +17,20 @@ public class Patrols extends PatrolMovementSprite {
     ArrayList<Texture> textureSlices;
     private Circle detectionRange;
     private  boolean isDead;
-    String name;
 
-    public Patrols(ArrayList<Texture> textureSlices, Junction start, MapGraph mapGraph, String name){
-        super(textureSlices.get(textureSlices.size() - 1), start, mapGraph, name);
+    public Patrols(ArrayList<Texture> textureSlices, MapGraph mapGraph){
+        super(textureSlices.get(textureSlices.size() - 1), mapGraph);
         this.getHealthBar().setMaxResource(25);
         this.textureSlices = textureSlices;
         this.isDead = false;
-        this.name = name;
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 3);
     }
 
     public void update(Batch batch) {
-        checkDead();
+        checkIfDead();
         super.update(batch);
-        updateDetectionRange();
         drawVoxelImage(batch);
-    }
-
-    private void checkDead() {
-        if (this.getHealthBar().getCurrentAmount() == 0){
-            this.isDead = true;
-        }
-    }
-
-    private void updateDetectionRange() {
-        this.detectionRange.setX(this.getX());
-        this.detectionRange.setY(this.getY());
-    }
-
-    // Place holder until we get a sprite //
-    private void drawsVoxelImage(Batch batch) {
-        int slicesLength = textureSlices.size() - 1;
-        float width = 100, height = 100;
-        for (int i = 0; i < slicesLength; i++) {
-            Texture texture = animateLights(i);
-            batch.draw(new TextureRegion(texture), this.getX(), (this.getY() - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, this.getRotation(), true);
-        }
+        updateDetectionRange();
     }
 
     private void drawVoxelImage(Batch batch) {
@@ -64,29 +39,21 @@ public class Patrols extends PatrolMovementSprite {
         float x = getX(), y = getY(), angle = this.getRotation();
         float width = this.getWidth(), height = this.getHeight();
         for (int i = 0; i < slicesLength; i++) {
-            Texture texture = animateLights(i);
+            Texture texture = this.textureSlices.get(i);
             batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
         }
     }
 
-    // Place holder until we get a sprite //
-    private Texture animateLights(int index) {
-        if (index == 14) { // The index of the texture containing the first light colour
-            Texture texture = this.getInternalTime() / 5 > 15 ? textureSlices.get(index + 1) : textureSlices.get(index);
-            return texture;
-        } else if (index > 14) { // Offset remaining in order to not repeat a texture
-            return textureSlices.get(index + 1);
-        }
-        return this.textureSlices.get(index);
+    private void updateDetectionRange() {
+        this.detectionRange.setX(this.getX());
+        this.detectionRange.setY(this.getY());
     }
 
 
-
-    public boolean canShootProjectile() {
-        if (this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0) {
-            return true;
+    private void checkIfDead() {
+        if (this.getHealthBar().getCurrentAmount() == 0){
+            this.isDead = true;
         }
-        return false;
     }
 
     /**
@@ -112,8 +79,11 @@ public class Patrols extends PatrolMovementSprite {
         return polygon.contains(this.detectionRange.x, this.detectionRange.y);
     }
 
-    public Circle getDetectionRange(){
-        return this.detectionRange;
+    public boolean canShootProjectile() {
+        if (this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0) {
+            return true;
+        }
+        return false;
     }
 
     public boolean isDead(){
@@ -124,9 +94,6 @@ public class Patrols extends PatrolMovementSprite {
         mapGraph.removeDead(super.getThis());
     }
 
-    public String getName(){
-        return this.name;
-    }
 
 }
 

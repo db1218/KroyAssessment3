@@ -106,7 +106,7 @@ public class GameScreen implements Screen {
 		this.shapeRenderer = new ShapeRenderer();
 
 		// Create an array to store all projectiles in motion
-		this.projectiles = new ArrayList<Projectile>();
+		this.projectiles = new ArrayList<>();
 
 		// Decrease time every second, starting at 3 minutes
 		this.time = 3 * 60;
@@ -189,14 +189,14 @@ public class GameScreen implements Screen {
 
 		ETPatrols = new ArrayList<>();
 
-		spawnPatrol("Looby");
-		spawnPatrol("Daniel");
-		spawnPatrol("Emilien");
-		spawnPatrol("Kathryn");
-		spawnPatrol("Callum");
-		spawnPatrol("Ravi");
-		spawnPatrol("JJ");
-		spawnPatrol("Lilian");
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
+		spawnPatrol();
 
 		collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -422,7 +422,7 @@ public class GameScreen implements Screen {
 			if (patrol.isInRadius(firetruck.getHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY());
 				projectile.calculateTrajectory(firetruck.getHitBox());
-			//	this.projectiles.add(projectile);
+				this.projectiles.add(projectile);
 			}
 		}
 
@@ -531,9 +531,9 @@ public class GameScreen implements Screen {
 		return truckTextures;
 	}
 
-	private void spawnPatrol(String name){
+	private void spawnPatrol(){
 		ArrayList<Texture> patrolTexture = buildPatrolTextures();
-		Patrols patrol = new Patrols(patrolTexture, mapGraph.getJunctions().random(), mapGraph, name);
+		Patrols patrol = new Patrols(patrolTexture, mapGraph);
 		this.ETPatrols.add(patrol);
 	}
 

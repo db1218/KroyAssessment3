@@ -23,30 +23,32 @@ public class PatrolMovementSprite extends SimpleSprite {
     float deltaX;
     float deltaY;
 
-    String name;
-
     float speed;
     Junction previousJunction;
     Queue<Junction> pathQueue;
 
-    public PatrolMovementSprite(Texture spriteTexture, Junction start, MapGraph mapGraph, String name){
+    public PatrolMovementSprite(Texture spriteTexture, MapGraph mapGraph){
         super(spriteTexture);
-        this.mapGraph = mapGraph;
-        this.x = start.getX();
-        this.y = start.getY();
-        this.speed = 2.0f;
-        this.pathQueue = new Queue<>();
-        this.previousJunction = start;
-        this.name = name;
 
+        this.mapGraph = mapGraph;
+        this.pathQueue = new Queue<>();
+
+        Junction start = mapGraph.getJunctions().random();
         Junction goal = mapGraph.getJunctions().random();
 
-        setGoal(goal);
-        this.setRoad = mapGraph.hi(this.previousJunction, this.pathQueue.first());
-        mapGraph.lockRoads(this.setRoad, this);
+        this.x = start.getX();
+        this.y = start.getY();
 
-        this.deltaX = 0;
+        this.deltaX = 0f;
         this.deltaY = 0f;
+        this.speed = 2.0f;
+
+        this.previousJunction = start;
+
+        setGoal(goal);
+
+        this.setRoad = mapGraph.getRoad(this.previousJunction, this.pathQueue.first());
+        mapGraph.lockRoad(this.setRoad, this);
     }
 
     public void update(Batch batch) {
@@ -79,10 +81,10 @@ public class PatrolMovementSprite extends SimpleSprite {
     public void step() {
         this.x += deltaX;
         this.y += deltaY;
-        checkCollision();
+        atNextJunction();
     }
 
-    private void checkCollision() {
+    private void atNextJunction() {
         if (pathQueue.size > 0) {
             Junction targetJunction = pathQueue.first();
             if (Vector2.dst(x, y, targetJunction.getX(), targetJunction.getY()) < 5) {
@@ -103,13 +105,11 @@ public class PatrolMovementSprite extends SimpleSprite {
         if (pathQueue.size == 0) {
             reachDestination();
         } else if (mapGraph.isRoadLocked(currentJunction, pathQueue.first())){
-            Gdx.app.log("new goal for:", String.valueOf(this.name));
-            Gdx.app.log("junction where goal created:", String.valueOf(currentJunction.getName()));
             pathQueue.clear();
             reachDestination();
         } else {
-            this.setRoad = mapGraph.hi(currentJunction, pathQueue.first());
-            mapGraph.lockRoads(this.setRoad,  this);
+            this.setRoad = mapGraph.getRoad(currentJunction, pathQueue.first());
+            mapGraph.lockRoad(this.setRoad,  this);
             updateRotation();
             setSpeedToNextCity();
         }
@@ -123,7 +123,6 @@ public class PatrolMovementSprite extends SimpleSprite {
         do {
             newGoal = mapGraph.getJunctions().random();
         } while (newGoal == previousJunction);
-
         setGoal(newGoal);
     }
 
@@ -132,9 +131,5 @@ public class PatrolMovementSprite extends SimpleSprite {
     public float getY(){ return this.y; }
 
     public PatrolMovementSprite getThis(){ return this; }
-
-    public String getName(){
-        return this.name;
-    }
     
 }
