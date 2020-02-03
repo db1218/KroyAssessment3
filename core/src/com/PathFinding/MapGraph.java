@@ -12,6 +12,7 @@ import com.classes.Patrols;
 import com.sprites.PatrolMovementSprite;
 
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.Random;
 
@@ -23,7 +24,6 @@ public class MapGraph implements IndexedGraph<Junction> {
     HashMap<Road, PatrolMovementSprite> lockedRoads = new HashMap<>();
 
     ObjectMap<Junction, Array<Connection<Junction>>> cityMap = new ObjectMap<>();
-
 
     private int lastNodeIndex = 0;
 
@@ -130,6 +130,16 @@ public class MapGraph implements IndexedGraph<Junction> {
         setRoad.setTravelled(false);
     }
 
+    public void removeDead(PatrolMovementSprite patrol){
+        Iterator iter = lockedRoads.entrySet().iterator();
+        while (iter.hasNext()){
+            Map.Entry entry = (Map.Entry) iter.next();
+            if (patrol.equals(entry.getValue())){
+                iter.remove();
+            }
+        }
+    }
+
 
 
     public void lockedRoads(Road road, PatrolMovementSprite patrol) {
@@ -140,11 +150,21 @@ public class MapGraph implements IndexedGraph<Junction> {
         }
     }
 
+    public boolean isRoadLocked(Junction from, Junction to){
+        Road checkRoad = hi(from, to);
+        if (lockedRoads.containsKey(checkRoad)){
+            return true;
+        }
+        return false;
+    }
+
     public void unlockRoad(Road road, PatrolMovementSprite patrol) {
         Gdx.app.log("unlock", "unlock");
         Gdx.app.log("Patrol", String.valueOf(patrol));
+        Gdx.app.log("hascode",String.valueOf(patrol.hashCode()));
         if (lockedRoads.containsKey(road)){
             if (lockedRoads.get(road) == patrol) {
+                Gdx.app.log("hascode rquired", String.valueOf(lockedRoads.get(road).hashCode()));
                 Gdx.app.log("successful", "success");
                 Gdx.app.log("required", String.valueOf(lockedRoads.get(road)));
                 Gdx.app.log("successful by patrol", String.valueOf(patrol));

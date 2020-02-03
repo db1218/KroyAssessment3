@@ -108,25 +108,28 @@ public class PatrolMovementSprite extends SimpleSprite {
     }
 
     private void reachNextJunction() {
-       // mapGraph.unsetTravelled(previousJunction, pathQueue.first());
+      //  mapGraph.unsetTravelled(previousJunction, pathQueue.first());
        // mapGraph.unsetTravelled(this.setRoad);
         mapGraph.unlockRoad(this.setRoad,this);
-        Junction nextJunction = pathQueue.first();
-        this.x = nextJunction.getX();
-        this.y = nextJunction.getY();
+        Junction currentJunction = pathQueue.first();
+        this.x = currentJunction.getX();
+        this.y = currentJunction.getY();
 
-        this.previousJunction = nextJunction;
+        this.previousJunction = currentJunction;
         pathQueue.removeFirst();
 
+      //  Road nextRoad = mapGraph.hi(nextJunction, pathQueue.first());
         if (pathQueue.size == 0) {
             reachDestination();
-        } else if (mapGraph.isTravelled(nextJunction, pathQueue.first())){
+        } else if (mapGraph.isRoadLocked(currentJunction, pathQueue.first())){
+        //(mapGraph.isTravelled(nextJunction, pathQueue.first())){
             pathQueue.clear();
+            Gdx.app.log("here", "in here");
             reachDestination();
         } else {
            // mapGraph.setTravelled(nextJunction, pathQueue.first());
            // mapGraph.lockedRoads();
-            this.setRoad = mapGraph.hi(nextJunction, pathQueue.first());
+            this.setRoad = mapGraph.hi(currentJunction, pathQueue.first());
             mapGraph.lockedRoads(this.setRoad,  this);
             updateRotation();
             setSpeedToNextCity();
@@ -154,6 +157,8 @@ public class PatrolMovementSprite extends SimpleSprite {
     public float getY(){ return this.y; }
 
     public Circle getCircle() {return this.circle; }
+
+    public PatrolMovementSprite getThis(){ return this; }
 
 
 }

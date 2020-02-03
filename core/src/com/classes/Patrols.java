@@ -118,6 +118,10 @@ public class Patrols extends PatrolMovementSprite {
         return this.isDead;
     }
 
+    public void removeDead(MapGraph mapGraph){
+        mapGraph.removeDead(super.getThis());
+    }
+
 }
 
 
