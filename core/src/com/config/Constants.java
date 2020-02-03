@@ -11,26 +11,6 @@ public final class Constants {
         // Any constants that need instantiation go here
     }
 
-    // Firetruck One properties.
-    public static final float[] FiretruckOneProperties = {
-        140,  // HEALTH
-        10f,  // ACCELERATION
-        300f, // MAX_SPEED
-        0.8f, // RESTITUTION
-        1.2f, // RANGE
-        400,  // WATER MAX
-    };
-
-    // Firetruck Two properties
-    public static final float[] FiretruckTwoProperties = {
-        100,  // HEALTH
-        15f,  // ACCELERATION
-        400f, // MAX_SPEED
-        0.6f, // RESTITUTION
-        1.01f,// RANGE
-        300,  // WATER MAX
-    };
-
      // Enums
      public static enum Direction {
         UP,
@@ -40,24 +20,45 @@ public final class Constants {
          STATIC
     }
 
-    public enum TruckColours{
-        RED ("RED", "Red"),
-        BLUE ("BLUE", "Blue"),
-        YELLOW ("YELLOW", "Yellow");
+    public enum TruckType {
+        RED ("Red", new float[]{
+                140,  // HEALTH
+                10f,  // ACCELERATION
+                300f, // MAX_SPEED
+                0.8f, // RESTITUTION
+                1.2f, // RANGE
+                400,  // WATER MAX
+        }),
+        BLUE ("Blue", new float[]{
+                100,  // HEALTH
+                15f,  // ACCELERATION
+                400f, // MAX_SPEED
+                0.6f, // RESTITUTION
+                1.01f,// RANGE
+                300,  // WATER MAX
+        }),
+        YELLOW ("Yellow", new float[]{
+                250,  // HEALTH
+                15f,  // ACCELERATION
+                500f, // MAX_SPEED
+                1.6f, // RESTITUTION
+                0.9f,// RANGE
+                500,  // WATER MAX
+        });
 
-        private final String colourUpper;
-        private  final String colourLower;
+        private final String colour;
+        private final float[] properties;
 
-        TruckColours(String upper, String lower) {
-            this.colourUpper = upper;
-            this.colourLower = lower;
+        TruckType(String colour, float[] properties) {
+            this.colour = colour;
+            this.properties = properties;
         }
 
-        public String getColourUpper() {
-             return this.colourUpper;
+        public String getColour(){
+             return this.colour;
         }
-        public String getColourLower(){
-             return this.colourLower;
+        public float[] getProperties() {
+            return this.properties;
         }
     }
 
@@ -92,7 +93,7 @@ public final class Constants {
     }
 
     // Debug mode
-    public static final boolean DEBUG_ENABLED = true;
+    public static final boolean DEBUG_ENABLED = false;
 
     // Game settings
     public static final String GAME_NAME = "Kroy";

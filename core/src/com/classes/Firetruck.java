@@ -30,12 +30,12 @@ import static com.config.Constants.*;
  */
 public class Firetruck extends MovementSprite {
 
-    private final Constants.TruckColours colour;
     // Private values to be used in this class only
     private Boolean isSpraying;
     private int toggleDelay;
     private float hoseWidth, hoseHeight;
     private float[] firetruckProperties;
+    private TruckType type;
     private ArrayList<Texture> firetruckSlices, waterFrames;
     private Polygon hoseRange;
     private ResourceBar waterBar;
@@ -58,19 +58,18 @@ public class Firetruck extends MovementSprite {
      * 
      * @param textureSlices  The array of textures used to draw the firetruck with.
      * @param frames         The texture used to draw the water with.
-     * @param properties     The properties of the truck inherited from Constants.
+     * @param type           The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, float[] properties, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation, Constants.TruckColours colour) {
+    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, TruckType type, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer, fireStation);
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
-        this.firetruckProperties = properties;
+        this.type = type;
         this.location = CarparkEntrances.Main1;
         this.setPosition(CarparkEntrances.Main1.getLocation().x, CarparkEntrances.Main1.getLocation().y);
         this.fireStation = fireStation;
         this.create();
-        this.colour = colour;
         this.arrow = new Arrow(15, 50, 100, 50);
         this.viewArrow = false;
         this.carparkLayer = carparkLayer;
@@ -84,11 +83,11 @@ public class Firetruck extends MovementSprite {
         this.isSpraying = true;
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
         super.setTruckHitBox(-90);
-        this.getHealthBar().setMaxResource((int) this.firetruckProperties[0]);
-        this.setAccelerationRate(this.firetruckProperties[1]);
-        this.setDecelerationRate(this.firetruckProperties[1] * 0.6f);
-        this.setMaxSpeed(this.firetruckProperties[2]);
-        this.setRestitution(this.firetruckProperties[3]);
+        this.getHealthBar().setMaxResource((int) this.getType().getProperties()[0]);
+        this.setAccelerationRate(this.getType().getProperties()[1]);
+        this.setDecelerationRate(this.getType().getProperties()[1] * 0.6f);
+        this.setMaxSpeed(this.getType().getProperties()[2]);
+        this.setRestitution(this.getType().getProperties()[3]);
         this.createWaterHose();
         this.alive = true;
 
@@ -140,7 +139,7 @@ public class Firetruck extends MovementSprite {
         hoseVector.nor();
 
         // Update the hose size and position. Angle it towards the mouse
-        float scale = this.isSpraying && this.hoseRange.getScaleX() < this.firetruckProperties[4] ?
+        float scale = this.isSpraying && this.hoseRange.getScaleX() < this.getType().getProperties()[4] ?
             0.05f : !this.isSpraying && this.hoseRange.getScaleX() > 0 ? -0.05f : 0;
         this.hoseRange.setScale(this.hoseRange.getScaleX() + scale, this.hoseRange.getScaleY() + scale);
         this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
@@ -239,7 +238,7 @@ public class Firetruck extends MovementSprite {
     }
 
     public Texture getFireTruckTexture() {
-        return new Texture(Gdx.files.internal("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " Full.png"));
+        return new Texture(Gdx.files.internal("FireTrucks/" + type.getColour() + "/FiretruckFull.png"));
     }
 
     public Image getFireTruckImage() {
@@ -271,7 +270,7 @@ public class Firetruck extends MovementSprite {
      */
     private void createWaterHose() {
         // Get the scale of the hose and create its shape
-        float rangeScale = this.firetruckProperties[4];
+        float rangeScale = this.getType().getProperties()[4];
         this.hoseWidth = this.getHeight() * 4.5f * rangeScale;
         this.hoseHeight =  this.getWidth() * 0.65f * rangeScale;
         float[] hoseVertices = { // Starts facing right
@@ -287,7 +286,7 @@ public class Firetruck extends MovementSprite {
         // Create the water bar
         this.waterBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.waterBar.setColourRange(new Color[] { Color.BLUE });
-        this.waterBar.setMaxResource((int) this.firetruckProperties[5]);
+        this.waterBar.setMaxResource((int) this.getType().getProperties()[5]);
         // Start with the hose off
         this.toggleHose();
     } 
@@ -309,7 +308,7 @@ public class Firetruck extends MovementSprite {
      * @return Whether the firetruck is damaged.
      */
     public boolean isDamaged() {
-        return this.getHealthBar().getCurrentAmount() < this.firetruckProperties[0];
+        return this.getHealthBar().getCurrentAmount() < this.getType().getProperties()[0];
     }
 
     /**
@@ -327,7 +326,7 @@ public class Firetruck extends MovementSprite {
      * @return Whether the firetruck has used any water.
      */
     public boolean isLowOnWater() {
-        return this.waterBar.getCurrentAmount() < this.firetruckProperties[5];
+        return this.waterBar.getCurrentAmount() < this.getType().getProperties()[5];
     }
 
     /**
@@ -371,11 +370,11 @@ public class Firetruck extends MovementSprite {
     }
 
     public float getRange() {
-        return this.firetruckProperties[4];
+        return this.getType().getProperties()[4];
     }
 
-    public String getColour() {
-        return colour.getColourLower();
+    public TruckType getType() {
+        return type;
     }
 
     /**

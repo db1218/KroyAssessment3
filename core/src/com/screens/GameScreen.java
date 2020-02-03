@@ -171,10 +171,10 @@ public class GameScreen implements Screen {
 		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS, game, this);
 
 		// Initialise firetrucks array and add firetrucks to it
-		constructFireTruck(Constants.TruckColours.RED, true, FiretruckOneProperties);
-		constructFireTruck(Constants.TruckColours.BLUE, false, FiretruckTwoProperties);
-		constructFireTruck(TruckColours.YELLOW, false, FiretruckOneProperties);
-		constructFireTruck(TruckColours.RED, false, FiretruckTwoProperties);
+		constructFireTruck(true, TruckType.BLUE);
+		constructFireTruck(false, TruckType.RED);
+		constructFireTruck(false, TruckType.YELLOW);
+		constructFireTruck(false, TruckType.BLUE);
 
 
 		// Initialise ETFortresses array and add ETFortresses to it
@@ -503,29 +503,28 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public void constructFireTruck(Constants.TruckColours colour, boolean isActive, float[] firetruckProperties) {
-		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(colour);
+	public void constructFireTruck(boolean isActive, TruckType type) {
+		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(type);
+		Firetruck firetruck = new Firetruck(truckTextures, this.waterFrames, type,
+				(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
+				this.firestation);
 		if (isActive) {
-			this.firestation.setActiveFireTruck(new Firetruck(truckTextures, this.waterFrames, firetruckProperties,
-					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
-					 this.firestation, colour));
+			this.firestation.setActiveFireTruck(firetruck);
 		} else {
-			this.firestation.parkFireTruck(new Firetruck(truckTextures, this.waterFrames, firetruckProperties,
-					(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
-					this.firestation, colour));
+			this.firestation.parkFireTruck(firetruck);
 		}
 	}
 
-	private ArrayList<Texture> buildFiretuckTextures(Constants.TruckColours colour) {
+	private ArrayList<Texture> buildFiretuckTextures(TruckType type) {
 		ArrayList<Texture> truckTextures = new ArrayList<Texture>();
 		for (int i = 20; i > 0; i--) {
 			if (i == 6) { // Texture 5 contains identical slices except the lights are different
-				Texture texture = new Texture("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " (6) A.png");
+				Texture texture = new Texture("FireTrucks/" + type.getColour() + "/Firetruck(6) A.png");
 				truckTextures.add(texture);
-				texture = new Texture("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " (6) B.png");
+				texture = new Texture("FireTrucks/" + type.getColour() + "/Firetruck(6) B.png");
 				truckTextures.add(texture);
 			} else {
-				Texture texture = new Texture("Firetruck" + colour.getColourLower() + "/Firetruck" + colour.getColourUpper() + " (" + i + ").png");
+				Texture texture = new Texture("FireTrucks/" + type.getColour() + "/Firetruck(" + i + ").png");
 				truckTextures.add(texture);
 			}
 		}
