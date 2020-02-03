@@ -124,9 +124,7 @@ public class Firestation extends SimpleSprite {
     }
 
     private void respawnFiretruck() {
-        this.activeFireTruck.setPosition(carparkScreen.getRespawn().getLocation().x, carparkScreen.getRespawn().getLocation().y);
-        this.activeFireTruck.resetRotation();
-        this.activeFireTruck.setSpeed(new Vector2(0, 0));
+        this.activeFireTruck.respawn();
     }
 
     public boolean hasParkedFiretrucks() {
@@ -151,12 +149,12 @@ public class Firestation extends SimpleSprite {
 
     public void checkRepairRefill(int time, boolean includeActive) {
         if (includeActive) {
-            if (time > 0 && (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater())) {
+            if (time > 0 && activeFireTruck.getCarpark().name().contains("Main") && (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater())) {
                 this.repairRefill(activeFireTruck);
             }
         }
         for (Firetruck firetruck : parkedFireTrucks) {
-            if (time > 0 && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
+            if (time > 0 && firetruck.getCarpark().name().contains("Main") && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
                 this.repairRefill(firetruck);
             }
         }

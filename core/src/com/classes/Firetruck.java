@@ -44,6 +44,8 @@ public class Firetruck extends MovementSprite {
     private boolean viewArrow;
     private TiledMapTileLayer carparkLayer;
 
+    private Constants.CarparkEntrances location;
+
     private boolean alive;
 
     private Firestation fireStation;
@@ -64,7 +66,8 @@ public class Firetruck extends MovementSprite {
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
         this.firetruckProperties = properties;
-        this.setPosition(fireStation.getCarparkScreen().getRespawn().getLocation().x, fireStation.getCarparkScreen().getRespawn().getLocation().y);
+        this.location = CarparkEntrances.Main1;
+        this.setPosition(CarparkEntrances.Main1.getLocation().x, CarparkEntrances.Main1.getLocation().y);
         this.fireStation = fireStation;
         this.create();
         this.colour = colour;
@@ -173,20 +176,24 @@ public class Firetruck extends MovementSprite {
     public void setRespawnLocation(int number) {
         switch (number) {
             case 0:
-                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Main1);
+                this.location = CarparkEntrances.Main1;
                 break;
             case 1:
-                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Lower);
+                this.location = CarparkEntrances.Main2;
                 break;
             case 2:
-                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Upper1);
+                this.location = CarparkEntrances.Lower;
                 break;
             case 3:
-                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Upper2);
+                this.location = CarparkEntrances.Upper1;
                 break;
             case 4:
-                this.fireStation.getCarparkScreen().setRespawn(CarparkEntrances.Main2);
+                this.location = CarparkEntrances.Upper2;
         }
+    }
+
+    public Constants.CarparkEntrances getCarpark() {
+        return this.location;
     }
 
     public void updateArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
@@ -240,8 +247,8 @@ public class Firetruck extends MovementSprite {
     }
 
     protected void resetRotation() {
-        super.setRotation(0 + this.fireStation.getCarparkScreen().getRespawn().getRotation());
-        super.setTruckHitBox(180 + this.fireStation.getCarparkScreen().getRespawn().getRotation());
+        super.setRotation(0 + this.location.getRotation());
+        super.setTruckHitBox(180 + this.location.getRotation());
     }
 
     public void setNearestFortress(ArrayList<ETFortress> fortresses) {
@@ -383,5 +390,11 @@ public class Firetruck extends MovementSprite {
         for (Texture texture : this.waterFrames) {
             texture.dispose();
         }
+    }
+
+    public void respawn() {
+        this.setPosition(this.location.getLocation().x, this.location.getLocation().y);
+        this.resetRotation();
+        this.setSpeed(new Vector2(0, 0));
     }
 }

@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
 import com.badlogic.gdx.utils.Timer;
@@ -29,8 +28,6 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 
 // Java util imports
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 
 // Class imports
 import com.classes.*;
@@ -224,7 +221,7 @@ public class GameScreen implements Screen {
 		// Start the camera near the firestation
 		this.camera.setToOrtho(false);
 		this.camera.zoom = 2f;
-		this.camera.position.set(this.firestation.getCarparkScreen().getRespawn().getLocation().x, this.firestation.getCarparkScreen().getRespawn().getLocation().y, 0);
+		this.camera.position.set(this.firestation.getActiveFireTruck().getCarpark().getLocation().x, this.firestation.getActiveFireTruck().getCarpark().getLocation().y, 0);
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();

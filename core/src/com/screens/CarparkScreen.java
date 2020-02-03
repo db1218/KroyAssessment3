@@ -45,8 +45,6 @@ public class CarparkScreen implements Screen {
     private ArrayList<Label> activeStatsLabel;
     private ArrayList<Label> activeStatsValue;
 
-    private Constants.CarparkEntrances respawn;
-
     public CarparkScreen(Firestation firestation, Kroy game, GameScreen gameScreen) {
         this.game = game;
         this.gameScreen = gameScreen;
@@ -76,8 +74,6 @@ public class CarparkScreen implements Screen {
 
         shapeRenderer = new ShapeRenderer();
 
-        this.respawn = Constants.CarparkEntrances.Main1;
-
         activeStatsLabel = new ArrayList<Label>();
         activeStatsValue = new ArrayList<Label>();
         generateStatLabels();
@@ -94,10 +90,14 @@ public class CarparkScreen implements Screen {
         activeFiretruck = firestation.getActiveFireTruck();
         updateStatValues();
 
+        ArrayList<Label> selectLocationLabel = new ArrayList<>();
         ArrayList<Button> selectImageButtons = new ArrayList<>();
         ArrayList<TextButton> selectTextButtons = new ArrayList<>();
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
             Firetruck firetruck = firestation.getParkedFireTrucks().get(i);
+
+            Label title = new Label("", skin);
+            title.setAlignment(Align.center);
 
             Drawable drawable = new TextureRegionDrawable(new TextureRegion(firetruck.getFireTruckTexture()));
             drawable.setMinWidth(150);
@@ -111,8 +111,12 @@ public class CarparkScreen implements Screen {
                 textButton.setTouchable(Touchable.disabled);
                 textButton.setColor(Color.DARK_GRAY);
                 imageButton.setColor(Color.DARK_GRAY);
+                title.setText("DEAD");
+            } else {
+                title.setText("Location: " + firetruck.getCarpark().getName());
             }
 
+            selectLocationLabel.add(title);
             selectImageButtons.add(imageButton);
             selectTextButtons.add(textButton);
         }
@@ -121,6 +125,11 @@ public class CarparkScreen implements Screen {
         previewTable.clear();
 
         // selected truck
+
+        Label heading = new Label(activeFiretruck.getCarpark().getName(), game.getLabelStyle());
+        heading.setAlignment(Align.center);
+        mainTable.add(heading).padTop(40);
+        mainTable.row();
         mainTable.add(previewTable).expand().fill();
 
         previewTable.row().colspan(2).expand();
@@ -174,6 +183,7 @@ public class CarparkScreen implements Screen {
             VerticalGroup vgTruck = new VerticalGroup();
             vgTruck.center();
             vgTruck.pad(30);
+            vgTruck.addActor(selectLocationLabel.get(i));
             vgTruck.addActor(selectImageButtons.get(i));
             vgTruck.addActor(selectTextButtons.get(i));
             stack.addActor(new BackgroundBox(200, 100, Color.GRAY, 10));
@@ -262,15 +272,6 @@ public class CarparkScreen implements Screen {
         activeStatsLabel.add(new Label("Speed: ", game.getLabelStyle()));
         activeStatsLabel.add(new Label("Range: ", game.getLabelStyle()));
     }
-
-    public Constants.CarparkEntrances getRespawn() {
-        return this.respawn;
-    }
-
-    public void setRespawn(Constants.CarparkEntrances entrance) {
-        this.respawn = entrance;
-    }
-
 
     /**
      * @param width

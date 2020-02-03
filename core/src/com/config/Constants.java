@@ -62,18 +62,20 @@ public final class Constants {
     }
 
     public enum CarparkEntrances {
-        Main1(new Vector2(80.5f * TILE_DIMS, 24.5f * TILE_DIMS), 0),
-        Main2(new Vector2(85 * TILE_DIMS, 30.5f * TILE_DIMS), 90),
-        Lower(new Vector2(52 * TILE_DIMS, 22.5f * TILE_DIMS), 90),
-        Upper1(new Vector2(52 * TILE_DIMS, 52.5f * TILE_DIMS), 90),
-        Upper2(new Vector2(44 * TILE_DIMS, 52 * TILE_DIMS), 90);
+        Main1(new Vector2(80.5f * TILE_DIMS, 24.5f * TILE_DIMS), 0, "Fire Station"),
+        Main2(new Vector2(85 * TILE_DIMS, 30.5f * TILE_DIMS), 90, "Fire Station"),
+        Lower(new Vector2(52 * TILE_DIMS, 22.5f * TILE_DIMS), 90, "Lower Car Park"),
+        Upper1(new Vector2(52 * TILE_DIMS, 52.5f * TILE_DIMS), 90, "Upper Car Park"),
+        Upper2(new Vector2(44 * TILE_DIMS, 52 * TILE_DIMS), 90, "Upper Car Park");
 
         private final Vector2 location;
         private final float rotation;
+        private final String name;
 
-        CarparkEntrances(Vector2 location, float rotation) {
+        CarparkEntrances(Vector2 location, float rotation, String name) {
             this.location = location;
             this.rotation = rotation;
+            this.name = name;
         }
 
         public Vector2 getLocation() {
@@ -83,10 +85,14 @@ public final class Constants {
         public float getRotation() {
             return this.rotation;
         }
+
+        public String getName() {
+            return this.name;
+        }
     }
 
     // Debug mode
-    public static final boolean DEBUG_ENABLED = false;
+    public static final boolean DEBUG_ENABLED = true;
 
     // Game settings
     public static final String GAME_NAME = "Kroy";
