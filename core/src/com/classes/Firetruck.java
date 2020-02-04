@@ -188,6 +188,12 @@ public class Firetruck extends MovementSprite {
                 break;
             case 4:
                 this.location = CarparkEntrances.Upper2;
+                break;
+            case 5:
+                this.location = CarparkEntrances.TopLeft;
+                break;
+            case 6:
+                this.location = CarparkEntrances.TopRight;
         }
     }
 
