@@ -35,7 +35,6 @@ public class Firestation extends SimpleSprite {
 
     private Firetruck activeFireTruck;
 
-    private CarparkScreen carparkScreen;
     private boolean isMenuOpen;
     private Texture destroyed;
     private boolean isDestroyed;
@@ -58,7 +57,6 @@ public class Firestation extends SimpleSprite {
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
-        this.carparkScreen = new CarparkScreen(this, game, gameScreen);
         this.game = game;
         this.isDestroyed = false;
     }
@@ -117,10 +115,6 @@ public class Firestation extends SimpleSprite {
 
     public void updateActiveArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
         this.activeFireTruck.updateArrow(shapeRenderer, fortresses);
-    }
-
-    public CarparkScreen getCarparkScreen() {
-        return this.carparkScreen;
     }
 
     private void respawnFiretruck() {

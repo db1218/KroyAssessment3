@@ -74,6 +74,7 @@ public class GameScreen implements Screen {
 	private ArrayList<Projectile> projectilesToRemove;
 	private ArrayList<Patrols> ETPatrols;
 	private Firestation firestation;
+	private CarparkScreen carparkScreen;
 
 	private TiledMapTileLayer carparkLayer;
 
@@ -169,6 +170,8 @@ public class GameScreen implements Screen {
 
 		// Create a new firestation
 		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS, game, this);
+		this.carparkScreen = new CarparkScreen(this.firestation, game, this);
+
 
 		// Initialise firetrucks array and add firetrucks to it
 		constructFireTruck(true, TruckType.BLUE);
@@ -358,7 +361,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void checkIfCarpark() {
-		if (this.firestation.isMenuOpen()) game.setScreen(this.firestation.getCarparkScreen());
+		if (this.firestation.isMenuOpen()) game.setScreen(this.carparkScreen);
 	}
 
 	public TiledMapTileLayer getCarparkLayer() {
