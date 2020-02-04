@@ -80,9 +80,9 @@ public class Firetruck extends MovementSprite {
      * Also initialises any properties needed by the firetruck.
      */
     private void create() {
+        super.setMovementHitBox(-90);
         this.isSpraying = true;
         this.setSize(FIRETRUCK_WIDTH, FIRETRUCK_HEIGHT);
-        super.setTruckHitBox(-90);
         this.getHealthBar().setMaxResource((int) this.getType().getProperties()[0]);
         this.setAccelerationRate(this.getType().getProperties()[1]);
         this.setDecelerationRate(this.getType().getProperties()[1] * 0.6f);
@@ -160,7 +160,7 @@ public class Firetruck extends MovementSprite {
 
     public void checkCarparkCollision() {
         if (carparkLayer != null) {
-            for (Vector2 vertex : getPolygonVertices(super.getHitBox())) {
+            for (Vector2 vertex : getPolygonVertices(super.getMovementHitBox())) {
                 if (carparkLayer.getCell((int) (vertex.x / TILE_DIMS), (int) (vertex.y / TILE_DIMS)) != null) {
                     if (carparkLayer.getCell((int) (vertex.x / TILE_DIMS), (int) (vertex.y / TILE_DIMS)).getTile().getProperties().get("carpark") != null) {
                         int carparkNum = ((int) carparkLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))).getTile().getProperties().get("carpark"));
@@ -253,7 +253,7 @@ public class Firetruck extends MovementSprite {
 
     protected void resetRotation() {
         super.setRotation(0 + this.location.getRotation());
-        super.setTruckHitBox(180 + this.location.getRotation());
+        super.setMovementHitBox(180 + this.location.getRotation());
     }
 
     public void setNearestFortress(ArrayList<ETFortress> fortresses) {

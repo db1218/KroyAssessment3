@@ -31,7 +31,6 @@ import java.util.ArrayList;
 
 // Class imports
 import com.classes.*;
-import com.config.Constants;
 import com.kroy.Kroy;
 
 // Constants import
@@ -395,13 +394,13 @@ public class GameScreen implements Screen {
 		Firetruck firetruck = this.firestation.getActiveFireTruck();
 		// Check if it overlaps with an ETFortress
 		for (ETFortress ETFortress : this.ETFortresses) {
-			if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(ETFortress.getHitBox())) {
+			if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(ETFortress.getDamageHitBox())) {
 				ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
 				this.score += 10;
 			}
-			if (ETFortress.isInRadius(firetruck.getHitBox()) && ETFortress.canShootProjectile()) {
+			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY());
-				projectile.calculateTrajectory(firetruck.getHitBox());
+				projectile.calculateTrajectory(firetruck.getDamageHitBox());
 				this.projectiles.add(projectile);
 			}
 		}
@@ -418,13 +417,13 @@ public class GameScreen implements Screen {
 
 		// Checks if a patrol has attacked a fire truck and vice versa
 		for (Patrols patrol : this.ETPatrols) {
-			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getHitBox())) {
+			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getDamageHitBox())) {
 				patrol.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
 				this.score += 10;
 			}
-			if (patrol.isInRadius(firetruck.getHitBox()) && patrol.canShootProjectile()) {
+			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY());
-				projectile.calculateTrajectory(firetruck.getHitBox());
+				projectile.calculateTrajectory(firetruck.getDamageHitBox());
 				this.projectiles.add(projectile);
 			}
 		}
@@ -432,7 +431,7 @@ public class GameScreen implements Screen {
 
 		// Check if firetruck is hit with a projectile
 		for (Projectile projectile : this.projectiles) {
-			if (Intersector.overlapConvexPolygons(firetruck.getHitBox(), projectile.getHitBox())) {
+			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
 				firetruck.getHealthBar().subtractResourceAmount(PROJECTILE_DAMAGE);
 				if (this.score > 10) this.score -= 10;
 				projectilesToRemove.add(projectile);

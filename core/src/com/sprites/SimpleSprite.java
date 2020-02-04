@@ -1,7 +1,6 @@
 package com.sprites;
 
 // LibGDX imports
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -11,7 +10,6 @@ import com.badlogic.gdx.graphics.Texture;
 
 // Class import
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.physics.box2d.PolygonShape;
 import com.classes.ResourceBar;
 
 /**
@@ -26,7 +24,8 @@ public class SimpleSprite extends Sprite {
     private Texture texture;
     private float width, height, internalTime;
     private ResourceBar healthBar;
-    private Polygon hitBox;
+    private Polygon movementHitBox;
+    private Polygon damageHitBox;
     private Vector2 centre;
 
     /**
@@ -48,7 +47,8 @@ public class SimpleSprite extends Sprite {
     private void create() {
         // Use the longest side of the sprite as the bar width
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
-        this.hitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        this.damageHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
         // Rotate 90 to be same rotation as textures
         this.rotate(-90);
         // Start internal time at 150, used for animations/timeouts
@@ -63,7 +63,8 @@ public class SimpleSprite extends Sprite {
     public void update(Batch batch) {
         // Keep the healthbar and hitbox located on the sprite
         this.healthBar.setPosition(this.getX(), this.getY());
-        this.hitBox.setPosition(this.getX(), this.getY());
+        this.movementHitBox.setPosition(this.getX(), this.getY());
+        this.damageHitBox.setPosition(this.getX(), this.getY());
         this.centre = new Vector2(this.getCentreX(), this.getCentreY());
         this.healthBar.update(batch);
         // Draw the sprite and update the healthbar
@@ -86,7 +87,8 @@ public class SimpleSprite extends Sprite {
      * @param renderer   The shape renderer to draw onto.
      */
     public void drawDebug(ShapeRenderer renderer) {
-        renderer.polygon(this.hitBox.getTransformedVertices());
+        renderer.polygon(this.movementHitBox.getTransformedVertices());
+        renderer.polygon(this.damageHitBox.getTransformedVertices());
     }
 
     /**
@@ -109,13 +111,14 @@ public class SimpleSprite extends Sprite {
         this.width = width;
         this.height = height;
         this.create();
-        this.hitBox.setOrigin(width/2, height/2);
+        this.movementHitBox.setOrigin(width/2, height/2);
+        this.damageHitBox.setOrigin(width/2, height/2);
     }
 
-    public void setTruckHitBox(float rotation) {
-        this.hitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
-        this.hitBox.setOrigin(width/2, height/2);
-        this.hitBox.rotate(rotation);
+    public void setMovementHitBox(float rotation) {
+        this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
+        this.movementHitBox.setOrigin(width/2, height/2);
+        this.movementHitBox.rotate(rotation);
     }
 
     /**
@@ -125,13 +128,15 @@ public class SimpleSprite extends Sprite {
     @Override
     public void rotate(float degrees) {
         super.rotate(degrees);
-        this.hitBox.rotate(degrees);
+        this.movementHitBox.rotate(degrees);
+        this.damageHitBox.rotate(degrees);
     }
 
     @Override
     public void setRotation(float degrees) {
         super.setRotation(degrees);
-        this.hitBox.setRotation(degrees);
+        this.movementHitBox.setRotation(degrees);
+        this.damageHitBox.setRotation(degrees);
     }
 
     /**
@@ -151,11 +156,19 @@ public class SimpleSprite extends Sprite {
     }
 
     /**
-     * Get the hit box of the sprite.
+     * Get the movement hit box of the sprite.
      * @return The hit box of the sprite.
      */
-    public Polygon getHitBox() {
-        return this.hitBox;
+    public Polygon getMovementHitBox() {
+        return this.movementHitBox;
+    }
+
+    /**
+     * Get the damage hit box of the sprite.
+     * @return The hit box of the sprite.
+     */
+    public Polygon getDamageHitBox() {
+        return this.damageHitBox;
     }
 
     /**
