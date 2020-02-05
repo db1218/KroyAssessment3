@@ -45,6 +45,7 @@ public class CarparkScreen implements Screen {
 
     private ArrayList<TextButton> selectTextButtons;
     private ArrayList<Button> selectImageButtons;
+    private ArrayList<Label> selectLocationLabels;
 
     private ArrayList<Label> activeStatsLabel;
     private ArrayList<Label> activeStatsValue;
@@ -111,6 +112,7 @@ public class CarparkScreen implements Screen {
         generateStatLabels();
 
         // create buttons for each parked truck
+        selectLocationLabels = new ArrayList<>();
         selectImageButtons = new ArrayList<>();
         selectTextButtons = new ArrayList<>();
         generateTruckButtons();
@@ -250,6 +252,7 @@ public class CarparkScreen implements Screen {
             VerticalGroup vgTruck = new VerticalGroup();
             vgTruck.center();
             vgTruck.pad(30);
+            vgTruck.addActor(selectLocationLabels.get(i));
             vgTruck.addActor(selectImageButtons.get(i));
             vgTruck.addActor(selectTextButtons.get(i));
             stack.addActor(new BackgroundBox(200, 100, Color.GRAY, 10));
@@ -259,6 +262,7 @@ public class CarparkScreen implements Screen {
     }
 
     private void generateTruckButtons() {
+        selectLocationLabels.clear();
         selectImageButtons.clear();
         selectTextButtons.clear();
         for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
@@ -284,6 +288,7 @@ public class CarparkScreen implements Screen {
                 title.setText("Location: " + firetruck.getCarpark().getName());
             }
 
+            selectLocationLabels.add(title);
             selectImageButtons.add(imageButton);
             selectTextButtons.add(textButton);
         }
