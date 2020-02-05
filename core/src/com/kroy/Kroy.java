@@ -12,9 +12,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.screens.GameScreen;
-import com.screens.MainMenuScreen;
-
-import java.awt.*;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.
@@ -28,7 +25,8 @@ public class Kroy extends Game {
   	public Batch batch;
   	public SpriteBatch spriteBatch;
 	public BitmapFont font;
-	public Label.LabelStyle labelStyle;
+	public Label.LabelStyle font15;
+	public Label.LabelStyle font10;
 
 	/**
 	 * Display the main menu screen upon game start.
@@ -40,7 +38,7 @@ public class Kroy extends Game {
 		this.spriteBatch = new SpriteBatch();
 
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new MainMenuScreen(this));
+		this.setScreen(new GameScreen(this));
 	}
 
 	/**
@@ -105,21 +103,34 @@ public class Kroy extends Game {
 	private void setTTF() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Xolonium-Regular.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
-		parameter.size = 15;
 		parameter.borderWidth = 1;
 		parameter.color = Color.WHITE;
 		parameter.shadowOffsetX = 3;
 		parameter.shadowOffsetY = 3;
 		parameter.shadowColor = Color.DARK_GRAY;
-		this.font = generator.generateFont(parameter); // font size 24 pixels
-		generator.dispose();
+
+		parameter.size = 15;
+		font = generator.generateFont(parameter); // font size 24 pixels
+		parameter.size = 20;
+		BitmapFont font2 = generator.generateFont(parameter);
 
 		Label.LabelStyle labelStyle = new Label.LabelStyle();
-		labelStyle.font = font;
-		this.labelStyle = labelStyle;
+		Label.LabelStyle labelStyle2 = new Label.LabelStyle();
+
+		labelStyle.font = font2;
+		this.font10 = labelStyle;
+
+		labelStyle2.font = font;
+		this.font15 = labelStyle2;
+
+		generator.dispose();
 	}
 
-	public Label.LabelStyle getLabelStyle() {
-		return this.labelStyle;
+	public Label.LabelStyle getFont15() {
+		return this.font15;
+	}
+
+	public Label.LabelStyle getFont10() {
+		return this.font10;
 	}
 }
