@@ -87,8 +87,9 @@ public class SimpleSprite extends Sprite {
      * @param renderer   The shape renderer to draw onto.
      */
     public void drawDebug(ShapeRenderer renderer) {
-        renderer.polygon(this.movementHitBox.getTransformedVertices());
+        System.out.println(this.damageHitBox.getTransformedVertices());
         renderer.polygon(this.damageHitBox.getTransformedVertices());
+        renderer.polygon(this.movementHitBox.getTransformedVertices());
     }
 
     /**

@@ -28,8 +28,8 @@ public class Patrols extends PatrolMovementSprite {
 
     public void update(Batch batch) {
         checkIfDead();
-        super.update(batch);
         drawVoxelImage(batch);
+        super.update(batch);
         updateDetectionRange();
     }
 

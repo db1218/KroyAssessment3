@@ -93,6 +93,8 @@ public class Firetruck extends MovementSprite {
 
         // Start the firetruck facing left
         this.rotate(-90);
+        this.resetRotation();
+
     }
 
     /**

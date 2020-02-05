@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -57,6 +58,8 @@ public class CarparkScreen implements Screen {
         viewport.apply();
 
         background = new Image(new Texture(Gdx.files.internal("garage.jpg")));
+        background.setWidth(Gdx.graphics.getWidth());
+        background.setHeight(Gdx.graphics.getHeight());
 
         TextureAtlas atlas = new TextureAtlas("skin/uiskin.atlas");
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), atlas);
@@ -106,6 +109,8 @@ public class CarparkScreen implements Screen {
             Button imageButton = new Button(drawable);
             TextButton textButton = new TextButton(firetruck.getType().getColour() + " Fire Truck", skin);
             textButton.setSize(150,40);
+
+
 
             if (!firetruck.isAlive()) {
                 textButton.setTouchable(Touchable.disabled);

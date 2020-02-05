@@ -74,6 +74,7 @@ public class GameScreen implements Screen {
 	private ArrayList<Patrols> ETPatrols;
 	private Firestation firestation;
 	private CarparkScreen carparkScreen;
+	private MinigameSprite minigameSprite;
 
 	private TiledMapTileLayer carparkLayer;
 
@@ -145,6 +146,8 @@ public class GameScreen implements Screen {
         };
 
         this.carparkLayer = (TiledMapTileLayer) map.getLayers().get("Carpark");
+
+        this.minigameSprite = new MinigameSprite(new Texture(Gdx.files.internal("swords.png")));
 
 		// Initialise textures to use for sprites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
@@ -304,6 +307,9 @@ public class GameScreen implements Screen {
 		for (Patrols patrol : this.ETPatrols) {
 			patrol.update(this.batch);
 		}
+
+		this.minigameSprite.update(batch);
+
 		this.firestation.update(batch);
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
