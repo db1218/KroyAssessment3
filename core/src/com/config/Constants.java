@@ -1,5 +1,6 @@
 package com.config;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -21,7 +22,7 @@ public final class Constants {
     }
 
     public enum TruckType {
-        RED ("Red", new float[]{
+        RED ("Red", new Color(0.467f, 0f, 0f, 1f), new float[]{
                 140,  // HEALTH
                 10f,  // ACCELERATION
                 300f, // MAX_SPEED
@@ -29,7 +30,7 @@ public final class Constants {
                 1.2f, // RANGE
                 400,  // WATER MAX
         }),
-        BLUE ("Blue", new float[]{
+        BLUE ("Blue", new Color(0, 0f, 0.667f, 1f), new float[]{
                 100,  // HEALTH
                 15f,  // ACCELERATION
                 400f, // MAX_SPEED
@@ -37,7 +38,15 @@ public final class Constants {
                 1.01f,// RANGE
                 300,  // WATER MAX
         }),
-        YELLOW ("Yellow", new float[]{
+        YELLOW ("Yellow", new Color(1f, 1f, 0.2f, 1f), new float[]{
+                250,  // HEALTH
+                15f,  // ACCELERATION
+                500f, // MAX_SPEED
+                1.6f, // RESTITUTION
+                0.9f, // RANGE
+                500,  // WATER MAX
+        }),
+        GREEN ("Yellow", new Color(0f, 0.667f, 0f, 1f), new float[]{
                 250,  // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
@@ -46,19 +55,24 @@ public final class Constants {
                 500,  // WATER MAX
         });
 
-        private final String colour;
+        private final String colourString;
         private final float[] properties;
+        private final Color colour;
 
-        TruckType(String colour, float[] properties) {
+        TruckType(String colourString, Color colour, float[] properties) {
+            this.colourString = colourString;
             this.colour = colour;
             this.properties = properties;
         }
 
-        public String getColour(){
-             return this.colour;
+        public String getColourString(){
+             return this.colourString;
         }
         public float[] getProperties() {
             return this.properties;
+        }
+        public Color getColour() {
+            return this.colour;
         }
     }
 

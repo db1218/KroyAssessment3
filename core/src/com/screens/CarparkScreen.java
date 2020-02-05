@@ -276,7 +276,7 @@ public class CarparkScreen implements Screen {
             drawable.setMinHeight(75);
 
             Button imageButton = new Button(drawable);
-            TextButton textButton = new TextButton(firetruck.getType().getColour() + " Fire Truck", skin);
+            TextButton textButton = new TextButton(firetruck.getType().getColourString() + " Fire Truck", skin);
             textButton.setSize(150,40);
 
             if (!firetruck.isAlive()) {
@@ -305,7 +305,7 @@ public class CarparkScreen implements Screen {
 
     private void updateStatValues() {
         activeStatsValue.clear();
-        activeStatsValue.add(new Label(activeFiretruck.getType().getColour() + " fire truck's Stats", game.getFont10()));
+        activeStatsValue.add(new Label(activeFiretruck.getType().getColourString() + " fire truck's Stats", game.getFont10()));
         activeStatsValue.add(new Label(activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() + " ", game.getFont10()));
         activeStatsValue.add(new Label(activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() + " ", game.getFont10()));
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
