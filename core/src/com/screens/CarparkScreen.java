@@ -186,8 +186,9 @@ public class CarparkScreen implements Screen {
                 selectTextButtons.get(i).addListener(new ClickListener(){
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
-                        buyTruck(selectedTruck);
-                        firestation.changeFiretruck(index);
+                        if (boughtTruck(selectedTruck)){
+                            firestation.changeFiretruck(index);
+                        }
                         show();
                     }
                 });
@@ -212,6 +213,8 @@ public class CarparkScreen implements Screen {
         }
 
     }
+
+
 
     public void render(float delta) {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
@@ -316,12 +319,15 @@ public class CarparkScreen implements Screen {
         }
     }
 
-    public void buyTruck(Firetruck truck) {
+    public boolean boughtTruck(Firetruck truck) {
         if (gameScreen.getScore() >= truck.getPrice()) {
             truck.buy();
             gameScreen.setScore((int) (gameScreen.getScore() - truck.getPrice()));
+            return true;
         }
+        return false;
     }
+
 
     private void generateStatLabels() {
         activeStatsLabel.clear();
