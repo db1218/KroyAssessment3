@@ -176,10 +176,10 @@ public class GameScreen implements Screen {
 		// need to make it take away from  the number of points
 
 		// Initialise firetrucks array and add firetrucks to it
-		constructFireTruck(false, TruckType.BLUE, false);
+		constructFireTruck(false, TruckType.BLUE, true);
 		constructFireTruck(true, TruckType.RED, true);
-		constructFireTruck(false, TruckType.YELLOW, false);
-		constructFireTruck(false, TruckType.GREEN, false);
+		constructFireTruck(false, TruckType.YELLOW, true);
+		constructFireTruck(false, TruckType.GREEN, true);
 
 
 		// Initialise ETFortresses array and add ETFortresses to it
@@ -509,6 +509,7 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	// there is a bug where if you buy another truck then you die then
 	public void constructFireTruck(boolean isActive, TruckType type, boolean isBought) {
 		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(type);
 		Firetruck firetruck = new Firetruck(truckTextures, this.waterFrames, type,
@@ -516,10 +517,11 @@ public class GameScreen implements Screen {
 				this.firestation, isBought);
 		if (isActive) {
 			this.firestation.setActiveFireTruck(firetruck);
+			this.firestation.setTrucksBought(firetruck);
 		} else {
 			this.firestation.parkFireTruck(firetruck);
 			if (firetruck.isBought()) {
-				this.firestation.setTrucksBought(firetruck);
+				//this.firestation.setTrucksBought(firetruck);
 			}
 		}
 	}
