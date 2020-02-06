@@ -43,6 +43,8 @@ public class CarparkScreen implements Screen {
     private Image activeTruckImage;
     private Table tableStats;
 
+    private ArrayList<Firetruck> trucksBought;
+
     private ArrayList<TextButton> selectTextButtons;
     private ArrayList<Button> selectImageButtons;
     private ArrayList<Label> selectLocationLabels;
@@ -134,6 +136,8 @@ public class CarparkScreen implements Screen {
 
         mainTable.setFillParent(true);
 
+        this.trucksBought = new ArrayList<>();
+
         stage.addActor(background);
         stage.addActor(mainTable);
 
@@ -180,7 +184,19 @@ public class CarparkScreen implements Screen {
 
         for (int i = 0; i< firestation.getParkedFireTrucks().size(); i++) {
             int index = i;
-            if (firestation.getParkedFireTrucks().get(i).isAlive()) {
+            Firetruck selectedTruck = firestation.getParkedFireTrucks().get(i);
+            if (!firestation.getParkedFireTrucks().get(i).isBought()){
+
+                selectTextButtons.get(i).addListener(new ClickListener(){
+                    @Override
+                    public void clicked(InputEvent event, float x, float y) {
+                        buyTruck(selectedTruck);
+                        show();
+                    }
+                });
+            }
+
+            else if (firestation.getParkedFireTrucks().get(i).isAlive()) {
                 selectImageButtons.get(i).addListener(new ClickListener() {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
@@ -276,16 +292,28 @@ public class CarparkScreen implements Screen {
             drawable.setMinHeight(75);
 
             Button imageButton = new Button(drawable);
-            TextButton textButton = new TextButton(firetruck.getType().getColourString() + " Fire Truck", skin);
+            TextButton textButton = new TextButton("", skin);
             textButton.setSize(150,40);
 
-            if (!firetruck.isAlive()) {
+            Drawable drawable1 = new TextureRegionDrawable(new TextureRegion(new Texture ("alienProjectile.png")));
+            drawable1.setMinWidth(150);
+            drawable1.setMinHeight(75);
+
+          //  TextButton textButton1 = new TextButton("Buy" + firetruck.getPrice(), skin);
+          //  textButton1.setSize(150, 40);
+
+            if (!firetruck.isBought()) {
+                title.setText(firetruck.getType().getColourString() + " Fire Truck");
+                textButton.setText("Buy " + firetruck.getPrice());
+            } else if (!firetruck.isAlive()) {
+                textButton.setText(firetruck.getType().getColourString() + " Fire Truck");
                 textButton.setTouchable(Touchable.disabled);
                 textButton.setColor(Color.DARK_GRAY);
                 imageButton.setColor(Color.DARK_GRAY);
                 title.setText("DEAD");
             } else {
                 title.setText("Location: " + firetruck.getCarpark().getName());
+                textButton.setText(firetruck.getType().getColourString() + " Fire Truck");
             }
 
             selectLocationLabels.add(title);
@@ -352,4 +380,21 @@ public class CarparkScreen implements Screen {
         shapeRenderer.dispose();
 
     }
+
+    public void buyTruck(Firetruck truck){
+        if (canBuyTruck(truck)) {
+            truck.buy();
+            this.firestation.setTrucksBought(truck);
+            gameScreen.setScore((int) (gameScreen.getScore() - truck.getPrice()));
+        }
+    }
+
+    public boolean canBuyTruck(Firetruck truck){
+        return gameScreen.getScore() > truck.getPrice();
+    }
+
+    public ArrayList<Firetruck> getTrucksBought(){
+        return this.trucksBought;
+    }
+
 }

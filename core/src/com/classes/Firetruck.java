@@ -47,6 +47,7 @@ public class Firetruck extends MovementSprite {
     private Constants.CarparkEntrances location;
 
     private boolean alive;
+    private boolean isBought;
 
     private Firestation fireStation;
 
@@ -61,7 +62,7 @@ public class Firetruck extends MovementSprite {
      * @param type           The properties of the truck inherited from Constants.
      * @param collisionLayer The layer of the map the firetruck collides with.
      */
-    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, TruckType type, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation) {
+    public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, TruckType type, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation, boolean isBought) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer, fireStation);
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
@@ -73,6 +74,7 @@ public class Firetruck extends MovementSprite {
         this.arrow = new Arrow(15, 50, 100, 50);
         this.viewArrow = false;
         this.carparkLayer = carparkLayer;
+        this.isBought = isBought;
     }
 
     /**
@@ -385,6 +387,8 @@ public class Firetruck extends MovementSprite {
         return type;
     }
 
+    public float getPrice() {return  this.getType().getProperties()[6];}
+
     /**
      * Dispose of all textures used by this class and its parents.
      */
@@ -403,5 +407,13 @@ public class Firetruck extends MovementSprite {
         this.setPosition(this.location.getLocation().x, this.location.getLocation().y);
         this.resetRotation();
         this.setSpeed(new Vector2(0, 0));
+    }
+
+    public void buy(){
+        this.isBought = true;
+    }
+
+    public boolean isBought(){
+        return this.isBought;
     }
 }

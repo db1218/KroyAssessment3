@@ -35,6 +35,7 @@ public final class Constants {
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
                 400,  // WATER MAX
+                0  // PRICE
         }),
         BLUE ("Blue", new float[]{
                 100,  // HEALTH
@@ -43,6 +44,7 @@ public final class Constants {
                 0.6f, // RESTITUTION
                 1.01f,// RANGE
                 300,  // WATER MAX
+                100   // PRICE
         }),
         YELLOW ("Yellow",new float[]{
                 250,  // HEALTH
@@ -51,6 +53,7 @@ public final class Constants {
                 1.6f, // RESTITUTION
                 0.9f, // RANGE
                 500,  // WATER MAX
+                200,  // PRICE
         }),
         GREEN ("Green", new float[]{
                 250,  // HEALTH
@@ -59,6 +62,7 @@ public final class Constants {
                 1.6f, // RESTITUTION
                 0.9f, // RANGE
                 500,  // WATER MAX
+                300   // PRICE
         });
 
         private final String colourString;

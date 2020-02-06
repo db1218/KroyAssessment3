@@ -40,6 +40,7 @@ public class Firestation extends SimpleSprite {
     private boolean isDestroyed;
 
     private ArrayList<Firetruck> parkedFireTrucks;
+    private ArrayList<Firetruck> trucksBought;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -59,6 +60,7 @@ public class Firestation extends SimpleSprite {
         this.parkedFireTrucks = new ArrayList<>();
         this.game = game;
         this.isDestroyed = false;
+        this.trucksBought = new ArrayList<>();
     }
 
     /**
@@ -138,8 +140,9 @@ public class Firestation extends SimpleSprite {
     }
 
     public void parkFireTruck(Firetruck firetruck) {
-        this.parkedFireTrucks.add(firetruck);
+            this.parkedFireTrucks.add(firetruck);
     }
+
 
     public void checkRepairRefill(int time, boolean includeActive) {
         if (includeActive) {
@@ -168,8 +171,8 @@ public class Firestation extends SimpleSprite {
     }
 
     private int getAliveFiretruckID() {
-        for (int i=0; i < parkedFireTrucks.size(); i++) {
-            if (parkedFireTrucks.get(i).isAlive()) {
+        for (int i=0; i < trucksBought.size(); i++) {
+            if (trucksBought.get(i).isAlive()) {
                 return i;
             }
         }
@@ -181,5 +184,9 @@ public class Firestation extends SimpleSprite {
         activeFireTruck = parkedFireTrucks.get(index);
         parkedFireTrucks.remove(index);
         parkedFireTrucks.add(index, previous);
+    }
+
+    public void setTrucksBought(Firetruck truck){
+        this.trucksBought.add(truck);
     }
 }

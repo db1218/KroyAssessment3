@@ -62,7 +62,7 @@ public class FiretruckTest {
 
     @Test
     public void spawnFireTruck() {
-        gameScreenMock.constructFireTruck(true, TruckType.BLUE);
+        gameScreenMock.constructFireTruck(true, TruckType.BLUE, true);
     }
 
     @Test

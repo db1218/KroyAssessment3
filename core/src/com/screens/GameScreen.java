@@ -79,7 +79,6 @@ public class GameScreen implements Screen {
 	private TiledMapTileLayer carparkLayer;
 
 	MapGraph mapGraph;
-	GraphPath<Junction> cityPath;
 	ArrayList<Junction> junctionsInMap;
 
 	private GameInputHandler gameInputHandler;
@@ -174,12 +173,13 @@ public class GameScreen implements Screen {
 		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS, game, this);
 		this.carparkScreen = new CarparkScreen(this.firestation, game, this);
 
+		// need to make it take away from  the number of points
 
 		// Initialise firetrucks array and add firetrucks to it
-		constructFireTruck(true, TruckType.BLUE);
-		constructFireTruck(false, TruckType.RED);
-		constructFireTruck(false, TruckType.YELLOW);
-		constructFireTruck(false, TruckType.GREEN);
+		constructFireTruck(false, TruckType.BLUE, false);
+		constructFireTruck(true, TruckType.RED, true);
+		constructFireTruck(false, TruckType.YELLOW, false);
+		constructFireTruck(false, TruckType.GREEN, false);
 
 
 		// Initialise ETFortresses array and add ETFortresses to it
@@ -509,15 +509,18 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	public void constructFireTruck(boolean isActive, TruckType type) {
+	public void constructFireTruck(boolean isActive, TruckType type, boolean isBought) {
 		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(type);
 		Firetruck firetruck = new Firetruck(truckTextures, this.waterFrames, type,
 				(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
-				this.firestation);
+				this.firestation, isBought);
 		if (isActive) {
 			this.firestation.setActiveFireTruck(firetruck);
 		} else {
 			this.firestation.parkFireTruck(firetruck);
+			if (firetruck.isBought()) {
+				this.firestation.setTrucksBought(firetruck);
+			}
 		}
 	}
 
@@ -835,5 +838,9 @@ public class GameScreen implements Screen {
 	public int getTime() {
 		return this.time;
 	}
+
+	public int getScore(){ return this.score; }
+
+	public void setScore(int score) {this.score = score; }
 
 }
