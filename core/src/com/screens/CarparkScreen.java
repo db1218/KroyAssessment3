@@ -43,8 +43,6 @@ public class CarparkScreen implements Screen {
     private Image activeTruckImage;
     private Table tableStats;
 
-    private ArrayList<Firetruck> trucksBought;
-
     private ArrayList<TextButton> selectTextButtons;
     private ArrayList<Button> selectImageButtons;
     private ArrayList<Label> selectLocationLabels;
@@ -136,8 +134,6 @@ public class CarparkScreen implements Screen {
 
         mainTable.setFillParent(true);
 
-        this.trucksBought = new ArrayList<>();
-
         stage.addActor(background);
         stage.addActor(mainTable);
 
@@ -191,6 +187,7 @@ public class CarparkScreen implements Screen {
                     @Override
                     public void clicked(InputEvent event, float x, float y) {
                         buyTruck(selectedTruck);
+                        firestation.changeFiretruck(index);
                         show();
                     }
                 });
@@ -299,7 +296,6 @@ public class CarparkScreen implements Screen {
             drawable1.setMinWidth(150);
             drawable1.setMinHeight(75);
 
-
             if (!firetruck.isBought()) {
                 title.setText(firetruck.getType().getColourString() + " Fire Truck");
                 textButton.setText("Buy " + firetruck.getPrice());
@@ -320,6 +316,13 @@ public class CarparkScreen implements Screen {
         }
     }
 
+    public void buyTruck(Firetruck truck) {
+        if (gameScreen.getScore() >= truck.getPrice()) {
+            truck.buy();
+            gameScreen.setScore((int) (gameScreen.getScore() - truck.getPrice()));
+        }
+    }
+
     private void generateStatLabels() {
         activeStatsLabel.clear();
         activeStatsLabel.add(null);
@@ -337,6 +340,7 @@ public class CarparkScreen implements Screen {
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()) + " ", game.getFont10()));
     }
+
 
     /**
      * @param width
@@ -377,22 +381,6 @@ public class CarparkScreen implements Screen {
         stage.dispose();
         shapeRenderer.dispose();
 
-    }
-
-    public void buyTruck(Firetruck truck){
-        if (canBuyTruck(truck)) {
-            truck.buy();
-            this.firestation.setTrucksBought(truck);
-            gameScreen.setScore((int) (gameScreen.getScore() - truck.getPrice()));
-        }
-    }
-
-    public boolean canBuyTruck(Firetruck truck){
-        return gameScreen.getScore() >= truck.getPrice();
-    }
-
-    public ArrayList<Firetruck> getTrucksBought(){
-        return this.trucksBought;
     }
 
 }

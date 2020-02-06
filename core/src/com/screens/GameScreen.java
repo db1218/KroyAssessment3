@@ -517,12 +517,8 @@ public class GameScreen implements Screen {
 				this.firestation, isBought);
 		if (isActive) {
 			this.firestation.setActiveFireTruck(firetruck);
-			this.firestation.setTrucksBought(firetruck);
 		} else {
 			this.firestation.parkFireTruck(firetruck);
-			if (firetruck.isBought()) {
-				//this.firestation.setTrucksBought(firetruck);
-			}
 		}
 	}
 
@@ -833,13 +829,7 @@ public class GameScreen implements Screen {
 		mapGraph.connectJunctions(fortyEight, fortyThree);
 	}
 
-	public MapGraph getMapGraph() {
-		return mapGraph;
-	}
-
-	public int getTime() {
-		return this.time;
-	}
+	public int getTime() { return this.time; }
 
 	public int getScore(){ return this.score; }
 
