@@ -512,7 +512,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void constructFireTruck(boolean isActive, TruckType type) {
-		ArrayList<Texture> truckTextures = this.buildFiretuckTextures();
+		ArrayList<Texture> truckTextures = this.buildFiretuckTextures(type);
 		Firetruck firetruck = new Firetruck(truckTextures, this.waterFrames, type,
 				(TiledMapTileLayer) map.getLayers().get("Collision"), (TiledMapTileLayer) map.getLayers().get("Carpark"),
 				this.firestation);
@@ -523,16 +523,16 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private ArrayList<Texture> buildFiretuckTextures() {
+	private ArrayList<Texture> buildFiretuckTextures(TruckType type) {
 		ArrayList<Texture> truckTextures = new ArrayList<Texture>();
 		for (int i = 20; i > 0; i--) {
 			if (i == 6) { // Texture 5 contains identical slices except the lights are different
-				Texture texture = new Texture("FireTrucks/Firetruck(6) A.png");
+				Texture texture = new Texture("FireTrucks/" + type.getColourString() + "/Firetruck(6) A.png");
 				truckTextures.add(texture);
-				texture = new Texture("FireTrucks/Firetruck(6) B.png");
+				texture = new Texture("FireTrucks/" + type.getColourString() + "/Firetruck(6) B.png");
 				truckTextures.add(texture);
 			} else {
-				Texture texture = new Texture("FireTrucks/Firetruck(" + i + ").png");
+				Texture texture = new Texture("FireTrucks/" + type.getColourString() + "/Firetruck(" + i + ").png");
 				truckTextures.add(texture);
 			}
 		}

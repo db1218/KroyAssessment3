@@ -22,7 +22,7 @@ public final class Constants {
     }
 
     public enum TruckType {
-        RED ("Red", new Color(0.467f, 0f, 0f, 1f), new float[]{
+        RED ("Red", new float[]{
                 140,  // HEALTH
                 10f,  // ACCELERATION
                 300f, // MAX_SPEED
@@ -30,7 +30,7 @@ public final class Constants {
                 1.2f, // RANGE
                 400,  // WATER MAX
         }),
-        BLUE ("Blue", new Color(0, 0f, 0.667f, 1f), new float[]{
+        BLUE ("Blue", new float[]{
                 100,  // HEALTH
                 15f,  // ACCELERATION
                 400f, // MAX_SPEED
@@ -38,7 +38,7 @@ public final class Constants {
                 1.01f,// RANGE
                 300,  // WATER MAX
         }),
-        YELLOW ("Yellow", new Color(1f, 1f, 0.2f, 1f), new float[]{
+        YELLOW ("Yellow",new float[]{
                 250,  // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
@@ -46,7 +46,7 @@ public final class Constants {
                 0.9f, // RANGE
                 500,  // WATER MAX
         }),
-        GREEN ("Yellow", new Color(0f, 0.667f, 0f, 1f), new float[]{
+        GREEN ("Green", new float[]{
                 250,  // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
@@ -57,11 +57,9 @@ public final class Constants {
 
         private final String colourString;
         private final float[] properties;
-        private final Color colour;
 
-        TruckType(String colourString, Color colour, float[] properties) {
+        TruckType(String colourString, float[] properties) {
             this.colourString = colourString;
-            this.colour = colour;
             this.properties = properties;
         }
 
@@ -70,9 +68,6 @@ public final class Constants {
         }
         public float[] getProperties() {
             return this.properties;
-        }
-        public Color getColour() {
-            return this.colour;
         }
     }
 

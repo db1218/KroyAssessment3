@@ -225,11 +225,7 @@ public class Firetruck extends MovementSprite {
         float width = this.getWidth(), height = this.getHeight();
         for (int i = 0; i < slicesLength; i++) {
             Texture texture = animateLights(i);
-            if (i<=13 && i>=2) {
-                batch.setColor(this.type.getColour());
-            }
             batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
-            batch.setColor(Color.WHITE);
         }
     }
 
@@ -250,7 +246,7 @@ public class Firetruck extends MovementSprite {
     }
 
     public Texture getFireTruckTexture() {
-        return new Texture(Gdx.files.internal("FireTrucks/Firetruck" + type.getColourString() + ".png"));
+        return new Texture(Gdx.files.internal("FireTrucks/" + type.getColourString() + "/FiretruckFull.png"));
     }
 
     public Image getFireTruckImage() {
