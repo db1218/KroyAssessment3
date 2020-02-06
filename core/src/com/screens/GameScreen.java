@@ -386,10 +386,8 @@ public class GameScreen implements Screen {
 		for (ETFortress ETFortress : this.ETFortresses) {
 			if (ETFortress.getHealthBar().getCurrentAmount() > 0) gameWon = false;
 		}
-		if (gameWon || gameLost) {
-			dispose();
-			this.game.setScreen(new MainMenuScreen(this.game));
-		}
+		if (gameWon) this.game.setScreen(new GameOverScreen(this.game, Outcome.WON));
+		else if (gameLost) this.game.setScreen(new GameOverScreen(this.game, Outcome.LOST));
 	}
 
 	/**

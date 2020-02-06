@@ -21,6 +21,12 @@ public final class Constants {
          STATIC
     }
 
+    public static enum Outcome {
+        NONE,
+        WON,
+        LOST
+    }
+
     public enum TruckType {
         RED ("Red", new float[]{
                 140,  // HEALTH
