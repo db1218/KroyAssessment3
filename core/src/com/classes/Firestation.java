@@ -6,12 +6,10 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Circle;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
 import com.kroy.Kroy;
-import com.screens.CarparkScreen;
 import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
 import com.sprites.SimpleSprite;
@@ -104,7 +102,6 @@ public class Firestation extends SimpleSprite {
         this.activeFireTruck.update(batch, camera);
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
         if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
-            this.trucksBought.remove(this.activeFireTruck);
             this.activeFireTruck.destroyed();
             if (getAliveFiretruckID() == -1) {
                 game.setScreen(new MainMenuScreen(game));
@@ -173,11 +170,9 @@ public class Firestation extends SimpleSprite {
     }
 
     private int getAliveFiretruckID() {
-        if (!trucksBought.isEmpty()){
-            for (int i = 0; i < trucksBought.size(); i++) {
-                if (trucksBought.get(i).isAlive()) {
-                    return i;
-                }
+        for (int i=0; i < parkedFireTrucks.size(); i++) {
+            if (parkedFireTrucks.get(i).isAlive() && parkedFireTrucks.get(i).isBought()) {
+                return i;
             }
         }
         return -1;

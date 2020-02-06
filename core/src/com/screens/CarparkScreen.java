@@ -299,8 +299,6 @@ public class CarparkScreen implements Screen {
             drawable1.setMinWidth(150);
             drawable1.setMinHeight(75);
 
-          //  TextButton textButton1 = new TextButton("Buy" + firetruck.getPrice(), skin);
-          //  textButton1.setSize(150, 40);
 
             if (!firetruck.isBought()) {
                 title.setText(firetruck.getType().getColourString() + " Fire Truck");
@@ -390,7 +388,7 @@ public class CarparkScreen implements Screen {
     }
 
     public boolean canBuyTruck(Firetruck truck){
-        return gameScreen.getScore() > truck.getPrice();
+        return gameScreen.getScore() >= truck.getPrice();
     }
 
     public ArrayList<Firetruck> getTrucksBought(){

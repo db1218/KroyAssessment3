@@ -176,10 +176,10 @@ public class GameScreen implements Screen {
 		// need to make it take away from  the number of points
 
 		// Initialise firetrucks array and add firetrucks to it
-		constructFireTruck(false, TruckType.BLUE, true);
+		constructFireTruck(false, TruckType.BLUE, false);
 		constructFireTruck(true, TruckType.RED, true);
-		constructFireTruck(false, TruckType.YELLOW, true);
-		constructFireTruck(false, TruckType.GREEN, true);
+		constructFireTruck(false, TruckType.YELLOW, false);
+		constructFireTruck(false, TruckType.GREEN, false);
 
 
 		// Initialise ETFortresses array and add ETFortresses to it
