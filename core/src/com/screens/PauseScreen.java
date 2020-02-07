@@ -1,15 +1,13 @@
 package com.screens;
 
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -18,30 +16,27 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.config.Constants.*;
+import com.config.Constants.Outcome;
 import com.kroy.Kroy;
-
 
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
 
-public class GameOverScreen implements Screen {
+public class PauseScreen implements Screen {
 
     private final Kroy game;
-    private Outcome outcome;
+    private GameScreen gameScreen;
 
     private Skin skin;
     private OrthographicCamera camera;
     private Viewport viewport;
     private Stage stage;
 
-    public GameOverScreen(Kroy game, Outcome outcome) {
+    public PauseScreen(Kroy game, GameScreen gameScreen) {
         this.game = game;
-        this.outcome = outcome;
+        this.gameScreen = gameScreen;
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
-        //skin.add("default", new Texture("button.png"));
-
+        skin = game.getSkin();
         // Create an orthographic camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -51,7 +46,7 @@ public class GameOverScreen implements Screen {
 
         // Create a viewport
         viewport = new ScreenViewport(camera);
-        viewport.apply();
+        viewport.apply(true);
 
         // Set camera to centre of viewport
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
@@ -72,21 +67,44 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
         table.center();
 
-        Label label = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
+        Label label = new Label("Game Paused", new Label.LabelStyle(game.coolFont, Color.WHITE));
         label.setFontScale(2);
-        if (outcome.equals(Outcome.WON)) label.setText("Well done, you saved York!");
-        else label.setText("Well... you let York down");
-
-        TextButton exitButton = new TextButton("Exit to main menu", skin);
+        TextButton resumeButton = new TextButton("Resume game", skin);
+        TextButton quitButton = new TextButton("Return to main menu", skin);
 
         table.add(label).padBottom(20);
         table.row();
-        table.add(exitButton).width(200).height(40);
+        table.add(resumeButton).width(200).height(40).padBottom(20);
+        table.row();
+        table.add(quitButton).width(200).height(40).padBottom(20);
 
-        exitButton.addListener(new ClickListener() {
+        resumeButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(gameScreen);
+                gameScreen.resume();
+                dispose();
+            }
+        });
+
+        quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(new MainMenuScreen(game));
+                gameScreen.dispose();
+                dispose();
+            }
+        });
+
+        stage.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                if (keycode == Input.Keys.ESCAPE) {
+                    game.setScreen(gameScreen);
+                    gameScreen.resume();
+                    dispose();
+                }
+                return true;
             }
         });
 
@@ -146,6 +164,6 @@ public class GameOverScreen implements Screen {
      */
     @Override
     public void dispose() {
-
+        stage.dispose();
     }
 }

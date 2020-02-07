@@ -124,7 +124,6 @@ public final class Constants {
     public static final float MAP_WIDTH = 117 * (8 * MAP_SCALE);
     public static final float MAP_HEIGHT = 10000 * (8 * MAP_SCALE);
     public static final int TILE_DIMS = (int) (8 * MAP_SCALE);
-    public static final String COLLISION_TILE = "BLOCKED";
 
     // Time durations
     public static final float BAR_FADE_DURATION = 3;
@@ -133,7 +132,7 @@ public final class Constants {
     // Camera settings
     public static final float LERP = 3.0f;
     public static final float MIN_ZOOM = 1f;
-    public static final float MAX_ZOOM = 5f;
+    public static final float MAX_ZOOM = 2f;
 
     // Screen elements sizing
     public static final float FONT_Y = 0.45f;

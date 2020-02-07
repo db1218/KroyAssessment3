@@ -9,9 +9,12 @@ import com.badlogic.gdx.graphics.g2d.Batch;
 
 // Class imports
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.screens.GameScreen;
+import com.screens.MainMenuScreen;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.
@@ -24,9 +27,10 @@ public class Kroy extends Game {
 	// Batches to store drawn elements
   	public Batch batch;
   	public SpriteBatch spriteBatch;
-	public BitmapFont font;
-	public Label.LabelStyle font15;
-	public Label.LabelStyle font10;
+	private BitmapFont font;
+	public BitmapFont coolFont;
+	private Label.LabelStyle font10;
+	private Skin skin;
 
 	/**
 	 * Display the main menu screen upon game start.
@@ -36,9 +40,9 @@ public class Kroy extends Game {
 		// Use LibGDX's default Arial font.
 		this.setTTF();
 		this.spriteBatch = new SpriteBatch();
-
+		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new GameScreen(this));
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	/**
@@ -55,7 +59,9 @@ public class Kroy extends Game {
 	public void dispose() {
 		this.batch.dispose();
 		this.font.dispose();
+		this.spriteBatch.dispose();
 		this.screen.dispose();
+		this.coolFont.dispose();
 	}
 
 	/**
@@ -67,16 +73,8 @@ public class Kroy extends Game {
 	}
 
 	/**
-	 * Get the font used in the game.
-	 * @return The font system for the game.
-	 */
-	public BitmapFont getFont() {
-		return this.font;
-	}
-
-	/**
 	 * Write single line text to the screen.
-	 * 
+	 *
 	 * @param text The text to be written to the screen.
 	 * @param x The x-coorinate for the text.
 	 * @param y The y-coorinate for the text.
@@ -85,52 +83,38 @@ public class Kroy extends Game {
 		this.font.draw(this.batch, text, x, y);
 	}
 
-	/**
-	 * Write multiple lines of text to the screen at once.
-	 * 
-	 * @param text An array of lines to be written to the screen.
-	 * @param x The x-coorinate for where to draw the text.
-	 * @param y The y-coorinate for where to draw the text.
-	 */
-	public void drawFont(String[] text, float[] x, float[] y) {
-		if (text.length == x.length && x.length == y.length) {
-			for (int i = 0; i < text.length; i ++) {
-				this.font.draw(this.batch, text[i], x[i], y[i]);
-			}
-		}
-	}
-
 	private void setTTF() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Xolonium-Regular.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		parameter.borderWidth = 1;
 		parameter.color = Color.WHITE;
-		parameter.shadowOffsetX = 3;
-		parameter.shadowOffsetY = 3;
+		parameter.shadowOffsetX = 2;
+		parameter.shadowOffsetY = 2;
 		parameter.shadowColor = Color.DARK_GRAY;
 
 		parameter.size = 15;
-		font = generator.generateFont(parameter); // font size 24 pixels
+		font = generator.generateFont(parameter);
 		parameter.size = 20;
 		BitmapFont font2 = generator.generateFont(parameter);
 
 		Label.LabelStyle labelStyle = new Label.LabelStyle();
-		Label.LabelStyle labelStyle2 = new Label.LabelStyle();
-
 		labelStyle.font = font2;
 		this.font10 = labelStyle;
 
-		labelStyle2.font = font;
-		this.font15 = labelStyle2;
+		this.coolFont = generator.generateFont(parameter);
 
 		generator.dispose();
 	}
 
-	public Label.LabelStyle getFont15() {
-		return this.font15;
-	}
-
 	public Label.LabelStyle getFont10() {
 		return this.font10;
+	}
+
+	public Skin getSkin() {
+		return this.skin;
+	}
+
+	public BitmapFont getFont() {
+		return this.font;
 	}
 }

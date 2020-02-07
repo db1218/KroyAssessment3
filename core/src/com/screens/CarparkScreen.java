@@ -64,11 +64,11 @@ public class CarparkScreen implements Screen {
         viewport.apply();
 
         // create stage
-        stage = new Stage(viewport);
+        stage = new Stage(viewport, game.spriteBatch);
         stage.setDebugAll(Constants.DEBUG_ENABLED);
 
         // create skin used by buttons
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
+        skin = game.getSkin();
 
         // create background image
         Image background = new Image(new Texture(Gdx.files.internal("garage.jpg")));
@@ -80,7 +80,8 @@ public class CarparkScreen implements Screen {
         Table previewGroup = new Table(); // stores the
 
         // create location label
-        activeLocation = new Label("", game.getFont15());
+        activeLocation = new Label("Kroy", new Label.LabelStyle(game.coolFont, Color.WHITE));
+        activeLocation.setFontScale(2);
         activeLocation.setAlignment(Align.center);
         mainTable.add(activeLocation).padTop(40);
         mainTable.row().expand();
@@ -118,7 +119,7 @@ public class CarparkScreen implements Screen {
         generateTruckButtons();
 
         // preview row
-        mainTable.row().expandX();
+        mainTable.row().expand();
 
         Stack selectorStack = new Stack();
         selectorStack.add(new BackgroundBox(100, 100, Color.DARK_GRAY, 40));
@@ -130,7 +131,7 @@ public class CarparkScreen implements Screen {
 
         // create close button
         closeButton = new TextButton("Close", skin);
-        mainTable.add(closeButton).center().width(150).height(40).padBottom(40);
+        mainTable.add(closeButton).center().width(150).height(40).padBottom(40).padTop(40);
 
         mainTable.setFillParent(true);
 
@@ -138,7 +139,6 @@ public class CarparkScreen implements Screen {
         stage.addActor(mainTable);
 
     }
-
 
     /**
      * Called when this screen becomes the current screen for a {@link Game}.
@@ -213,8 +213,6 @@ public class CarparkScreen implements Screen {
         }
 
     }
-
-
 
     public void render(float delta) {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
@@ -328,7 +326,6 @@ public class CarparkScreen implements Screen {
         return false;
     }
 
-
     private void generateStatLabels() {
         activeStatsLabel.clear();
         activeStatsLabel.add(null);
@@ -346,7 +343,6 @@ public class CarparkScreen implements Screen {
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()) + " ", game.getFont10()));
     }
-
 
     /**
      * @param width
@@ -386,7 +382,9 @@ public class CarparkScreen implements Screen {
     public void dispose() {
         stage.dispose();
         shapeRenderer.dispose();
-
+        activeFiretruck.dispose();
+        firestation.dispose();
+        skin.dispose();
     }
 
 }

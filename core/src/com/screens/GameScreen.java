@@ -84,6 +84,7 @@ public class GameScreen implements Screen {
 	private GameInputHandler gameInputHandler;
 
 	private ArrayList<Texture> waterFrames;
+
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
@@ -110,12 +111,6 @@ public class GameScreen implements Screen {
 
 		// Decrease time every second, starting at 3 minutes
 		this.time = 3 * 60;
-		Timer.schedule(new Task() {
-			@Override
-			public void run() {
-				decreaseTime();
-			}
-		}, 1, 1);
 
 		gameInputHandler = new GameInputHandler(this);
 
@@ -212,8 +207,15 @@ public class GameScreen implements Screen {
 			}
 		}, .5f, .5f);
 
-	}
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				decreaseTime();
+			}
+		}, 1, 1);
+		Timer.instance().start();
 
+	}
 
 	/**
 	 * Actions to perform on first render cycle of the game
@@ -272,7 +274,6 @@ public class GameScreen implements Screen {
 
 		this.camera.update();
 
-		// Set font scale
 		this.game.getFont().getData().setScale(this.camera.zoom * 1.5f);
 
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
@@ -455,7 +456,7 @@ public class GameScreen implements Screen {
 	}
 
 	public void cameraZoom(float zoom) {
-		if (this.zoomTarget + zoom < 2f && this.zoomTarget + zoom > 0.8f) {
+		if (this.zoomTarget + zoom < MAX_ZOOM && this.zoomTarget + zoom > MIN_ZOOM) {
 			this.zoomTarget += zoom;
 		}
 	}
@@ -484,6 +485,7 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void pause() {
+		Timer.instance().stop();
 	}
 
 	/**
@@ -491,6 +493,8 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resume() {
+		this.camera.position.set(this.firestation.getActiveFireTruck().getCentre(), 0);
+		Timer.instance().start();
 	}
 
 	/**
@@ -498,15 +502,17 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void dispose() {
-		this.projectileTexture.dispose();
-		for (Firetruck firetruck : this.firestation.getParkedFireTrucks()) {
+		projectileTexture.dispose();
+		for (Firetruck firetruck : firestation.getParkedFireTrucks()) {
 			firetruck.dispose();
 		}
-		this.firestation.getActiveFireTruck().dispose();
-		this.firestation.dispose();
-		for (ETFortress ETFortress : this.ETFortresses) {
+		firestation.getActiveFireTruck().dispose();
+		firestation.dispose();
+		for (ETFortress ETFortress : ETFortresses) {
 			ETFortress.dispose();
 		}
+		renderer.dispose();
+		map.dispose();
 	}
 
 	// there is a bug where if you buy another truck then you die then
@@ -834,5 +840,10 @@ public class GameScreen implements Screen {
 	public int getScore(){ return this.score; }
 
 	public void setScore(int score) {this.score = score; }
+
+	public void pauseGame() {
+		this.pause();
+		game.setScreen(new PauseScreen(game, this));
+	}
 
 }
