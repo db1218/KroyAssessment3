@@ -9,11 +9,9 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.config.Constants.Outcome;
@@ -67,16 +65,27 @@ public class PauseScreen implements Screen {
         table.setFillParent(true);
         table.center();
 
+        Table labels = new Table();
+        labels.center();
         Label label = new Label("Game Paused", new Label.LabelStyle(game.coolFont, Color.WHITE));
         label.setFontScale(2);
         TextButton resumeButton = new TextButton("Resume game", skin);
-        TextButton quitButton = new TextButton("Return to main menu", skin);
+        TextButton quitButton = new TextButton("Return to Main Menu", skin);
+        Label scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        scoreLabel.setAlignment(Align.right);
+        Label timeLabel = new Label("Time: " + gameScreen.getTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        timeLabel.setAlignment(Align.left);
 
         table.add(label).padBottom(20);
         table.row();
         table.add(resumeButton).width(200).height(40).padBottom(20);
         table.row();
         table.add(quitButton).width(200).height(40).padBottom(20);
+        table.row();
+        labels.add(scoreLabel).padRight(20);
+        labels.add(timeLabel).padLeft(20);
+        table.add(labels);
+
 
         resumeButton.addListener(new ClickListener() {
             @Override
