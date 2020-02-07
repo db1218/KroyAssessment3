@@ -117,7 +117,7 @@ public class MainMenuScreen implements Screen {
 		// Create buttons
 		Label heading = new Label("Kroy", new Label.LabelStyle(game.coolFont, Color.WHITE));
 		heading.setFontScale(2);
-		Label subHeading = new Label("Destroy the Fortresses and save York", new Label.LabelStyle(game.coolFont, Color.WHITE));
+		Label subHeading = new Label("Destroy the Fortresses and Save the City", new Label.LabelStyle(game.coolFont, Color.WHITE));
 		TextButton playButton = new TextButton("Play", skin);
 		TextButton controlsButton = new TextButton("Controls", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
@@ -137,7 +137,6 @@ public class MainMenuScreen implements Screen {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				// Transition to main game screen
 				game.setScreen(new GameScreen(game));
 				dispose();
 			}

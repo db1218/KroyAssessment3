@@ -15,6 +15,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
+import com.screens.StoryScreen;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.
@@ -42,7 +43,7 @@ public class Kroy extends Game {
 		this.spriteBatch = new SpriteBatch();
 		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new MainMenuScreen(this));
+		this.setScreen(new StoryScreen(this));
 	}
 
 	/**
