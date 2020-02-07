@@ -83,7 +83,7 @@ public class StoryScreen implements Screen {
         // Add buttons to table and style them
         table.add(storyLabel).expand();
         table.row().colspan(2);
-        table.add(continueButton).width(100).height(40).padBottom(40);
+        table.add(continueButton).width(200).height(40).padBottom(40);
 
         // Add listeners
         continueButton.addListener(new ClickListener() {
@@ -157,11 +157,11 @@ public class StoryScreen implements Screen {
     }
 
     private void populateText() {
-        story = "{FADE=blue,aqua,0.15}The year is 2042...\n" +
-                "York has been invaded by evil extraterrestrials (ETs) from planet Kroy, who have set up fortresses in key locations around the city. \n" +
-                "While ETs are more technologically advanced and outgun humans, they have a major and very convenient - weakness:\n " +
+        story = "{FADE}The year is 2042...\n" +
+                "York has been invaded by evil extraterrestrials (ETs) from planet Kroy,{WAIT} who have set up fortresses in key locations around the city. \n" +
+                "While ETs are more technologically advanced and outgun humans,{WAIT} they have a major and very convenient - weakness:\n " +
                 "they evaporate when they come in contact with water.\n" +
-                "As the leader of the Resistance, you have taken over York's old Fire Station and you are now in control of its fire engines.\n" +
-                "Your mission is to use the fire engines you control to flood the ET fortresses, and liberate York.";
+                "As the leader of the Resistance,{WAIT} you have taken over York's old Fire Station and you are now in control of its fire engines.\n" +
+                "Your mission is to use the fire engines you control to flood the ET fortresses,{WAIT}{WAIT} and liberate York.";
     }
 }
