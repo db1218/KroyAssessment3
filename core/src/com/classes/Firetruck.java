@@ -121,7 +121,7 @@ public class Firetruck extends MovementSprite {
         if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
             super.applyAcceleration(Direction.UP);
         }
-        viewArrow = Gdx.input.isKeyPressed(Keys.E);
+        viewArrow = Gdx.input.isKeyPressed(Keys.SPACE);
 
         // Deplete water if spraying, toggle off when depleted
         if (this.isSpraying && this.waterBar.getCurrentAmount() > 0) {

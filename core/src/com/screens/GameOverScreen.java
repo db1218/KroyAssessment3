@@ -77,7 +77,7 @@ public class GameOverScreen implements Screen {
         if (outcome.equals(Outcome.WON)) label.setText("Well done, you saved York!");
         else label.setText("Well... you let York down");
 
-        TextButton exitButton = new TextButton("Exit to main menu", skin);
+        TextButton exitButton = new TextButton("Return to Main Menu", skin);
 
         table.add(label).padBottom(20);
         table.row();

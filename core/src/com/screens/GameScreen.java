@@ -181,7 +181,10 @@ public class GameScreen implements Screen {
 		this.ETFortresses = new ArrayList<ETFortress>();
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS));
 		this.ETFortresses.add(new ETFortress(yorkMinisterTexture, yorkMinisterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS));
-		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, 1 * TILE_DIMS, 72.75f * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerTexture, 1, 1, 108 * TILE_DIMS, 102 * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerTexture, 1, 1, 14 * TILE_DIMS, 4 * TILE_DIMS));
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerTexture, 1, 1, 100 * TILE_DIMS, 3 * TILE_DIMS));
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
