@@ -187,6 +187,14 @@ public class GameScreen implements Screen {
 		mapGraph = new MapGraph();
 		populateMap();
 
+		Timer.schedule(new Task() {
+			@Override
+			public void run() {
+				decreaseTime();
+			}
+		}, 1, 1);
+		Timer.instance().stop();
+
 		ETPatrols = new ArrayList<>();
 
 		spawnPatrol();
@@ -197,24 +205,6 @@ public class GameScreen implements Screen {
 		spawnPatrol();
 		spawnPatrol();
 		spawnPatrol();
-
-		collisionTask = new Timer();
-		collisionTask.scheduleTask(new Task()
-		{
-			@Override
-			public void run() {
-				checkForCollisions();
-			}
-		}, .5f, .5f);
-
-		Timer.schedule(new Task() {
-			@Override
-			public void run() {
-				decreaseTime();
-			}
-		}, 1, 1);
-		Timer.instance().start();
-
 	}
 
 	/**
@@ -232,6 +222,17 @@ public class GameScreen implements Screen {
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
+
+		collisionTask = new Timer();
+		collisionTask.scheduleTask(new Task()
+		{
+			@Override
+			public void run() {
+				checkForCollisions();
+			}
+		}, .5f, .5f);
+
+		Timer.instance().start();
 
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}

@@ -43,7 +43,7 @@ public class Kroy extends Game {
 		this.spriteBatch = new SpriteBatch();
 		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new StoryScreen(this));
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	/**

@@ -93,14 +93,14 @@ public class CarparkScreen implements Screen {
         activeLocation.setAlignment(Align.center);
 
         timeLabel = new Label("Time: " + gameScreen.getTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
-        timeLabel.setAlignment(Align.right);
+        timeLabel.setAlignment(Align.left);
 
         scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
-        scoreLabel.setAlignment(Align.left);
+        scoreLabel.setAlignment(Align.right);
 
-        header.addActor(timeLabel);
-        header.addActor(activeLocation);
         header.addActor(scoreLabel);
+        header.addActor(activeLocation);
+        header.addActor(timeLabel);
 
         // add header to table
         mainTable.add(header);

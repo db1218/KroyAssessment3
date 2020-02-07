@@ -30,6 +30,8 @@ public class StoryScreen implements Screen {
     private Skin skin;
     private Viewport viewport;
 
+    private GameScreen gameScreen;
+
     private TypingLabel storyLabel;
 
     private String story;
@@ -61,6 +63,7 @@ public class StoryScreen implements Screen {
         // Create a stage for buttons
         stage = new Stage(viewport, game.spriteBatch);
         stage.setDebugAll(Constants.DEBUG_ENABLED);
+
     }
 
     /**
@@ -89,13 +92,15 @@ public class StoryScreen implements Screen {
         continueButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new MainMenuScreen(game));
+                game.setScreen(gameScreen);
                 dispose();
             }
         });
 
         // Add table to stage
         stage.addActor(table);
+
+        gameScreen = new GameScreen(game);
     }
 
     /**
