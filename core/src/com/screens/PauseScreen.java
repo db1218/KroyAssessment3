@@ -1,6 +1,5 @@
 package com.screens;
 
-
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -20,6 +19,12 @@ import com.kroy.Kroy;
 import static com.config.Constants.SCREEN_HEIGHT;
 import static com.config.Constants.SCREEN_WIDTH;
 
+/**
+ * Screen that appears when the user pauses the game.
+ * Whilst the game is paused, the timer will stop
+ * counting down. From this screen, the user can exit
+ * to the main menu or resume to game
+ */
 public class PauseScreen implements Screen {
 
     private final Kroy game;
@@ -30,25 +35,33 @@ public class PauseScreen implements Screen {
     private Viewport viewport;
     private Stage stage;
 
+    /**
+     * The constructor for the pause screen
+     *
+     * @param game          the game object to change between screens
+     * @param gameScreen    game screen to go back to
+     */
     public PauseScreen(Kroy game, GameScreen gameScreen) {
         this.game = game;
         this.gameScreen = gameScreen;
 
+        // skin for buttons
         skin = game.getSkin();
+
         // Create an orthographic camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        // tell the SpriteBatch to render in the
-        // coordinate system specified by the camera.
-        game.spriteBatch.setProjectionMatrix(camera.combined);
+
+        // Set camera to centre of viewport
+        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
+        camera.update();
 
         // Create a viewport
         viewport = new ScreenViewport(camera);
         viewport.apply(true);
 
-        // Set camera to centre of viewport
-        camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
-        camera.update();
+        // tell the SpriteBatch to render in the coordinate system specified by the camera.
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
         // Create a stage for buttons
         stage = new Stage(viewport, game.spriteBatch);

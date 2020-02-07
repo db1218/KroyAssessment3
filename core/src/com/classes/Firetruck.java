@@ -371,7 +371,7 @@ public class Firetruck extends MovementSprite {
         renderer.polygon(this.hoseRange.getTransformedVertices());
     }
 
-    public void destroyed() {
+    public void destroy() {
         this.alive = false;
     }
 

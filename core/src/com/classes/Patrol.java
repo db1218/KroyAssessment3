@@ -12,13 +12,13 @@ import com.sprites.PatrolMovementSprite;
 
 import java.util.ArrayList;
 
-public class Patrols extends PatrolMovementSprite {
+public class Patrol extends PatrolMovementSprite {
 
     ArrayList<Texture> textureSlices;
     private Circle detectionRange;
     private  boolean isDead;
 
-    public Patrols(ArrayList<Texture> textureSlices, MapGraph mapGraph){
+    public Patrol(ArrayList<Texture> textureSlices, MapGraph mapGraph){
         super(textureSlices.get(textureSlices.size() - 1), mapGraph);
         this.getHealthBar().setMaxResource(25);
         this.textureSlices = textureSlices;
@@ -40,7 +40,7 @@ public class Patrols extends PatrolMovementSprite {
         float width = this.getWidth(), height = this.getHeight();
         for (int i = 0; i < slicesLength; i++) {
             Texture texture = this.textureSlices.get(i);
-            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
+            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3f) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
         }
     }
 
@@ -51,9 +51,7 @@ public class Patrols extends PatrolMovementSprite {
 
 
     private void checkIfDead() {
-        if (this.getHealthBar().getCurrentAmount() == 0){
-            this.isDead = true;
-        }
+        if (this.getHealthBar().getCurrentAmount() == 0) this.isDead = true;
     }
 
     /**
@@ -80,10 +78,7 @@ public class Patrols extends PatrolMovementSprite {
     }
 
     public boolean canShootProjectile() {
-        if (this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0) {
-            return true;
-        }
-        return false;
+        return this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0;
     }
 
     public boolean isDead(){

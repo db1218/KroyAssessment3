@@ -1,7 +1,6 @@
 package com.classes;
 
 // LibGDX imports
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
@@ -27,8 +26,6 @@ import static com.config.Constants.*;
  */
 public class Firestation extends SimpleSprite {
 
-    private Kroy game;
-
     // Private values for this class to use
     private Circle repairRange;
 
@@ -48,7 +45,7 @@ public class Firestation extends SimpleSprite {
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, Kroy game, GameScreen gameScreen) {
+    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos) {
         super(texture);
         this.destroyed = destroyedTexture;
         this.setPosition(xPos, yPos);
@@ -56,7 +53,6 @@ public class Firestation extends SimpleSprite {
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
-        this.game = game;
         this.isDestroyed = false;
     }
 
@@ -100,11 +96,8 @@ public class Firestation extends SimpleSprite {
         this.activeFireTruck.update(batch, camera);
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
         if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
-            this.activeFireTruck.destroyed();
-            if (getAliveFiretruckID() == -1) {
-                game.setScreen(new MainMenuScreen(game));
-                dispose();
-            } else {
+            this.activeFireTruck.destroy();
+            if (getAliveFiretruckID() != -1) {
                 changeFiretruck(getAliveFiretruckID());
                 this.openMenu(true);
             }
@@ -139,7 +132,6 @@ public class Firestation extends SimpleSprite {
     public void parkFireTruck(Firetruck firetruck) {
             this.parkedFireTrucks.add(firetruck);
     }
-
 
     public void checkRepairRefill(int time, boolean includeActive) {
         if (includeActive) {

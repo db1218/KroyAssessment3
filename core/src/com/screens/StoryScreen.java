@@ -21,33 +21,38 @@ import com.config.Constants;
 import com.kroy.Kroy;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
+/**
+ * Screen to tell the user the back story to the game
+ * This text is taken from the product brief and sets
+ * the scene before the user enters the game
+ */
 public class StoryScreen implements Screen {
 
     private final Kroy game;
+    private GameScreen gameScreen;
+
     private OrthographicCamera camera;
     private Stage stage;
     protected Texture texture;
     private Skin skin;
     private Viewport viewport;
 
-    private GameScreen gameScreen;
-
-    private TypingLabel storyLabel;
-
-    private String story;
-
+    /**
+     * The constructor for the story screen
+     *
+     * @param game  game object for screen changes
+     */
     public StoryScreen(Kroy game) {
         this.game = game;
 
-        skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
-
-        // Create new sprite batch
+        // imports common skin from game
+        skin = game.getSkin();
 
         // Create an orthographic camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		/* tell the SpriteBatch to render in the
-		   coordinate system specified by the camera. */
+
+		// tell the SpriteBatch to render in the coordinate system specified by the camera.
         game.spriteBatch.setProjectionMatrix(camera.combined);
 
         // Create a viewport
@@ -58,12 +63,8 @@ public class StoryScreen implements Screen {
         camera.position.set(camera.viewportWidth / 2, camera.viewportHeight / 2, 0);
         camera.update();
 
-        populateText();
-
         // Create a stage for buttons
         stage = new Stage(viewport, game.spriteBatch);
-        stage.setDebugAll(Constants.DEBUG_ENABLED);
-
     }
 
     /**
@@ -73,13 +74,20 @@ public class StoryScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
+        String story = "{FADE}The year is 2042...\n" +
+                "York has been invaded by evil extraterrestrials (ETs) from planet Kroy,{WAIT} who have set up fortresses in key locations around the city. \n" +
+                "While ETs are more technologically advanced and outgun humans,{WAIT} they have a major and very convenient - weakness:\n " +
+                "they evaporate when they come in contact with water.\n" +
+                "As the leader of the Resistance,{WAIT} you have taken over York's old Fire Station and you are now in control of its fire engines.\n" +
+                "Your mission is to use the fire engines you control to flood the ET fortresses,{WAIT}{WAIT} and liberate York.";
+
         // Create table to arrange buttons.
         Table table = new Table();
         table.setFillParent(true);
         table.center();
 
         // Create actors
-        storyLabel = new TypingLabel(story, skin);
+        TypingLabel storyLabel = new TypingLabel(story, skin);
         storyLabel.setAlignment(Align.center);
         TextButton continueButton = new TextButton("Continue", skin);
 
@@ -100,6 +108,7 @@ public class StoryScreen implements Screen {
         // Add table to stage
         stage.addActor(table);
 
+        // creates game screen here to allow for less load time later
         gameScreen = new GameScreen(game);
     }
 
@@ -159,14 +168,5 @@ public class StoryScreen implements Screen {
     @Override
     public void dispose() {
 
-    }
-
-    private void populateText() {
-        story = "{FADE}The year is 2042...\n" +
-                "York has been invaded by evil extraterrestrials (ETs) from planet Kroy,{WAIT} who have set up fortresses in key locations around the city. \n" +
-                "While ETs are more technologically advanced and outgun humans,{WAIT} they have a major and very convenient - weakness:\n " +
-                "they evaporate when they come in contact with water.\n" +
-                "As the leader of the Resistance,{WAIT} you have taken over York's old Fire Station and you are now in control of its fire engines.\n" +
-                "Your mission is to use the fire engines you control to flood the ET fortresses,{WAIT}{WAIT} and liberate York.";
     }
 }

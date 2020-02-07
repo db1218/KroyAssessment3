@@ -21,8 +21,12 @@ import com.config.Constants;
 import com.kroy.Kroy;
 import java.util.ArrayList;
 
-import static com.config.Constants.*;
-
+/**
+ * This screen shows the player the "car park"
+ * which is an interface allowing the user
+ * to manage bought fire trucks as well as
+ * buy new ones to add to the user's arsenal
+ */
 public class CarparkScreen implements Screen {
 
     private final Kroy game;
@@ -55,7 +59,15 @@ public class CarparkScreen implements Screen {
     private ArrayList<Label> activeStatsLabel;
     private ArrayList<Label> activeStatsValue;
 
-    public CarparkScreen(Firestation firestation, Kroy game, GameScreen gameScreen) {
+    /**
+     * Constructor for car park screen
+     *
+     * @param game          game object
+     * @param gameScreen    go back to the game once the user
+     *                      has finished in this screen
+     * @param firestation   where the fire trucks live
+     */
+    public CarparkScreen(Kroy game, GameScreen gameScreen, Firestation firestation) {
         this.game = game;
         this.gameScreen = gameScreen;
         this.firestation = firestation;
@@ -248,129 +260,6 @@ public class CarparkScreen implements Screen {
         generateStatsTable();
     }
 
-    private void generateStatsTable() {
-        tableStats.clear();
-        Stack nameStack = new Stack();
-        nameStack.add(new BackgroundBox(300, 25, Color.GRAY));
-        Label name = activeStatsValue.get(0);
-        name.setAlignment(Align.center);
-        nameStack.add(name);
-        tableStats.add(nameStack).colspan(2).padBottom(20).fillX();
-
-        for (int i=1; i<activeStatsLabel.size(); i++) {
-            Label label = activeStatsLabel.get(i);
-            Label value = activeStatsValue.get(i);
-            label.setAlignment(Align.left);
-            value.setAlignment(Align.right);
-
-            tableStats.row().padBottom(10).expandX().fillX();
-
-            Stack labelStack = new Stack();
-            labelStack.add(new BackgroundBox(100, 25, Color.GRAY));
-            labelStack.add(label);
-            tableStats.add(labelStack).left();
-
-            Stack valueStack = new Stack();
-            valueStack.add(new BackgroundBox(100, 25, Color.GRAY));
-            valueStack.add(value);
-            tableStats.add(valueStack).right();
-        }
-    }
-
-    private void generateTruckSelector() {
-        selectorGroup.clear();
-        selectorGroup.pad(50);
-        selectorGroup.expand();
-        selectorGroup.center();
-        selectorGroup.space(30);
-        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
-            Stack stack = new Stack();
-            VerticalGroup vgTruck = new VerticalGroup();
-            vgTruck.center();
-            vgTruck.pad(30);
-            vgTruck.addActor(selectLocationLabels.get(i));
-            vgTruck.addActor(selectImageButtons.get(i));
-            vgTruck.addActor(selectTextButtons.get(i));
-            stack.addActor(new BackgroundBox(200, 100, Color.GRAY, 10));
-            stack.addActor(vgTruck);
-            selectorGroup.addActor(stack);
-        }
-    }
-
-    private void generateTruckButtons() {
-        selectLocationLabels.clear();
-        selectImageButtons.clear();
-        selectTextButtons.clear();
-        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
-            Firetruck firetruck = firestation.getParkedFireTrucks().get(i);
-
-            Label title = new Label("", skin);
-            title.setAlignment(Align.center);
-
-            Drawable drawable = new TextureRegionDrawable(new TextureRegion(firetruck.getFireTruckTexture()));
-            drawable.setMinWidth(150);
-            drawable.setMinHeight(75);
-
-            Button imageButton = new Button(drawable);
-            TextButton textButton = new TextButton("", skin);
-            textButton.setSize(150,40);
-
-            Drawable drawable1 = new TextureRegionDrawable(new TextureRegion(new Texture ("alienProjectile.png")));
-            drawable1.setMinWidth(150);
-            drawable1.setMinHeight(75);
-
-            if (!firetruck.isBought()) {
-                title.setText(firetruck.getType().getColourString() + " Fire Truck");
-                textButton.setText("Buy " + firetruck.getPrice());
-            } else if (!firetruck.isAlive()) {
-                textButton.setText(firetruck.getType().getColourString() + " Fire Truck");
-                textButton.setTouchable(Touchable.disabled);
-                textButton.setColor(Color.DARK_GRAY);
-                imageButton.setColor(Color.DARK_GRAY);
-                title.setText("DEAD");
-            } else {
-                title.setText("Location: " + firetruck.getCarpark().getName());
-                textButton.setText(firetruck.getType().getColourString() + " Fire Truck");
-            }
-
-            selectLocationLabels.add(title);
-            selectImageButtons.add(imageButton);
-            selectTextButtons.add(textButton);
-        }
-    }
-
-    public boolean boughtTruck(Firetruck truck) {
-        if (gameScreen.getScore() >= truck.getPrice()) {
-            truck.buy();
-            gameScreen.setScore((int) (gameScreen.getScore() - truck.getPrice()));
-            return true;
-        }
-        return false;
-    }
-
-    private void generateStatLabels() {
-        activeStatsLabel.clear();
-        activeStatsLabel.add(null);
-        activeStatsLabel.add(new Label(" Health         ", game.getFont10()));
-        activeStatsLabel.add(new Label(" Water          ", game.getFont10()));
-        activeStatsLabel.add(new Label(" Speed          ", game.getFont10()));
-        activeStatsLabel.add(new Label(" Range          ", game.getFont10()));
-    }
-
-    private void updateStatValues() {
-        activeStatsValue.clear();
-        activeStatsValue.add(new Label(activeFiretruck.getType().getColourString() + " fire truck's Stats", game.getFont10()));
-        activeStatsValue.add(new Label(activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() + " ", game.getFont10()));
-        activeStatsValue.add(new Label(activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() + " ", game.getFont10()));
-        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
-        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()) + " ", game.getFont10()));
-    }
-
-    private void updateTimeScore() {
-        timeLabel.setText("Time: " + gameScreen.getTime());
-        scoreLabel.setText("Score: " + gameScreen.getScore());
-    }
-
     /**
      * @param width
      * @param height
@@ -412,6 +301,150 @@ public class CarparkScreen implements Screen {
         activeFiretruck.dispose();
         firestation.dispose();
         skin.dispose();
+    }
+
+    /**
+     * Builds the stats table for the active fire truck
+     * re-built every frame to show the health/water increasing
+     */
+    private void generateStatsTable() {
+        tableStats.clear();
+
+        Stack nameStack = new Stack();
+
+        Label name = activeStatsValue.get(0);
+        name.setAlignment(Align.center);
+
+        nameStack.add(new BackgroundBox(300, 25, Color.GRAY));
+        nameStack.add(name);
+
+        tableStats.add(nameStack).colspan(2).padBottom(20).fillX();
+
+        for (int i=1; i<activeStatsLabel.size(); i++) {
+            Label label = activeStatsLabel.get(i);
+            Label value = activeStatsValue.get(i);
+            label.setAlignment(Align.left);
+            value.setAlignment(Align.right);
+
+            tableStats.row().padBottom(10).expandX().fillX();
+
+            Stack labelStack = new Stack();
+            labelStack.add(new BackgroundBox(100, 25, Color.GRAY));
+            labelStack.add(label);
+            tableStats.add(labelStack).left();
+
+            Stack valueStack = new Stack();
+            valueStack.add(new BackgroundBox(100, 25, Color.GRAY));
+            valueStack.add(value);
+            tableStats.add(valueStack).right();
+        }
+    }
+
+    /**
+     * Builds each fire truck item which contains:
+     * - location label
+     * - image button
+     * - text button (select or buy)
+     */
+    private void generateTruckButtons() {
+        selectLocationLabels.clear();
+        selectImageButtons.clear();
+        selectTextButtons.clear();
+        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
+            Firetruck firetruck = firestation.getParkedFireTrucks().get(i);
+
+            Label title = new Label("", skin);
+            title.setAlignment(Align.center);
+
+            Drawable drawable = new TextureRegionDrawable(new TextureRegion(firetruck.getFireTruckTexture()));
+            drawable.setMinWidth(150);
+            drawable.setMinHeight(75);
+
+            Button imageButton = new Button(drawable);
+            TextButton textButton = new TextButton("", skin);
+            textButton.setSize(150,40);
+
+            if (!firetruck.isBought()) {
+                title.setText(firetruck.getType().getColourString() + " Fire Truck");
+                textButton.setText("Buy " + firetruck.getPrice());
+                if (gameScreen.getScore() < firetruck.getPrice()) {
+                    textButton.setTouchable(Touchable.disabled);
+                    imageButton.setTouchable(Touchable.disabled);
+                    textButton.setColor(Color.DARK_GRAY);
+                    imageButton.setColor(Color.DARK_GRAY);
+                }
+            } else if (!firetruck.isAlive()) {
+                textButton.setText(firetruck.getType().getColourString() + " Fire Truck");
+                textButton.setTouchable(Touchable.disabled);
+                textButton.setColor(Color.DARK_GRAY);
+                imageButton.setColor(Color.DARK_GRAY);
+                title.setText("DEAD");
+            } else {
+                title.setText("Location: " + firetruck.getCarpark().getName());
+                textButton.setText(firetruck.getType().getColourString() + " Fire Truck");
+            }
+
+            selectLocationLabels.add(title);
+            selectImageButtons.add(imageButton);
+            selectTextButtons.add(textButton);
+        }
+    }
+
+    /**
+     * Builds the truck selector section of the screen
+     * it is called once the screen is opened and each
+     * time the user selects a fire truck
+     */
+    private void generateTruckSelector() {
+        selectorGroup.clear();
+        selectorGroup.pad(50);
+        selectorGroup.expand();
+        selectorGroup.center();
+        selectorGroup.space(30);
+        for (int i=0; i<firestation.getParkedFireTrucks().size(); i++) {
+            Stack stack = new Stack();
+            VerticalGroup vgTruck = new VerticalGroup();
+            vgTruck.center();
+            vgTruck.pad(30);
+            vgTruck.addActor(selectLocationLabels.get(i));
+            vgTruck.addActor(selectImageButtons.get(i));
+            vgTruck.addActor(selectTextButtons.get(i));
+            stack.addActor(new BackgroundBox(200, 100, Color.GRAY, 10));
+            stack.addActor(vgTruck);
+            selectorGroup.addActor(stack);
+        }
+    }
+
+    public boolean boughtTruck(Firetruck truck) {
+        if (gameScreen.getScore() >= truck.getPrice()) {
+            truck.buy();
+            gameScreen.setScore((int) (gameScreen.getScore() - truck.getPrice()));
+            return true;
+        }
+        return false;
+    }
+
+    private void generateStatLabels() {
+        activeStatsLabel.clear();
+        activeStatsLabel.add(null);
+        activeStatsLabel.add(new Label(" Health         ", game.getFont10()));
+        activeStatsLabel.add(new Label(" Water          ", game.getFont10()));
+        activeStatsLabel.add(new Label(" Speed          ", game.getFont10()));
+        activeStatsLabel.add(new Label(" Range          ", game.getFont10()));
+    }
+
+    private void updateStatValues() {
+        activeStatsValue.clear();
+        activeStatsValue.add(new Label(activeFiretruck.getType().getColourString() + " fire truck's Stats", game.getFont10()));
+        activeStatsValue.add(new Label(activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() + " ", game.getFont10()));
+        activeStatsValue.add(new Label(activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() + " ", game.getFont10()));
+        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
+        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()) + " ", game.getFont10()));
+    }
+
+    private void updateTimeScore() {
+        timeLabel.setText("Time: " + gameScreen.getTime());
+        scoreLabel.setText("Score: " + gameScreen.getScore());
     }
 
 }

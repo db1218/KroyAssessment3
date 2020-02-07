@@ -46,7 +46,7 @@ public final class Constants {
                 300,  // WATER MAX
                 100   // PRICE
         }),
-        YELLOW ("Yellow",new float[]{
+        YELLOW ("Yellow", new float[]{
                 250,  // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
