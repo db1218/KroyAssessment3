@@ -2,9 +2,9 @@ package com.screens;
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -20,6 +20,8 @@ import com.classes.Firetruck;
 import com.config.Constants;
 import com.kroy.Kroy;
 import java.util.ArrayList;
+
+import static com.config.Constants.*;
 
 public class CarparkScreen implements Screen {
 
@@ -38,6 +40,9 @@ public class CarparkScreen implements Screen {
 
     private HorizontalGroup selectorGroup;
     private TextButton closeButton;
+
+    private Label timeLabel;
+    private Label scoreLabel;
 
     private Label activeLocation;
     private Image activeTruckImage;
@@ -79,11 +84,28 @@ public class CarparkScreen implements Screen {
         Table mainTable = new Table(); // stores everything in
         Table previewGroup = new Table(); // stores the
 
+        HorizontalGroup header = new HorizontalGroup();
+        header.space(200);
+
         // create location label
-        activeLocation = new Label("Kroy", new Label.LabelStyle(game.coolFont, Color.WHITE));
+        activeLocation = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
         activeLocation.setFontScale(2);
         activeLocation.setAlignment(Align.center);
-        mainTable.add(activeLocation).padTop(40);
+
+        timeLabel = new Label("Time: " + gameScreen.getTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        timeLabel.setAlignment(Align.right);
+
+        scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        scoreLabel.setAlignment(Align.left);
+
+        header.addActor(timeLabel);
+        header.addActor(activeLocation);
+        header.addActor(scoreLabel);
+
+        // add header to table
+        mainTable.add(header);
+
+        // preview row
         mainTable.row().expand();
 
         // background shape behind stats table
@@ -218,10 +240,10 @@ public class CarparkScreen implements Screen {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
-        stage.act(delta);
         stage.draw();
         firestation.decreaseInternalTime();
         firestation.checkRepairRefill(gameScreen.getTime(), true);
+        updateTimeScore();
         updateStatValues();
         generateStatsTable();
     }
@@ -342,6 +364,11 @@ public class CarparkScreen implements Screen {
         activeStatsValue.add(new Label(activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() + " ", game.getFont10()));
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
         activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()) + " ", game.getFont10()));
+    }
+
+    private void updateTimeScore() {
+        timeLabel.setText("Time: " + gameScreen.getTime());
+        scoreLabel.setText("Score: " + gameScreen.getScore());
     }
 
     /**
