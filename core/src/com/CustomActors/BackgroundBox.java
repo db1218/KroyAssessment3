@@ -1,5 +1,9 @@
 package com.CustomActors;
 
+/** =================================================================
+ *  New class added for assessment 3
+ *  ===============================================================*/
+
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;

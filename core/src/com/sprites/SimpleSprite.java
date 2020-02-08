@@ -125,6 +125,9 @@ public class SimpleSprite extends Sprite {
      *
      * @param rotation  amount in degrees to rotate the hitbox by
      */
+    // ==============================================================
+    //					Added for assessment 3
+    // ==============================================================
     public void setMovementHitBox(float rotation) {
         this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
         this.movementHitBox.setOrigin(width/2, height/2);

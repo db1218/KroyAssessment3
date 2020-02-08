@@ -57,6 +57,7 @@ public class Firestation extends SimpleSprite {
     /**
      * Updates the firestation so that it is drawn every frame.
      * Also reduces the time before next repair can occur.
+     *
      * @param batch  The batch to draw onto.
      */
     public void update(Batch batch) {
@@ -135,6 +136,9 @@ public class Firestation extends SimpleSprite {
      * @return  <code>true</code> if there is a parked fire truck
      *          <code>false</code> otherwise
      */
+    // ==============================================================
+    //					Added for assessment 3
+    // ==============================================================
     public boolean hasParkedFiretrucks() {
         return getAliveFiretruckID() >= 0;
     }
@@ -195,6 +199,9 @@ public class Firestation extends SimpleSprite {
      *
      * @return  <code>-1</code> no id
      */
+    // ==============================================================
+    //					Modified for assessment 3
+    // ==============================================================
     private int getAliveFiretruckID() {
         for (int i=0; i < parkedFireTrucks.size(); i++) {
             if (parkedFireTrucks.get(i).isAlive() && parkedFireTrucks.get(i).isBought()) {
@@ -209,6 +216,9 @@ public class Firestation extends SimpleSprite {
      *
      * @param index of parked fire truck
      */
+    // ==============================================================
+    //					Added for assessment 3
+    // ==============================================================
     public void changeFiretruck(int index) {
         Firetruck previous = activeFireTruck;
         activeFireTruck = parkedFireTrucks.get(index);

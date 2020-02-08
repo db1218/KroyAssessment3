@@ -1,5 +1,9 @@
 package com.PathFinding;
 
+/** =================================================================
+ *                  New class added for assessment 3
+ *  ===============================================================*/
+
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.math.Vector2;
 

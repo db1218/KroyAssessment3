@@ -1,5 +1,9 @@
 package com.screens;
 
+/** =================================================================
+ *                   New class added for assessment 3
+ *  ===============================================================*/
+
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -7,17 +11,14 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.config.Constants;
 import com.kroy.Kroy;
 //import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
@@ -87,8 +88,8 @@ public class StoryScreen implements Screen {
         table.center();
 
         // Create actors
-        TypingLabel storyLabel = new TypingLabel(story, skin);
-        storyLabel.setAlignment(Align.center);
+        //TypingLabel storyLabel = new TypingLabel(story, skin);
+        //storyLabel.setAlignment(Align.center);
         TextButton continueButton = new TextButton("Continue", skin);
 
         // Add buttons to table and style them

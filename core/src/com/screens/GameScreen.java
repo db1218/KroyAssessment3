@@ -3,10 +3,8 @@ package com.screens;
 // LibGDX imports
 import com.PathFinding.Junction;
 import com.PathFinding.MapGraph;
-import com.PathFinding.Road;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -20,7 +18,7 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-// Tiled map imports fro LibGDX
+// Tiled map imports from LibGDX
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -194,7 +192,6 @@ public class GameScreen implements Screen {
 		Timer.instance().stop();
 
 		ETPatrols = new ArrayList<>();
-
 		spawnPatrol();
 		spawnPatrol();
 		spawnPatrol();
@@ -258,6 +255,9 @@ public class GameScreen implements Screen {
 		// Get the firetruck thats being driven so that the camera can follow it
 		Firetruck focusedTruck = this.firestation.getActiveFireTruck();
 
+		// ==============================================================
+		//					Modified for assessment 3
+		// ==============================================================
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
 		Vector3 cameraPosition = this.camera.position;
 		float xDifference = focusedTruck.getCentreX() - cameraPosition.x;
@@ -329,28 +329,6 @@ public class GameScreen implements Screen {
 		// Finish rendering
 		batch.end();
 
-
-		if (DEBUG_ENABLED) shapeRenderer.end();
-
-		shapeRenderer.begin(ShapeType.Filled);
-
-		if(DEBUG_ENABLED) { // Draws all the nodes and the paths between them
-			shapeRenderer.setColor(Color.RED);
-			for (Road road : mapGraph.getRoads()) {
-			//	if (mapGraph.isTravelled(road.getFromNode(), road.getToNode())){
-					//	shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(), 3);
-					//shapeRenderer.rectLine(road.getFromNode().getVector(), road.getToNode().getVector(),3);
-				//}
-			}
-			for (Junction junction : mapGraph.getJunctions()) {
-			//	shapeRenderer.circle(junction.getX(), junction.getY(), 30);
-			}
-
-		}
-		shapeRenderer.setColor(Color.WHITE);
-
-		shapeRenderer.end();
-
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
 		// Check for any collisions
@@ -395,6 +373,9 @@ public class GameScreen implements Screen {
 	}
 
 	/**
+	 * 	==============================================================
+	 * 						Overridden for assessment 3
+	 *  ==============================================================
 	 * Actions to perform when the main game is resumed.
 	 */
 	@Override
@@ -421,7 +402,9 @@ public class GameScreen implements Screen {
 		map.dispose();
 	}
 
-	/**
+	/** ==============================================================
+	 * 						Added for assessment 3
+	 * 	==============================================================
 	 * Checks to see if the fire truck is to be opened, if so change screen
 	 */
 	public void checkIfCarpark() {
@@ -464,6 +447,9 @@ public class GameScreen implements Screen {
 			}
 		}
 
+		// ==============================================================
+		//					Added for assessment 3
+		// ==============================================================
 		// Checks to see if a patrol is dead and removes it if it has died
 		for (int i=0; i<this.ETPatrols.size(); i++) {
 			Patrol patrol = this.ETPatrols.get(i);
@@ -473,6 +459,9 @@ public class GameScreen implements Screen {
 			}
 		}
 
+		// ==============================================================
+		//					Added for assessment 3
+		// ==============================================================
 		// Checks if a patrol has attacked a fire truck and vice versa
 		for (Patrol patrol : this.ETPatrols) {
 			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getDamageHitBox())) {
@@ -563,14 +552,18 @@ public class GameScreen implements Screen {
 		return truckTextures;
 	}
 
-	/**
+	/** ===============================================
+	 * 			New function for assessment 3
+	 * ================================================
 	 * Creates Patrol and adds it to the list of patrols
 	 */
 	private void spawnPatrol() {
 		this.ETPatrols.add(new Patrol(buildPatrolTextures(), mapGraph));
 	}
 
-	/**
+	/** ===============================================
+	 * 			New function for assessment 3
+	 * ================================================
 	 * Builds an array of textures that is used to render patrols
 	 *
 	 * @return	array of textures
@@ -593,6 +586,14 @@ public class GameScreen implements Screen {
 		return this.firestation.getActiveFireTruck();
 	}
 
+	/** =========================================================================
+	 * 						New function for assessment 3
+	 * ==========================================================================
+	 *
+	 * Adds junctions to the mapGraph. A junction is a place in the map where the
+	 * patrol has to make a decision about where to move to next.
+	 *
+	 */
 	private void populateMap(){
 		Junction one = new Junction(4987, 572, "bottom right corner");
 		Junction two = new Junction(3743, 572, "Bottom 4 junction R.H.S");
@@ -866,6 +867,13 @@ public class GameScreen implements Screen {
 
 	public void setScore(int score) {this.score = score; }
 
+	/** ==================================================
+	 * 			 New function for assessment 3
+	 * ===================================================
+	 *
+	 * Pauses the game and changes the screen to PauseScreen
+	 *
+	 */
 	public void pauseGame() {
 		this.pause();
 		game.setScreen(new PauseScreen(game, this));

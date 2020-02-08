@@ -1,6 +1,8 @@
 package com.PathFinding;
 
-import com.badlogic.gdx.math.Vector2;
+/** =================================================================
+ *                  New class added for assessment 3
+ *  ===============================================================*/
 
 public class Junction {
     float x;

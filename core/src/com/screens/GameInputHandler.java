@@ -1,6 +1,10 @@
 package com.screens;
 
-import com.badlogic.gdx.Gdx;
+/** =================================================================
+ *                  New class added for assessment 3
+ *  ===============================================================*/
+
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 

@@ -1,6 +1,5 @@
 package com.config;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -26,6 +25,10 @@ public final class Constants {
         WON,
         LOST
     }
+
+    // ==============================================================
+    //					Modified for assessment 3
+    // ==============================================================
 
     public enum TruckType {
         RED ("Red", new float[]{
@@ -81,6 +84,9 @@ public final class Constants {
         }
     }
 
+    // ==============================================================
+    //					Added for assessment 3
+    // ==============================================================
     public enum CarparkEntrances {
         Main1(new Vector2(80.5f * TILE_DIMS, 24.5f * TILE_DIMS), 0, "Fire Station"),
         Main2(new Vector2(85 * TILE_DIMS, 30.5f * TILE_DIMS), 90, "Fire Station"),

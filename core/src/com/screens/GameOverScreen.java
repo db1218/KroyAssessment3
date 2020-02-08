@@ -1,5 +1,8 @@
 package com.screens;
 
+/** =================================================================
+ *                  New class added for assessment 3
+ *  ===============================================================*/
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
@@ -21,9 +24,6 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.config.Constants.*;
 import com.kroy.Kroy;
 
-
-import static com.config.Constants.SCREEN_HEIGHT;
-import static com.config.Constants.SCREEN_WIDTH;
 
 public class GameOverScreen implements Screen {
 

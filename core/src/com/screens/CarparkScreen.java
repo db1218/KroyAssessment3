@@ -1,5 +1,9 @@
 package com.screens;
 
+/** =================================================================
+ *                  New class added for assessment 3
+ *  ===============================================================*/
+
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;

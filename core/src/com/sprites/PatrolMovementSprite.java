@@ -1,5 +1,9 @@
 package com.sprites;
 
+/** =================================================================
+ *  New class added for assessment 3
+ *  ===============================================================*/
+
 import com.PathFinding.Junction;
 import com.PathFinding.MapGraph;
 import com.PathFinding.Road;
