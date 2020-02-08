@@ -3,12 +3,25 @@ package com.PathFinding;
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.math.Vector2;
 
+/** This class creates a road between two Junctions and
+ *  calculates a cost for travelling on this road
+ */
+
 public class Road implements Connection<Junction> {
 
     Junction fromJunction;
     Junction toJunction;
+
+    // The cost of going from fromJunction to toJunction -
+    // the cost is determined by the distance between fromJunction
+    // and toJunction
     float cost;
 
+    /** Constructs a road
+     *
+     * @param fromJunction  One end of the road - the end that a patrol will start at
+     * @param toJunction    The other end of the road - the junction the patrol will end at
+     */
     public Road(Junction fromJunction, Junction toJunction){
         this.fromJunction = fromJunction;
         this.toJunction = toJunction;
