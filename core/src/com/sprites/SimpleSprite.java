@@ -75,10 +75,14 @@ public class SimpleSprite extends Sprite {
         this.decreaseInternalTime();
     }
 
+    /**
+     * Decrement or reset the internal time of the sprite
+     * used for timing of attacks
+     */
     public void decreaseInternalTime() {
         if (this.internalTime > 0) {
             this.internalTime -= 1;
-        } else if (this.getInternalTime() <= 0) {
+        } else if (this.internalTime <= 0) {
             this.internalTime = 150;
         }
     }
@@ -116,6 +120,11 @@ public class SimpleSprite extends Sprite {
         this.damageHitBox.setOrigin(width/2, height/2);
     }
 
+    /**
+     * Changes the movement hit box to a triangle for better movement and collisions
+     *
+     * @param rotation  amount in degrees to rotate the hitbox by
+     */
     public void setMovementHitBox(float rotation) {
         this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth()/2,this.getHeight()/2,0, this.getHeight()});
         this.movementHitBox.setOrigin(width/2, height/2);

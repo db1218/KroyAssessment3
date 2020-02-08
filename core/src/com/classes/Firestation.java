@@ -8,9 +8,6 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
-import com.kroy.Kroy;
-import com.screens.GameScreen;
-import com.screens.MainMenuScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
@@ -29,13 +26,14 @@ public class Firestation extends SimpleSprite {
     // Private values for this class to use
     private Circle repairRange;
 
+    private ArrayList<Firetruck> parkedFireTrucks;
     private Firetruck activeFireTruck;
 
-    private boolean isMenuOpen;
     private Texture destroyed;
+
+    private boolean isMenuOpen;
     private boolean isDestroyed;
 
-    private ArrayList<Firetruck> parkedFireTrucks;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -92,6 +90,15 @@ public class Firestation extends SimpleSprite {
         super.drawDebug(renderer);
     }
 
+    /**
+     * Updates the active fire truck, check if the
+     * fire truck's health is 0 or below, if so
+     * "destroy" it
+     *
+     * @param batch         to draw textures
+     * @param shapeRenderer to draw health and debug
+     * @param camera        eventually to control active firetruck hose
+     */
     public void updateFiretruck(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
         this.activeFireTruck.update(batch, camera);
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
@@ -99,40 +106,61 @@ public class Firestation extends SimpleSprite {
             this.activeFireTruck.destroy();
             if (getAliveFiretruckID() != -1) {
                 changeFiretruck(getAliveFiretruckID());
-                this.openMenu(true);
+                this.toggleMenu(true);
             }
         }
 
     }
 
+    /**
+     * Updates the arrow that points to the nearest fortress
+     *
+     * @param shapeRenderer to draw the arrow polygon
+     * @param fortresses    to find nearest fortress
+     */
     public void updateActiveArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
         this.activeFireTruck.updateArrow(shapeRenderer, fortresses);
     }
 
+    /**
+     * Respawn the active fire truck
+     */
     private void respawnFiretruck() {
         this.activeFireTruck.respawn();
     }
 
+    /**
+     * Whether the fire station has any more active fire trucks
+     *
+     * @return  <code>true</code> if there is a parked fire truck
+     *          <code>false</code> otherwise
+     */
     public boolean hasParkedFiretrucks() {
         return getAliveFiretruckID() >= 0;
     }
 
-    public void setActiveFireTruck(Firetruck fireTruck) {
-        this.activeFireTruck = fireTruck;
-    }
-
-    public Firetruck getActiveFireTruck() {
-        return this.activeFireTruck;
-    }
-
-    public ArrayList<Firetruck> getParkedFireTrucks() {
-        return this.parkedFireTrucks;
-    }
-
+    /**
+     * Add fire truck to parked fire truck list
+     *
+     * @param firetruck to park
+     */
     public void parkFireTruck(Firetruck firetruck) {
             this.parkedFireTrucks.add(firetruck);
     }
 
+    /**
+     * Repairs/Refills the fire truck if:
+     * - it is within 3 minutes
+     * - in the main carpark (fire station)
+     * - less than 100 health or water
+     *
+     * @param time          used to check whether the station
+     *                      has been destroyed yet
+     * @param includeActive <code>true</code> if car park menu
+     *                      if open, repair active fire truck
+     *                      and can see health/water increasing
+     *                      <code>fasle</code> menu is closed
+     */
     public void checkRepairRefill(int time, boolean includeActive) {
         if (includeActive) {
             if (time > 0 && activeFireTruck.getCarpark().name().contains("Main") && (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater())) {
@@ -149,16 +177,24 @@ public class Firestation extends SimpleSprite {
         }
     }
 
-    public boolean isMenuOpen() {
-        return this.isMenuOpen;
-    }
-
-    public void openMenu(boolean isOpen) {
+    /**
+     * Open or close the car park menu
+     *
+     * @param isOpen    <code>true</code> if menu is just being opened
+     *                  <code>false</code> menu is being closed
+     */
+    public void toggleMenu(boolean isOpen) {
         this.isMenuOpen = isOpen;
         if (this.activeFireTruck.isSpraying() && isOpen) this.activeFireTruck.toggleHose();
         if (!isOpen) respawnFiretruck();
     }
 
+    /**
+     * Returns the id of a parked fire truck,
+     * called when a fire truck dies and a new one is selected
+     *
+     * @return  <code>-1</code> no id
+     */
     private int getAliveFiretruckID() {
         for (int i=0; i < parkedFireTrucks.size(); i++) {
             if (parkedFireTrucks.get(i).isAlive() && parkedFireTrucks.get(i).isBought()) {
@@ -168,6 +204,11 @@ public class Firestation extends SimpleSprite {
         return -1;
     }
 
+    /**
+     * Swap active fire truck with indexed parked fire truck
+     *
+     * @param index of parked fire truck
+     */
     public void changeFiretruck(int index) {
         Firetruck previous = activeFireTruck;
         activeFireTruck = parkedFireTrucks.get(index);
@@ -175,5 +216,20 @@ public class Firestation extends SimpleSprite {
         parkedFireTrucks.add(index, previous);
     }
 
+    public void setActiveFireTruck(Firetruck fireTruck) {
+        this.activeFireTruck = fireTruck;
+    }
+
+    public Firetruck getActiveFireTruck() {
+        return this.activeFireTruck;
+    }
+
+    public ArrayList<Firetruck> getParkedFireTrucks() {
+        return this.parkedFireTrucks;
+    }
+
+    public boolean isMenuOpen() {
+        return this.isMenuOpen;
+    }
 
 }

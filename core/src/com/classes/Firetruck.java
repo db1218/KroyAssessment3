@@ -34,7 +34,6 @@ public class Firetruck extends MovementSprite {
     private Boolean isSpraying;
     private int toggleDelay;
     private float hoseWidth, hoseHeight;
-    private float[] firetruckProperties;
     private TruckType type;
     private ArrayList<Texture> firetruckSlices, waterFrames;
     private Polygon hoseRange;
@@ -52,15 +51,18 @@ public class Firetruck extends MovementSprite {
     private Firestation fireStation;
 
     /**
-     * Overloaded constructor containing all possible parameters.
      * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
      * It also requires an ID so that it can be focused with the camera. Drawn with the given
      * texture at the given position.
      * 
-     * @param textureSlices  The array of textures used to draw the firetruck with.
-     * @param frames         The texture used to draw the water with.
-     * @param type           The properties of the truck inherited from Constants.
-     * @param collisionLayer The layer of the map the firetruck collides with.
+     * @param textureSlices     The array of textures used to draw the firetruck with.
+     * @param frames            The texture used to draw the water with.
+     * @param type              The properties of the truck inherited from Constants.
+     * @param collisionLayer    The layer of the map the firetruck collides with.
+     * @param carparkLayer      The layer of the map the carparks are on
+     * @param fireStation       The fire station
+     * @param isBought          <code>true</code> if truck is bought to start with
+     *                          <code>false</code> if truck needs to still be bought
      */
     public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, TruckType type, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation, boolean isBought) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer, fireStation);
@@ -95,7 +97,7 @@ public class Firetruck extends MovementSprite {
 
         // Start the firetruck facing left
         this.rotate(-90);
-        this.resetRotation();
+        this.resetSprite();
 
     }
 
@@ -162,6 +164,11 @@ public class Firetruck extends MovementSprite {
 
     }
 
+    /**
+     * Checks if the firetruck enters a car park, set the respawn location
+     * of the fire truck to that car park and sets the menu to be opened
+     *
+     */
     public void checkCarparkCollision() {
         if (carparkLayer != null) {
             for (Vector2 vertex : getPolygonVertices(super.getMovementHitBox())) {
@@ -169,13 +176,19 @@ public class Firetruck extends MovementSprite {
                     if (carparkLayer.getCell((int) (vertex.x / TILE_DIMS), (int) (vertex.y / TILE_DIMS)).getTile().getProperties().get("carpark") != null) {
                         int carparkNum = ((int) carparkLayer.getCell(((int) (vertex.x / TILE_DIMS)), ((int) (vertex.y / TILE_DIMS))).getTile().getProperties().get("carpark"));
                         this.setRespawnLocation(carparkNum);
-                        this.fireStation.openMenu(true);
+                        this.fireStation.toggleMenu(true);
                     }
                 }
             }
         }
     }
 
+    /**
+     * Sets the respawn location which contains the
+     * name, x coord, y coord and name of car park
+     *
+     * @param number    from tile map custom property
+     */
     public void setRespawnLocation(int number) {
         switch (number) {
             case 0:
@@ -201,10 +214,13 @@ public class Firetruck extends MovementSprite {
         }
     }
 
-    public Constants.CarparkEntrances getCarpark() {
-        return this.location;
-    }
-
+    /**
+     * Updates the arrow to point at the nearest
+     * fortress to help the user know where to go
+     *
+     * @param shapeRenderer to draw the arrow
+     * @param fortresses    list of fortresses
+     */
     public void updateArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
         setNearestFortress(fortresses);
         if (viewArrow && this.nearestFortress != null) {
@@ -247,19 +263,19 @@ public class Firetruck extends MovementSprite {
         return this.firetruckSlices.get(index);
     }
 
-    public Texture getFireTruckTexture() {
-        return new Texture(Gdx.files.internal("FireTrucks/" + type.getColourString() + "/FiretruckFull.png"));
-    }
-
-    public Image getFireTruckImage() {
-        return new Image(getFireTruckTexture());
-    }
-
-    protected void resetRotation() {
+    /**
+     * Resets rotation and hit box when fire truck is spawned
+     */
+    protected void resetSprite() {
         super.setRotation(0 + this.location.getRotation());
         super.setMovementHitBox(180 + this.location.getRotation());
     }
 
+    /**
+     * Finds the nearest alive fortress
+     *
+     * @param fortresses    list of fortresses
+     */
     public void setNearestFortress(ArrayList<ETFortress> fortresses) {
         ETFortress nearest = null;
         for (ETFortress fortress : fortresses) {
@@ -322,15 +338,6 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
-     * Gets whether the firetruck is spraying water.
-     * 
-     * @return Whether the firetruck is spraying water.
-     */
-    public boolean isSpraying() {
-        return this.isSpraying;
-    }
-
-    /**
      * Gets whether the firetruck has used any water.
      * 
      * @return Whether the firetruck has used any water.
@@ -351,15 +358,6 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
-     * Gets the firetruck's water bar so it can be manipulated.
-     * 
-     * @return The firetruck's water bar.
-     */
-    public ResourceBar getWaterBar() {
-        return this.waterBar;
-    }
-
-    /**
      * Overloaded method for drawing debug information. Draws the hitbox as well
      * as the hose range indicator.
      * 
@@ -371,8 +369,50 @@ public class Firetruck extends MovementSprite {
         renderer.polygon(this.hoseRange.getTransformedVertices());
     }
 
+    /**
+     * Gets the firetruck's water bar so it can be manipulated.
+     *
+     * @return The firetruck's water bar.
+     */
+    public ResourceBar getWaterBar() {
+        return this.waterBar;
+    }
+
+    /**
+     * Gets whether the firetruck is spraying water.
+     *
+     * @return Whether the firetruck is spraying water.
+     */
+    public boolean isSpraying() {
+        return this.isSpraying;
+    }
+
+    /**
+     * Calls methods to reset the fire truck when it is to be respawned
+     */
+    public void respawn() {
+        this.setPosition(this.location.getLocation().x, this.location.getLocation().y);
+        this.resetSprite();
+        this.setSpeed(new Vector2(0, 0));
+    }
+
+    /**
+     * "Destroys" the fire truck
+     */
     public void destroy() {
         this.alive = false;
+    }
+
+    public Constants.CarparkEntrances getCarpark() {
+        return this.location;
+    }
+
+    public Texture getFireTruckTexture() {
+        return new Texture(Gdx.files.internal("FireTrucks/" + type.getColourString() + "/FiretruckFull.png"));
+    }
+
+    public Image getFireTruckImage() {
+        return new Image(getFireTruckTexture());
     }
 
     public boolean isAlive() {
@@ -389,6 +429,14 @@ public class Firetruck extends MovementSprite {
 
     public float getPrice() {return  this.getType().getProperties()[6];}
 
+    public void buy() {
+        this.isBought = true;
+    }
+
+    public boolean isBought(){
+        return this.isBought;
+    }
+
     /**
      * Dispose of all textures used by this class and its parents.
      */
@@ -401,19 +449,5 @@ public class Firetruck extends MovementSprite {
         for (Texture texture : this.waterFrames) {
             texture.dispose();
         }
-    }
-
-    public void respawn() {
-        this.setPosition(this.location.getLocation().x, this.location.getLocation().y);
-        this.resetRotation();
-        this.setSpeed(new Vector2(0, 0));
-    }
-
-    public void buy(){
-        this.isBought = true;
-    }
-
-    public boolean isBought(){
-        return this.isBought;
     }
 }

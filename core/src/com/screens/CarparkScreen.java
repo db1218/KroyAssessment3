@@ -4,7 +4,6 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
@@ -196,7 +195,7 @@ public class CarparkScreen implements Screen {
         closeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                firestation.openMenu(false);
+                firestation.toggleMenu(false);
                 game.setScreen(gameScreen);
             }
         });
@@ -205,7 +204,7 @@ public class CarparkScreen implements Screen {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
-                    firestation.openMenu(false);
+                    firestation.toggleMenu(false);
                     game.setScreen(gameScreen);
                 }
                 return true;
