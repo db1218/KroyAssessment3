@@ -10,6 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
+import com.config.Constants;
 import com.sprites.SimpleSprite;
 
 // Constants import
@@ -30,6 +31,7 @@ public class ETFortress extends SimpleSprite {
     private Texture destroyed;
     private Circle detectionRange;
     private boolean flooded;
+    private Constants.FortressType type;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -42,41 +44,13 @@ public class ETFortress extends SimpleSprite {
      * @param xPos              The x-coordinate for the ETFortress.
      * @param yPos              The y-coordinate for the ETFortress.
      */
-    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos) {
+    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, Constants.FortressType type) {
         super(texture);
         this.destroyed = destroyedTexture;
         this.flooded = false;
+        this.type = type;
         this.setScale(scaleX, scaleY);
         this.setPosition(xPos, yPos);
-        this.create();
-    }
-
-    /**
-     * Overloaded constructor containing all possible parameters.
-     * Drawn with the given texture at the given position.
-     * 
-     * @param texture           The texture used to draw the ETFortress with.
-     * @param destroyedTexture  The texture used to draw the ETFortress with. when it has been destroyed.
-     * @param scaleX            The scaling in the x-axis.
-     * @param scaleY            The scaling in the y-axis.
-     */
-    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY) {
-        super(texture);
-        this.destroyed = destroyedTexture;
-        this.setScale(scaleX, scaleY);
-        this.create();
-    }
-
-    /**
-     * Simplfied constructor for the ETFortress, that doesn't require a position.
-     * Drawn with the given texture at (0,0).
-     * 
-     * @param texture           The texture used to draw the ETFortress with.
-     * @param destroyedTexture  The texture used to draw the ETFortress with. when it has been destroyed.
-     */
-    public ETFortress(Texture texture, Texture destroyedTexture) {
-        super(texture);
-        this.destroyed = destroyedTexture;
         this.create();
     }
 
@@ -115,10 +89,7 @@ public class ETFortress extends SimpleSprite {
      * @return boolean  Whether the ETFortress is ready to fire again (true) or not (false)
      */
     public boolean canShootProjectile() {
-        if (this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0) {
-            return true;
-        }
-        return false;
+        return this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0;
     }
 
     /**
@@ -129,7 +100,7 @@ public class ETFortress extends SimpleSprite {
      * @return         Whether the given polygon is in the radius of the ETFortress
      */
     public boolean isInRadius(Polygon polygon) {
-        float []vertices = polygon.getTransformedVertices();
+        float[] vertices = polygon.getTransformedVertices();
         Vector2 center = new Vector2(this.detectionRange.x, this.detectionRange.y);
         float squareRadius = this.detectionRange.radius * this.detectionRange.radius;
         for (int i = 0; i < vertices.length; i+=2){
@@ -159,5 +130,9 @@ public class ETFortress extends SimpleSprite {
 
     public boolean isFlooded() {
         return this.flooded;
+    }
+
+    public Constants.FortressType getType() {
+        return this.type;
     }
 }

@@ -28,6 +28,22 @@ public final class Constants {
     //					Modified for assessment 3
     // ==============================================================
 
+    public enum FortressType {
+        CLIFFORD(7),
+        MINSTER(15),
+        RAIL(10);
+
+        private int damage;
+
+        FortressType(int damage) {
+            this.damage = damage;
+        }
+
+        public int getDamage() {
+            return this.damage;
+        }
+    }
+
     public enum TruckType {
         RED ("Red", new float[]{
                 140,  // HEALTH
