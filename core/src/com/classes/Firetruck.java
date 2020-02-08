@@ -183,7 +183,9 @@ public class Firetruck extends MovementSprite {
         }
     }
 
-    /**
+    /** ======================================================================
+     *                      Added for assessment 3
+     *  ======================================================================
      * Sets the respawn location which contains the
      * name, x coord, y coord and name of car park
      *
