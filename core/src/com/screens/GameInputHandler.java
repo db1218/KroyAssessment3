@@ -1,8 +1,8 @@
 package com.screens;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 
 import com.badlogic.gdx.Input;
@@ -10,7 +10,7 @@ import com.badlogic.gdx.InputProcessor;
 
 public class GameInputHandler implements InputProcessor {
 
-    private GameScreen gameScreen;
+    private final GameScreen gameScreen;
 
     public GameInputHandler(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
@@ -24,10 +24,8 @@ public class GameInputHandler implements InputProcessor {
      */
     @Override
     public boolean keyDown(int keycode) {
-        switch (keycode) {
-            case Input.Keys.ESCAPE:
-                gameScreen.pauseGame();
-                break;
+        if (keycode == Input.Keys.ESCAPE) {
+            gameScreen.pauseGame();
         }
         return true;
     }
@@ -74,10 +72,10 @@ public class GameInputHandler implements InputProcessor {
     /**
      * Called when a finger was lifted or a mouse button was released. The button parameter will be {@link Input.Buttons#LEFT} on iOS.
      *
-     * @param screenX
-     * @param screenY
-     * @param pointer the pointer for the event.
-     * @param button  the button
+     * @param screenX   x coord of touch
+     * @param screenY   y coord of touch
+     * @param pointer   the pointer for the event.
+     * @param button    the button
      * @return whether the input was processed
      */
     @Override
@@ -91,8 +89,8 @@ public class GameInputHandler implements InputProcessor {
     /**
      * Called when a finger or the mouse was dragged.
      *
-     * @param screenX
-     * @param screenY
+     * @param screenX x coord of touch
+     * @param screenY y coord of touch
      * @param pointer the pointer for the event.
      * @return whether the input was processed
      */
@@ -104,8 +102,8 @@ public class GameInputHandler implements InputProcessor {
     /**
      * Called when the mouse was moved without any buttons being pressed. Will not be called on iOS.
      *
-     * @param screenX
-     * @param screenY
+     * @param screenX x coord of touch
+     * @param screenY y coord of touch
      * @return whether the input was processed
      */
     @Override

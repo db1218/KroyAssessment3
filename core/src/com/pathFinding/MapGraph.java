@@ -1,8 +1,8 @@
-package com.PathFinding;
+package com.pathFinding;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.ai.pfa.DefaultGraphPath;
@@ -26,20 +26,20 @@ public class MapGraph implements IndexedGraph<Junction> {
 
     // The heuristic used to determine which path to take from
     // start to end goal
-    MapHeuristic mapHeuristic = new MapHeuristic();
+    final MapHeuristic mapHeuristic = new MapHeuristic();
 
     // Array of junctions in mapGraph
-    Array<Junction> junctions = new Array<>();
+    final Array<Junction> junctions = new Array<>();
 
     // Array of roads in mapGraph
-    Array<Road> roads = new Array<>();
+    final Array<Road> roads = new Array<>();
 
     // A hashmap containing the roads which are currently being travelled on
     // the PatrolMovementSprite that is travelling on that road
-    HashMap<Road, PatrolMovementSprite> lockedRoads = new HashMap<>();
+    final HashMap<Road, PatrolMovementSprite> lockedRoads = new HashMap<>();
 
     // A map containing the
-    ObjectMap<Junction, Array<Connection<Junction>>> connectionsFromJunctionMap = new ObjectMap<>();
+    final ObjectMap<Junction, Array<Connection<Junction>>> connectionsFromJunctionMap = new ObjectMap<>();
 
     private int lastNodeIndex = 0;
 
@@ -150,8 +150,6 @@ public class MapGraph implements IndexedGraph<Junction> {
     }
 
     public Array<Junction> getJunctions(){ return this.junctions; }
-
-    public Array<Road> getRoads() {return this.roads; }
 
     @Override
     public int getIndex(Junction node) { return node.index; }

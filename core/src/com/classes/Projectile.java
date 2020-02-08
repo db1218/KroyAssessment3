@@ -4,7 +4,6 @@ package com.classes;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
@@ -14,8 +13,6 @@ import com.sprites.MovementSprite;
 import static com.config.Constants.PROJECTILE_SPEED;
 import static com.config.Constants.PROJECTILE_WIDTH;
 import static com.config.Constants.PROJECTILE_HEIGHT;
-import static com.config.Constants.SCREEN_HEIGHT;
-import static com.config.Constants.SCREEN_WIDTH;
 import static com.config.Constants.MAP_HEIGHT;
 import static com.config.Constants.MAP_WIDTH;
 
@@ -29,7 +26,7 @@ public class Projectile extends MovementSprite {
 
     // Private values to be used in this class only
     Vector2 trajectory;
-    private int damage;
+    private final int damage;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -86,21 +83,6 @@ public class Projectile extends MovementSprite {
         // Give the projectile the vector to travel at
         this.rotate(this.trajectory.angle());
         this.setSpeed(trajectory);
-    }
-    
-    /**
-     * Gets whether the projectile is ready to be removed. It needs to be offscreen
-     * so it doesn't disappear in view.
-     * @param cameraPosition The position of the camera, needed to calculate the edge of the screen
-     * 
-     * @return Whether the projectile can be removed.
-     */
-    public boolean isOutOfView(Vector3 cameraPosition) {
-        boolean outVerticalView = this.getCentreY() > cameraPosition.y + SCREEN_HEIGHT;
-        outVerticalView = outVerticalView || this.getCentreY() < cameraPosition.y - SCREEN_HEIGHT;
-        boolean outHorizontalView = this.getCentreX() > cameraPosition.x + SCREEN_WIDTH;
-        outHorizontalView = outHorizontalView || this.getCentreX() < cameraPosition.x - SCREEN_WIDTH;
-        return outVerticalView || outHorizontalView;
     }
 
     /**

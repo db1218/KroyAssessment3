@@ -1,8 +1,8 @@
 package com.screens;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
@@ -16,8 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.badlogic.gdx.Input;
-import com.CustomActors.BackgroundBox;
+import com.actors.BackgroundBox;
 import com.classes.Firestation;
 import com.classes.Firetruck;
 import com.config.Constants;
@@ -33,34 +32,34 @@ import java.util.ArrayList;
 public class CarparkScreen implements Screen {
 
     private final Kroy game;
-    private Skin skin;
-    private GameScreen gameScreen;
+    private final Skin skin;
+    private final GameScreen gameScreen;
 
-    private OrthographicCamera camera;
-    private Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
 
-    private ShapeRenderer shapeRenderer;
+    private final ShapeRenderer shapeRenderer;
 
-    private Firestation firestation;
+    private final Firestation firestation;
     private Firetruck activeFiretruck;
-    private Stage stage;
+    private final Stage stage;
 
-    private HorizontalGroup selectorGroup;
-    private TextButton closeButton;
+    private final HorizontalGroup selectorGroup;
+    private final TextButton closeButton;
 
-    private Label timeLabel;
-    private Label scoreLabel;
+    private final Label timeLabel;
+    private final Label scoreLabel;
 
-    private Label activeLocation;
-    private Image activeTruckImage;
-    private Table tableStats;
+    private final Label activeLocation;
+    private final Image activeTruckImage;
+    private final Table tableStats;
 
-    private ArrayList<TextButton> selectTextButtons;
-    private ArrayList<Button> selectImageButtons;
-    private ArrayList<Label> selectLocationLabels;
+    private final ArrayList<TextButton> selectTextButtons;
+    private final ArrayList<Button> selectImageButtons;
+    private final ArrayList<Label> selectLocationLabels;
 
-    private ArrayList<Label> activeStatsLabel;
-    private ArrayList<Label> activeStatsValue;
+    private final ArrayList<Label> activeStatsLabel;
+    private final ArrayList<Label> activeStatsValue;
 
     /**
      * Constructor for car park screen
@@ -264,8 +263,8 @@ public class CarparkScreen implements Screen {
     }
 
     /**
-     * @param width
-     * @param height
+     * @param width     of window
+     * @param height    of window
      * @see ApplicationListener#resize(int, int)
      */
     @Override

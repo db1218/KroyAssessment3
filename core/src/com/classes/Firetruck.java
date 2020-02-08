@@ -34,21 +34,22 @@ public class Firetruck extends MovementSprite {
     private Boolean isSpraying;
     private int toggleDelay;
     private float hoseWidth, hoseHeight;
-    private TruckType type;
-    private ArrayList<Texture> firetruckSlices, waterFrames;
+    private final TruckType type;
+    private final ArrayList<Texture> firetruckSlices;
+    private final ArrayList<Texture> waterFrames;
     private Polygon hoseRange;
     private ResourceBar waterBar;
     private ETFortress nearestFortress;
-    private Arrow arrow;
+    private final Arrow arrow;
     private boolean viewArrow;
-    private TiledMapTileLayer carparkLayer;
+    private final TiledMapTileLayer carparkLayer;
 
     private Constants.CarparkEntrances location;
 
     private boolean alive;
     private boolean isBought;
 
-    private Firestation fireStation;
+    private final Firestation fireStation;
 
     /**
      * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
@@ -65,7 +66,7 @@ public class Firetruck extends MovementSprite {
      *                          <code>false</code> if truck needs to still be bought
      */
     public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, TruckType type, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation, boolean isBought) {
-        super(textureSlices.get(textureSlices.size() - 1), collisionLayer, carparkLayer, fireStation);
+        super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
         this.waterFrames = frames;
         this.firetruckSlices = textureSlices;
         this.type = type;
@@ -91,7 +92,6 @@ public class Firetruck extends MovementSprite {
         this.setAccelerationRate(this.getType().getProperties()[1]);
         this.setDecelerationRate(this.getType().getProperties()[1] * 0.6f);
         this.setMaxSpeed(this.getType().getProperties()[2]);
-        this.setRestitution(this.getType().getProperties()[3]);
         this.createWaterHose();
         this.alive = true;
 
@@ -248,7 +248,7 @@ public class Firetruck extends MovementSprite {
         float width = this.getWidth(), height = this.getHeight();
         for (int i = 0; i < slicesLength; i++) {
             Texture texture = animateLights(i);
-            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
+            batch.draw(new TextureRegion(texture), x, (y - slicesLength / 3f) + i, width / 2, height / 2, width, height, 1, 1, angle, true);
         }
     }
 

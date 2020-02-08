@@ -1,8 +1,8 @@
-package com.PathFinding;
+package com.pathFinding;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.ai.pfa.Heuristic;
 import com.badlogic.gdx.math.Vector2;

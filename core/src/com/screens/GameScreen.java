@@ -1,8 +1,8 @@
 package com.screens;
 
 // LibGDX imports
-import com.PathFinding.Junction;
-import com.PathFinding.MapGraph;
+import com.pathFinding.Junction;
+import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
@@ -47,15 +47,15 @@ public class GameScreen implements Screen {
 	final Kroy game;
 
 	// Private values for game screen logic
-	private ShapeRenderer shapeRenderer;
-	private OrthographicCamera camera;
-	private Batch batch;
+	private final ShapeRenderer shapeRenderer;
+	private final OrthographicCamera camera;
+	private final Batch batch;
 
 	// Private values for tiled map
-	private TiledMap map;
-	private OrthogonalTiledMapRenderer renderer;
-	private int[] foregroundLayers;
-    private int[] backgroundLayers;
+	private final TiledMap map;
+	private final OrthogonalTiledMapRenderer renderer;
+	private final int[] foregroundLayers;
+    private final int[] backgroundLayers;
 
 	// Private values for the game
 	private int score;
@@ -63,21 +63,21 @@ public class GameScreen implements Screen {
 	private float zoomTarget;
 
 	// Private sprite related objects
-	private ArrayList<ETFortress> ETFortresses;
-	private ArrayList<Projectile> projectiles;
+	private final ArrayList<ETFortress> ETFortresses;
+	private final ArrayList<Projectile> projectiles;
 	private ArrayList<Projectile> projectilesToRemove;
-	private ArrayList<Patrol> ETPatrols;
-	private Firestation firestation;
-	private MinigameSprite minigameSprite;
-	private ArrayList<Texture> waterFrames;
-	private Texture projectileTexture;
+	private final ArrayList<Patrol> ETPatrols;
+	private final Firestation firestation;
+	private final MinigameSprite minigameSprite;
+	private final ArrayList<Texture> waterFrames;
+	private final Texture projectileTexture;
 
 	// Objects for the patrol graph
-	MapGraph mapGraph;
-	ArrayList<Junction> junctionsInMap;
+	final MapGraph mapGraph;
+	final ArrayList<Junction> junctionsInMap;
 
-	private CarparkScreen carparkScreen;
-	private GameInputHandler gameInputHandler;
+	private final CarparkScreen carparkScreen;
+	private final GameInputHandler gameInputHandler;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -577,10 +577,6 @@ public class GameScreen implements Screen {
 
 	public Firestation getFirestation() {
 		return this.firestation;
-	}
-
-	public Firetruck getTruck() {
-		return this.firestation.getActiveFireTruck();
 	}
 
 	/** =========================================================================

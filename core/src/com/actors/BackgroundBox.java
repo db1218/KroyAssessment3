@@ -1,8 +1,8 @@
-package com.CustomActors;
+package com.actors;
 
-/** =================================================================
- *  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Pixmap;
@@ -10,25 +10,23 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.scenes.scene2d.Actor;
 
+/**
+ * Custom actor to allow for a shape to be
+ * rendered on the stage. Used as backgrounds
+ * to actors in the car park menu.
+ */
 public class BackgroundBox extends Actor {
 
-    private Texture texture;
-
-    public BackgroundBox(int width, int height, Color color) {
-        createRectangleTexture(width, height, color);
-    }
-
-    public BackgroundBox(int width, int height, Color color, int radius) {
-        createRoundRectangleTexture(width, height, color, radius);
-    }
+    private final Texture texture;
 
     /**
-     * Rectangle
-     * @param width
-     * @param height
-     * @param color
+     * Constructor to create a rectangle
+     *
+     * @param width     of rectangle
+     * @param height    of rectangle
+     * @param color     of the box
      */
-    private void createRectangleTexture(int width, int height, Color color) {
+    public BackgroundBox(int width, int height, Color color) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
         pixmap.fillRectangle(0, 0, width, height);
@@ -37,13 +35,14 @@ public class BackgroundBox extends Actor {
     }
 
     /**
-     * Rounded Rectangle
-     * @param width
-     * @param height
-     * @param color
-     * @param radius
+     * Constructor to create a rounded rectangle
+     *
+     * @param width     of rectangle
+     * @param height    of rectangle
+     * @param color     of the box
+     * @param radius    of the corners
      */
-    private void createRoundRectangleTexture(int width, int height, Color color, int radius) {
+    public BackgroundBox(int width, int height, Color color, int radius) {
         Pixmap pixmap = new Pixmap(width, height, Pixmap.Format.RGBA8888);
         pixmap.setColor(color);
         pixmap.fillRectangle(0, radius, pixmap.getWidth(), pixmap.getHeight()-2*radius);

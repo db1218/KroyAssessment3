@@ -28,10 +28,10 @@ import static com.config.Constants.ETFORTRESS_HEALING;
 public class ETFortress extends SimpleSprite {
 
     // Private values for this class to use
-    private Texture destroyed;
+    private final Texture destroyed;
     private Circle detectionRange;
     private boolean flooded;
-    private Constants.FortressType type;
+    private final Constants.FortressType type;
 
     /**
      * Overloaded constructor containing all possible parameters.

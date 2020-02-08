@@ -1,8 +1,8 @@
-package com.PathFinding;
+package com.pathFinding;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.ai.pfa.Connection;
 import com.badlogic.gdx.math.Vector2;
@@ -13,13 +13,13 @@ import com.badlogic.gdx.math.Vector2;
 
 public class Road implements Connection<Junction> {
 
-    Junction fromJunction;
-    Junction toJunction;
+    final Junction fromJunction;
+    final Junction toJunction;
 
     // The cost of going from fromJunction to toJunction -
     // the cost is determined by the distance between fromJunction
     // and toJunction
-    float cost;
+    final float cost;
 
     /** Constructs a road
      *

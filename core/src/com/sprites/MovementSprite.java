@@ -8,7 +8,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.Array;
-import com.classes.Firestation;
 import com.config.Constants.Direction;
 //import org.omg.PortableInterceptor.SYSTEM_EXCEPTION;
 
@@ -24,11 +23,9 @@ import static com.config.Constants.TILE_DIMS;
 public class MovementSprite extends SimpleSprite {
 
     // Private values to be used in this class only
-    private float accelerationRate, decelerationRate, maxSpeed, restitution, rotationLockTime;
+    private float accelerationRate, decelerationRate, maxSpeed, rotationLockTime;
     private Vector2 speed;
-    private Firestation fireStation;
-    private TiledMapTileLayer collisionLayer, carparkLayer;
-    private int carpark;
+    private TiledMapTileLayer collisionLayer;
 
     /**
      * Creates a sprite capable of moving and colliding with the tiledMap and other sprites.
@@ -36,11 +33,9 @@ public class MovementSprite extends SimpleSprite {
      * @param spriteTexture  The texture the sprite should use.
      * @param collisionLayer The layer of the map the sprite will collide with.
      */
-    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation) {
+    public MovementSprite(Texture spriteTexture, TiledMapTileLayer collisionLayer) {
         super(spriteTexture);
         this.collisionLayer = collisionLayer;
-        this.carparkLayer = carparkLayer;
-        this.fireStation = fireStation;
         this.create();
     }
 
@@ -62,7 +57,6 @@ public class MovementSprite extends SimpleSprite {
         this.accelerationRate = 10;
         this.decelerationRate = 6;
         this.rotationLockTime = 0;
-        this.restitution = 0.1f;
         this.maxSpeed = 200;
     }
 
@@ -117,7 +111,6 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
-
     /**
      * Apply acceleration to the sprite, based on collision boundaries and
      * existing acceleration.
@@ -161,16 +154,6 @@ public class MovementSprite extends SimpleSprite {
     }
 
     /**
-     * Checks what direction the sprite is facing and bounces it the opposite way.
-     * @param separationVector Vector containing the minimum distance needed to travel to seperate two sprites.
-     */
-    public void collisionOccurred(Vector2 separationVector) {
-        //this.rotate(-this.speed.x * Constants.FIRETRUCK_BOUNCEBACK * Gdx.graphics.getDeltaTime());
-    }
-
-
-
-    /**
      * Checks if the tile at a location is a "blocked" tile or not.
      * @return Whether the hits a collision object (true) or not (false)
      */
@@ -196,24 +179,6 @@ public class MovementSprite extends SimpleSprite {
         }
         return result;
     }
-    
-    /**
-     * Sets the amount of time the sprite cannot rotate for.
-     * @param duration The duration the sprite cannot rotate in.
-     */
-    public void setRotationLock(float duration) {
-        if (duration > 0 && this.rotationLockTime <= 0) {
-            this.rotationLockTime = duration * 100;
-        }
-    }
-
-    /**
-     * Sets the amount the sprite will bounce upon collisions.
-     * @param bounce The restitution of the sprite.
-     */
-    public void setRestitution(float bounce) {
-        this.restitution = bounce;
-    }
 
     /**
      * Sets the rate at which the sprite will accelerate.
@@ -230,7 +195,6 @@ public class MovementSprite extends SimpleSprite {
     public void setDecelerationRate(float rate) {
         this.decelerationRate = rate;
     }
-
 
     /**
      * Sets the max speed the sprite can accelerate to.
@@ -254,13 +218,5 @@ public class MovementSprite extends SimpleSprite {
      */
     public void setSpeed(Vector2 speed) {
         this.speed = speed;
-    }
-
-    /**
-     * Gets the current speed of the sprite.
-     * @return The current speed of the sprite.
-     */
-    public Vector2 getSpeed() {
-        return this.speed;
     }
 }

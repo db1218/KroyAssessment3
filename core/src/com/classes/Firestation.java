@@ -24,12 +24,12 @@ import static com.config.Constants.*;
 public class Firestation extends SimpleSprite {
 
     // Private values for this class to use
-    private Circle repairRange;
+    private final Circle repairRange;
 
-    private ArrayList<Firetruck> parkedFireTrucks;
+    private final ArrayList<Firetruck> parkedFireTrucks;
     private Firetruck activeFireTruck;
 
-    private Texture destroyed;
+    private final Texture destroyed;
 
     private boolean isMenuOpen;
     private boolean isDestroyed;

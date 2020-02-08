@@ -1,14 +1,13 @@
 package com.screens;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -17,11 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.config.Constants.Outcome;
 import com.kroy.Kroy;
-
-import static com.config.Constants.SCREEN_HEIGHT;
-import static com.config.Constants.SCREEN_WIDTH;
 
 /**
  * Screen that appears when the user pauses the game.
@@ -32,12 +27,12 @@ import static com.config.Constants.SCREEN_WIDTH;
 public class PauseScreen implements Screen {
 
     private final Kroy game;
-    private GameScreen gameScreen;
+    private final GameScreen gameScreen;
 
-    private Skin skin;
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private Stage stage;
+    private final Skin skin;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
+    private final Stage stage;
 
     /**
      * The constructor for the pause screen
@@ -151,8 +146,8 @@ public class PauseScreen implements Screen {
     }
 
     /**
-     * @param width
-     * @param height
+     * @param width of window
+     * @param height of window
      * @see ApplicationListener#resize(int, int)
      */
     @Override

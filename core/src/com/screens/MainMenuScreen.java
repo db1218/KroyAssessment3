@@ -6,8 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -16,16 +14,13 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.viewport.FitViewport;
-import com.badlogic.gdx.utils.viewport.ScalingViewport;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
 import com.kroy.Kroy;
 
 // Constants import
-import static com.config.Constants.SCREEN_HEIGHT;
-import static com.config.Constants.SCREEN_WIDTH;
+
 
 /**
  * Displays the main menu screen with selection buttons.
@@ -40,12 +35,11 @@ public class MainMenuScreen implements Screen {
 	final Kroy game;
 	
 	// Private camera to see the screen
-	private OrthographicCamera camera;
+	private final OrthographicCamera camera;
 
-	private Stage stage;
-	protected Texture texture;
-	private Skin skin;
-	private Viewport viewport;
+	private final Stage stage;
+	private final Skin skin;
+	private final Viewport viewport;
 
 	/**
 	 * The constructor for the main menu screen. All game logic for the main

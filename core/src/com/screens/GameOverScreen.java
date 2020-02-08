@@ -1,8 +1,8 @@
 package com.screens;
 
-/** =================================================================
- *                  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                   New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
@@ -28,12 +28,12 @@ import com.kroy.Kroy;
 public class GameOverScreen implements Screen {
 
     private final Kroy game;
-    private Outcome outcome;
+    private final Outcome outcome;
 
-    private Skin skin;
-    private OrthographicCamera camera;
-    private Viewport viewport;
-    private Stage stage;
+    private final Skin skin;
+    private final OrthographicCamera camera;
+    private final Viewport viewport;
+    private final Stage stage;
 
     public GameOverScreen(Kroy game, Outcome outcome) {
         this.game = game;
@@ -107,8 +107,8 @@ public class GameOverScreen implements Screen {
     }
 
     /**
-     * @param width
-     * @param height
+     * @param width of window
+     * @param height of window
      * @see ApplicationListener#resize(int, int)
      */
     @Override

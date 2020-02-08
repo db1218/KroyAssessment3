@@ -1,12 +1,12 @@
 package com.sprites;
 
-/** =================================================================
- *  New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+   New class added for assessment 3
+   ===============================================================*/
 
-import com.PathFinding.Junction;
-import com.PathFinding.MapGraph;
-import com.PathFinding.Road;
+import com.pathFinding.Junction;
+import com.pathFinding.MapGraph;
+import com.pathFinding.Road;
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -23,7 +23,7 @@ import com.badlogic.gdx.utils.Queue;
 public class PatrolMovementSprite extends SimpleSprite {
 
     // The mapGraph that contains all the junctions in the map
-    MapGraph mapGraph;
+    final MapGraph mapGraph;
     // The road the patrol is currently travelling on
     Road setRoad;
 
@@ -38,12 +38,12 @@ public class PatrolMovementSprite extends SimpleSprite {
     float deltaY;
 
     // The speed that the patrols should move
-    float speed;
+    final float speed;
     // The junction that the patrol has just moved away from
     Junction previousJunction;
     // Queue of junctions that the patrol will travel through to get
     // from its start position to it's goal position
-    Queue<Junction> pathQueue;
+    final Queue<Junction> pathQueue;
 
     /** Constructor for PatrolMovementSprite
      *

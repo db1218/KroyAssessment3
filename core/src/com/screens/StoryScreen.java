@@ -1,8 +1,8 @@
 package com.screens;
 
-/** =================================================================
- *                   New class added for assessment 3
- *  ===============================================================*/
+/* =================================================================
+                    New class added for assessment 3
+   ===============================================================*/
 
 import com.badlogic.gdx.ApplicationListener;
 import com.badlogic.gdx.Game;
@@ -10,7 +10,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -33,11 +32,10 @@ public class StoryScreen implements Screen {
     private final Kroy game;
     private GameScreen gameScreen;
 
-    private OrthographicCamera camera;
-    private Stage stage;
-    protected Texture texture;
-    private Skin skin;
-    private Viewport viewport;
+    private final OrthographicCamera camera;
+    private final Stage stage;
+    private final Skin skin;
+    private final Viewport viewport;
 
     /**
      * The constructor for the story screen
@@ -130,8 +128,8 @@ public class StoryScreen implements Screen {
     }
 
     /**
-     * @param width
-     * @param height
+     * @param width of window
+     * @param height of window
      * @see ApplicationListener#resize(int, int)
      */
     @Override

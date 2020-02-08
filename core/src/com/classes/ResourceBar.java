@@ -24,7 +24,10 @@ public class ResourceBar {
 
     // Private values to be used in this class only
     private ProgressBar bar;
-    private int currentResourceAmount, maxResourceAmount, barWidth, barHeight;
+    private int currentResourceAmount;
+    private int maxResourceAmount;
+    private final int barWidth;
+    private final int barHeight;
     private boolean fadeIn, fadeOut, beginFadeOut;
     private Color[] colourRange; 
 
@@ -127,7 +130,7 @@ public class ResourceBar {
     public void setPosition(float spriteXPos, float spriteYPos) {
         // Get sprite height and width by reversing previous calculations
         float longestSide = Math.max(barHeight / 0.3f, barWidth / 0.7f);
-        float x = spriteXPos + (longestSide / 2) - (barWidth / 2);
+        float x = spriteXPos + (longestSide / 2) - (barWidth / 2f);
         float y = spriteYPos + longestSide;
         this.bar.setPosition(x, y);
     }
@@ -190,16 +193,6 @@ public class ResourceBar {
     public void setMaxResource(int maxAmount) {
         this.currentResourceAmount = (this.currentResourceAmount / this.maxResourceAmount) * maxAmount;
         this.maxResourceAmount = maxAmount;
-        this.bar.setStyle(getResourceBarStyle());
-    }
-
-    /**
-     * The percentage for the bar to show.
-     * 
-     * @param percent The percentage the bar shows.
-     */
-    public void setResourcePercentage(int percent) {
-        this.currentResourceAmount = (percent * this.maxResourceAmount) / 100;
         this.bar.setStyle(getResourceBarStyle());
     }
 

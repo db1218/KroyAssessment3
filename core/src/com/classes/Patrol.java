@@ -1,6 +1,6 @@
 package com.classes;
 
-import com.PathFinding.MapGraph;
+import com.pathFinding.MapGraph;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -23,10 +23,10 @@ public class Patrol extends PatrolMovementSprite {
 
     // List of textures which are drawn on top of each other
     // to create a 3D looking image
-    ArrayList<Texture> textureSlices;
+    final ArrayList<Texture> textureSlices;
 
     // The range where a patrol can 'see' a firetruck
-    private Circle detectionRange;
+    private final Circle detectionRange;
 
     // Whether the patrol has been killed by a firetruck or not
     private  boolean isDead;

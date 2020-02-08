@@ -33,7 +33,7 @@ public final class Constants {
         MINSTER(15),
         RAIL(10);
 
-        private int damage;
+        private final int damage;
 
         FortressType(int damage) {
             this.damage = damage;
@@ -176,12 +176,12 @@ public final class Constants {
     public static final float PROJECTILE_SPEED = 400;
     // Size
     public static final float FIRETRUCK_WIDTH =  2*TILE_DIMS;
-    public static final float FIRETRUCK_HEIGHT = 1*TILE_DIMS;
+    public static final float FIRETRUCK_HEIGHT = TILE_DIMS;
     public static final float FIRESTATION_WIDTH = 8*TILE_DIMS;
     public static final float FIRESTATION_HEIGHT = 5*TILE_DIMS;
     public static final float ETFORTRESS_WIDTH = 5*TILE_DIMS;
     public static final float ETFORTRESS_HEIGHT =5*TILE_DIMS;
-    public static final float PROJECTILE_WIDTH = 1*TILE_DIMS;
+    public static final float PROJECTILE_WIDTH = TILE_DIMS;
     public static final float PROJECTILE_HEIGHT =0.5f*TILE_DIMS;
 
     public static final float FIRETRUCK_BOUNCEBACK = 5f;

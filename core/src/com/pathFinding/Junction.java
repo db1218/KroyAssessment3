@@ -1,13 +1,13 @@
-package com.PathFinding;
+package com.pathFinding;
 
 /** =================================================================
  *                  New class added for assessment 3
  *  ===============================================================*/
 
 public class Junction {
-    float x;
-    float y;
-    String name;
+    final float x;
+    final float y;
+    final String name;
 
     int index;
 
