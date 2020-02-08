@@ -79,7 +79,6 @@ public class GameScreen implements Screen {
 	private CarparkScreen carparkScreen;
 	private GameInputHandler gameInputHandler;
 
-
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
@@ -337,8 +336,6 @@ public class GameScreen implements Screen {
 		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
 
-		System.out.println(projectiles);
-
 		// Check if the game should end
 		checkIfGameOver();
 
@@ -437,7 +434,7 @@ public class GameScreen implements Screen {
 		// Check if it overlaps with an ETFortress
 		for (ETFortress ETFortress : this.ETFortresses) {
 			if (ETFortress.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(ETFortress.getDamageHitBox())) {
-				ETFortress.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+				ETFortress.getHealthBar().subtractResourceAmount((int) firetruck.getDamage());
 				this.score += 10;
 			}
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
@@ -465,7 +462,7 @@ public class GameScreen implements Screen {
 		// Checks if a patrol has attacked a fire truck and vice versa
 		for (Patrol patrol : this.ETPatrols) {
 			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getDamageHitBox())) {
-				patrol.getHealthBar().subtractResourceAmount(FIRETRUCK_DAMAGE);
+				patrol.getHealthBar().subtractResourceAmount((int) firetruck.getDamage());
 				this.score += 10;
 			}
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {

@@ -17,10 +17,11 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kroy.Kroy;
-//import com.rafaskoberg.gdx.typinglabel.TypingLabel;
+import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /**
  * Screen to tell the user the back story to the game
@@ -88,12 +89,12 @@ public class StoryScreen implements Screen {
         table.center();
 
         // Create actors
-        //TypingLabel storyLabel = new TypingLabel(story, skin);
-        //storyLabel.setAlignment(Align.center);
+        TypingLabel storyLabel = new TypingLabel(story, skin);
+        storyLabel.setAlignment(Align.center);
         TextButton continueButton = new TextButton("Continue", skin);
 
         // Add buttons to table and style them
-      //  table.add(storyLabel).expand();
+        table.add(storyLabel).expand();
         table.row().colspan(2);
         table.add(continueButton).width(200).height(40).padBottom(40);
 

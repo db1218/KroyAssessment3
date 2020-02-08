@@ -12,16 +12,14 @@ public final class Constants {
     }
 
      // Enums
-     public static enum Direction {
+     public enum Direction {
         UP,
         DOWN,
         LEFT,
-        RIGHT,
-         STATIC
+        RIGHT
     }
 
-    public static enum Outcome {
-        NONE,
+    public enum Outcome {
         WON,
         LOST
     }
@@ -38,16 +36,18 @@ public final class Constants {
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
                 400,  // WATER MAX
-                0  // PRICE
+                0,    // PRICE
+                2,    // damage
         }),
         BLUE ("Blue", new float[]{
-                100,  // HEALTH
-                15f,  // ACCELERATION
-                400f, // MAX_SPEED
-                0.6f, // RESTITUTION
-                1.01f,// RANGE
-                300,  // WATER MAX
-                100   // PRICE
+                100,   // HEALTH
+                15f,   // ACCELERATION
+                400f,  // MAX_SPEED
+                0.6f,  // RESTITUTION
+                1.01f, // RANGE
+                300,   // WATER MAX
+                100,   // PRICE
+                2,     // damage
         }),
         YELLOW ("Yellow", new float[]{
                 250,  // HEALTH
@@ -57,16 +57,19 @@ public final class Constants {
                 0.9f, // RANGE
                 500,  // WATER MAX
                 200,  // PRICE
+                2,    // damage
         }),
-        GREEN ("Green", new float[]{
-                250,  // HEALTH
+        GREEN("Green", new float[]{
+                250f, // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 0.9f, // RANGE
                 500,  // WATER MAX
-                300   // PRICE
-        });
+                300,  // PRICE
+                3,    // damage
+            }
+        );
 
         private final String colourString;
         private final float[] properties;

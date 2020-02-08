@@ -434,6 +434,7 @@ public class CarparkScreen implements Screen {
         activeStatsLabel.add(new Label(" Water          ", game.getFont10()));
         activeStatsLabel.add(new Label(" Speed          ", game.getFont10()));
         activeStatsLabel.add(new Label(" Range          ", game.getFont10()));
+        activeStatsLabel.add(new Label(" Damage         ", game.getFont10()));
     }
 
     private void updateStatValues() {
@@ -441,8 +442,9 @@ public class CarparkScreen implements Screen {
         activeStatsValue.add(new Label(activeFiretruck.getType().getColourString() + " fire truck's Stats", game.getFont10()));
         activeStatsValue.add(new Label(activeFiretruck.getHealthBar().getCurrentAmount() + " / " + activeFiretruck.getHealthBar().getMaxAmount() + " ", game.getFont10()));
         activeStatsValue.add(new Label(activeFiretruck.getWaterBar().getCurrentAmount() + " / " + activeFiretruck.getWaterBar().getMaxAmount() + " ", game.getFont10()));
-        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getMaxSpeed()) + " ", game.getFont10()));
-        activeStatsValue.add(new Label(String.valueOf(activeFiretruck.getRange()) + " ", game.getFont10()));
+        activeStatsValue.add(new Label(activeFiretruck.getMaxSpeed() + " ", game.getFont10()));
+        activeStatsValue.add(new Label(activeFiretruck.getRange() + " ", game.getFont10()));
+        activeStatsValue.add(new Label(activeFiretruck.getDamage() + " ", game.getFont10()));
     }
 
     private void updateTimeScore() {
