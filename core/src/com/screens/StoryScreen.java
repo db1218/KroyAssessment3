@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.config.Constants;
 import com.kroy.Kroy;
-import com.rafaskoberg.gdx.typinglabel.TypingLabel;
+//import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 /**
  * Screen to tell the user the back story to the game
@@ -92,7 +92,7 @@ public class StoryScreen implements Screen {
         TextButton continueButton = new TextButton("Continue", skin);
 
         // Add buttons to table and style them
-        table.add(storyLabel).expand();
+      //  table.add(storyLabel).expand();
         table.row().colspan(2);
         table.add(continueButton).width(200).height(40).padBottom(40);
 
