@@ -87,7 +87,6 @@ public class Patrol extends PatrolMovementSprite {
         this.detectionRange.setY(this.getY());
     }
 
-
     /** Checks if the patrol is dead and if so sets this.isDead to true */
     private void checkIfDead() {
         if (this.getHealthBar().getCurrentAmount() == 0) this.isDead = true;
@@ -138,9 +137,7 @@ public class Patrol extends PatrolMovementSprite {
         mapGraph.removeDead(super.getThis());
     }
 
-
     public boolean isDead(){ return this.isDead; }
-
 
 }
 

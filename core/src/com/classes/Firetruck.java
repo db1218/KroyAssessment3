@@ -276,9 +276,13 @@ public class Firetruck extends MovementSprite {
         super.setMovementHitBox(180 + this.location.getRotation());
     }
 
-    /** =======================================================================
+    /*
+     *  =======================================================================
      *                          Added for assessment 3
      *  =======================================================================
+     */
+
+    /**
      * Finds the nearest alive fortress
      *
      * @param fortresses    list of fortresses

@@ -4,25 +4,47 @@ package com.classes;
                        New class added for assessment 3
    ===============================================================*/
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Polygon;
 import com.config.Constants;
 
+/**
+ * This sprite can be located around the map and when
+ * a player drives over it, the mini game will begin
+ */
 public class MinigameSprite extends Sprite {
 
-    private final Texture texture;
+    private Polygon movementHitBox;
 
-    public MinigameSprite(Texture texture) {
-        super(texture);
-        this.setPosition(42*Constants.TILE_DIMS, 42*Constants.TILE_DIMS);
-        this.texture = texture;
-        Rectangle hitBox = new Rectangle(super.getX(), super.getY(), 1.5f * Constants.TILE_DIMS, 1.5f * Constants.TILE_DIMS);
+    /**
+     * Constructor for minigame sprite
+     *
+     *
+     *
+     * @param x coordinate where the sprite spawns
+     * @param y coordinate where the sprite spawns
+     */
+    public MinigameSprite(float x, float y) {
+        super(new Texture(Gdx.files.internal("swords.png")));
+        this.setBounds(x*Constants.TILE_DIMS, y*Constants.TILE_DIMS, 1.5f * Constants.TILE_DIMS, 1.5f * Constants.TILE_DIMS);
+        this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
+        this.movementHitBox.setPosition(this.getX(), this.getY());
     }
 
+    /**
+     * Draw the sprite
+     *
+     * @param batch to be drawn to
+     */
     public void update(Batch batch) {
-        batch.draw(texture, super.getX(), super.getY(), 1.5f * Constants.TILE_DIMS, 1.5f * Constants.TILE_DIMS);
+        batch.draw(super.getTexture(), super.getX(), super.getY(), super.getWidth(), super.getHeight());
+    }
+
+    public Polygon getMovementHitBox() {
+        return this.movementHitBox;
     }
 
 }

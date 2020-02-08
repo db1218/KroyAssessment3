@@ -250,6 +250,12 @@ public class CarparkScreen implements Screen {
 
     }
 
+    /**
+     * Called when the screen should render itself.
+     *
+     * @param delta The time in seconds since the last render.
+     */
+    @Override
     public void render(float delta) {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
         Gdx.gl.glClearColor(0, 0, 0, 1);
@@ -297,6 +303,10 @@ public class CarparkScreen implements Screen {
 
     }
 
+    /**
+     * Called when this screen should release all resources.
+     */
+    @Override
     public void dispose() {
         stage.dispose();
         shapeRenderer.dispose();
@@ -417,6 +427,13 @@ public class CarparkScreen implements Screen {
         }
     }
 
+    /**
+     * Buys the truck if user has enough score to buy it
+     *
+     * @param truck to buy
+     * @return      <code>true</code> if truck is bought
+     *              <code>false</code> otherwise
+     */
     public boolean boughtTruck(Firetruck truck) {
         if (gameScreen.getScore() >= truck.getPrice()) {
             truck.buy();
@@ -426,6 +443,9 @@ public class CarparkScreen implements Screen {
         return false;
     }
 
+    /**
+     * Generates labels and add them to the label list
+     */
     private void generateStatLabels() {
         activeStatsLabel.clear();
         activeStatsLabel.add(null);
@@ -436,6 +456,10 @@ public class CarparkScreen implements Screen {
         activeStatsLabel.add(new Label(" Damage         ", game.getFont10()));
     }
 
+    /**
+     * Generate updated stats labels and add them to list
+     * read to be added to the stage
+     */
     private void updateStatValues() {
         activeStatsValue.clear();
         activeStatsValue.add(new Label(activeFiretruck.getType().getColourString() + " fire truck's Stats", game.getFont10()));
@@ -446,6 +470,9 @@ public class CarparkScreen implements Screen {
         activeStatsValue.add(new Label(activeFiretruck.getDamage() + " ", game.getFont10()));
     }
 
+    /**
+     * Update the time and score labels
+     */
     private void updateTimeScore() {
         timeLabel.setText("Time: " + gameScreen.getTime());
         scoreLabel.setText("Score: " + gameScreen.getScore());

@@ -1,6 +1,9 @@
 package com.screens;
 
 // LibGDX imports
+import com.badlogic.gdx.graphics.g2d.PixmapPacker;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Polygon;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
@@ -65,10 +68,10 @@ public class GameScreen implements Screen {
 	// Private sprite related objects
 	private final ArrayList<ETFortress> ETFortresses;
 	private final ArrayList<Projectile> projectiles;
+	private final ArrayList<MinigameSprite> minigameSprites;
 	private ArrayList<Projectile> projectilesToRemove;
 	private final ArrayList<Patrol> ETPatrols;
 	private final Firestation firestation;
-	private final MinigameSprite minigameSprite;
 	private final ArrayList<Texture> waterFrames;
 	private final Texture projectileTexture;
 
@@ -134,7 +137,8 @@ public class GameScreen implements Screen {
         };
 
         // creates mini game sprite
-		this.minigameSprite = new MinigameSprite(new Texture(Gdx.files.internal("swords.png")));
+		minigameSprites = new ArrayList<>();
+		minigameSprites.add(new MinigameSprite(44, 42));
 
 		// Initialise textures to use for sprites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
@@ -307,7 +311,9 @@ public class GameScreen implements Screen {
 			patrol.update(this.batch);
 		}
 
-		this.minigameSprite.update(batch);
+		for (MinigameSprite minigameSprite : minigameSprites) {
+			minigameSprite.update(batch);
+		}
 
 		this.firestation.update(batch);
 
@@ -469,6 +475,15 @@ public class GameScreen implements Screen {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firetruck.getDamageHitBox());
 				this.projectiles.add(projectile);
+			}
+		}
+
+		for (int i=0; i<this.minigameSprites.size(); i++) {
+			MinigameSprite minigameSprite = this.minigameSprites.get(i);
+			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
+				// open mini game
+				System.out.println("hit");
+				this.minigameSprites.remove(minigameSprite);
 			}
 		}
 
