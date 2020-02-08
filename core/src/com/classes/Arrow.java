@@ -1,5 +1,9 @@
 package com.classes;
 
+/** =================================================================
+ *                      New class added for assessment 3
+ *  ===============================================================*/
+
 import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 

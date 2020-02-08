@@ -1,7 +1,7 @@
 package com.classes;
 
 /** =================================================================
- *  New class added for assessment 3
+ *                      New class added for assessment 3
  *  ===============================================================*/
 
 import com.badlogic.gdx.graphics.Texture;

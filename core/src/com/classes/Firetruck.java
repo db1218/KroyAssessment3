@@ -214,7 +214,10 @@ public class Firetruck extends MovementSprite {
         }
     }
 
-    /**
+    /** ==================================================================================
+     *                                Added for assessment 3
+     *  ==================================================================================
+     *
      * Updates the arrow to point at the nearest
      * fortress to help the user know where to go
      *
@@ -271,7 +274,9 @@ public class Firetruck extends MovementSprite {
         super.setMovementHitBox(180 + this.location.getRotation());
     }
 
-    /**
+    /** =======================================================================
+     *                          Added for assessment 3
+     *  =======================================================================
      * Finds the nearest alive fortress
      *
      * @param fortresses    list of fortresses
