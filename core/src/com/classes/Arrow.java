@@ -38,4 +38,8 @@ public class Arrow extends Polygon {
         setRotation(theta);
     }
 
+    public float getTarget() {
+        return this.getRotation();
+    }
+
 }
