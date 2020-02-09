@@ -66,32 +66,32 @@ public final class Constants {
 
     public enum TruckType {
         RED ("Red", new float[]{
-                140,  // HEALTH
+                280,  // HEALTH
                 10f,  // ACCELERATION
                 300f, // MAX_SPEED
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
-                400,  // WATER MAX
+                600,  // WATER MAX
                 0,    // PRICE
                 2,    // damage
         }),
         BLUE ("Blue", new float[]{
-                100,   // HEALTH
+                200,   // HEALTH
                 15f,   // ACCELERATION
                 400f,  // MAX_SPEED
                 0.6f,  // RESTITUTION
                 1.01f, // RANGE
-                300,   // WATER MAX
+                450,   // WATER MAX
                 100,   // PRICE
                 2,     // damage
         }),
         YELLOW ("Yellow", new float[]{
-                250,  // HEALTH
+                350,  // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 0.9f, // RANGE
-                500,  // WATER MAX
+                550,  // WATER MAX
                 200,  // PRICE
                 2,    // damage
         }),
@@ -101,7 +101,7 @@ public final class Constants {
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 0.9f, // RANGE
-                500,  // WATER MAX
+                750,  // WATER MAX
                 300,  // PRICE
                 3,    // damage
             }
