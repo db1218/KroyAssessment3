@@ -48,8 +48,8 @@ public class Firestation extends SimpleSprite {
         super(texture);
         this.destroyed = destroyedTexture;
         this.setPosition(xPos, yPos);
-        this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
+        this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
         this.isDestroyed = false;
@@ -170,12 +170,12 @@ public class Firestation extends SimpleSprite {
      */
     public void checkRepairRefill(int time, boolean includeActive) {
         if (includeActive) {
-            if (time > 0 && activeFireTruck.getCarpark().name().contains("Main") && (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater())) {
+            if (!isDestroyed && activeFireTruck.getCarpark().name().contains("Main") && (activeFireTruck.isDamaged() || activeFireTruck.isLowOnWater())) {
                 this.repairRefill(activeFireTruck);
             }
         }
         for (Firetruck firetruck : parkedFireTrucks) {
-            if (time > 0 && firetruck.getCarpark().name().contains("Main") && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
+            if (!isDestroyed && firetruck.getCarpark().name().contains("Main") && (firetruck.isDamaged() || firetruck.isLowOnWater())) {
                 this.repairRefill(firetruck);
             }
         }

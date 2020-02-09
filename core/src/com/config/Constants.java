@@ -183,7 +183,7 @@ public final class Constants {
 
     // Sprite properties
     // Health
-    public static final int FIRESTATION_HEALTH = 10000;
+    public static final int FIRESTATION_HEALTH = 300;
     // Speed
     public static final float PROJECTILE_SPEED = 400;
     // Size

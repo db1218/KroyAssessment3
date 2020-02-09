@@ -25,7 +25,7 @@ public class GameInputHandler implements InputProcessor {
     @Override
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
-            gameScreen.pauseGame();
+            gameScreen.pause();
         }
         return true;
     }

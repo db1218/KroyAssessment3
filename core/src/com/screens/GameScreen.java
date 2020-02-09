@@ -439,13 +439,19 @@ public class GameScreen implements Screen {
 	public void hide() {
 	}
 
-	/**
+	/** ==================================================
+	 * 			 New function for assessment 3
+	 * ===================================================
+	 *
+	 * Pauses the game and changes the screen to PauseScreen
+	 *
 	 * Actions to perform when the main game is paused.
 	 */
 	@Override
 	public void pause() {
 		Timer.instance().stop();
 		tipTimer.stop();
+		game.setScreen(new PauseScreen(game, this));
 	}
 
 	/**
@@ -964,18 +970,6 @@ public class GameScreen implements Screen {
 	public int getScore(){ return this.score; }
 
 	public void setScore(int score) {this.score = score; }
-
-	/** ==================================================
-	 * 			 New function for assessment 3
-	 * ===================================================
-	 *
-	 * Pauses the game and changes the screen to PauseScreen
-	 *
-	 */
-	public void pauseGame() {
-		this.pause();
-		game.setScreen(new PauseScreen(game, this));
-	}
 
 	private void generateTips() {
 		tips = new Queue<>();
