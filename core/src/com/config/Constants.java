@@ -162,15 +162,7 @@ public final class Constants {
     public static final float MIN_ZOOM = 1f;
     public static final float MAX_ZOOM = 2f;
 
-    // Screen elements sizing
-    public static final float FONT_Y = 0.45f;
-    public static final float SCORE_X = 0.47f;
-    public static final float TIME_X = 0.4f;
-
     // Sprite properties
-    // Damage
-    public static final int FIRETRUCK_DAMAGE = 2;
-    public static final int PROJECTILE_DAMAGE = 10;
     // Health
     public static final int ETFORTRESS_HEALTH = 2000;
     public static final int ETFORTRESS_HEALING = 1;
@@ -186,7 +178,4 @@ public final class Constants {
     public static final float ETFORTRESS_HEIGHT =5*TILE_DIMS;
     public static final float PROJECTILE_WIDTH = TILE_DIMS;
     public static final float PROJECTILE_HEIGHT =0.5f*TILE_DIMS;
-
-    public static final float FIRETRUCK_BOUNCEBACK = 5f;
-
 }

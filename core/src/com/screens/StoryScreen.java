@@ -22,6 +22,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kroy.Kroy;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
+import static com.config.Constants.DEBUG_ENABLED;
+
 /**
  * Screen to tell the user the back story to the game
  * This text is taken from the product brief and sets
@@ -65,6 +67,7 @@ public class StoryScreen implements Screen {
 
         // Create a stage for buttons
         stage = new Stage(viewport, game.spriteBatch);
+        stage.setDebugAll(DEBUG_ENABLED);
     }
 
     /**

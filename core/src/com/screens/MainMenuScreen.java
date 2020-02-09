@@ -19,6 +19,8 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
 import com.kroy.Kroy;
 
+import static com.config.Constants.DEBUG_ENABLED;
+
 // Constants import
 
 
@@ -71,6 +73,7 @@ public class MainMenuScreen implements Screen {
 
 		// Create a stage for buttons
 		stage = new Stage(viewport, game.spriteBatch);
+		stage.setDebugAll(DEBUG_ENABLED);
 	}
 
 	/**

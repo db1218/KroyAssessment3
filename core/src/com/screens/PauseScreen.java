@@ -18,6 +18,8 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 import com.kroy.Kroy;
 
+import static com.config.Constants.DEBUG_ENABLED;
+
 /**
  * Screen that appears when the user pauses the game.
  * Whilst the game is paused, the timer will stop
@@ -64,6 +66,7 @@ public class PauseScreen implements Screen {
 
         // Create a stage for buttons
         stage = new Stage(viewport, game.spriteBatch);
+        stage.setDebugAll(DEBUG_ENABLED);
     }
 
     /**
