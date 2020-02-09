@@ -198,6 +198,8 @@ public class PatrolMovementSprite extends SimpleSprite {
 
     public float getY(){ return this.y; }
 
+    public Junction getGoal() {return this.pathQueue.last();}
+
     public PatrolMovementSprite getThis(){ return this; }
     
 }

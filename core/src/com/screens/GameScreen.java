@@ -157,6 +157,11 @@ public class GameScreen implements Screen {
 		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinsterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinsterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
+		Texture castle1 = new Texture("MapAssets/UniqueBuildings/fortress_1.png");
+		Texture castle1Wet = new Texture("MapAssets/UniqueBuildings/fortress_1_wet.png");
+		Texture castle2 = new Texture("MapAssets/UniqueBuildings/fortress_2.png");
+		Texture castle2Wet = new Texture("MapAssets/UniqueBuildings/fortress_2_wet.png");
+
 		this.projectileTexture = new Texture("alienProjectile.png");
 
 		// Create arrays of textures for animations
@@ -189,6 +194,8 @@ public class GameScreen implements Screen {
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerTexture, 1, 1, 108 * TILE_DIMS, 102 * TILE_DIMS, FortressType.CLIFFORD));
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerTexture, 1, 1, 14 * TILE_DIMS, 4 * TILE_DIMS, FortressType.CLIFFORD));
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerTexture, 1, 1, 100 * TILE_DIMS, 3 * TILE_DIMS, FortressType.CLIFFORD));
+		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 1, 1, 150 * TILE_DIMS, 50 * TILE_DIMS, FortressType.CASTLE1));
+		this.ETFortresses.add(new ETFortress(castle2, castle2Wet, 1, 1, 50 * TILE_DIMS, 5 * TILE_DIMS, FortressType.CASTLE2));
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
@@ -203,14 +210,10 @@ public class GameScreen implements Screen {
 		Timer.instance().stop();
 
 		ETPatrols = new ArrayList<>();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
-		spawnPatrol();
+		for (int i = 0; i < 8; i++) {
+			spawnPatrol();
+		}
+
 	}
 
 	/**

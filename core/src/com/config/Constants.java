@@ -31,7 +31,9 @@ public final class Constants {
     public enum FortressType {
         CLIFFORD(7),
         MINSTER(15),
-        RAIL(10);
+        RAIL(10),
+        CASTLE1(13),
+        CASTLE2(8);
 
         private final int damage;
 

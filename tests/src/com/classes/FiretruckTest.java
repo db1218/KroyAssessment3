@@ -1,32 +1,37 @@
 package com.classes;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotEquals;
-
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.config.Constants.*;
+import com.config.Constants;
+import com.config.Constants.TruckType;
+import com.screens.GameScreen;
+import com.testrunner.GdxTestRunner;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
-import com.screens.GameScreen;
-
-import com.testrunner.GdxTestRunner;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.*;
+import static org.mockito.MockitoAnnotations.initMocks;
+
 @RunWith(GdxTestRunner.class)
 public class FiretruckTest {
 
     @Mock
     GameScreen gameScreenMock;
+    @Mock
     Firestation firestation;
+    @Mock
     TiledMapTileLayer t1, t2;
+    @Mock
     ArrayList<Texture> a1, a2;
+
+    private Firetruck firetruckUnderTest;
 
 
     @Rule
@@ -61,8 +66,37 @@ public class FiretruckTest {
     }
 
     @Test
-    public void spawnFireTruck() {
-        gameScreenMock.constructFireTruck(true, TruckType.BLUE);
+    public void testBuy() {
+        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
+        firetruckUnderTest.buy();
+        assertTrue(firetruckUnderTest.isBought());
+    }
+
+    @Test
+    public void testCheckCarparkCollision() {
+        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
+        firetruckUnderTest.checkCarparkCollision();
+    }
+
+    @Test
+    public void testDestroy() {
+        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
+        firetruckUnderTest.destroy();
+        assertNull(firetruckUnderTest);
+    }
+
+    @Test
+    public void testGetDamage() {
+        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
+        final float result = firetruckUnderTest.getDamage();
+        assertEquals(0.0f, result, 0.0001);
+    }
+
+    @Test
+    public void testToggleHose() {
+        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
+        firetruckUnderTest.toggleHose();
+        assertTrue(firetruckUnderTest.isSpraying());
     }
 
     @Test

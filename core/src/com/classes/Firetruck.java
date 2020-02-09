@@ -1,6 +1,7 @@
 package com.classes;
 
 // LibGDX imports
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -24,7 +25,7 @@ import static com.config.Constants.*;
 
 /**
  * The Firetruck implementation. A sprite capable of moving and colliding with other sprites.
- * 
+ *
  * @author Archie
  * @since 16/12/2019
  */
@@ -55,15 +56,15 @@ public class Firetruck extends MovementSprite {
      * Creates a firetruck capable of moving and colliding with the tiledMap and other sprites.
      * It also requires an ID so that it can be focused with the camera. Drawn with the given
      * texture at the given position.
-     * 
-     * @param textureSlices     The array of textures used to draw the firetruck with.
-     * @param frames            The texture used to draw the water with.
-     * @param type              The properties of the truck inherited from Constants.
-     * @param collisionLayer    The layer of the map the firetruck collides with.
-     * @param carparkLayer      The layer of the map the carparks are on
-     * @param fireStation       The fire station
-     * @param isBought          <code>true</code> if truck is bought to start with
-     *                          <code>false</code> if truck needs to still be bought
+     *
+     * @param textureSlices  The array of textures used to draw the firetruck with.
+     * @param frames         The texture used to draw the water with.
+     * @param type           The properties of the truck inherited from Constants.
+     * @param collisionLayer The layer of the map the firetruck collides with.
+     * @param carparkLayer   The layer of the map the carparks are on
+     * @param fireStation    The fire station
+     * @param isBought       <code>true</code> if truck is bought to start with
+     *                       <code>false</code> if truck needs to still be bought
      */
     public Firetruck(ArrayList<Texture> textureSlices, ArrayList<Texture> frames, TruckType type, TiledMapTileLayer collisionLayer, TiledMapTileLayer carparkLayer, Firestation fireStation, boolean isBought) {
         super(textureSlices.get(textureSlices.size() - 1), collisionLayer);
@@ -103,6 +104,7 @@ public class Firetruck extends MovementSprite {
 
     /**
      * Update the position and direction of the firetruck every frame.
+     *
      * @param batch  The batch to draw onto.
      * @param camera Used to get the centre of the screen.
      */
@@ -137,8 +139,8 @@ public class Firetruck extends MovementSprite {
         this.waterBar.update(batch);
 
         // Get the mouse input and get the angle from the truck to it. Get vector, normalise then get angle
-        Vector2 hoseVector = new Vector2((this.getCentreX() - (camera.viewportWidth / 2) + Gdx.input.getX()), (this.getCentreY() + (camera.viewportHeight / 2) - Gdx.input.getY())); 
-        Vector2 centreVector = new Vector2(this.getCentreX(),this.getCentreY()); 
+        Vector2 hoseVector = new Vector2((this.getCentreX() - (camera.viewportWidth / 2) + Gdx.input.getX()), (this.getCentreY() + (camera.viewportHeight / 2) - Gdx.input.getY()));
+        Vector2 centreVector = new Vector2(this.getCentreX(), this.getCentreY());
 
         // Work out the vector between them
         hoseVector = hoseVector.sub(centreVector);
@@ -146,7 +148,7 @@ public class Firetruck extends MovementSprite {
 
         // Update the hose size and position. Angle it towards the mouse
         float scale = this.isSpraying && this.hoseRange.getScaleX() < this.getType().getProperties()[4] ?
-            0.05f : !this.isSpraying && this.hoseRange.getScaleX() > 0 ? -0.05f : 0;
+                0.05f : !this.isSpraying && this.hoseRange.getScaleX() > 0 ? -0.05f : 0;
         this.hoseRange.setScale(this.hoseRange.getScaleX() + scale, this.hoseRange.getScaleY() + scale);
         this.hoseRange.setPosition(this.getCentreX(), this.getCentreY());
         this.hoseRange.setRotation(hoseVector.angle());
@@ -154,7 +156,7 @@ public class Firetruck extends MovementSprite {
         // Change batch aplha to match bar to fade hose in and out
         batch.setColor(1.0f, 1.0f, 1.0f, this.waterBar.getFade() * 0.9f);
         batch.draw(new TextureRegion(this.waterFrames.get(Math.round(this.getInternalTime() / 10) % 3)), this.hoseRange.getX(), this.hoseRange.getY() - this.hoseHeight / 2,
-            0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), hoseVector.angle(), true);
+                0, this.hoseHeight / 2, this.hoseWidth, this.hoseHeight, this.hoseRange.getScaleX(), this.hoseRange.getScaleY(), hoseVector.angle(), true);
 
         // Return the batch to its original colours
         batch.setColor(1.0f, 1.0f, 1.0f, 1f);
@@ -167,7 +169,6 @@ public class Firetruck extends MovementSprite {
     /**
      * Checks if the firetruck enters a car park, set the respawn location
      * of the fire truck to that car park and sets the menu to be opened
-     *
      */
     public void checkCarparkCollision() {
         if (carparkLayer != null) {
@@ -183,13 +184,14 @@ public class Firetruck extends MovementSprite {
         }
     }
 
-    /** ======================================================================
-     *                      Added for assessment 3
-     *  ======================================================================
+    /**
+     * ======================================================================
+     * Added for assessment 3
+     * ======================================================================
      * Sets the respawn location which contains the
      * name, x coord, y coord and name of car park
      *
-     * @param number    from tile map custom property
+     * @param number from tile map custom property
      */
     public void setRespawnLocation(int number) {
         switch (number) {
@@ -216,10 +218,11 @@ public class Firetruck extends MovementSprite {
         }
     }
 
-    /** ==================================================================================
-     *                                Added for assessment 3
-     *  ==================================================================================
-     *
+    /**
+     * ==================================================================================
+     * Added for assessment 3
+     * ==================================================================================
+     * <p>
      * Updates the arrow to point at the nearest
      * fortress to help the user know where to go
      *
@@ -255,9 +258,9 @@ public class Firetruck extends MovementSprite {
     /**
      * Alternates between showing the red and blue light on the truck.
      * Returns the texture at the given index offset to the correct index.
-     * 
+     *
      * @param index The index of the next texture to draw the sprite with.
-     * @return      The next texture to draw the sprite with.
+     * @return The next texture to draw the sprite with.
      */
     private Texture animateLights(int index) {
         if (index == 14) { // The index of the texture containing the first light colour
@@ -285,7 +288,7 @@ public class Firetruck extends MovementSprite {
     /**
      * Finds the nearest alive fortress
      *
-     * @param fortresses    list of fortresses
+     * @param fortresses list of fortresses
      */
     public void setNearestFortress(ArrayList<ETFortress> fortresses) {
         ETFortress nearest = null;
@@ -309,29 +312,29 @@ public class Firetruck extends MovementSprite {
         // Get the scale of the hose and create its shape
         float rangeScale = this.getType().getProperties()[4];
         this.hoseWidth = this.getHeight() * 4.5f * rangeScale;
-        this.hoseHeight =  this.getWidth() * 0.65f * rangeScale;
+        this.hoseHeight = this.getWidth() * 0.65f * rangeScale;
         float[] hoseVertices = { // Starts facing right
-            0, 0,
-            (hoseWidth * 0.5f),  (hoseHeight / 2),
-            (hoseWidth * 0.9f),  (hoseHeight / 2),
-            (hoseWidth),  (hoseHeight / 2.25f),
-            (hoseWidth), -(hoseHeight / 2.25f),
-            (hoseWidth * 0.9f), -(hoseHeight / 2),
-            (hoseWidth * 0.5f), -(hoseHeight / 2)
-        }; 
+                0, 0,
+                (hoseWidth * 0.5f), (hoseHeight / 2),
+                (hoseWidth * 0.9f), (hoseHeight / 2),
+                (hoseWidth), (hoseHeight / 2.25f),
+                (hoseWidth), -(hoseHeight / 2.25f),
+                (hoseWidth * 0.9f), -(hoseHeight / 2),
+                (hoseWidth * 0.5f), -(hoseHeight / 2)
+        };
         this.hoseRange = new Polygon(hoseVertices);
         // Create the water bar
         this.waterBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
-        this.waterBar.setColourRange(new Color[] { Color.BLUE });
+        this.waterBar.setColourRange(new Color[]{Color.BLUE});
         this.waterBar.setMaxResource((int) this.getType().getProperties()[5]);
         // Start with the hose off
         this.toggleHose();
-    } 
+    }
 
     /**
      * Checks if a polygon is within the range of the firetrucks hose.
-     * @param polygon  The polygon that needs to be checked.
-     * 
+     *
+     * @param polygon The polygon that needs to be checked.
      * @return Whether the polygon is in the hose's range
      */
     public boolean isInHoseRange(Polygon polygon) {
@@ -341,7 +344,7 @@ public class Firetruck extends MovementSprite {
 
     /**
      * Gets whether the firetruck is damaged.
-     * 
+     *
      * @return Whether the firetruck is damaged.
      */
     public boolean isDamaged() {
@@ -350,7 +353,7 @@ public class Firetruck extends MovementSprite {
 
     /**
      * Gets whether the firetruck has used any water.
-     * 
+     *
      * @return Whether the firetruck has used any water.
      */
     public boolean isLowOnWater() {
@@ -371,8 +374,8 @@ public class Firetruck extends MovementSprite {
     /**
      * Overloaded method for drawing debug information. Draws the hitbox as well
      * as the hose range indicator.
-     * 
-     * @param renderer  The renderer used to draw the hitbox and range indicator with.
+     *
+     * @param renderer The renderer used to draw the hitbox and range indicator with.
      */
     @Override
     public void drawDebug(ShapeRenderer renderer) {
@@ -450,7 +453,7 @@ public class Firetruck extends MovementSprite {
         this.isBought = true;
     }
 
-    public boolean isBought(){
+    public boolean isBought() {
         return this.isBought;
     }
 
