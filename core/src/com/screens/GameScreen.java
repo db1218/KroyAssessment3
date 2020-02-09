@@ -1,10 +1,15 @@
 package com.screens;
 
 // LibGDX imports
-import com.badlogic.gdx.graphics.g2d.PixmapPacker;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Stack;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
+import com.badlogic.gdx.utils.Align;
+import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.config.Constants;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
@@ -35,6 +40,7 @@ import java.util.ArrayList;
 // Class imports
 import com.classes.*;
 import com.kroy.Kroy;
+import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 // Constants import
 import static com.config.Constants.*;
@@ -84,6 +90,16 @@ public class GameScreen implements Screen {
 	private final CarparkScreen carparkScreen;
 	private final GameInputHandler gameInputHandler;
 
+	// Private stage values
+	private final Stage stage;
+	private final Label scoreLabel;
+	private final Label timeLabel;
+	private final Label fpsLabel;
+
+	private com.badlogic.gdx.utils.Queue<String> tips;
+	private TypingLabel tip;
+	private Timer tipTimer;
+
 	private ShaderProgram shader;
 
 	/**
@@ -129,6 +145,47 @@ public class GameScreen implements Screen {
 
 		// Set the Batch to render in the coordinate system specified by the camera.
 		this.batch.setProjectionMatrix(this.camera.combined);
+
+		tipTimer = new Timer();
+		tipTimer.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				newTip();
+			}
+		}, 5f, 10f);
+		tipTimer.stop();
+
+		generateTips();
+
+		this.stage = new Stage(new ScreenViewport());
+		this.stage.setDebugAll(DEBUG_ENABLED);
+
+		Table table = new Table();
+		table.row().colspan(3).expand().pad(40);
+		table.setFillParent(true);
+
+		scoreLabel = new Label("", game.getFont10());
+		table.add(scoreLabel).top();
+
+		Stack tipStack = new Stack();
+		tip = new TypingLabel("", game.getFont10());
+		tip.setAlignment(Align.center);
+		tip.setWrap(true);
+
+		tipStack.add(tip);
+		table.add(tipStack).bottom().fillX();
+
+		VerticalGroup vg = new VerticalGroup();
+
+		timeLabel = new Label("", game.getFont10());
+		vg.addActor(timeLabel);
+
+		fpsLabel = new Label("", game.getFont10());
+		vg.addActor(fpsLabel);
+
+		table.add(vg).top();
+
+		stage.addActor(table);
 
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
@@ -238,6 +295,7 @@ public class GameScreen implements Screen {
 			}
 		}, .5f, .5f);
 
+		tipTimer.start();
 		Timer.instance().start();
 
 		Gdx.input.setInputProcessor(gameInputHandler);
@@ -256,7 +314,6 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
 		shader.begin();
-		System.out.println(camera.zoom);
 		shader.setUniformf("u_intensity", camera.zoom-0.5f);
 		shader.end();
 
@@ -288,8 +345,6 @@ public class GameScreen implements Screen {
 		}
 
 		this.camera.update();
-
-		this.game.getFont().getData().setScale(this.camera.zoom * 1.5f);
 
 		// ---- 3) Draw background, firetruck then foreground layers ----- //
 
@@ -332,22 +387,21 @@ public class GameScreen implements Screen {
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
-		batch.setShader(null);
-		// Draw the score, time and FPS to the screen at given co-ordinates
-		game.drawFont("Score: " + this.score,
-				cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
-				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
-		game.drawFont("Time: " + this.time,
-				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
-				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom);
-		if (DEBUG_ENABLED) game.drawFont("FPS: " + Gdx.graphics.getFramesPerSecond(),
-				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
-				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
-		);
-		batch.setShader(shader);
-
 		// Finish rendering
-		batch.end();
+		this.batch.end();
+		shapeRenderer.end();
+
+		// Draw the score, time and FPS to the screen at given co-ordinates
+		this.scoreLabel.setText("Score: " + this.score);
+		this.timeLabel.setText("Time: " + this.time);
+		if (DEBUG_ENABLED) {
+			this.fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
+		} else {
+			this.fpsLabel.clear();
+		}
+
+		this.stage.act(delta);
+		this.stage.draw();
 
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
@@ -361,12 +415,6 @@ public class GameScreen implements Screen {
 		checkIfGameOver();
 
 		checkIfCarpark();
-	}
-
-	public void updatePatrolMovements() {
-		for (Patrol patrol : this.ETPatrols) {
-			patrol.updateMovement();
-		}
 	}
 
 	/**
@@ -396,6 +444,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void pause() {
 		Timer.instance().stop();
+		tipTimer.stop();
 	}
 
 	/**
@@ -407,6 +456,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void resume() {
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentre(), 0);
+		tipTimer.start();
 		Timer.instance().start();
 	}
 
@@ -428,13 +478,22 @@ public class GameScreen implements Screen {
 		map.dispose();
 	}
 
+	public void updatePatrolMovements() {
+		for (Patrol patrol : this.ETPatrols) {
+			patrol.updateMovement();
+		}
+	}
+
 	/** ==============================================================
 	 * 						Added for assessment 3
 	 * 	==============================================================
 	 * Checks to see if the fire truck is to be opened, if so change screen
 	 */
 	public void checkIfCarpark() {
-		if (this.firestation.isMenuOpen()) game.setScreen(this.carparkScreen);
+		if (this.firestation.isMenuOpen()) {
+			tipTimer.stop();
+			game.setScreen(this.carparkScreen);
+		}
 	}
 
 	/**
@@ -505,7 +564,6 @@ public class GameScreen implements Screen {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
 				// open mini game
-				System.out.println("hit");
 				this.minigameSprites.remove(minigameSprite);
 			}
 		}
@@ -908,6 +966,29 @@ public class GameScreen implements Screen {
 	public void pauseGame() {
 		this.pause();
 		game.setScreen(new PauseScreen(game, this));
+	}
+
+	private void generateTips() {
+		tips = new Queue<>();
+		tips.addLast("{FADE}Controls: Use WSAD or the ARROW KEYS to drive");
+		tips.addLast("{FADE}Controls: Use MOUSE to operate water cannon \n" +
+				"Scroll to zoom the camera");
+		tips.addLast("{FADE}Tip: Repair and refill Fire trucks at the Fire Station, " +
+				"where you started");
+		tips.addLast("{FADE}Tip: Earn score by attacking Patrols and Fortresses");
+		tips.addLast("{FADE}Tip: Unlock better Fire trucks with score in Car parks " +
+				"(green highlighted areas)");
+		tips.addLast("{FADE}Reminder: Once Time reaches zero, the Fire Station is destroyed " +
+				"and you can no longer repair or refill");
+		tips.addLast("{FADE}Tip: Press SPACE to find the nearest Fortress");
+		tips.addLast("{FADE}Win: Destroy all Fortresses\n" +
+				"Lose: All your Fire trucks get destroyed");
+		tips.addLast("{FADE}Good luck!");
+		tips.addLast("");
+	}
+
+	private void newTip() {
+		if (tips.notEmpty()) tip.setText(tips.removeFirst());
 	}
 
 }
