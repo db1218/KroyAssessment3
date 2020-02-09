@@ -1,8 +1,8 @@
 package com.classes;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.config.Constants;
 import com.config.Constants.TruckType;
 import com.screens.GameScreen;
 import com.testrunner.GdxTestRunner;
@@ -17,7 +17,6 @@ import org.mockito.junit.MockitoRule;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
-import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(GdxTestRunner.class)
 public class FiretruckTest {
@@ -31,11 +30,29 @@ public class FiretruckTest {
     @Mock
     ArrayList<Texture> a1, a2;
 
-    private Firetruck firetruckUnderTest;
+    private ArrayList<Texture> textures;
 
+    private Firetruck firetruckUnderTest;
+    private Firetruck firetruck;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
+
+    @Before
+    public void setUp() {
+        setUpTextures();
+        firetruck = new Firetruck(textures, textures,TruckType.BLUE,t1,t2,firestation,false);
+    }
+
+    private void setUpTextures() {
+        Texture texture = new Texture(Gdx.files.internal("garage.jpg"));
+        textures = new ArrayList<>();
+        textures.add(texture);
+        textures.add(texture);
+        textures.add(texture);
+        textures.add(texture);
+        textures.add(texture);
+    }
 
     /**
      * Tests if firetrucks have different attributes (Health, Reserve, Speed)
@@ -67,9 +84,8 @@ public class FiretruckTest {
 
     @Test
     public void testBuy() {
-        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
-        firetruckUnderTest.buy();
-        assertTrue(firetruckUnderTest.isBought());
+        firetruck.buy();
+        assertTrue(firetruck.isBought());
     }
 
     @Test
