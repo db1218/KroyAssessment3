@@ -16,7 +16,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
-import sun.applet.Main;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.

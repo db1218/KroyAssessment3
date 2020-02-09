@@ -973,20 +973,20 @@ public class GameScreen implements Screen {
 
 	private void generateTips() {
 		tips = new Queue<>();
-		tips.addLast("{FADE}Controls: Use WSAD or the ARROW KEYS to drive");
-		tips.addLast("{FADE}Controls: Use MOUSE to operate water cannon \n" +
+		tips.addLast("{FADE=0;0.75;1}Controls: Use WSAD or the ARROW KEYS to drive");
+		tips.addLast("{FADE=0;0.75;1}Controls: Use MOUSE to operate water cannon \n" +
 				"Scroll to zoom the camera");
-		tips.addLast("{FADE}Tip: Repair and refill Fire trucks at the Fire Station, " +
+		tips.addLast("{FADE=0;0.75;1}Tip: Repair and refill Fire trucks at the Fire Station, " +
 				"where you started");
-		tips.addLast("{FADE}Tip: Earn score by attacking Patrols and Fortresses");
-		tips.addLast("{FADE}Tip: Unlock better Fire trucks with score in Car parks " +
+		tips.addLast("{FADE=0;0.75;1}Tip: Earn score by attacking Patrols and Fortresses");
+		tips.addLast("{FADE=0;0.75;1}Tip: Unlock better Fire trucks with score in Car parks " +
 				"(green highlighted areas)");
-		tips.addLast("{FADE}Reminder: Once Time reaches zero, the Fire Station is destroyed " +
+		tips.addLast("{FADE=0;0.75;1}Reminder: Once Time reaches zero, the Fire Station is destroyed " +
 				"and you can no longer repair or refill");
-		tips.addLast("{FADE}Tip: Press SPACE to find the nearest Fortress");
-		tips.addLast("{FADE}Win: Destroy all Fortresses\n" +
+		tips.addLast("{FADE=0;0.75;1}Tip: Press SPACE to find the nearest Fortress");
+		tips.addLast("{FADE=0;0.75;1}Win: Destroy all Fortresses\n" +
 				"Lose: All your Fire trucks get destroyed");
-		tips.addLast("{FADE}Good luck!");
+		tips.addLast("{FADE=0;0.75;1}Good luck!");
 		tips.addLast("");
 	}
 
