@@ -131,7 +131,7 @@ public class GameScreen implements Screen {
 		this.projectiles = new ArrayList<>();
 
 		// Decrease time every second, starting at 3 minutes
-		this.time = 3 * 60;
+		this.time = TIME_STATION_VULNERABLE;
 
 		gameInputHandler = new GameInputHandler(this);
 
@@ -559,6 +559,11 @@ public class GameScreen implements Screen {
 				projectile.calculateTrajectory(firetruck.getDamageHitBox());
 				this.projectiles.add(projectile);
 			}
+			if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
+				projectile.calculateTrajectory(firetruck.getDamageHitBox());
+				this.projectiles.add(projectile);
+			}
 		}
 
 		for (int i=0; i<this.minigameSprites.size(); i++) {
@@ -574,6 +579,9 @@ public class GameScreen implements Screen {
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
+				projectilesToRemove.add(projectile);
+			} else if (!firestation.isDestroyed() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
+				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				projectilesToRemove.add(projectile);
 			}
 		}

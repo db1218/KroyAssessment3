@@ -32,6 +32,7 @@ public class Firestation extends SimpleSprite {
     private final Texture destroyed;
 
     private boolean isMenuOpen;
+    private boolean isVulnerable;
     private boolean isDestroyed;
 
 
@@ -52,6 +53,7 @@ public class Firestation extends SimpleSprite {
         this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
         this.isDestroyed = false;
+        this.isVulnerable = false;
     }
 
     /**
@@ -62,7 +64,8 @@ public class Firestation extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
-        if (this.isDestroyed) {
+        if (this.getHealthBar().getCurrentAmount() <= 0) {
+            this.isDestroyed = true;
             this.removeSprite(this.destroyed);
         }
         this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
@@ -177,7 +180,7 @@ public class Firestation extends SimpleSprite {
             }
         }
         if (time == 0) {
-            this.isDestroyed = true;
+            this.isVulnerable = true;
         }
     }
 
@@ -242,4 +245,11 @@ public class Firestation extends SimpleSprite {
         return this.isMenuOpen;
     }
 
+    public boolean isVulnerable() {
+        return this.isVulnerable;
+    }
+
+    public boolean isDestroyed() {
+        return this.isDestroyed;
+    }
 }
