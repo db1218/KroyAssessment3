@@ -159,7 +159,7 @@ public final class Constants {
     }
 
     // Debug mode
-    public static final boolean DEBUG_ENABLED = true;
+    public static final boolean DEBUG_ENABLED = false;
 
     // Game settings
     public static final String GAME_NAME = "Kroy";
@@ -173,7 +173,7 @@ public final class Constants {
     // Time durations
     public static final float BAR_FADE_DURATION = 3;
     public static final int FIRETRUCK_REPAIR_SPEED = 75;
-    public static final int TIME_STATION_VULNERABLE = 180;
+    public static final int TIME_STATION_VULNERABLE = 10;
 
     // Camera settings
     public static final float LERP = 3.0f;
@@ -183,7 +183,7 @@ public final class Constants {
 
     // Sprite properties
     // Health
-    public static final int FIRESTATION_HEALTH = 1000;
+    public static final int FIRESTATION_HEALTH = 10000;
     // Speed
     public static final float PROJECTILE_SPEED = 400;
     // Size

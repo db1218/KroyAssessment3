@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
 import com.sprites.MovementSprite;
+import com.sprites.SimpleSprite;
 
 // Constants imports
 import static com.config.Constants.PROJECTILE_SPEED;
@@ -68,9 +69,9 @@ public class Projectile extends MovementSprite {
      * Calculates the trajectory from the projectiles starting point to the target point.
      * @param target The target the projectile is fired at
      */
-    public void calculateTrajectory(Polygon target) {
+    public void calculateTrajectory(SimpleSprite target) {
         // Convert the two points into vectors
-        Vector2 targetVector = new Vector2(target.getX(),target.getY()); 
+        Vector2 targetVector = new Vector2(target.getCentreX(),target.getCentreY());
         Vector2 projectileVector = new Vector2(this.getCentreX(),this.getCentreY()); 
 
         // Work out the vector between them

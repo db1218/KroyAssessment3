@@ -528,7 +528,7 @@ public class GameScreen implements Screen {
 			}
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage());
-				projectile.calculateTrajectory(firetruck.getDamageHitBox());
+				projectile.calculateTrajectory(firetruck);
 				this.projectiles.add(projectile);
 			}
 		}
@@ -556,12 +556,11 @@ public class GameScreen implements Screen {
 			}
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
-				projectile.calculateTrajectory(firetruck.getDamageHitBox());
+				projectile.calculateTrajectory(firetruck);
 				this.projectiles.add(projectile);
-			}
-			if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
+			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
-				projectile.calculateTrajectory(firetruck.getDamageHitBox());
+				projectile.calculateTrajectory(firestation);
 				this.projectiles.add(projectile);
 			}
 		}
@@ -581,6 +580,7 @@ public class GameScreen implements Screen {
 				if (this.score >= 10) this.score -= 10;
 				projectilesToRemove.add(projectile);
 			} else if (!firestation.isDestroyed() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
+				System.out.println(firestation.getHealthBar().getCurrentAmount());
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				projectilesToRemove.add(projectile);
 			}
