@@ -2,7 +2,8 @@ project(":tests") {
     apply plugin: "java"
 
     sourceSets.test.java.srcDirs = ["src/"]
-    		
+    sourceSets.test.resources.srcDirs = ["assets/"]
+
     dependencies {
 
         //compile project(":desktop")
