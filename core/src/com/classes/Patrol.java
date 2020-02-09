@@ -60,6 +60,10 @@ public class Patrol extends PatrolMovementSprite {
         updateDetectionRange();
     }
 
+    public void updateMovement() {
+        super.step();
+    }
+
     /**
      * Draws the voxel representation of the patrol. Incrementally builds the patrol
      * from layers of images with each image slightly higher than the last

@@ -3,7 +3,9 @@ package com.screens;
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.PixmapPacker;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Polygon;
+import com.config.Constants;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
@@ -82,6 +84,8 @@ public class GameScreen implements Screen {
 	private final CarparkScreen carparkScreen;
 	private final GameInputHandler gameInputHandler;
 
+	private ShaderProgram shader;
+
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
@@ -102,6 +106,10 @@ public class GameScreen implements Screen {
 		this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
 		this.renderer = new OrthogonalTiledMapRenderer(map, MAP_SCALE);
 		this.shapeRenderer = new ShapeRenderer();
+
+		ShaderProgram.pedantic = false;
+		this.shader = new ShaderProgram(Gdx.files.internal("shaders/vignette.vsh"), Gdx.files.internal("shaders/vignette.fsh"));
+		this.renderer.getBatch().setShader(shader);
 
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<>();
@@ -247,6 +255,11 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
+		shader.begin();
+		System.out.println(camera.zoom);
+		shader.setUniformf("u_intensity", camera.zoom-0.5f);
+		shader.end();
+
 		// ---- 1) Update camera and map properties each iteration -------- //
 
 		// Set the TiledMapRenderer view based on what the camera sees
@@ -268,10 +281,10 @@ public class GameScreen implements Screen {
 		cameraPosition.x += xDifference * LERP * delta;
 		cameraPosition.y += yDifference * LERP * delta;
 
-		if (this.camera.zoom - 0.005f > zoomTarget) {
-			this.camera.zoom -= 0.005f;
-		} else if (this.camera.zoom + 0.005f < zoomTarget) {
-			this.camera.zoom += 0.005f;
+		if (this.camera.zoom - ZOOM_SPEED > zoomTarget) {
+			this.camera.zoom -= ZOOM_SPEED;
+		} else if (this.camera.zoom + ZOOM_SPEED < zoomTarget) {
+			this.camera.zoom += ZOOM_SPEED;
 		}
 
 		this.camera.update();
@@ -319,6 +332,7 @@ public class GameScreen implements Screen {
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
+		batch.setShader(null);
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		game.drawFont("Score: " + this.score,
 				cameraPosition.x - this.camera.viewportWidth * SCORE_X * camera.zoom,
@@ -330,6 +344,7 @@ public class GameScreen implements Screen {
 				cameraPosition.x + this.camera.viewportWidth * TIME_X * camera.zoom,
 				cameraPosition.y + this.camera.viewportHeight * FONT_Y * camera.zoom - 30
 		);
+		batch.setShader(shader);
 
 		// Finish rendering
 		batch.end();
@@ -348,6 +363,12 @@ public class GameScreen implements Screen {
 		checkIfCarpark();
 	}
 
+	public void updatePatrolMovements() {
+		for (Patrol patrol : this.ETPatrols) {
+			patrol.updateMovement();
+		}
+	}
+
 	/**
 	 * Resize the screen.
 	 * @param width The width of the screen.
@@ -357,7 +378,9 @@ public class GameScreen implements Screen {
 	public void resize(int width, int height) {
 		this.camera.viewportHeight = height;
 		this.camera.viewportWidth = width;
-        this.camera.update();
+		shader.begin();
+		shader.setUniformf("u_resolution", width, height);
+		shader.end();
 	}
 
 	/**

@@ -156,6 +156,7 @@ public final class Constants {
 
     // Camera settings
     public static final float LERP = 3.0f;
+    public static final float ZOOM_SPEED = 0.003f;
     public static final float MIN_ZOOM = 1f;
     public static final float MAX_ZOOM = 2f;
 

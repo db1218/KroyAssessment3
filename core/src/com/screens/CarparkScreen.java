@@ -7,6 +7,7 @@ package com.screens;
 import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
@@ -22,6 +23,8 @@ import com.classes.Firetruck;
 import com.config.Constants;
 import com.kroy.Kroy;
 import java.util.ArrayList;
+
+import static com.config.Constants.MAX_ZOOM;
 
 /**
  * This screen shows the player the "car park"
@@ -39,6 +42,7 @@ public class CarparkScreen implements Screen {
     private final Viewport viewport;
 
     private final ShapeRenderer shapeRenderer;
+    private ShaderProgram shader;
 
     private final Firestation firestation;
     private Firetruck activeFiretruck;
@@ -86,6 +90,10 @@ public class CarparkScreen implements Screen {
         stage = new Stage(viewport, game.spriteBatch);
         stage.setDebugAll(Constants.DEBUG_ENABLED);
 
+        ShaderProgram.pedantic = false;
+        this.shader = new ShaderProgram(Gdx.files.internal("shaders/vignette.vsh"), Gdx.files.internal("shaders/vignette.fsh"));
+        this.stage.getBatch().setShader(shader);
+
         // create skin used by buttons
         skin = game.getSkin();
 
@@ -100,6 +108,7 @@ public class CarparkScreen implements Screen {
 
         HorizontalGroup header = new HorizontalGroup();
         header.space(200);
+        header.padTop(40);
 
         // create location label
         activeLocation = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
@@ -260,9 +269,18 @@ public class CarparkScreen implements Screen {
         // MUST BE FIRST: Clear the screen each frame to stop textures blurring
         Gdx.gl.glClearColor(0, 0, 0, 1);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        shader.begin();
+        System.out.println(camera.zoom);
+        shader.setUniformf("u_intensity", 0.5f);
+        shader.end();
+
         stage.draw();
         firestation.decreaseInternalTime();
         firestation.checkRepairRefill(gameScreen.getTime(), true);
+
+        gameScreen.updatePatrolMovements();
+
         updateTimeScore();
         updateStatValues();
         generateStatsTable();
@@ -276,6 +294,9 @@ public class CarparkScreen implements Screen {
     @Override
     public void resize(int width, int height) {
         viewport.update(width, height);
+        shader.begin();
+        shader.setUniformf("u_resolution", width, height);
+        shader.end();
         camera.update();
     }
 
