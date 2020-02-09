@@ -14,10 +14,8 @@ import com.config.Constants;
 import com.sprites.SimpleSprite;
 
 // Constants import
-import static com.config.Constants.ETFORTRESS_HEALTH;
 import static com.config.Constants.ETFORTRESS_HEIGHT;
 import static com.config.Constants.ETFORTRESS_WIDTH;
-import static com.config.Constants.ETFORTRESS_HEALING;
 
 /**
  * The ET Fortress implementation, a static sprite in the game.
@@ -58,9 +56,9 @@ public class ETFortress extends SimpleSprite {
      * Sets the health of the ETFortress and its size provided in CONSTANTS.
      */
     private void create() {
-        this.getHealthBar().setMaxResource((int) (ETFORTRESS_HEALTH * Math.max(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY())));
+        this.getHealthBar().setMaxResource((int) (type.getHealth() * Math.max(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY())));
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
-        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 2);
+        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), type.getRange());
     }
 
     /**
@@ -76,7 +74,7 @@ public class ETFortress extends SimpleSprite {
             this.flooded = true;
         } else if (this.getInternalTime() % 150 == 0 && this.getHealthBar().getCurrentAmount() != this.getHealthBar().getMaxAmount()) {
             // Heal ETFortresses every second if not taking damage
-			this.getHealthBar().addResourceAmount(ETFORTRESS_HEALING);
+			this.getHealthBar().addResourceAmount(type.getHealing());
         }
         // Set the detection radius
         this.detectionRange.setPosition(this.getCentreX(), this.getCentreY());

@@ -249,7 +249,7 @@ public class GameScreen implements Screen {
 		this.ETFortresses.add(new ETFortress(yorkMinsterTexture, yorkMinsterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS, FortressType.MINSTER));
 		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS, FortressType.RAIL));
 		this.ETFortresses.add(new ETFortress(castle2, castle2Wet, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2));
-		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2));
+		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1));
 //		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 108 * TILE_DIMS, 102 * TILE_DIMS, FortressType.CASTLE1));
 
 		this.junctionsInMap = new ArrayList<>();

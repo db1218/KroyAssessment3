@@ -29,20 +29,38 @@ public final class Constants {
     // ==============================================================
 
     public enum FortressType {
-        CLIFFORD(7),
-        MINSTER(15),
-        RAIL(10),
-        CASTLE1(13),
-        CASTLE2(8);
+        CLIFFORD(7, 2000, 1, 500),
+        MINSTER(15, 3000,1, 500),
+        RAIL(10, 1000, 1, 500),
+        CASTLE1(13, 750, 2, 500),
+        CASTLE2(8, 1500, 2, 500);
 
         private final int damage;
+        private final int health;
+        private final int healing;
+        private final int range;
 
-        FortressType(int damage) {
+        FortressType(int damage, int health, int healing, int range) {
             this.damage = damage;
+            this.health = health;
+            this.healing = healing;
+            this.range = range;
         }
 
         public int getDamage() {
             return this.damage;
+        }
+
+        public int getHealth() {
+            return this.health;
+        }
+
+        public int getHealing() {
+            return this.healing;
+        }
+
+        public float getRange() {
+            return this.range;
         }
     }
 
@@ -141,7 +159,7 @@ public final class Constants {
     }
 
     // Debug mode
-    public static final boolean DEBUG_ENABLED = false;
+    public static final boolean DEBUG_ENABLED = true;
 
     // Game settings
     public static final String GAME_NAME = "Kroy";
@@ -164,8 +182,6 @@ public final class Constants {
 
     // Sprite properties
     // Health
-    public static final int ETFORTRESS_HEALTH = 2000;
-    public static final int ETFORTRESS_HEALING = 1;
     public static final int FIRESTATION_HEALTH = 1000;
     // Speed
     public static final float PROJECTILE_SPEED = 400;
