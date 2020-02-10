@@ -533,7 +533,7 @@ public class GameScreen implements Screen {
 				this.score += 10;
 			}
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage());
+				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage(), ETFortress);
 				projectile.calculateTrajectory(firetruck);
 				this.projectiles.add(projectile);
 			}
@@ -561,11 +561,11 @@ public class GameScreen implements Screen {
 				this.score += 10;
 			}
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
 				projectile.calculateTrajectory(firetruck);
 				this.projectiles.add(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
 				projectile.calculateTrajectory(firestation);
 				this.projectiles.add(projectile);
 			}
@@ -585,10 +585,29 @@ public class GameScreen implements Screen {
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
 				projectilesToRemove.add(projectile);
-			} else if (!firestation.isDestroyed() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
+			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
 				System.out.println(firestation.getHealthBar().getCurrentAmount());
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				projectilesToRemove.add(projectile);
+			} else {
+				for (ETFortress fortress : this.ETFortresses) {
+					if (!projectile.getSource().equals(fortress)) {
+						if (Intersector.overlapConvexPolygons(fortress.getDamageHitBox(), projectile.getDamageHitBox())) {
+							fortress.getHealthBar().subtractResourceAmount(projectile.getDamage()*FRIENDLY_FIRE_MULTIPLIER);
+							if (this.score >= 10) this.score += 10 * FRIENDLY_FIRE_MULTIPLIER;
+							projectilesToRemove.add(projectile);
+						}
+					}
+				}
+				for (Patrol patrol : this.ETPatrols) {
+					if (!projectile.getSource().equals(patrol)) {
+						if (Intersector.overlapConvexPolygons(patrol.getDamageHitBox(), projectile.getDamageHitBox())) {
+							patrol.getHealthBar().subtractResourceAmount(projectile.getDamage()*FRIENDLY_FIRE_MULTIPLIER);
+							if (this.score >= 10) this.score += 10 * FRIENDLY_FIRE_MULTIPLIER;
+							projectilesToRemove.add(projectile);
+						}
+					}
+				}
 			}
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.

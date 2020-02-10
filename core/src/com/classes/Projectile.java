@@ -28,6 +28,7 @@ public class Projectile extends MovementSprite {
     // Private values to be used in this class only
     Vector2 trajectory;
     private final int damage;
+    private SimpleSprite source;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -38,11 +39,13 @@ public class Projectile extends MovementSprite {
      * @param texture        The texture used to draw the projectile with.
      * @param x              The x-coordinate the projectile will start at.
      * @param y              The y-coordinate the projectile will start at.
+     * @param source         Sprite the projectile was fired from
      */
-    public Projectile(Texture texture, float x, float y, int damage) {
+    public Projectile(Texture texture, float x, float y, int damage, SimpleSprite source) {
         super(texture);
         this.setPosition(x, y);
         this.damage = damage;
+        this.source = source;
         this.create();
     }
 
@@ -98,6 +101,10 @@ public class Projectile extends MovementSprite {
         boolean outHorizontalView = this.getCentreX() > MAP_WIDTH;
         outHorizontalView = outHorizontalView || this.getCentreX() < 0;
         return outVerticalView || outHorizontalView;
+    }
+
+    public SimpleSprite getSource() {
+        return this.source;
     }
 
     public int getDamage() {
