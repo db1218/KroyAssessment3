@@ -230,4 +230,15 @@ public class ResourceBar {
             }
         }
     }
+
+    /**
+     * Reset the resource amount back to its
+     * original full capacity, this is used for
+     * replenishing the fire truck's water after
+     * the tutorial has finished
+     */
+    public void resetResourceAmount() {
+        this.currentResourceAmount = this.maxResourceAmount;
+    }
+
 }

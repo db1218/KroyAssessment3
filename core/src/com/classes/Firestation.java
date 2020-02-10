@@ -69,9 +69,11 @@ public class Firestation extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
-        if (this.getHealthBar().getCurrentAmount() <= 0) {
+        if (!isDestroyed && this.getHealthBar().getCurrentAmount() <= 0) {
             this.isDestroyed = true;
             this.removeSprite(this.destroyed);
+            this.gameScreen.showPopupText("The Fire Station has been destroyed! " +
+                    "You can no longer repair or refill your fire trucks", 1, 7);
         }
         this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
     }
@@ -186,7 +188,7 @@ public class Firestation extends SimpleSprite {
         }
         if (!this.isVulnerable && time == 0) {
             this.isVulnerable = true;
-            this.gameScreen.showPopupText("WARNING: The Fire Station is now vulnerable to attack", 5, 1);
+            this.gameScreen.showPopupText("WARNING: The Fire Station is now vulnerable to attack",5, 1);
         }
     }
 
@@ -258,4 +260,5 @@ public class Firestation extends SimpleSprite {
     public boolean isDestroyed() {
         return this.isDestroyed;
     }
+
 }
