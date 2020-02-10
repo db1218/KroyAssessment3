@@ -88,29 +88,21 @@ public class FiretruckTest {
         assertTrue(firetruck.isBought());
     }
 
-    @Test
-    public void testCheckCarparkCollision() {
-        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
-        firetruckUnderTest.checkCarparkCollision();
-    }
 
     @Test
     public void testDestroy() {
-        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
         firetruckUnderTest.destroy();
         assertNull(firetruckUnderTest);
     }
 
     @Test
     public void testGetDamage() {
-        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
         final float result = firetruckUnderTest.getDamage();
         assertEquals(0.0f, result, 0.0001);
     }
 
     @Test
     public void testToggleHose() {
-        firetruckUnderTest = new Firetruck(a1, a2,TruckType.BLUE,t1,t2,firestation,true);
         firetruckUnderTest.toggleHose();
         assertTrue(firetruckUnderTest.isSpraying());
     }
