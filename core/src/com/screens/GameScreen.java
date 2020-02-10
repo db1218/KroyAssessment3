@@ -585,7 +585,7 @@ public class GameScreen implements Screen {
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
 				projectilesToRemove.add(projectile);
-			} else if (!firestation.isDestroyed() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
+			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
 				System.out.println(firestation.getHealthBar().getCurrentAmount());
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				projectilesToRemove.add(projectile);
