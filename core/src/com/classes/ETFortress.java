@@ -75,7 +75,7 @@ public class ETFortress extends SimpleSprite {
         if (!flooded && this.getHealthBar().getCurrentAmount() <= 0) {
             this.removeSprite(this.destroyed);
             this.flooded = true;
-            this.gameScreen.showPopupText("You have destroyed " + gameScreen.getETFortressesDestroyed() + " fortresses", 1, 7);
+            this.gameScreen.showPopupText("You have destroyed " + gameScreen.getETFortressesDestroyed()[0] + " / " + gameScreen.getETFortressesDestroyed()[1] + " fortresses", 1, 7);
         } else if (!flooded && this.getInternalTime() % 150 == 0 && this.getHealthBar().getCurrentAmount() != this.getHealthBar().getMaxAmount()) {
             // Heal ETFortresses every second if not taking damage
 			this.getHealthBar().addResourceAmount(type.getHealing());

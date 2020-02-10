@@ -32,6 +32,7 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 // Java util imports
 import java.util.ArrayList;
+import java.util.Random;
 
 // Class imports
 import com.classes.*;
@@ -100,9 +101,7 @@ public class GameScreen implements Screen {
 	private Timer ETPatrolsTimer;
 	private boolean isInTutorial;
 
-	private ShaderProgram vignetteShader;
-	private ShaderProgram lightShader;
-
+	private ShaderProgram vignetteSepiaShader;
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
@@ -128,10 +127,8 @@ public class GameScreen implements Screen {
 		this.shapeRenderer = new ShapeRenderer();
 
 		ShaderProgram.pedantic = false;
-		this.vignetteShader = new ShaderProgram(Gdx.files.internal("shaders/vignette.vsh"), Gdx.files.internal("shaders/vignette.fsh"));
-		this.lightShader = new ShaderProgram(Gdx.files.internal("shaders/light.vsh"), Gdx.files.internal("shaders/light.fsh"));
-		if (!lightShader.isCompiled()) System.out.println(lightShader.getLog());
-		this.renderer.getBatch().setShader(lightShader);
+		this.vignetteSepiaShader = new ShaderProgram(Gdx.files.internal("shaders/vignetteSepia.vsh"), Gdx.files.internal("shaders/vignetteSepia.fsh"));
+		this.renderer.getBatch().setShader(vignetteSepiaShader);
 
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<>();
@@ -312,7 +309,6 @@ public class GameScreen implements Screen {
 
 		popupTimer.start();
 		ETPatrolsTimer.start();
-		System.out.println("back");
 
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
@@ -329,11 +325,17 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		System.out.println(this.isInTutorial);
-
-		vignetteShader.begin();
-		vignetteShader.setUniformf("u_intensity", camera.zoom-0.5f);
-		vignetteShader.end();
+		vignetteSepiaShader.begin();
+		if (isInTutorial) {
+			vignetteSepiaShader.setUniformf("u_intensity", 0.8f);
+			vignetteSepiaShader.setUniformf("u_outerRadius", 0.6f);
+			vignetteSepiaShader.setUniformf("u_sepia", 0.2f);
+		} else {
+			vignetteSepiaShader.setUniformf("u_intensity", camera.zoom-0.4f);
+			vignetteSepiaShader.setUniformf("u_outerRadius", calculateRandomValueForProgress(0.4f, 0.8f, 0));
+			vignetteSepiaShader.setUniformf("u_sepia", calculateRandomValueForProgress(0.8f, 0.2f, 0.05f));
+		}
+		vignetteSepiaShader.end();
 
 		// ---- 1) Update camera and map properties each iteration -------- //
 
@@ -445,9 +447,9 @@ public class GameScreen implements Screen {
 	public void resize(int width, int height) {
 		this.camera.viewportHeight = height;
 		this.camera.viewportWidth = width;
-		vignetteShader.begin();
-		vignetteShader.setUniformf("u_resolution", width, height);
-		vignetteShader.end();
+		vignetteSepiaShader.begin();
+		vignetteSepiaShader.setUniformf("u_resolution", width, height);
+		vignetteSepiaShader.end();
 	}
 
 	/**
@@ -469,7 +471,6 @@ public class GameScreen implements Screen {
 	public void pause() {
 		if (!isInTutorial) firestationTimer.stop();
 		popupTimer.stop();
-		System.out.println("Change screen");
 		game.setScreen(new PauseScreen(game, this));
 	}
 
@@ -506,7 +507,7 @@ public class GameScreen implements Screen {
 
 
 	public void createPatrol(){
-		if (this.ETPatrols.size() < 8 && !isInTutorial){
+		if (this.ETPatrols.size() < 10){
 			spawnPatrol();
 		}
 	}
@@ -551,7 +552,6 @@ public class GameScreen implements Screen {
 	 * Checks to see if any collisions have occurred
 	 */
 	public void checkForCollisions() {
-		System.out.println("========== THIS SHOULD NOT HAPPEN ==========");
 		// Check each firetruck to see if it has collided with anything
 		Firetruck firetruck = this.firestation.getActiveFireTruck();
 		// Check if it overlaps with an ETFortress
@@ -1000,26 +1000,28 @@ public class GameScreen implements Screen {
 
 	private void generateTutorial() {
 		tips = new Queue<>();
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Veteran fire fighter? Press ENTER to get started\n" +
-				"Otherwise, hold tight, the tutorial will begin in a moment{WAIT}.{WAIT}.{WAIT}.");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Before the action starts, you can get used to your " +
-				"new environments without impacting the game");
-		tips.addLast("{FADE=0;0.75;1}Basic Controls{ENDFADE}\n" +
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Veteran fire fighter? Press ENTER to skip tutorial\n" +
+				"Otherwise, hold tight, we will begin in a moment...");
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}You are currently in a safe haven, nothing can harm you... so relax...");
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Feel free to roam around and explore the city, " +
+				"get accustomed to your new environment...");
+		tips.addLast("{FADE=0;0.75;1}Basic Controls\n{ENDFADE}" +
 				"{SLOW}{COLOR=#FFFFFFC0}WSAD is used to drive the truck \n" +
 				"MOUSE operates the water cannon \n" +
 				"SCROLL controls camera zoom");
 		tips.addLast("{FADE=0;0.75;1}Fire Station{ENDFADE} \n" +
-				"{SLOW}{COLOR=#FFFFFFC0}You spawned right outside here. This is where you can repair and refill Fire Trucks");
+				"{SLOW}{COLOR=#FFFFFFC0}You spawned right outside here. This is where you can repair and refill Fire Trucks...");
 		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Top right, once that timer reaches zero, the Fire Station is destroyed and " +
-				"you can no longer repair or refill");
+				"you can no longer repair or refill...");
 		tips.addLast("{FADE=0;0.75;1}Score{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}Top left, achieved by attacking Patrols and Fortresses, and can be spent to unlock new trucks " +
-				"at the fire station");
-		tips.addLast("{FADE=0;0.75;1}Getting lost?{ENDFADE} \n" +
-				"{SLOW}{COLOR=#FFFFFFC0}Press SPACE to find the nearest Fortress");
-		tips.addLast("{COLOR=#FFFFFFC0}Win: Destroy all Fortresses\n{WAIT}" +
-				"{COLOR=#FFFFFFC0}Lose: All your Fire trucks get destroyed");
-		tips.addLast("{FADE=0;0.75;1}That's all, the game will start in 10 seconds{WAIT}.{WAIT}.{WAIT}.");
+				"at the Fire Station...");
+		tips.addLast("{FADE=0;0.75;1}The Mission{ENDFADE} \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}Your aim is to eliminate all ET Fortresses that have inhabited York.\n" +
+				"Use SPACE to locate the nearest enemy Fortress...");
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Be wary though, if all your fire trucks get destroyed," +
+				"you lose, and York will fall to the ETs...");
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}You're all set, the mission will start in 10 seconds...");
 
 	}
 
@@ -1036,7 +1038,6 @@ public class GameScreen implements Screen {
 		tips.clear();
 		popupTimer.clear();
 		for (int i=0; i<repeat; i++) {
-			System.out.println(text);
 			tips.addLast("{FADE=0;0.75;1}" + text);
 		}
 		popupTimer.scheduleTask(new Task() {
@@ -1053,12 +1054,12 @@ public class GameScreen implements Screen {
 	 *
 	 * @return	string of progress
 	 */
-	public String getETFortressesDestroyed() {
+	public int[] getETFortressesDestroyed() {
 		int fortressesDestroyed = 0;
 		for (ETFortress fortress : this.ETFortresses)
 			if (fortress.isFlooded())
 				fortressesDestroyed++;
-		return fortressesDestroyed + " / " + this.ETFortresses.size();
+		return new int[]{fortressesDestroyed, this.ETFortresses.size()};
 	}
 
 	public void finishTutorial() {
@@ -1066,15 +1067,22 @@ public class GameScreen implements Screen {
 			isInTutorial = false;
 			tips.clear();
 			tip.setText("{FADE=0;0.75;1}Good luck!");
-			System.out.println("Game start");
 			firestationTimer.start();
 			firestation.getActiveFireTruck().getWaterBar().resetResourceAmount();
 			firestation.getActiveFireTruck().respawn();
+			this.ETPatrols.clear();
 			this.camera.zoom = 1.3f;
 			this.zoomTarget = 1.2f;
-			this.renderer.getBatch().setShader(vignetteShader);
+			this.renderer.getBatch().setShader(vignetteSepiaShader);
 		}
 	}
 
+	private float calculateRandomValueForProgress(float max, float min, float variation) {
+		float progress = (float) getETFortressesDestroyed()[0] / (float) getETFortressesDestroyed()[1];
+		System.out.println(progress);
+		float upper = max - (progress*(max-min));
+		float lower = upper - variation;
+		return lower + new Random().nextFloat() * (upper - lower);
+	}
 
 }
