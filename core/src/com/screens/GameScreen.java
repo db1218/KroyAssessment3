@@ -117,6 +117,9 @@ public class GameScreen implements Screen {
 		// Create an orthographic camera
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Zoom that the user has set with their scroll wheel
+		this.zoomTarget = 1.5f;
+		this.camera.zoom = 2f;
 
 		// Load the map, set the unit scale
 		this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
@@ -125,8 +128,9 @@ public class GameScreen implements Screen {
 
 		ShaderProgram.pedantic = false;
 		this.vignetteShader = new ShaderProgram(Gdx.files.internal("shaders/vignette.vsh"), Gdx.files.internal("shaders/vignette.fsh"));
-//		this.lightShader = new ShaderProgram(Gdx.files.internal("shaders/light.vsh"), Gdx.files.internal("shaders/light.fsh"));
-//		this.renderer.getBatch().setShader(lightShader);
+		this.lightShader = new ShaderProgram(Gdx.files.internal("shaders/light.vsh"), Gdx.files.internal("shaders/light.fsh"));
+		if (!lightShader.isCompiled()) System.out.println(lightShader.getLog());
+		this.renderer.getBatch().setShader(lightShader);
 
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<>();
@@ -244,6 +248,10 @@ public class GameScreen implements Screen {
 		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
 //		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 108 * TILE_DIMS, 102 * TILE_DIMS, FortressType.CASTLE1));
 
+		// Create array to collect entities that are no longer used
+		this.projectilesToRemove = new ArrayList<Projectile>();
+		this.projectilesToAdd = new ArrayList<Projectile>();
+
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
 		populateMap();
@@ -280,12 +288,8 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-		// Zoom that the user has set with their scroll wheel
-		this.zoomTarget = 1.2f;
-
 		// Start the camera near the firestation
 		this.camera.setToOrtho(false);
-		this.camera.zoom = 2f;
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCarpark().getLocation().x, this.firestation.getActiveFireTruck().getCarpark().getLocation().y, 0);
 
 		// Create array to collect entities that are no longer used
@@ -297,11 +301,12 @@ public class GameScreen implements Screen {
 		{
 			@Override
 			public void run() {
-				checkForCollisions();
+				if (!isInTutorial) checkForCollisions();
 			}
 		}, .5f, .5f);
 
 		popupTimer.start();
+		System.out.println("back");
 
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
@@ -317,6 +322,8 @@ public class GameScreen implements Screen {
 		// MUST BE FIRST: Clear the screen each frame to stop textures blurring
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+		System.out.println(this.isInTutorial);
 
 		vignetteShader.begin();
 		vignetteShader.setUniformf("u_intensity", camera.zoom-0.5f);
@@ -456,6 +463,7 @@ public class GameScreen implements Screen {
 	public void pause() {
 		if (!isInTutorial) firestationTimer.stop();
 		popupTimer.stop();
+		System.out.println("Change screen");
 		game.setScreen(new PauseScreen(game, this));
 	}
 
@@ -529,6 +537,7 @@ public class GameScreen implements Screen {
 	 * Checks to see if any collisions have occurred
 	 */
 	public void checkForCollisions() {
+		System.out.println("========== THIS SHOULD NOT HAPPEN ==========");
 		// Check each firetruck to see if it has collided with anything
 		Firetruck firetruck = this.firestation.getActiveFireTruck();
 		// Check if it overlaps with an ETFortress
@@ -1043,9 +1052,12 @@ public class GameScreen implements Screen {
 			isInTutorial = false;
 			tips.clear();
 			tip.setText("{FADE=0;0.75;1}Good luck!");
+			System.out.println("Game start");
 			firestationTimer.start();
 			firestation.getActiveFireTruck().getWaterBar().resetResourceAmount();
 			firestation.getActiveFireTruck().respawn();
+			this.camera.zoom = 1.3f;
+			this.zoomTarget = 1.2f;
 			this.renderer.getBatch().setShader(vignetteShader);
 		}
 	}
