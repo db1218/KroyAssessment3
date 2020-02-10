@@ -97,6 +97,7 @@ public class GameScreen implements Screen {
 	private TypingLabel tip;
 	private Timer popupTimer;
 	private Timer firestationTimer;
+	private Timer ETPatrolsTimer;
 	private boolean isInTutorial;
 
 	private ShaderProgram vignetteShader;
@@ -274,12 +275,16 @@ public class GameScreen implements Screen {
 		}, 3f, 10f);
 		popupTimer.stop();
 
-		isInTutorial = true;
-
 		ETPatrols = new ArrayList<>();
-		for (int i = 0; i < 20; i++) {
-			spawnPatrol();
-		}
+		ETPatrolsTimer = new Timer();
+		ETPatrolsTimer.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				createPatrol();
+			}
+		}, 7,10);
+
+		isInTutorial = true;
 
 	}
 
@@ -306,6 +311,7 @@ public class GameScreen implements Screen {
 		}, .5f, .5f);
 
 		popupTimer.start();
+		ETPatrolsTimer.start();
 		System.out.println("back");
 
 		Gdx.input.setInputProcessor(gameInputHandler);
@@ -497,6 +503,14 @@ public class GameScreen implements Screen {
 		renderer.dispose();
 		map.dispose();
 	}
+
+
+	public void createPatrol(){
+		if (this.ETPatrols.size() < 8 && !isInTutorial){
+			spawnPatrol();
+		}
+	}
+
 
 	public void updatePatrolMovements() {
 		for (Patrol patrol : this.ETPatrols) {
