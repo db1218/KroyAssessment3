@@ -996,17 +996,19 @@ public class GameScreen implements Screen {
 		if (tips.notEmpty()) tip.setText(tips.removeFirst());
 	}
 
-	public void showPopupText(String text) {
+	public void showPopupText(String text, int repeat, int interval) {
 		tips.clear();
 		popupScheduler.clear();
-		tips.addLast("{FADE=0;0.75;1}" + text);
+		for (int i=1; i<repeat; i++) {
+			tips.addLast("{FADE=0;0.75;1}" + text);
+		}
 		tips.addLast("");
 		popupScheduler.scheduleTask(new Task() {
 			@Override
 			public void run() {
 				nextPopup();
 			}
-		}, 0, 10);
+		}, 0, interval);
 	}
 
 }
