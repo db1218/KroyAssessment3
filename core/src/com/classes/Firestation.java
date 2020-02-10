@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
+import com.screens.GameScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
@@ -23,11 +24,14 @@ import static com.config.Constants.*;
  */
 public class Firestation extends SimpleSprite {
 
+    private GameScreen gameScreen;
+
     // Private values for this class to use
     private final Circle repairRange;
 
     private final ArrayList<Firetruck> parkedFireTrucks;
     private Firetruck activeFireTruck;
+
 
     private final Texture destroyed;
 
@@ -44,9 +48,10 @@ public class Firestation extends SimpleSprite {
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos) {
+    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, GameScreen gameScreen) {
         super(texture);
         this.destroyed = destroyedTexture;
+        this.gameScreen = gameScreen;
         this.setPosition(xPos, yPos);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
@@ -179,8 +184,9 @@ public class Firestation extends SimpleSprite {
                 this.repairRefill(firetruck);
             }
         }
-        if (time == 0) {
+        if (!this.isVulnerable && time == 0) {
             this.isVulnerable = true;
+            this.gameScreen.showPopupText("WARNING: The Fire Station is now vulnerable to attack");
         }
     }
 

@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.config.Constants;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
@@ -78,6 +77,7 @@ public class GameScreen implements Screen {
 	private final ArrayList<Projectile> projectiles;
 	private final ArrayList<MinigameSprite> minigameSprites;
 	private ArrayList<Projectile> projectilesToRemove;
+	private ArrayList<Projectile> projectilesToAdd;
 	private final ArrayList<Patrol> ETPatrols;
 	private final Firestation firestation;
 	private final ArrayList<Texture> waterFrames;
@@ -98,7 +98,7 @@ public class GameScreen implements Screen {
 
 	private com.badlogic.gdx.utils.Queue<String> tips;
 	private TypingLabel tip;
-	private Timer tipTimer;
+	private Timer popupScheduler;
 
 	private ShaderProgram shader;
 
@@ -145,15 +145,6 @@ public class GameScreen implements Screen {
 
 		// Set the Batch to render in the coordinate system specified by the camera.
 		this.batch.setProjectionMatrix(this.camera.combined);
-
-		tipTimer = new Timer();
-		tipTimer.scheduleTask(new Task() {
-			@Override
-			public void run() {
-				newTip();
-			}
-		}, 5f, 10f);
-		tipTimer.stop();
 
 		generateTips();
 
@@ -232,7 +223,7 @@ public class GameScreen implements Screen {
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation
-		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS);
+		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS, this);
 		this.carparkScreen = new CarparkScreen(this.game, this, this.firestation);
 
 		// need to make it take away from  the number of points
@@ -264,8 +255,17 @@ public class GameScreen implements Screen {
 		}, 1, 1);
 		Timer.instance().stop();
 
+		popupScheduler = new Timer();
+		popupScheduler.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				nextPopup();
+			}
+		}, 5f, 10f);
+		popupScheduler.stop();
+
 		ETPatrols = new ArrayList<>();
-		for (int i = 0; i < 8; i++) {
+		for (int i = 0; i < 20; i++) {
 			spawnPatrol();
 		}
 
@@ -286,6 +286,7 @@ public class GameScreen implements Screen {
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
+		this.projectilesToAdd = new ArrayList<Projectile>();
 
 		Timer collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -296,7 +297,7 @@ public class GameScreen implements Screen {
 			}
 		}, .5f, .5f);
 
-		tipTimer.start();
+		popupScheduler.start();
 		Timer.instance().start();
 
 		Gdx.input.setInputProcessor(gameInputHandler);
@@ -411,6 +412,7 @@ public class GameScreen implements Screen {
 
 		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
+		this.projectiles.addAll(this.projectilesToAdd);
 
 		// Check if the game should end
 		checkIfGameOver();
@@ -450,7 +452,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void pause() {
 		Timer.instance().stop();
-		tipTimer.stop();
+		popupScheduler.stop();
 		game.setScreen(new PauseScreen(game, this));
 	}
 
@@ -463,7 +465,7 @@ public class GameScreen implements Screen {
 	@Override
 	public void resume() {
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentre(), 0);
-		tipTimer.start();
+		popupScheduler.start();
 		Timer.instance().start();
 	}
 
@@ -498,7 +500,7 @@ public class GameScreen implements Screen {
 	 */
 	public void checkIfCarpark() {
 		if (this.firestation.isMenuOpen()) {
-			tipTimer.stop();
+			popupScheduler.stop();
 			game.setScreen(this.carparkScreen);
 		}
 	}
@@ -589,25 +591,6 @@ public class GameScreen implements Screen {
 				System.out.println(firestation.getHealthBar().getCurrentAmount());
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				projectilesToRemove.add(projectile);
-			} else {
-				for (ETFortress fortress : this.ETFortresses) {
-					if (!projectile.getSource().equals(fortress)) {
-						if (Intersector.overlapConvexPolygons(fortress.getDamageHitBox(), projectile.getDamageHitBox())) {
-							fortress.getHealthBar().subtractResourceAmount(projectile.getDamage()*FRIENDLY_FIRE_MULTIPLIER);
-							if (this.score >= 10) this.score += 10 * FRIENDLY_FIRE_MULTIPLIER;
-							projectilesToRemove.add(projectile);
-						}
-					}
-				}
-				for (Patrol patrol : this.ETPatrols) {
-					if (!projectile.getSource().equals(patrol)) {
-						if (Intersector.overlapConvexPolygons(patrol.getDamageHitBox(), projectile.getDamageHitBox())) {
-							patrol.getHealthBar().subtractResourceAmount(projectile.getDamage()*FRIENDLY_FIRE_MULTIPLIER);
-							if (this.score >= 10) this.score += 10 * FRIENDLY_FIRE_MULTIPLIER;
-							projectilesToRemove.add(projectile);
-						}
-					}
-				}
 			}
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
@@ -1009,8 +992,21 @@ public class GameScreen implements Screen {
 		tips.addLast("");
 	}
 
-	private void newTip() {
+	private void nextPopup() {
 		if (tips.notEmpty()) tip.setText(tips.removeFirst());
+	}
+
+	public void showPopupText(String text) {
+		tips.clear();
+		popupScheduler.clear();
+		tips.addLast("{FADE=0;0.75;1}" + text);
+		tips.addLast("");
+		popupScheduler.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				nextPopup();
+			}
+		}, 0, 10);
 	}
 
 }
