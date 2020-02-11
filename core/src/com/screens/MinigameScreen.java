@@ -117,21 +117,21 @@ public class MinigameScreen implements Screen {
         camera.update();
 
         //render sprites as batch inc. score
-        game.batch.setProjectionMatrix(camera.combined);
+        game.spriteBatch.setProjectionMatrix(camera.combined);
 
-        game.batch.begin();
-        game.batch.draw(background, 0, 0);
+        game.spriteBatch.begin();
+        game.spriteBatch.draw(background, 0, 0);
 
         //draw aliens on screen
         for (Alien alien : onScreenETs) {
-            game.batch.draw(alien.getTexture(), alien.getX(), alien.getY());
+            game.spriteBatch.draw(alien.getTexture(), alien.getX(), alien.getY());
         }
 
         drawWater();
 
-        game.coolFont.draw(game.batch, "Score: " + score, 25, 100);
+        game.coolFont.draw(game.spriteBatch, "Score: " + score, 25, 100);
 
-        game.batch.end();
+        game.spriteBatch.end();
 
         if (TimeUtils.millis() - timing > 700) {
             spawnAlien();
@@ -186,7 +186,7 @@ public class MinigameScreen implements Screen {
 
     private void drawWater() {
         if (this.playerHasClicked) {
-            game.batch.draw(waterImage, water.x - (waterImage.getWidth()/2f), water.y - (waterImage.getHeight()/2f));
+            game.spriteBatch.draw(waterImage, water.x - (waterImage.getWidth()/2f), water.y - (waterImage.getHeight()/2f));
         }
     }
 
