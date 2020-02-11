@@ -12,13 +12,15 @@ import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.classes.AlienType;
-import com.classes.Aliens;
+import com.classes.Alien;
 import com.kroy.Kroy;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class MinigameScreen implements Screen {
+
+    private Kroy game;
 
     //Declare images
     private Texture waterImage;
@@ -43,70 +45,73 @@ public class MinigameScreen implements Screen {
     private long timing;
     private boolean timeSleep;
 
-    private ArrayList<Aliens> ETs;
-    private ArrayList<Aliens> activeETs;
+    private ArrayList<Alien> ETs;
+    private ArrayList<Alien> activeETs;
 
 
-    public MinigameScreen(Kroy game){
-       //load images for sprites
-       waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
-       background = new Texture(Gdx.files.internal("Minigame/tempbackground.png"));
+    public MinigameScreen(Kroy game) {
 
-       GImage = new Texture(Gdx.files.internal("Minigame/aliensquare.png"));
-       RImage = new Texture(Gdx.files.internal("Minigame/redalien.png"));
-       BImage = new Texture(Gdx.files.internal("Minigame/bluealien.png"));
+        this.game = game;
 
-       //alien creation
-       ETs = new ArrayList<Aliens>();
-       activeETs = new ArrayList<Aliens>();
+        //load images for sprites
+        waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
+        background = new Texture(Gdx.files.internal("Minigame/tempbackground.png"));
 
-       //delay creation
-       timeSleep = false;
+        GImage = new Texture(Gdx.files.internal("Minigame/aliensquare.png"));
+        RImage = new Texture(Gdx.files.internal("Minigame/redalien.png"));
+        BImage = new Texture(Gdx.files.internal("Minigame/bluealien.png"));
 
-       //create aliens
-       ETs.add(new Aliens(GImage, AlienType.green, 225, 700, AlienType.green.getName()));
-       ETs.add(new Aliens(GImage, AlienType.green, 195, 390, AlienType.green.getName()));
-       ETs.add(new Aliens(GImage, AlienType.green, 650, 340, AlienType.green.getName()));
-       ETs.add(new Aliens(GImage, AlienType.green, 850, 550, AlienType.green.getName()));
-       ETs.add(new Aliens(GImage, AlienType.green, 1050, 365, AlienType.green.getName()));
+        //alien creation
+        ETs = new ArrayList<Alien>();
+        activeETs = new ArrayList<Alien>();
 
-       ETs.add(new Aliens(RImage, AlienType.red, 1000, 100, AlienType.red.getName()));
-       ETs.add(new Aliens(RImage, AlienType.red, 590, 600, AlienType.red.getName()));
-       ETs.add(new Aliens(RImage, AlienType.red, 900, 650, AlienType.red.getName()));
+        //delay creation
+        timeSleep = false;
 
-       ETs.add(new Aliens(BImage, AlienType.blue, 850, 500, AlienType.blue.getName()));
-       ETs.add(new Aliens(BImage, AlienType.blue, 300, 200, AlienType.blue.getName()));
-       ETs.add(new Aliens(BImage, AlienType.blue, 750, 890, AlienType.blue.getName()));
-       ETs.add(new Aliens(BImage, AlienType.blue, 900, 550, AlienType.blue.getName()));
+        //create aliens
+        ETs.add(new Alien(GImage, AlienType.green, 225, 700, AlienType.green.getName()));
+        ETs.add(new Alien(GImage, AlienType.green, 195, 390, AlienType.green.getName()));
+        ETs.add(new Alien(GImage, AlienType.green, 650, 340, AlienType.green.getName()));
+        ETs.add(new Alien(GImage, AlienType.green, 850, 550, AlienType.green.getName()));
+        ETs.add(new Alien(GImage, AlienType.green, 1050, 365, AlienType.green.getName()));
 
-       batch = new SpriteBatch();
+        ETs.add(new Alien(RImage, AlienType.red, 1000, 100, AlienType.red.getName()));
+        ETs.add(new Alien(RImage, AlienType.red, 590, 600, AlienType.red.getName()));
+        ETs.add(new Alien(RImage, AlienType.red, 900, 650, AlienType.red.getName()));
 
-       //initialise score to 0
-       score = 0;
-       scoreName = "Score: 0";
-       bitmapFontName = new BitmapFont();
+        ETs.add(new Alien(BImage, AlienType.blue, 850, 500, AlienType.blue.getName()));
+        ETs.add(new Alien(BImage, AlienType.blue, 300, 200, AlienType.blue.getName()));
+        ETs.add(new Alien(BImage, AlienType.blue, 750, 890, AlienType.blue.getName()));
+        ETs.add(new Alien(BImage, AlienType.blue, 900, 550, AlienType.blue.getName()));
 
-       //create camera
-       camera = new OrthographicCamera();
-       camera.setToOrtho(false, 1600, 960);
+        batch = new SpriteBatch();
 
-       //create rectangles
-       batch = new SpriteBatch();
+        //initialise score to 0
+        score = 0;
+        scoreName = "Score: 0";
+        bitmapFontName = new BitmapFont();
 
-       //create water rectangle to allow collision detection
-       water = new Rectangle();
-       water.x = 0;
-       water.y = 0;
-       water.width = 150;
-       water.height = 150;
+        //create camera
+        camera = new OrthographicCamera();
+        camera.setToOrtho(false, 1600, 960);
+
+        //create rectangles
+        batch = new SpriteBatch();
+
+        //create water rectangle to allow collision detection
+        water = new Rectangle();
+        water.x = 0;
+        water.y = 0;
+        water.width = 150;
+        water.height = 150;
 
     }
 
-    private void spawnAlien(int x){
-        System.out.println(x);
+    private void spawnAlien(int x) {
+        System.out.println(ETs.get(0).name);
         activeETs.add(ETs.get(x));
         timing = TimeUtils.millis();
-        }
+    }
 
     private boolean time(boolean times) {
         if (TimeUtils.millis() - timing > (random.nextInt(6000))) {
@@ -116,7 +121,8 @@ public class MinigameScreen implements Screen {
     }
 
     @Override
-    public void show() {}
+    public void show() {
+    }
 
     @Override
     public void render(float delta) {
@@ -133,8 +139,8 @@ public class MinigameScreen implements Screen {
         batch.draw(background, 0, 0);
 
         //draw aliens on screen
-        for (Aliens alien : ETs) {
-            batch.draw(alien.getTexture(), alien.getxPos(), alien.getyPos());
+        for (Alien alien : activeETs) {
+            batch.draw(alien.getTexture(), alien.getX(), alien.getY());
         }
 
         //renders water sprite when mouse is clicked
@@ -146,6 +152,7 @@ public class MinigameScreen implements Screen {
             water.y = touchPos.y;
             batch.draw(waterImage, water.x, water.y);
         }
+
         bitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         bitmapFontName.draw(batch, scoreName, 25, 100);
 
@@ -153,19 +160,20 @@ public class MinigameScreen implements Screen {
 
         random = new Random();
         if (TimeUtils.millis() - timing > 700) {
-            spawnAlien(MathUtils.random (ETs.size()));
+            System.out.println(ETs.size());
+            spawnAlien(MathUtils.random(ETs.size() - 1));
         }
 
-        for (int i=0; i<ETs.size(); i++){
-            Aliens alien = ETs.get(i);
+        for (int i = 0; i < activeETs.size(); i++) {
+            Alien alien = activeETs.get(i);
 
             if (time(timeSleep)) {
-                ETs.remove(alien);
+                activeETs.remove(alien);
                 timeSleep = false;
             }
             if (water.overlaps(alien.getBoundingRectangle())) {
                 score += alien.type.getScore();
-                ETs.remove(alien);
+                activeETs.remove(alien);
                 scoreName = "Score: " + score;
             }
         }
