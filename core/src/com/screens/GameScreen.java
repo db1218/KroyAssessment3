@@ -155,7 +155,7 @@ public class GameScreen implements Screen {
 		this.stage.setDebugAll(DEBUG_ENABLED);
 
 		Table table = new Table();
-		table.row().colspan(3).expand().pad(40);
+		table.row().colspan(3).expand().pad(40).padBottom(150);
 		table.setFillParent(true);
 
 		scoreLabel = new Label("", game.getFont10());
@@ -1080,7 +1080,6 @@ public class GameScreen implements Screen {
 
 	private float calculateRandomValueForProgress(float max, float min, float variation) {
 		float progress = (float) getETFortressesDestroyed()[0] / (float) getETFortressesDestroyed()[1];
-		System.out.println(progress);
 		float upper = max - (progress*(max-min));
 		float lower = upper - variation;
 		return lower + new Random().nextFloat() * (upper - lower);

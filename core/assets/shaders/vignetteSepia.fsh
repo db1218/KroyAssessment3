@@ -15,7 +15,7 @@ void main() {
 	vec2 relativePosition = gl_FragCoord.xy / u_resolution - 0.5;
 	float len = length(relativePosition);
 	float vignette = smoothstep(u_outerRadius, innerRadius, len);
-	color.rgb = lerp(color.rgb, vec3(0.45, 0.26, 0.1), u_sepia);
+	color.rgb = mix(color.rgb, vec3(0.45, 0.26, 0.1), u_sepia);
 	color.rgb = mix(color.rgb, color.rgb * vignette, u_intensity);
 	gl_FragColor = color;
 }
