@@ -291,6 +291,9 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
+		this.resume();
+		this.camera.setToOrtho(false);
+		this.camera.position.set(this.firestation.getActiveFireTruck().getCentreX(), this.firestation.getActiveFireTruck().getCentreY(), 0);
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
 		this.projectilesToAdd = new ArrayList<Projectile>();
@@ -303,8 +306,6 @@ public class GameScreen implements Screen {
 				if (!isInTutorial) checkForCollisions();
 			}
 		}, .5f, .5f);
-
-		this.resume();
 
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
