@@ -52,7 +52,7 @@ public class MainMenuScreen implements Screen {
 	public MainMenuScreen(final Kroy game) {
 		this.game = game;
 
-		skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
+		skin = game.getSkin();
 		
 		// Create new sprite batch
 
@@ -116,7 +116,6 @@ public class MainMenuScreen implements Screen {
 		heading.setFontScale(2);
 		Label subHeading = new Label("Destroy the Fortresses and Save the City", new Label.LabelStyle(game.coolFont, Color.WHITE));
 		TextButton playButton = new TextButton("Play", skin);
-		TextButton controlsButton = new TextButton("Controls", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
 
 		// Add buttons to table and style them
@@ -126,8 +125,6 @@ public class MainMenuScreen implements Screen {
 		buttonTable.row();
 		buttonTable.add(playButton).padBottom(20).width(200).height(40);
 		buttonTable.row();
-		buttonTable.add(controlsButton).padBottom(20).width(200).height(40);
-		buttonTable.row();
 		buttonTable.add(quitButton).width(200).height(40);
 
 		// Add listeners
@@ -136,14 +133,6 @@ public class MainMenuScreen implements Screen {
 			public void clicked(InputEvent event, float x, float y) {
 				game.setScreen(new StoryScreen(game));
 				dispose();
-			}
-		});
-
-		controlsButton.addListener(new ClickListener() {
-			@Override
-			public void clicked(InputEvent event, float x, float y) {
-//				game.setScreen(new ControlsScreen(game));
-//				dispose();
 			}
 		});
 
@@ -174,7 +163,6 @@ public class MainMenuScreen implements Screen {
 
 	@Override
 	public void dispose() {
-		skin.dispose();
 		stage.dispose();
 	}
 }

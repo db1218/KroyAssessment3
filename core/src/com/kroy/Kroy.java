@@ -28,7 +28,6 @@ public class Kroy extends Game {
 	// Batches to store drawn elements
   	public Batch batch;
   	public SpriteBatch spriteBatch;
-	private BitmapFont font;
 	public BitmapFont coolFont;
 	private Label.LabelStyle font10;
 	private Skin skin;
@@ -43,8 +42,7 @@ public class Kroy extends Game {
 		this.spriteBatch = new SpriteBatch();
 		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new MainMenuScreen(this) {
-		});
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	/**
@@ -60,10 +58,10 @@ public class Kroy extends Game {
 	 */
 	public void dispose() {
 		this.batch.dispose();
-		this.font.dispose();
 		this.spriteBatch.dispose();
 		this.screen.dispose();
 		this.coolFont.dispose();
+		this.skin.dispose();
 	}
 
 	/**

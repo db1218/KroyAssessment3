@@ -315,9 +315,6 @@ public class CarparkScreen implements Screen {
     public void dispose() {
         stage.dispose();
         shapeRenderer.dispose();
-        activeFiretruck.dispose();
-        firestation.dispose();
-        skin.dispose();
     }
 
     /**

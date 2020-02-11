@@ -57,7 +57,6 @@ public class GameScreen implements Screen {
 	// Private values for game screen logic
 	private final ShapeRenderer shapeRenderer;
 	private final OrthographicCamera camera;
-	private final Batch batch;
 
 	// Private values for tiled map
 	private final TiledMap map;
@@ -103,6 +102,7 @@ public class GameScreen implements Screen {
 	private boolean isInTutorial;
 
 	private ShaderProgram vignetteSepiaShader;
+
 	/**
 	 * The constructor for the main game screen. All main game logic is
 	 * contained.
@@ -142,13 +142,10 @@ public class GameScreen implements Screen {
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
 		// Initialise map renderer as batch to draw textures to
-		this.batch = renderer.getBatch();
-
-		// Set the game batch
-		this.game.setBatch(this.batch);
+		this.game.setBatch(renderer.getBatch());
 
 		// Set the Batch to render in the coordinate system specified by the camera.
-		this.batch.setProjectionMatrix(this.camera.combined);
+		this.game.batch.setProjectionMatrix(this.camera.combined);
 
 		generateTutorial();
 
@@ -383,36 +380,36 @@ public class GameScreen implements Screen {
 
 		// Render the remaining sprites, font last to be on top of all
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
-		batch.begin();
+		this.game.batch.begin();
 
 		// Render sprites
 		for (ETFortress ETFortress : this.ETFortresses) {
-			ETFortress.update(batch);
+			ETFortress.update(this.game.batch);
 			if (DEBUG_ENABLED) ETFortress.drawDebug(shapeRenderer);
 		}
 		for (Projectile projectile : this.projectiles) {
-			projectile.update(batch);
+			projectile.update(this.game.batch);
 			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
 			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
 		}
 
 		// Call the update function of the sprites to draw and update them
-		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
+		firestation.updateFiretruck(this.game.batch, this.shapeRenderer, this.camera);
 
 		for (Patrol patrol : this.ETPatrols) {
-			patrol.update(this.batch);
+			patrol.update(this.game.batch);
 		}
 
 		for (MinigameSprite minigameSprite : minigameSprites) {
-			minigameSprite.update(batch);
+			minigameSprite.update(this.game.batch);
 		}
 
-		this.firestation.update(batch);
+		this.firestation.update(this.game.batch);
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
 		// Finish rendering
-		this.batch.end();
+		this.game.batch.end();
 		shapeRenderer.end();
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
@@ -507,6 +504,10 @@ public class GameScreen implements Screen {
 		}
 		renderer.dispose();
 		map.dispose();
+		vignetteSepiaShader.dispose();
+		stage.dispose();
+		carparkScreen.dispose();
+		shapeRenderer.dispose();
 	}
 
 	public void createPatrol(){
