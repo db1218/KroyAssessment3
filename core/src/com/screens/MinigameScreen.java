@@ -52,6 +52,7 @@ public class MinigameScreen implements Screen {
     private TreeMap<Double, AlienType> map;
 
     private MiniGameInputHandler miniGameInputHandler;
+    private boolean playerHasClicked;
 
     public MinigameScreen(Kroy game) {
 
@@ -79,6 +80,7 @@ public class MinigameScreen implements Screen {
         //delay creation
         timeSleep = false;
 
+        random = new Random();
 
         // Creates a map of types of aliens and their chance of being selected
         map = new TreeMap<>();
@@ -93,10 +95,14 @@ public class MinigameScreen implements Screen {
         score = 0;
         scoreName = "Score: 0";
         bitmapFontName = new BitmapFont();
+        bitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         //create camera
         camera = new OrthographicCamera();
         camera.setToOrtho(false, 1600, 960);
+
+        // set InputHandler
+        miniGameInputHandler = new MiniGameInputHandler(this);
 
         //create rectangles
         batch = new SpriteBatch();
@@ -108,7 +114,6 @@ public class MinigameScreen implements Screen {
         water.width = 150;
         water.height = 150;
 
-        miniGameInputHandler = new MiniGameInputHandler(this);
     }
 
 
@@ -136,16 +141,12 @@ public class MinigameScreen implements Screen {
             batch.draw(alien.getTexture(), alien.getX(), alien.getY());
         }
 
-        if (water.x != -1 && water.y != -1) {
-            batch.draw(waterImage, water.x - (waterImage.getWidth()/2), water.y - (waterImage.getHeight()/2));
-        }
+        drawWater();
 
-        bitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
         bitmapFontName.draw(batch, scoreName, 25, 100);
 
         batch.end();
 
-        random = new Random();
         if (TimeUtils.millis() - timing > 700) {
             spawnAlien();
         }
@@ -157,15 +158,12 @@ public class MinigameScreen implements Screen {
                 onScreenETs.remove(alien);
                 timeSleep = false;
             }
-            if (water.overlaps(alien.getBoundingRectangle())) {
+            if (playerHasClicked && water.overlaps(alien.getBoundingRectangle())) {
                 score += alien.getScore();
                 onScreenETs.remove(alien);
                 scoreName = "Score: " + score;
             }
         }
-
-       // water.setX(0);
-       // water.setY(0);
 
     }
 
@@ -201,6 +199,12 @@ public class MinigameScreen implements Screen {
             times = true;
         }
         return times;
+    }
+
+    private void drawWater() {
+        if (this.playerHasClicked) {
+            batch.draw(waterImage, water.x - (waterImage.getWidth()/2), water.y - (waterImage.getHeight()/2));
+        }
     }
 
     private void spawnAlien() {
@@ -240,12 +244,14 @@ public class MinigameScreen implements Screen {
         ETLocations.add(new Vector2(900, 550));
     }
 
-    public OrthographicCamera getCamera() {
-        return camera;
+    public void setPlayerHasClicked(Boolean b){
+        this.playerHasClicked = b;
     }
 
-    public void setTouch(int i, int i1) {
-        water.x = i;
-        water.y = i1;
+    public void setTouch(int x, int y) {
+        water.x = x;
+        water.y = y;
     }
+
+    public OrthographicCamera getCamera() { return camera; }
 }

@@ -30,21 +30,22 @@ public class MiniGameInputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-        Vector3 touch = minigameScreen.getCamera().unproject(new Vector3(screenX, screenY, 0));
-        Vector2 newTouch = new Vector2((int)touch.x, (int) touch.y);
-        minigameScreen.setTouch((int)newTouch.x, (int)newTouch.y);
+        Vector2 clickCoordinates = new Vector2(screenX, screenY);
+        Vector3 touch = minigameScreen.getCamera().unproject(new Vector3(clickCoordinates.x, clickCoordinates.y, 0));
+        minigameScreen.setPlayerHasClicked(true);
+        minigameScreen.setTouch((int)touch.x, (int)touch.y);
         return false;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        minigameScreen.setTouch(-1,-1);
+        minigameScreen.setPlayerHasClicked(false);
         return false;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        minigameScreen.setTouch(-1,-1);
+        minigameScreen.setPlayerHasClicked(false);
         return false;
     }
 
