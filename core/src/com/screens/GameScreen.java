@@ -291,10 +291,6 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-		// Start the camera near the firestation
-		this.camera.setToOrtho(false);
-		this.camera.position.set(this.firestation.getActiveFireTruck().getCarpark().getLocation().x, this.firestation.getActiveFireTruck().getCarpark().getLocation().y, 0);
-
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
 		this.projectilesToAdd = new ArrayList<Projectile>();
@@ -308,8 +304,7 @@ public class GameScreen implements Screen {
 			}
 		}, .5f, .5f);
 
-		popupTimer.start();
-		ETPatrolsTimer.start();
+		this.resume();
 
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
@@ -354,6 +349,7 @@ public class GameScreen implements Screen {
 		// ==============================================================
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
 		Vector3 cameraPosition = this.camera.position;
+		System.out.println(cameraPosition);
 		float xDifference = focusedTruck.getCentreX() - cameraPosition.x;
 		float yDifference = focusedTruck.getCentreY() - cameraPosition.y;
 		cameraPosition.x += xDifference * LERP * delta;
@@ -472,6 +468,7 @@ public class GameScreen implements Screen {
 	public void pause() {
 		if (!isInTutorial) firestationTimer.stop();
 		popupTimer.stop();
+		ETPatrolsTimer.stop();
 		game.setScreen(new PauseScreen(game, this));
 	}
 
@@ -485,6 +482,7 @@ public class GameScreen implements Screen {
 	public void resume() {
 		if (!isInTutorial) firestationTimer.start();
 		popupTimer.start();
+		ETPatrolsTimer.start();
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentre(), 0);
 	}
 
@@ -606,7 +604,10 @@ public class GameScreen implements Screen {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
 				// open mini game
-				this.game.setScreen(new MinigameScreen(this.game));
+				if (!isInTutorial) firestationTimer.stop();
+				popupTimer.stop();
+				ETPatrolsTimer.stop();
+				this.game.setScreen(new MinigameScreen(this.game, this));
 				this.minigameSprites.remove(minigameSprite);
 			}
 		}

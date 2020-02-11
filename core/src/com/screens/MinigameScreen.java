@@ -21,7 +21,8 @@ import java.util.TreeMap;
 
 public class MinigameScreen implements Screen {
 
-    private Kroy game;
+    private final Kroy game;
+    private final GameScreen gameScreen;
 
     //Declare images
     private Texture waterImage;
@@ -31,12 +32,9 @@ public class MinigameScreen implements Screen {
 
     //Declare score items
     private int score;
-    private String scoreName;
-    private BitmapFont bitmapFontName;
 
     //declare camera items
     private OrthographicCamera camera;
-    private SpriteBatch batch;
 
     private Rectangle water;
 
@@ -54,9 +52,10 @@ public class MinigameScreen implements Screen {
     private MiniGameInputHandler miniGameInputHandler;
     private boolean playerHasClicked;
 
-    public MinigameScreen(Kroy game) {
+    public MinigameScreen(Kroy game, GameScreen gameScreen) {
 
         this.game = game;
+        this.gameScreen = gameScreen;
 
         //load images for sprites
         waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
@@ -89,13 +88,8 @@ public class MinigameScreen implements Screen {
             map.put(total += chanceOfSelectingAlien.get(i), typeOfAliens.get(i));
         }
 
-        batch = new SpriteBatch();
-
         //initialise score to 0
         score = 0;
-        scoreName = "Score: 0";
-        bitmapFontName = new BitmapFont();
-        bitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
 
         //create camera
         camera = new OrthographicCamera();
@@ -104,16 +98,8 @@ public class MinigameScreen implements Screen {
         // set InputHandler
         miniGameInputHandler = new MiniGameInputHandler(this);
 
-        //create rectangles
-        batch = new SpriteBatch();
-
         //create water rectangle to allow collision detection
-        water = new Rectangle();
-        water.x = 0;
-        water.y = 0;
-        water.width = 150;
-        water.height = 150;
-
+        water = new Rectangle(0, 0, 150, 150);
     }
 
 
@@ -131,21 +117,21 @@ public class MinigameScreen implements Screen {
         camera.update();
 
         //render sprites as batch inc. score
-        batch.setProjectionMatrix(camera.combined);
+        game.batch.setProjectionMatrix(camera.combined);
 
-        batch.begin();
-        batch.draw(background, 0, 0);
+        game.batch.begin();
+        game.batch.draw(background, 0, 0);
 
         //draw aliens on screen
         for (Alien alien : onScreenETs) {
-            batch.draw(alien.getTexture(), alien.getX(), alien.getY());
+            game.batch.draw(alien.getTexture(), alien.getX(), alien.getY());
         }
 
         drawWater();
 
-        bitmapFontName.draw(batch, scoreName, 25, 100);
+        game.coolFont.draw(game.batch, "Score: " + score, 25, 100);
 
-        batch.end();
+        game.batch.end();
 
         if (TimeUtils.millis() - timing > 700) {
             spawnAlien();
@@ -161,7 +147,6 @@ public class MinigameScreen implements Screen {
             if (playerHasClicked && water.overlaps(alien.getBoundingRectangle())) {
                 score += alien.getScore();
                 onScreenETs.remove(alien);
-                scoreName = "Score: " + score;
             }
         }
 
@@ -190,8 +175,6 @@ public class MinigameScreen implements Screen {
     public void dispose() {
         background.dispose();
         waterImage.dispose();
-        bitmapFontName.dispose();
-        batch.dispose();
     }
 
     private boolean time(boolean times) {
@@ -203,7 +186,7 @@ public class MinigameScreen implements Screen {
 
     private void drawWater() {
         if (this.playerHasClicked) {
-            batch.draw(waterImage, water.x - (waterImage.getWidth()/2), water.y - (waterImage.getHeight()/2));
+            game.batch.draw(waterImage, water.x - (waterImage.getWidth()/2f), water.y - (waterImage.getHeight()/2f));
         }
     }
 
@@ -249,9 +232,12 @@ public class MinigameScreen implements Screen {
     }
 
     public void setTouch(int x, int y) {
-        water.x = x;
-        water.y = y;
+        water.setPosition(x, y);
     }
 
     public OrthographicCamera getCamera() { return camera; }
+
+    public void toGameScreen() {
+        this.game.setScreen(this.gameScreen);
+    }
 }

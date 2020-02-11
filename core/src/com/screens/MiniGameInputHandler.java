@@ -1,6 +1,7 @@
 package com.screens;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
@@ -15,7 +16,10 @@ public class MiniGameInputHandler implements InputProcessor {
 
     @Override
     public boolean keyDown(int keycode) {
-        return false;
+        if (keycode == Input.Keys.ESCAPE) {
+            minigameScreen.toGameScreen();
+        }
+        return true;
     }
 
     @Override
@@ -34,19 +38,19 @@ public class MiniGameInputHandler implements InputProcessor {
         Vector3 touch = minigameScreen.getCamera().unproject(new Vector3(clickCoordinates.x, clickCoordinates.y, 0));
         minigameScreen.setPlayerHasClicked(true);
         minigameScreen.setTouch((int)touch.x, (int)touch.y);
-        return false;
+        return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
         minigameScreen.setPlayerHasClicked(false);
-        return false;
+        return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
         minigameScreen.setPlayerHasClicked(false);
-        return false;
+        return true;
     }
 
     @Override
