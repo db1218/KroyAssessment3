@@ -606,7 +606,7 @@ public class GameScreen implements Screen {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
 				// open mini game
-				this.game.setScreen(new MinigameScreen(this.game));
+				this.game.setScreen(new MinigameScreen());
 				this.minigameSprites.remove(minigameSprite);
 			}
 		}
