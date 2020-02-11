@@ -13,16 +13,13 @@ public class Aliens extends Sprite {
     public final String name;
 
 
-    public Aliens(AlienType type, int xPos, int yPos, String name) {
+    public Aliens(Texture texture, AlienType type, int xPos, int yPos, String name) {
+        super(texture);
         this.type = type;
         this.xPos = xPos;
         this.yPos = yPos;
         this.name = name;
 
-    }
-
-    public void drawSprite(Batch mapBatch) {
-        mapBatch.draw(this, this.xPos, this.yPos);
     }
 
     public AlienType getType() { return this.type; }
