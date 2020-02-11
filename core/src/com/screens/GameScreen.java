@@ -2,6 +2,7 @@ package com.screens;
 //
 // LibGDX imports
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
@@ -195,7 +196,10 @@ public class GameScreen implements Screen {
 
         // creates mini game sprite
 		minigameSprites = new ArrayList<>();
-		minigameSprites.add(new MinigameSprite(44, 42));
+		minigameSprites.add(new MinigameSprite(75, 3));
+		minigameSprites.add(new MinigameSprite(113, 48));
+		minigameSprites.add(new MinigameSprite(10, 92));
+		minigameSprites.add(new MinigameSprite(93, 106));
 
 		// Initialise textures to use for sprites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
@@ -608,8 +612,9 @@ public class GameScreen implements Screen {
 				if (!isInTutorial) firestationTimer.stop();
 				popupTimer.stop();
 				ETPatrolsTimer.stop();
-				this.game.setScreen(new MinigameScreen(this.game, this));
 				this.minigameSprites.remove(minigameSprite);
+				this.firestation.getActiveFireTruck().setSpeed(new Vector2(0, 0));
+				this.game.setScreen(new MinigameScreen(this.game, this));
 			}
 		}
 
