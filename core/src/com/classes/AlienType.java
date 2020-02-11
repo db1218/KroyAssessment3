@@ -1,33 +1,34 @@
 package com.classes;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Vector;
-
 
 public enum AlienType {
 
-    red(3,  "red", 435, 435),
-    green(1, "green", 4, 2),
-    blue(5, "blue", 200, 200);
+    red("red",3, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png"))),
+    green("green",1, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png"))),
+    blue("blue", 5,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")));
 
-    public int height;
-    public int width;
-    private int score;
     private String name;
+    private int score;
+    private double chance;
 
+    private Texture texture;
 
-    AlienType(int score, String name, int height, int width){
-        this.score = score;
-
+    AlienType(String name, int score, double chance, Texture texture){
         this.name = name;
-        this.height = height;
-        this.width = width;
+        this.score = score;
+        this.chance = chance;
 
+        this.texture = texture;
     }
 
+    public String getName(){return this.name;}
+
     public int getScore(){return this.score;}
-    public String getName(){return name;}
+
+    public double getChance() {return this.chance; }
+
+    public Texture getTexture(){ return this.texture; }
 
 }

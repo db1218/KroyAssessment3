@@ -606,7 +606,7 @@ public class GameScreen implements Screen {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
 				// open mini game
-				this.game.setScreen(new MinigameScreen());
+				this.game.setScreen(new MinigameScreen(this.game));
 				this.minigameSprites.remove(minigameSprite);
 			}
 		}
@@ -705,7 +705,6 @@ public class GameScreen implements Screen {
 	 * ================================================
 	 * Builds an array of textures that is used to render patrols
 	 *
-	 * @return	array of textures
 	 */
 	private void buildPatrolTextures() {
 		ArrayList<Texture> patrolTextures = new ArrayList<Texture>();

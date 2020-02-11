@@ -7,8 +7,8 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
 import com.classes.AlienType;
@@ -17,6 +17,7 @@ import com.kroy.Kroy;
 
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.TreeMap;
 
 public class MinigameScreen implements Screen {
 
@@ -25,9 +26,6 @@ public class MinigameScreen implements Screen {
     //Declare images
     private Texture waterImage;
     private Texture background;
-    private Texture GImage;
-    private Texture RImage;
-    private Texture BImage;
 
     private Random random;
 
@@ -45,9 +43,13 @@ public class MinigameScreen implements Screen {
     private long timing;
     private boolean timeSleep;
 
-    private ArrayList<Alien> ETs;
-    private ArrayList<Alien> activeETs;
+    private ArrayList<Alien> onScreenETs;
+    private ArrayList<Vector2> ETLocations;
 
+    private ArrayList<AlienType> typeOfAliens;
+    private ArrayList<Double> chanceOfSelectingAlien;
+
+    private TreeMap<Double, AlienType> map;
 
     public MinigameScreen(Kroy game) {
 
@@ -57,32 +59,31 @@ public class MinigameScreen implements Screen {
         waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
         background = new Texture(Gdx.files.internal("Minigame/tempbackground.png"));
 
-        GImage = new Texture(Gdx.files.internal("Minigame/aliensquare.png"));
-        RImage = new Texture(Gdx.files.internal("Minigame/redalien.png"));
-        BImage = new Texture(Gdx.files.internal("Minigame/bluealien.png"));
-
         //alien creation
-        ETs = new ArrayList<Alien>();
-        activeETs = new ArrayList<Alien>();
+        onScreenETs = new ArrayList<Alien>();
+        ETLocations = new ArrayList<Vector2>();
+        generateETLocations();
+
+        typeOfAliens = new ArrayList<>();
+        typeOfAliens.add(AlienType.blue);
+        typeOfAliens.add(AlienType.green);
+        typeOfAliens.add(AlienType.red);
+
+        chanceOfSelectingAlien = new ArrayList<>();
+        for (AlienType type : typeOfAliens){
+            chanceOfSelectingAlien.add(type.getChance());
+        }
 
         //delay creation
         timeSleep = false;
 
-        //create aliens
-        ETs.add(new Alien(GImage, AlienType.green, 225, 700, AlienType.green.getName()));
-        ETs.add(new Alien(GImage, AlienType.green, 195, 390, AlienType.green.getName()));
-        ETs.add(new Alien(GImage, AlienType.green, 650, 340, AlienType.green.getName()));
-        ETs.add(new Alien(GImage, AlienType.green, 850, 550, AlienType.green.getName()));
-        ETs.add(new Alien(GImage, AlienType.green, 1050, 365, AlienType.green.getName()));
 
-        ETs.add(new Alien(RImage, AlienType.red, 1000, 100, AlienType.red.getName()));
-        ETs.add(new Alien(RImage, AlienType.red, 590, 600, AlienType.red.getName()));
-        ETs.add(new Alien(RImage, AlienType.red, 900, 650, AlienType.red.getName()));
-
-        ETs.add(new Alien(BImage, AlienType.blue, 850, 500, AlienType.blue.getName()));
-        ETs.add(new Alien(BImage, AlienType.blue, 300, 200, AlienType.blue.getName()));
-        ETs.add(new Alien(BImage, AlienType.blue, 750, 890, AlienType.blue.getName()));
-        ETs.add(new Alien(BImage, AlienType.blue, 900, 550, AlienType.blue.getName()));
+        // Creates a map of types of aliens and their chance of being selected
+        map = new TreeMap<>();
+        double total = 0.0d;
+        for (int i = 0; i < typeOfAliens.size(); i++) {
+            map.put(total += chanceOfSelectingAlien.get(i), typeOfAliens.get(i));
+        }
 
         batch = new SpriteBatch();
 
@@ -107,18 +108,6 @@ public class MinigameScreen implements Screen {
 
     }
 
-    private void spawnAlien(int x) {
-        System.out.println(ETs.get(0).name);
-        activeETs.add(ETs.get(x));
-        timing = TimeUtils.millis();
-    }
-
-    private boolean time(boolean times) {
-        if (TimeUtils.millis() - timing > (random.nextInt(6000))) {
-            times = true;
-        }
-        return times;
-    }
 
     @Override
     public void show() {
@@ -139,7 +128,7 @@ public class MinigameScreen implements Screen {
         batch.draw(background, 0, 0);
 
         //draw aliens on screen
-        for (Alien alien : activeETs) {
+        for (Alien alien : onScreenETs) {
             batch.draw(alien.getTexture(), alien.getX(), alien.getY());
         }
 
@@ -160,20 +149,19 @@ public class MinigameScreen implements Screen {
 
         random = new Random();
         if (TimeUtils.millis() - timing > 700) {
-            System.out.println(ETs.size());
-            spawnAlien(MathUtils.random(ETs.size() - 1));
+            spawnAlien();
         }
 
-        for (int i = 0; i < activeETs.size(); i++) {
-            Alien alien = activeETs.get(i);
+        for (int i = 0; i < onScreenETs.size(); i++) {
+            Alien alien = onScreenETs.get(i);
 
             if (time(timeSleep)) {
-                activeETs.remove(alien);
+                onScreenETs.remove(alien);
                 timeSleep = false;
             }
             if (water.overlaps(alien.getBoundingRectangle())) {
-                score += alien.type.getScore();
-                activeETs.remove(alien);
+                score += alien.getScore();
+                onScreenETs.remove(alien);
                 scoreName = "Score: " + score;
             }
         }
@@ -181,10 +169,8 @@ public class MinigameScreen implements Screen {
 
     }
 
-
     @Override
     public void resize(int width, int height) {
-
     }
 
     @Override
@@ -206,11 +192,52 @@ public class MinigameScreen implements Screen {
     public void dispose() {
         background.dispose();
         waterImage.dispose();
-        GImage.dispose();
-        RImage.dispose();
-        BImage.dispose();
         bitmapFontName.dispose();
         batch.dispose();
-
     }
+
+    private boolean time(boolean times) {
+        if (TimeUtils.millis() - timing > (random.nextInt(6000))) {
+            times = true;
+        }
+        return times;
+    }
+
+    private void spawnAlien() {
+        AlienType randomType = generateType();
+        Vector2 randomLocation = generateLocation();
+        onScreenETs.add(new Alien(randomType, randomLocation));
+        timing = TimeUtils.millis();
+    }
+
+    // Generates a random number between 0.0 and 1.0 then rounds up
+    // to the nearest value in the map - this allows a random patrol
+    // type to be selected but has a higher probability of choosing
+    // lower scoring patrols over higher scoring patrols
+    private AlienType generateType() {
+        double randomIndex = random.nextDouble();
+        AlienType alien = map.ceilingEntry(randomIndex).getValue();
+        return alien;
+    }
+
+    private Vector2 generateLocation(){
+        int randomIndex = random.nextInt(ETLocations.size() - 1);
+        return ETLocations.get(randomIndex);
+    }
+
+    private void generateETLocations() {
+        ETLocations.add(new Vector2(225, 700));
+        ETLocations.add(new Vector2(195, 390));
+        ETLocations.add(new Vector2(650, 390));
+        ETLocations.add(new Vector2(850, 550));
+        ETLocations.add(new Vector2(1050, 365));
+        ETLocations.add(new Vector2(1000, 100));
+        ETLocations.add(new Vector2(590, 600));
+        ETLocations.add(new Vector2(900, 650));
+        ETLocations.add(new Vector2(850, 500));
+        ETLocations.add(new Vector2(300, 200));
+        ETLocations.add(new Vector2(750, 890));
+        ETLocations.add(new Vector2(900, 550));
+    }
+
 }

@@ -1,30 +1,23 @@
 package com.classes;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 
 public class Alien extends Sprite {
 
     public final AlienType type;
-    public final String name;
+    public final int score;
 
-
-    public Alien(Texture texture, AlienType type, int xPos, int yPos, String name) {
-        super(texture);
-        super.setPosition(xPos, yPos);
+    public Alien(AlienType type, Vector2 position) {
+        super(type.getTexture());
+        super.setPosition(position.x, position.y);
         this.type = type;
-        this.name = name;
-
+        this.score = type.getScore();
     }
 
     public AlienType getType() { return this.type; }
 
-    public String getName() {
-        return name;
-    }
-
+    public int getScore() { return this.score; }
 
     }
 

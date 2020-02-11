@@ -118,6 +118,7 @@ public class GameOverScreen implements Screen {
     public void resize(int width, int height) {
         viewport.update(width, height);
         camera.update();
+
     }
 
     /**
