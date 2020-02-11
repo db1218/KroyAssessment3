@@ -3,7 +3,6 @@ package com.kroy;
 // LibGDX imports
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,9 +13,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
-import com.screens.MinigameScreen;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.
@@ -43,7 +40,7 @@ public class Kroy extends Game {
 		this.spriteBatch = new SpriteBatch();
 		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new MinigameScreen());
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	/**
