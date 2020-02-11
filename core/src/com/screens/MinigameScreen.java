@@ -51,6 +51,8 @@ public class MinigameScreen implements Screen {
 
     private TreeMap<Double, AlienType> map;
 
+    private MiniGameInputHandler miniGameInputHandler;
+
     public MinigameScreen(Kroy game) {
 
         this.game = game;
@@ -106,11 +108,13 @@ public class MinigameScreen implements Screen {
         water.width = 150;
         water.height = 150;
 
+        miniGameInputHandler = new MiniGameInputHandler(this);
     }
 
 
     @Override
     public void show() {
+        Gdx.input.setInputProcessor(miniGameInputHandler);
     }
 
     @Override
@@ -132,14 +136,8 @@ public class MinigameScreen implements Screen {
             batch.draw(alien.getTexture(), alien.getX(), alien.getY());
         }
 
-        //renders water sprite when mouse is clicked
-        if (Gdx.input.isTouched()) {
-            Vector3 touchPos = new Vector3();
-            touchPos.set(Gdx.input.getX() - 50, Gdx.input.getY() + 50, 0);
-            camera.unproject(touchPos);
-            water.x = touchPos.x;
-            water.y = touchPos.y;
-            batch.draw(waterImage, water.x, water.y);
+        if (water.x != -1 && water.y != -1) {
+            batch.draw(waterImage, water.x - (waterImage.getWidth()/2), water.y - (waterImage.getHeight()/2));
         }
 
         bitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
@@ -166,6 +164,8 @@ public class MinigameScreen implements Screen {
             }
         }
 
+       // water.setX(0);
+       // water.setY(0);
 
     }
 
@@ -240,4 +240,12 @@ public class MinigameScreen implements Screen {
         ETLocations.add(new Vector2(900, 550));
     }
 
+    public OrthographicCamera getCamera() {
+        return camera;
+    }
+
+    public void setTouch(int i, int i1) {
+        water.x = i;
+        water.y = i1;
+    }
 }
