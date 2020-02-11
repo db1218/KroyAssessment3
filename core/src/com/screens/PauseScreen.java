@@ -88,7 +88,7 @@ public class PauseScreen implements Screen {
         TextButton quitButton = new TextButton("Return to Main Menu", skin);
         Label scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         scoreLabel.setAlignment(Align.right);
-        Label timeLabel = new Label("Time: " + gameScreen.getTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        Label timeLabel = new Label("Time: " + gameScreen.getFireStationTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         timeLabel.setAlignment(Align.left);
 
         table.add(label).padBottom(20);

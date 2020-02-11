@@ -32,7 +32,6 @@ public class Firestation extends SimpleSprite {
     private final ArrayList<Firetruck> parkedFireTrucks;
     private Firetruck activeFireTruck;
 
-
     private final Texture destroyed;
 
     private boolean isMenuOpen;
@@ -112,6 +111,10 @@ public class Firestation extends SimpleSprite {
      */
     public void updateFiretruck(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
         this.activeFireTruck.update(batch, camera);
+        if (this.activeFireTruck.isTankEmpty() && gameScreen.getFireStationTime() % 5 == 0) {
+            if (gameScreen.getFireStationTime() > 0) gameScreen.showPopupText("{FAST}This truck has run out of water, go to the Fire Station to refill", 1, 5);
+            else gameScreen.showPopupText("{FAST}This truck has run out of water, select another one", 1, 5);
+        }
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
         if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
             this.activeFireTruck.destroy();

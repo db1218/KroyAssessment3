@@ -107,7 +107,7 @@ public class CarparkScreen implements Screen {
         activeLocation.setFontScale(2);
         activeLocation.setAlignment(Align.center);
 
-        timeLabel = new Label("Time: " + gameScreen.getTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        timeLabel = new Label("Time: " + gameScreen.getFireStationTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         timeLabel.setAlignment(Align.left);
 
         scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
@@ -264,7 +264,7 @@ public class CarparkScreen implements Screen {
 
         stage.draw();
         firestation.decreaseInternalTime();
-        firestation.checkRepairRefill(gameScreen.getTime(), true);
+        firestation.checkRepairRefill(gameScreen.getFireStationTime(), true);
 
         gameScreen.updatePatrolMovements();
 
@@ -479,7 +479,7 @@ public class CarparkScreen implements Screen {
      * Update the time and score labels
      */
     private void updateTimeScore() {
-        timeLabel.setText("Time: " + gameScreen.getTime());
+        timeLabel.setText("Time: " + gameScreen.getFireStationTime());
         scoreLabel.setText("Score: " + gameScreen.getScore());
     }
 

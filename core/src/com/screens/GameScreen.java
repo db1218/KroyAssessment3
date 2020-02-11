@@ -505,13 +505,11 @@ public class GameScreen implements Screen {
 		map.dispose();
 	}
 
-
 	public void createPatrol(){
 		if (this.ETPatrols.size() < 10){
 			spawnPatrol();
 		}
 	}
-
 
 	public void updatePatrolMovements() {
 		for (Patrol patrol : this.ETPatrols) {
@@ -628,7 +626,7 @@ public class GameScreen implements Screen {
 	 * Decreases time by 1, called every second by the timer
 	 */
 	private void decreaseTime() {
-		if (this.time > 0) this.time -= 1;
+		this.time -= 1;
 	}
 
 	/**
@@ -711,10 +709,6 @@ public class GameScreen implements Screen {
 			patrolTextures.add(texture);
 		}
 		return patrolTextures;
-	}
-
-	public Firestation getFirestation() {
-		return this.firestation;
 	}
 
 	/** =========================================================================
@@ -992,12 +986,6 @@ public class GameScreen implements Screen {
 		mapGraph.connectJunctions(fortyEight, fortyThree);
 	}
 
-	public int getTime() { return this.time; }
-
-	public int getScore(){ return this.score; }
-
-	public void setScore(int score) {this.score = score; }
-
 	private void generateTutorial() {
 		tips = new Queue<>();
 		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Veteran fire fighter? Press ENTER to skip tutorial\n" +
@@ -1006,7 +994,7 @@ public class GameScreen implements Screen {
 		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Feel free to roam around and explore the city, " +
 				"get accustomed to your new environment...");
 		tips.addLast("{FADE=0;0.75;1}Basic Controls\n{ENDFADE}" +
-				"{SLOW}{COLOR=#FFFFFFC0}WSAD is used to drive the truck \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}WSAD to drive the truck \n" +
 				"MOUSE operates the water cannon \n" +
 				"SCROLL controls camera zoom");
 		tips.addLast("{FADE=0;0.75;1}Fire Station{ENDFADE} \n" +
@@ -1035,17 +1023,18 @@ public class GameScreen implements Screen {
 	}
 
 	public void showPopupText(String text, int repeat, int interval) {
-		tips.clear();
-		popupTimer.clear();
-		for (int i=0; i<repeat; i++) {
-			tips.addLast("{FADE=0;0.75;1}" + text);
-		}
-		popupTimer.scheduleTask(new Task() {
-			@Override
-			public void run() {
-				nextPopup();
+		if (!isInTutorial) {
+			popupTimer.clear();
+			for (int i=0; i<repeat; i++) {
+				tips.addLast("{FADE=0;0.75;1}" + text);
 			}
-		}, 0, interval);
+			popupTimer.scheduleTask(new Task() {
+				@Override
+				public void run() {
+					nextPopup();
+				}
+			}, 0, interval);
+		}
 	}
 
 	/**
@@ -1062,18 +1051,30 @@ public class GameScreen implements Screen {
 		return new int[]{fortressesDestroyed, this.ETFortresses.size()};
 	}
 
+	/**
+	 * Multiple statements to reset the game after the
+	 * tutorial has terminated:
+	 * - reset truck water + position
+	 * - show good luck test
+	 * - start fire station timer
+	 * - reset zoom
+	 * - reset patrols
+	 *
+	 * The shader will also change, and collisions will now
+	 * begin to occur, starting the game
+	 */
 	public void finishTutorial() {
 		if (isInTutorial) {
 			isInTutorial = false;
 			tips.clear();
-			tip.setText("{FADE=0;0.75;1}Good luck!");
+			showPopupText("Good luck!", 1, 5);
 			firestationTimer.start();
 			firestation.getActiveFireTruck().getWaterBar().resetResourceAmount();
 			firestation.getActiveFireTruck().respawn();
+			firestation.getActiveFireTruck().setHose(false);
 			this.ETPatrols.clear();
 			this.camera.zoom = 1.3f;
 			this.zoomTarget = 1.2f;
-			this.renderer.getBatch().setShader(vignetteSepiaShader);
 		}
 	}
 
@@ -1083,6 +1084,31 @@ public class GameScreen implements Screen {
 		float upper = max - (progress*(max-min));
 		float lower = upper - variation;
 		return lower + new Random().nextFloat() * (upper - lower);
+	}
+
+	public int getTime() {
+		return this.time;
+	}
+
+	/**
+	 * Returns the time for the fire station
+	 * @return	<code>if time > 0</code> time
+	 * 			<code>if time < 0</code> 0
+	 */
+	public int getFireStationTime() {
+		return Math.max(this.time, 0);
+	}
+
+	public int getScore() {
+		return this.score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public Firestation getFirestation() {
+		return this.firestation;
 	}
 
 }

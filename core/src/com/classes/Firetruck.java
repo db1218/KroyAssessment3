@@ -366,9 +366,20 @@ public class Firetruck extends MovementSprite {
     public void toggleHose() {
         if (this.toggleDelay <= 0) {
             this.toggleDelay = 20;
-            this.isSpraying = !this.isSpraying && this.waterBar.getCurrentAmount() > 0;
+            this.isSpraying = !this.isSpraying && !this.isTankEmpty();
             this.waterBar.setFade(false, !this.isSpraying);
         }
+    }
+
+    /**
+     * Set the hose on or off
+     *
+     * @param bool  <code>true</code> to turn hose on
+     *              <code>false</code> to turn hose off
+     */
+    public void setHose(boolean bool) {
+        this.isSpraying = bool;
+        this.waterBar.setFade(false, !this.isSpraying);
     }
 
     /**
@@ -399,6 +410,15 @@ public class Firetruck extends MovementSprite {
      */
     public boolean isSpraying() {
         return this.isSpraying;
+    }
+
+    /**
+     * Gets if the water tank of the truck is empty
+     * @return  <code>true</code> if tank is empty
+     *          <code>false</code> otherwise
+     */
+    public boolean isTankEmpty() {
+        return this.waterBar.getCurrentAmount() <= 0;
     }
 
     /**
