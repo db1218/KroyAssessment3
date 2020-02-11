@@ -2,15 +2,19 @@ package com.screens;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.utils.TimeUtils;
 import com.classes.AlienType;
 import com.classes.Aliens;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Random;
 
 public class MinigameScreen implements Screen {
@@ -204,6 +208,32 @@ public class MinigameScreen implements Screen {
 
     }
 
+    private void spawnAlien(int x){
+
+        if(x==1){ ET.add(square1);}
+        if(x==2) { ET.add(square2);}
+        if(x==3){ET.add(square3);}
+        if(x==4){ET.add(square4);}
+        if(x==5){ET.add(square5);}
+        if(x==6){ ET.add(circle1);}
+        if(x==7){ET.add(circle2);}
+        if(x==8){ET.add(circle3);}
+        if(x==9){ ET.add(star1);}
+        if(x==10){ET.add(star2);}
+        if(x==11){ET.add(star3);}
+        if(x==12){ET.add(star4);}
+
+        timing = TimeUtils.millis();
+    }
+
+    private boolean time(boolean times) {
+        if (TimeUtils.millis() - timing > (random.nextInt(6000))) {
+            times = true;
+        }
+        return times;
+
+    }
+
     @Override
     public void show() {
 
@@ -211,8 +241,84 @@ public class MinigameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+        //render screen
+        Gdx.gl.glClearColor(1, 0, 1, 1);
+        Gdx.gl.glClear(GL30.GL_COLOR_BUFFER_BIT);
+
+        camera.update();
+
+        //render sprites as batch inc. score
+        batch.setProjectionMatrix(camera.combined);
+
+        batch.begin();
+        batch.draw(background, 0, 0);
+
+        //draw aliens on screen
+        for (Rectangle alien : ET) {
+            if (alien == circle1){ batch.draw(RImage, alien.x, alien.y); }
+            if (alien == circle2){ batch.draw(RImage, alien.x, alien.y); }
+            if (alien == circle3){ batch.draw(RImage, alien.x, alien.y); }
+
+            if (alien == square1) { batch.draw(GImage, alien.x, alien.y); }
+            if (alien == square2) { batch.draw(GImage, alien.x, alien.y); }
+            if (alien == square3) { batch.draw(GImage, alien.x, alien.y); }
+
+            if (alien == star1) { batch.draw(BImage, alien.x, alien.y); }
+            if (alien == star2) { batch.draw(BImage, alien.x, alien.y); }
+            if (alien == star3) { batch.draw(BImage, alien.x, alien.y); }
+            if (alien == star4) { batch.draw(BImage, alien.x, alien.y); }
+        }
+
+        //renders water sprite when mouse is clicked
+        if (Gdx.input.isTouched()) {
+            Vector3 touchPos = new Vector3();
+            touchPos.set(Gdx.input.getX() - 50, Gdx.input.getY() + 50, 0);
+            camera.unproject(touchPos);
+            water.x = touchPos.x;
+            water.y = touchPos.y;
+            batch.draw(waterImage, water.x, water.y);
+        }
+        bitmapFontName.setColor(1.0f, 1.0f, 1.0f, 1.0f);
+        bitmapFontName.draw(batch, scoreName, 25, 100);
+
+        batch.end();
+
+        random = new Random();
+        if (TimeUtils.millis() - timing > 700) {
+            spawnAlien(random.nextInt(13));
+        }
+
+        for (Iterator<Rectangle> iter = ET.iterator(); iter.hasNext(); ) {
+            Rectangle alien = iter.next();
+            if (time(false)) {
+                iter.remove();
+                timeSleep = false;
+            }
+            if (water.overlaps(alien)) {
+                iter.remove();
+
+                if (alien == square1) { score++; }
+                if (alien == square2) { score++; }
+                if (alien == square3) { score++; }
+                if (alien == square4) { score++; }
+                if (alien == square5) { score++; }
+
+                if (alien == circle1) { score = score + 3; }
+                if (alien == circle2) { score = score + 3; }
+                if (alien == circle3) { score = score + 3; }
+
+                if (alien == star1) { score = score + 5; }
+                if (alien == star2) { score = score + 5; }
+                if (alien == star3) { score = score + 5; }
+                if (alien == star4) { score = score + 5; }
+
+                scoreName = "Score: " + score;
+            }
+        }
+
 
     }
+
 
     @Override
     public void resize(int width, int height) {
@@ -236,6 +342,13 @@ public class MinigameScreen implements Screen {
 
     @Override
     public void dispose() {
+        background.dispose();
+        waterImage.dispose();
+        GImage.dispose();
+        RImage.dispose();
+        BImage.dispose();
+        bitmapFontName.dispose();
+        batch.dispose();
 
     }
 }
