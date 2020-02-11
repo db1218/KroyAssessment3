@@ -80,6 +80,7 @@ public class GameScreen implements Screen {
 	private final Firestation firestation;
 	private final ArrayList<Texture> waterFrames;
 	private final Texture projectileTexture;
+	private ArrayList<Texture> patrolTextures;
 
 	// Objects for the patrol graph
 	final MapGraph mapGraph;
@@ -217,6 +218,9 @@ public class GameScreen implements Screen {
 
 		// Create arrays of textures for animations
 		waterFrames = new ArrayList<Texture>();
+
+		// Create patrol texture
+		buildPatrolTextures();
 
 		for (int i = 1; i <= 3; i++) {
 			Texture texture = new Texture("waterSplash" + i + ".png");
@@ -691,7 +695,7 @@ public class GameScreen implements Screen {
 	 * Creates Patrol and adds it to the list of patrols
 	 */
 	private void spawnPatrol() {
-		this.ETPatrols.add(new Patrol(buildPatrolTextures(), mapGraph));
+		this.ETPatrols.add(new Patrol(this.patrolTextures, mapGraph));
 	}
 
 	/** ===============================================
@@ -701,14 +705,14 @@ public class GameScreen implements Screen {
 	 *
 	 * @return	array of textures
 	 */
-	private ArrayList<Texture> buildPatrolTextures() {
+	private void buildPatrolTextures() {
 		ArrayList<Texture> patrolTextures = new ArrayList<Texture>();
 		for (int i = 99; i >= 0; i--) {
 			String numberFormat = String.format("%03d", i);
 			Texture texture = new Texture("AlienSlices/tile" + numberFormat + ".png");
 			patrolTextures.add(texture);
 		}
-		return patrolTextures;
+		this.patrolTextures = patrolTextures;
 	}
 
 	/** =========================================================================
