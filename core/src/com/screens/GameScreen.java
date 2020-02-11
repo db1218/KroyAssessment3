@@ -1011,15 +1011,17 @@ public class GameScreen implements Screen {
 				"SCROLL controls camera zoom");
 		tips.addLast("{FADE=0;0.75;1}Fire Station{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}You spawned right outside here. This is where you can repair and refill Fire Trucks...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Top right, once that timer reaches zero, the Fire Station is destroyed and " +
-				"you can no longer repair or refill...");
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Top right, once that timer reaches zero, the Fire Station is vulnerable and can be destroyed, " +
+				"then you can no longer repair or refill...");
 		tips.addLast("{FADE=0;0.75;1}Score{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}Top left, achieved by attacking Patrols and Fortresses, and can be spent to unlock new trucks " +
 				"at the Fire Station...");
+		tips.addLast("{FADE=0;0.75;1}Minigame{ENDFADE} \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}Gain extra score in a minigame, accessed through controller icons dotted around the map");
 		tips.addLast("{FADE=0;0.75;1}The Mission{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}Your aim is to eliminate all ET Fortresses that have inhabited York.\n" +
 				"Use SPACE to locate the nearest enemy Fortress...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Be wary though, if all your fire trucks get destroyed," +
+		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Be wary though, if all your Fire Trucks get destroyed," +
 				"you lose, and York will fall to the ETs...");
 		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}You're all set, the mission will start in 10 seconds...");
 

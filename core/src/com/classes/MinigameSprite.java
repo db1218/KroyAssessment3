@@ -28,7 +28,7 @@ public class MinigameSprite extends Sprite {
      * @param y coordinate where the sprite spawns
      */
     public MinigameSprite(float x, float y) {
-        super(new Texture(Gdx.files.internal("swords.png")));
+        super(new Texture(Gdx.files.internal("minigame.png")));
         this.setBounds(x*Constants.TILE_DIMS, y*Constants.TILE_DIMS, 1.5f * Constants.TILE_DIMS, 1.5f * Constants.TILE_DIMS);
         this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
         this.movementHitBox.setPosition(this.getX(), this.getY());
