@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.Texture;
 
 public enum AlienType {
 
-    red("red",3, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png"))),
-    green("green",1, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png"))),
-    blue("blue", 5,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")));
+    red("red",30, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png"))),
+    green("green",10, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png"))),
+    blue("blue", 50,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")));
 
     private String name;
     private int score;

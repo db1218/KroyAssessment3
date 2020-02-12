@@ -354,7 +354,6 @@ public class GameScreen implements Screen {
 		// ==============================================================
 		// Tell the camera to update to the sprites position with a delay based on lerp and game time
 		Vector3 cameraPosition = this.camera.position;
-		System.out.println(cameraPosition);
 		float xDifference = focusedTruck.getCentreX() - cameraPosition.x;
 		float yDifference = focusedTruck.getCentreY() - cameraPosition.y;
 		cameraPosition.x += xDifference * LERP * delta;

@@ -123,7 +123,7 @@ public class MinigameScreen implements Screen {
 
         drawWater();
 
-        game.coolFont.draw(game.spriteBatch, "Score: " + score, 25, 100);
+        game.coolFont.draw(game.spriteBatch, "Minigame Score: " + score, 25, 100);
 
         game.spriteBatch.end();
 
@@ -191,14 +191,18 @@ public class MinigameScreen implements Screen {
         timing = TimeUtils.millis();
     }
 
-    // Generates a random number between 0.0 and 1.0 then rounds up
-    // to the nearest value in the map - this allows a random patrol
-    // type to be selected but has a higher probability of choosing
-    // lower scoring patrols over higher scoring patrols
+    /**
+     * Generates a random number between 0.0 and 1.0 then rounds up
+     * to the nearest value in the map - this allows a random patrol
+     * type to be selected but has a higher probability of choosing
+     * lower scoring patrols over higher scoring patrols
+     *
+     * @return  type of alien
+     */
+
     private AlienType generateType() {
         double randomIndex = random.nextDouble();
-        AlienType alien = map.ceilingEntry(randomIndex).getValue();
-        return alien;
+        return map.ceilingEntry(randomIndex).getValue();
     }
 
     private Vector2 generateLocation(){
@@ -232,6 +236,7 @@ public class MinigameScreen implements Screen {
     public OrthographicCamera getCamera() { return camera; }
 
     public void toGameScreen() {
+        gameScreen.setScore(gameScreen.getScore() + score);
         this.game.setScreen(this.gameScreen);
     }
 }
