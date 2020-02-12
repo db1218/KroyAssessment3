@@ -44,9 +44,6 @@ public class MinigameScreen implements Screen {
     private ArrayList<Alien> onScreenETs;
     private ArrayList<Vector2> ETLocations;
 
-    private ArrayList<AlienType> typeOfAliens;
-    private ArrayList<Double> chanceOfSelectingAlien;
-
     private TreeMap<Double, AlienType> map;
 
     private MiniGameInputHandler miniGameInputHandler;
@@ -66,20 +63,15 @@ public class MinigameScreen implements Screen {
         ETLocations = new ArrayList<Vector2>();
         generateETLocations();
 
-        typeOfAliens = new ArrayList<>();
+        ArrayList<AlienType> typeOfAliens = new ArrayList<>();
         typeOfAliens.add(AlienType.blue);
         typeOfAliens.add(AlienType.green);
         typeOfAliens.add(AlienType.red);
 
-        chanceOfSelectingAlien = new ArrayList<>();
+        ArrayList<Double> chanceOfSelectingAlien = new ArrayList<>();
         for (AlienType type : typeOfAliens){
             chanceOfSelectingAlien.add(type.getChance());
         }
-
-        //delay creation
-        timeSleep = false;
-
-        random = new Random();
 
         // Creates a map of types of aliens and their chance of being selected
         map = new TreeMap<>();
