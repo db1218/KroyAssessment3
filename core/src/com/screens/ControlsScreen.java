@@ -8,6 +8,7 @@ import com.badlogic.gdx.*;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -77,68 +78,105 @@ public class ControlsScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Strings for controls
-        String movement = "Move the firetruck using either WASD or the arrow keys to move up, left, down and right respectively. \n" +
-                " The firetruck will rotate as you change direction. \n" +
-                "Zoom in and out by scrolling up and down respectively";
-        String destroying = "Toggle the firehose on and off by left clicking, and use the mouse to aim at fortresses and aliens. \n" +
-                "Fortresses will appear flooded when destroyed. \n" +
-                "Press the SPACEBAR to see the direction of the nearest fortress";
-        String repairandpurchase = "Repair and refill your firetruck by returning to the firestation. When the time reaches 0, this is no longer possible. \n" +
-                "Purchase new firetrucks using points earned by destroying fortresses";
-        String minigame = "Play the minigame to reduce the number of patrols. Enter by driving over the minigame symbol";
+        String movement =           "Move the firetruck using either WASD or the arrow keys to move up, left, down and right respectively \n" +
+                                    "The firetruck will rotate as you change direction \n" +
+                                    "Zoom in and out by scrolling up and down";
+        String destroying =         "Toggle the firehose on and off by left clicking, and use the mouse to aim at fortresses and aliens \n" +
+                                    "Fortresses are destroyed when their health reaches 0, and will appear as flooded \n" +
+                                    "Press the SPACEBAR to see the direction of the nearest fortress";
+        String repairandpurchase =  "Repair and refill your firetruck by returning to the firestation \n" +
+                                    "Purchase new firetrucks using points earned by destroying fortresses, aliens and playing the minigame \n" +
+                                    "When the time reaches 0, the firestation becomes vulnerable, and when destroyed can no longer be used";
+        String minigame =           "Enter a minigame by driving over one of the five icons on the map \n" +
+                                    "Click the red, blue, and green aliens that appear to earn as many points as you can in 30 seconds";
+
 
         // Create main table to arrange actors
         Table table = new Table();
         table.setFillParent(true);
         table.center();
 
-        // Create second table to arrange score and time
-        Table labels = new Table();
-        labels.center();
+        // Create subtables to store images
+        Table imagesfortress = new Table();
+        imagesfortress.center();
+        Table imagesfiretruck = new Table();
+        imagesfiretruck.center();
+        Table imagesfirestation = new Table();
+        imagesfirestation.center();
+        Table imagesminigame = new Table();
+        imagesminigame.center();
 
         // Create actors
         // Heading
         Label heading = new Label("Controls", new Label.LabelStyle(game.coolFont, Color.WHITE));
         heading.setFontScale(2);
 
-        // Movement header
-        Label movementheading = new Label("Controlling your firetruck and the camera", new Label.LabelStyle(game.coolFont, Color.WHITE));
+        // Movement info
+        Label movementheading = new Label("Controlling your firetruck", new Label.LabelStyle(game.coolFont, Color.WHITE));
         Label movementstring = new Label(movement, skin);
+        Image firetruck = new Image(new Texture(Gdx.files.internal("FireTrucks/Red/FiretruckFull.png")));
+        Image WASD = new Image(new Texture(Gdx.files.internal("ControlScreen/WASD.png")));
 
-        // Destroying and finding fortresses header
+        // Destroying and finding fortresses info
         Label destroyingheading = new Label("Destroying fortresses and aliens", new Label.LabelStyle(game.coolFont, Color.WHITE));
         Label destroyingstring = new Label(destroying, skin);
+        Image fortress = new Image(new Texture(Gdx.files.internal("MapAssets/UniqueBuildings/fortress_1.png")));
+        Image fortressdestroyed = new Image(new Texture(Gdx.files.internal("MapAssets/UniqueBuildings/fortress_1_wet.png")));
 
-        // Buying and refilling new firetrucks header
+        // Buying and refilling new firetrucks info
         Label repairandpurchaseheading = new Label("Repairing and purchasing firetrucks", new Label.LabelStyle(game.coolFont, Color.WHITE));
         Label repairandpurchasestring = new Label(repairandpurchase, skin);
+        Image firestation = new Image(new Texture(Gdx.files.internal("MapAssets/UniqueBuildings/firestation.png")));
+        Image firestationdestroyed = new Image(new Texture(Gdx.files.internal("MapAssets/UniqueBuildings/firestation_destroyed.png")));
 
-        // Minigame header
+        // Minigame info
         Label minigameheading = new Label("Minigame", new Label.LabelStyle(game.coolFont, Color.WHITE));
         Label minigamestring = new Label(minigame, skin);
+        Image minigamelogo = new Image(new Texture(Gdx.files.internal("minigame.png")));
+        Image redalien = new Image(new Texture(Gdx.files.internal("Minigame/redalien.png")));
+        Image bluealien = new Image(new Texture(Gdx.files.internal("Minigame/bluealien.png")));
+        Image greenalien = new Image(new Texture(Gdx.files.internal("Minigame/aliensquare.png")));
 
-        // Resume button
-        TextButton resumeButton = new TextButton("Return", skin);
+        // Return button
+        TextButton returnButton = new TextButton("Return", skin);
 
-        // Adding controls to main table
-        table.add(heading).colspan(2).padBottom(40);
+        //Adding images to subtables
+        imagesfiretruck.add(firetruck).size(150, 75).padRight(20);
+        imagesfiretruck.add(WASD).size(154,100);
+        imagesfortress.add(fortress).size(100, 100).padRight(20);
+        imagesfortress.add(fortressdestroyed).size(100,100);
+        imagesfirestation.add(firestation).size(62,100).padRight(20);
+        imagesfirestation.add(firestationdestroyed).size(62,100);
+        imagesminigame.add(minigamelogo).size(100,100).padRight(20);
+        imagesminigame.add(redalien).size(100,100).padRight(20);
+        imagesminigame.add(bluealien).size(100,100).padRight(20);
+        imagesminigame.add(greenalien).size(152,80);
+
+        // Adding information to main table
+        table.add(heading).padBottom(40).colspan(2);
         table.row();
-        table.add(movementheading).padRight(40).padBottom(10);
-        table.add(destroyingheading).padBottom(10);
+        table.add(movementheading).padRight(80).padBottom(10);
+        table.add(destroyingheading).padRight(40).padBottom(10);
         table.row();
-        table.add(movementstring).padRight(40).padBottom(40);
-        table.add(destroyingstring).padBottom(40);
+        table.add(movementstring).padRight(80).padBottom(10);
+        table.add(destroyingstring).padRight(40).padBottom(10);
         table.row();
-        table.add(repairandpurchaseheading).padRight(40).padBottom(10);
-        table.add(minigameheading).padBottom(10);
+        table.add(imagesfiretruck).padRight(80).padBottom(40);
+        table.add(imagesfortress).padRight(80).padBottom(40);
         table.row();
-        table.add(repairandpurchasestring).padRight(40).padBottom(40);
-        table.add(minigamestring).padBottom(40);
+        table.add(repairandpurchaseheading).padRight(80).padBottom(10);
+        table.add(minigameheading).padRight(40).padBottom(10);
         table.row();
-        table.add(resumeButton).width(200).height(40).padBottom(20).colspan(2);
+        table.add(repairandpurchasestring).padRight(80).padBottom(10);
+        table.add(minigamestring).padRight(40).padBottom(10);
+        table.row();
+        table.add(imagesfirestation).padRight(80).padBottom(40);
+        table.add(imagesminigame).padRight(40).padBottom(40);
+        table.row();
+        table.add(returnButton).width(200).height(40).padBottom(20).colspan(2);
 
         // button listeners
-        resumeButton.addListener(new ClickListener() {
+        returnButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 game.setScreen(returnScreen);
