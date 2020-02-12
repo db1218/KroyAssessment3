@@ -31,7 +31,7 @@ public final class Constants {
     public enum FortressType {
         CLIFFORD(7, 2000, 1, 400),
         MINSTER(15, 3000,1, 700),
-        RAIL(10, 1000, 1, 900),
+        RAIL(10, 100000, 1, 900),
         CASTLE1(13, 750, 2, 600),
         CASTLE2(8, 1500, 2, 500);
 
@@ -66,44 +66,44 @@ public final class Constants {
 
     public enum TruckType {
         RED ("Red", new float[]{
-                280,  // HEALTH
+                170,  // HEALTH
                 10f,  // ACCELERATION
-                300f, // MAX_SPEED
+                600f, // MAX_SPEED
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
                 600,  // WATER MAX
                 0,    // PRICE
-                2,    // damage
+                1.9f,    // damage
         }),
         BLUE ("Blue", new float[]{
-                200,   // HEALTH
+                220,   // HEALTH
                 15f,   // ACCELERATION
                 400f,  // MAX_SPEED
                 0.6f,  // RESTITUTION
-                1.01f, // RANGE
-                450,   // WATER MAX
-                100,   // PRICE
-                2,     // damage
+                1.2f, // RANGE
+                600,   // WATER MAX
+                300,   // PRICE
+                1.9f,     // damage
         }),
         YELLOW ("Yellow", new float[]{
-                350,  // HEALTH
-                15f,  // ACCELERATION
+                270,  // HEALTH
+                18f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
-                0.9f, // RANGE
-                550,  // WATER MAX
-                200,  // PRICE
-                2,    // damage
+                1.25f, // RANGE
+                600,  // WATER MAX
+                900,  // PRICE
+                1.9f,    // damage
         }),
         GREEN("Green", new float[]{
-                250f, // HEALTH
+                270f, // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
-                0.9f, // RANGE
+                1.2f, // RANGE
                 750,  // WATER MAX
-                300,  // PRICE
-                3,    // damage
+                1750,  // PRICE
+                2.2f,    // damage
             }
         );
 
