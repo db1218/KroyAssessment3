@@ -333,8 +333,8 @@ public class GameScreen implements Screen {
 			vignetteSepiaShader.setUniformf("u_sepia", 0.2f);
 		} else {
 			vignetteSepiaShader.setUniformf("u_intensity", camera.zoom-0.4f);
-			vignetteSepiaShader.setUniformf("u_outerRadius", calculateRandomValueForProgress(0.4f, 0.8f, 0));
-			vignetteSepiaShader.setUniformf("u_sepia", calculateRandomValueForProgress(0.8f, 0.2f, 0.05f));
+			vignetteSepiaShader.setUniformf("u_outerRadius", calculateRandomValueForProgress(0.5f, 0.8f, 0));
+			vignetteSepiaShader.setUniformf("u_sepia", calculateRandomValueForProgress(0.65f, 0.3f, 0));
 		}
 		vignetteSepiaShader.end();
 
@@ -415,7 +415,7 @@ public class GameScreen implements Screen {
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		this.scoreLabel.setText("Score: " + this.score);
-		this.timeLabel.setText("Time: " + this.time);
+		this.timeLabel.setText("Time: " + this.getFireStationTime());
 		if (DEBUG_ENABLED) {
 			this.fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
 		} else {

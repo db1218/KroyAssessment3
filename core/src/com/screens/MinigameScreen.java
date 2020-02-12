@@ -73,6 +73,8 @@ public class MinigameScreen implements Screen {
             chanceOfSelectingAlien.add(type.getChance());
         }
 
+        random = new Random();
+
         // Creates a map of types of aliens and their chance of being selected
         map = new TreeMap<>();
         double total = 0.0d;
