@@ -26,10 +26,10 @@ import static com.config.Constants.DEBUG_ENABLED;
  * counting down. From this screen, the user can view
  * controls and information about the game objectives
  */
-public class ControlScreen implements Screen {
+public class ControlsScreen implements Screen {
 
     private final Kroy game;
-    private final GameScreen gameScreen;
+    private final Screen returnScreen;
 
     private final Skin skin;
     private final OrthographicCamera camera;
@@ -40,11 +40,11 @@ public class ControlScreen implements Screen {
      * The constructor for the control screen
      *
      * @param game          the game object to change between screens
-     * @param gameScreen    game screen to go back to
+     * @param returnScreen  screen to go back to
      */
-    public ControlScreen(Kroy game, GameScreen gameScreen) {
+    public ControlsScreen(Kroy game, Screen returnScreen) {
         this.game = game;
-        this.gameScreen = gameScreen;
+        this.returnScreen = returnScreen;
 
         // skin for buttons
         skin = game.getSkin();
@@ -118,15 +118,7 @@ public class ControlScreen implements Screen {
         Label minigamestring = new Label(minigame, skin);
 
         // Resume button
-        TextButton resumeButton = new TextButton("Resume game", skin);
-
-        // Score
-        Label scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
-        scoreLabel.setAlignment(Align.right);
-
-        // Time
-        Label timeLabel = new Label("Time: " + gameScreen.getFireStationTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
-        timeLabel.setAlignment(Align.left);
+        TextButton resumeButton = new TextButton("Return", skin);
 
         // Adding controls to main table
         table.add(heading).colspan(2).padBottom(40);
@@ -145,34 +137,20 @@ public class ControlScreen implements Screen {
         table.row();
         table.add(resumeButton).width(200).height(40).padBottom(20).colspan(2);
 
-
-        // Adding score, time to second table
-
-        table.row();
-        labels.add(scoreLabel).padRight(20);
-        labels.add(timeLabel).padLeft(20);
-
-        // Adding second table to main table
-        table.add(labels).colspan(2);
-
-
+        // button listeners
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(gameScreen);
-                gameScreen.resume();
+                game.setScreen(returnScreen);
                 dispose();
             }
         });
-
-
 
         stage.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
-                    game.setScreen(gameScreen);
-                    gameScreen.resume();
+                    game.setScreen(returnScreen);
                     dispose();
                 }
                 return true;
@@ -236,5 +214,6 @@ public class ControlScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+
     }
 }

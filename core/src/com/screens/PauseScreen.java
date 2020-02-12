@@ -117,8 +117,7 @@ public class PauseScreen implements Screen {
         controlsButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-//                game.setScreen(new ControlsScreen(game, this));
-//                dispose();
+                game.setScreen(new ControlsScreen(game,  getThis()));
             }
         });
 
@@ -200,5 +199,9 @@ public class PauseScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    public Screen getThis() {
+        return this;
     }
 }
