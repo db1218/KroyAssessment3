@@ -49,6 +49,8 @@ public class MinigameScreen implements Screen {
     private MiniGameInputHandler miniGameInputHandler;
     private boolean playerHasClicked;
 
+    private long timeStart;
+
     public MinigameScreen(Kroy game, GameScreen gameScreen) {
 
         this.game = game;
@@ -74,6 +76,8 @@ public class MinigameScreen implements Screen {
         }
 
         random = new Random();
+
+        timeStart = TimeUtils.millis();
 
         // Creates a map of types of aliens and their chance of being selected
         map = new TreeMap<>();
@@ -127,21 +131,25 @@ public class MinigameScreen implements Screen {
 
         game.spriteBatch.end();
 
-        if (TimeUtils.millis() - timing > 700) {
-            spawnAlien();
-        }
-
         for (int i = 0; i < onScreenETs.size(); i++) {
             Alien alien = onScreenETs.get(i);
 
-            if (time(timeSleep)) {
+            if (TimeUtils.millis() > alien.getSpawnTime() + alien.type.getAliveTime()) {
                 onScreenETs.remove(alien);
-                timeSleep = false;
             }
+
             if (playerHasClicked && water.overlaps(alien.getBoundingRectangle())) {
                 score += alien.getScore();
                 onScreenETs.remove(alien);
             }
+        }
+
+        if (TimeUtils.millis() - timing > 700) {
+            spawnAlien();
+        }
+
+        if (TimeUtils.millis() > timeStart + 30000) {
+            toGameScreen();
         }
 
     }
@@ -169,13 +177,6 @@ public class MinigameScreen implements Screen {
     public void dispose() {
         background.dispose();
         waterImage.dispose();
-    }
-
-    private boolean time(boolean times) {
-        if (TimeUtils.millis() - timing > (random.nextInt(6000))) {
-            times = true;
-        }
-        return times;
     }
 
     private void drawWater() {
@@ -238,5 +239,6 @@ public class MinigameScreen implements Screen {
     public void toGameScreen() {
         gameScreen.setScore(gameScreen.getScore() + score);
         this.game.setScreen(this.gameScreen);
+        dispose();
     }
 }

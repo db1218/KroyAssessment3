@@ -191,7 +191,7 @@ public class Firestation extends SimpleSprite {
         }
         if (!this.isVulnerable && time == 0) {
             this.isVulnerable = true;
-            this.gameScreen.showPopupText("WARNING: The Fire Station is now vulnerable to attack",5, 1);
+            this.gameScreen.showPopupText("WARNING: The Fire Station is now vulnerable to attack",3, 3);
         }
     }
 

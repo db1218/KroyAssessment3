@@ -613,6 +613,7 @@ public class GameScreen implements Screen {
 				ETPatrolsTimer.stop();
 				this.minigameSprites.remove(minigameSprite);
 				this.firestation.getActiveFireTruck().setSpeed(new Vector2(0, 0));
+				this.firestation.getActiveFireTruck().setHose(false);
 				this.game.setScreen(new MinigameScreen(this.game, this));
 			}
 		}
