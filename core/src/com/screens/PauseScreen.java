@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.config.SFX;
 import com.kroy.Kroy;
 
-import static com.config.Constants.DEBUG_ENABLED;
+import static com.misc.Constants.DEBUG_ENABLED;
 
 /**
  * Screen that appears when the user pauses the game.
@@ -86,15 +86,18 @@ public class PauseScreen implements Screen {
         Label label = new Label("Game Paused", new Label.LabelStyle(game.coolFont, Color.WHITE));
         label.setFontScale(2);
         TextButton resumeButton = new TextButton("Resume game", skin);
+        TextButton howToPlayButton = new TextButton("How to Play", skin);
         TextButton quitButton = new TextButton("Return to Main Menu", skin);
         Label scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         scoreLabel.setAlignment(Align.right);
-        Label timeLabel = new Label("Time: " + gameScreen.getTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
+        Label timeLabel = new Label("Time: " + gameScreen.getFireStationTime(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         timeLabel.setAlignment(Align.left);
 
         table.add(label).padBottom(20);
         table.row();
         table.add(resumeButton).width(200).height(40).padBottom(20);
+        table.row();
+        table.add(howToPlayButton).width(200).height(40).padBottom(20);
         table.row();
         table.add(quitButton).width(200).height(40).padBottom(20);
         table.row();
@@ -110,6 +113,13 @@ public class PauseScreen implements Screen {
                 game.setScreen(gameScreen);
                 gameScreen.resume();
                 dispose();
+            }
+        });
+
+        howToPlayButton.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                game.setScreen(new HowToPlayScreen(game,  getThis()));
             }
         });
 
@@ -193,5 +203,14 @@ public class PauseScreen implements Screen {
     @Override
     public void dispose() {
         stage.dispose();
+    }
+
+    /**
+     * Used to pass the pause screen into the controls screen
+     *
+     * @return  pause screen
+     */
+    public Screen getThis() {
+        return this;
     }
 }

@@ -53,11 +53,16 @@ public class MapGraph implements IndexedGraph<Junction> {
     }
 
     /** @return Road  returns a road going from fromJunction to toJunction */
-    public Road getRoad(Junction fromJunction, Junction toJunction){
+    public Road getRoad(Junction fromJunction, Junction toJunction) {
+        for (Road road : roads) {
+            if (road.fromJunction == fromJunction && road.toJunction == toJunction) {
+                return road;
+            }
+        }
         return new Road(fromJunction, toJunction);
     }
 
-    /** Adds a junction to junctions */
+            /** Adds a junction to junctions */
     public void addJunction(Junction junction){
         junction.index = lastNodeIndex;
         lastNodeIndex++;

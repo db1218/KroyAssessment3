@@ -1,4 +1,4 @@
-package com.classes;
+package com.misc;
 
 /* =================================================================
                        New class added for assessment 3
@@ -37,9 +37,4 @@ public class Arrow extends Polygon {
         float theta = (float) (180f / Math.PI * Math.atan2(arrowPosition.x - target.x, target.y - arrowPosition.y));
         setRotation(theta);
     }
-
-    public float getTarget() {
-        return this.getRotation();
-    }
-
 }

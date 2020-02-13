@@ -1,14 +1,14 @@
 package com.screens;
-
+//
 // LibGDX imports
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
-import com.badlogic.gdx.utils.Align;
-import com.badlogic.gdx.utils.Queue;
+import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.config.Constants;
 import com.config.SFX;
@@ -18,15 +18,12 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Intersector;
 import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.maps.MapLayers;
-import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 // Tiled map imports from LibGDX
@@ -39,12 +36,13 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 import java.util.ArrayList;
 
 // Class imports
-import com.classes.*;
-import com.kroy.Kroy;
+import com.entities.*;
+import com.Kroy;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
+import com.sprites.MinigameSprite;
 
 // Constants import
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 
 /**
@@ -61,7 +59,6 @@ public class GameScreen implements Screen {
 	// Private values for game screen logic
 	private final ShapeRenderer shapeRenderer;
 	private final OrthographicCamera camera;
-	private final Batch batch;
 
 	// Private values for tiled map
 	private final TiledMap map;
@@ -83,6 +80,7 @@ public class GameScreen implements Screen {
 	private final Firestation firestation;
 	private final ArrayList<Texture> waterFrames;
 	private final Texture projectileTexture;
+	private ArrayList<Texture> patrolTextures;
 
 	// Objects for the patrol graph
 	final MapGraph mapGraph;
@@ -97,11 +95,14 @@ public class GameScreen implements Screen {
 	private final Label timeLabel;
 	private final Label fpsLabel;
 
-	private com.badlogic.gdx.utils.Queue<String> tips;
+	private com.badlogic.gdx.utils.Queue<String> popupMessages;
 	private TypingLabel tip;
-	private Timer tipTimer;
+	private Timer popupTimer;
+	private Timer firestationTimer;
+	private Timer ETPatrolsTimer;
+	private boolean isInTutorial;
 
-	private ShaderProgram shader;
+	private ShaderProgram vignetteSepiaShader;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -118,6 +119,9 @@ public class GameScreen implements Screen {
 		// Create an orthographic camera
 		this.camera = new OrthographicCamera();
 		this.camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+		// Zoom that the user has set with their scroll wheel
+		this.zoomTarget = 1.5f;
+		this.camera.zoom = 2f;
 
 		// Load the map, set the unit scale
 		this.map = new TmxMapLoader().load("MapAssets/York_galletcity.tmx");
@@ -125,8 +129,8 @@ public class GameScreen implements Screen {
 		this.shapeRenderer = new ShapeRenderer();
 
 		ShaderProgram.pedantic = false;
-		this.shader = new ShaderProgram(Gdx.files.internal("shaders/vignette.vsh"), Gdx.files.internal("shaders/vignette.fsh"));
-		this.renderer.getBatch().setShader(shader);
+		this.vignetteSepiaShader = new ShaderProgram(Gdx.files.internal("shaders/vignetteSepia.vsh"), Gdx.files.internal("shaders/vignetteSepia.fsh"));
+		this.renderer.getBatch().setShader(vignetteSepiaShader);
 
 		// Create an array to store all projectiles in motion
 		this.projectiles = new ArrayList<>();
@@ -139,30 +143,18 @@ public class GameScreen implements Screen {
 		// ---- 2) Initialise and set game properties ----------------------------- //
 
 		// Initialise map renderer as batch to draw textures to
-		this.batch = renderer.getBatch();
-
-		// Set the game batch
-		this.game.setBatch(this.batch);
+		this.game.setBatch(renderer.getBatch());
 
 		// Set the Batch to render in the coordinate system specified by the camera.
-		this.batch.setProjectionMatrix(this.camera.combined);
+		this.game.batch.setProjectionMatrix(this.camera.combined);
 
-		tipTimer = new Timer();
-		tipTimer.scheduleTask(new Task() {
-			@Override
-			public void run() {
-				newTip();
-			}
-		}, 5f, 10f);
-		tipTimer.stop();
-
-		generateTips();
+		generateTutorial();
 
 		this.stage = new Stage(new ScreenViewport());
 		this.stage.setDebugAll(DEBUG_ENABLED);
 
 		Table table = new Table();
-		table.row().colspan(3).expand().pad(40);
+		table.row().colspan(3).expand().pad(40).padBottom(150);
 		table.setFillParent(true);
 
 		scoreLabel = new Label("", game.getFont10());
@@ -207,7 +199,10 @@ public class GameScreen implements Screen {
 
         // creates mini game sprite
 		minigameSprites = new ArrayList<>();
-		minigameSprites.add(new MinigameSprite(44, 42));
+		minigameSprites.add(new MinigameSprite(75, 3));
+		minigameSprites.add(new MinigameSprite(113, 48));
+		minigameSprites.add(new MinigameSprite(10, 92));
+		minigameSprites.add(new MinigameSprite(93, 106));
 
 		// Initialise textures to use for sprites
 		Texture firestationTexture = new Texture("MapAssets/UniqueBuildings/firestation.png");
@@ -228,6 +223,9 @@ public class GameScreen implements Screen {
 		// Create arrays of textures for animations
 		waterFrames = new ArrayList<Texture>();
 
+		// Create patrol texture
+		buildPatrolTextures();
+
 		for (int i = 1; i <= 3; i++) {
 			Texture texture = new Texture("waterSplash" + i + ".png");
 			waterFrames.add(texture);
@@ -236,7 +234,7 @@ public class GameScreen implements Screen {
 		// ---- 4) Create entities that will be around for entire game duration - //
 
 		// Create a new firestation
-		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS);
+		this.firestation = new Firestation(firestationTexture, firestationDestroyedTexture, 77.5f * TILE_DIMS, 35.5f * TILE_DIMS, this);
 		this.carparkScreen = new CarparkScreen(this.game, this, this.firestation);
 
 		// need to make it take away from  the number of points
@@ -249,29 +247,48 @@ public class GameScreen implements Screen {
 
 		// Initialise ETFortresses array and add ETFortresses to it
 		this.ETFortresses = new ArrayList<ETFortress>();
-		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS, FortressType.CLIFFORD));
-		this.ETFortresses.add(new ETFortress(yorkMinsterTexture, yorkMinsterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS, FortressType.MINSTER));
-		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS, FortressType.RAIL));
-		this.ETFortresses.add(new ETFortress(castle2, castle2Wet, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2));
-		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1));
+		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS, FortressType.CLIFFORD, this));
+		this.ETFortresses.add(new ETFortress(yorkMinsterTexture, yorkMinsterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS, FortressType.MINSTER, this));
+		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS, FortressType.RAIL, this));
+		this.ETFortresses.add(new ETFortress(castle2, castle2Wet, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2, this));
+		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
 //		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 108 * TILE_DIMS, 102 * TILE_DIMS, FortressType.CASTLE1));
+
+		// Create array to collect entities that are no longer used
+		this.projectilesToRemove = new ArrayList<Projectile>();
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
 		populateMap();
 
-		Timer.schedule(new Task() {
+		firestationTimer = new Timer();
+		firestationTimer.scheduleTask(new Task() {
 			@Override
 			public void run() {
 				decreaseTime();
 			}
 		}, 1, 1);
-		Timer.instance().stop();
+		firestationTimer.stop();
+
+		popupTimer = new Timer();
+		popupTimer.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				nextPopup();
+			}
+		}, 3f, 10f);
+		popupTimer.stop();
 
 		ETPatrols = new ArrayList<>();
-		for (int i = 0; i < 8; i++) {
-			spawnPatrol();
-		}
+		ETPatrolsTimer = new Timer();
+		ETPatrolsTimer.scheduleTask(new Task() {
+			@Override
+			public void run() {
+				createPatrol();
+			}
+		}, 7,10);
+
+		isInTutorial = true;
 
 	}
 
@@ -280,14 +297,9 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void show() {
-		// Zoom that the user has set with their scroll wheel
-		this.zoomTarget = 1.2f;
-
-		// Start the camera near the firestation
+		this.resume();
 		this.camera.setToOrtho(false);
-		this.camera.zoom = 2f;
-		this.camera.position.set(this.firestation.getActiveFireTruck().getCarpark().getLocation().x, this.firestation.getActiveFireTruck().getCarpark().getLocation().y, 0);
-
+		this.camera.position.set(this.firestation.getActiveFireTruck().getCentreX(), this.firestation.getActiveFireTruck().getCentreY(), 0);
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
 
@@ -296,12 +308,9 @@ public class GameScreen implements Screen {
 		{
 			@Override
 			public void run() {
-				checkForCollisions();
+				if (!isInTutorial) checkForCollisions();
 			}
 		}, .5f, .5f);
-
-		tipTimer.start();
-		Timer.instance().start();
 
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
@@ -318,9 +327,17 @@ public class GameScreen implements Screen {
 		Gdx.gl.glClearColor(0, 0, 0, 1);
 		Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
 
-		shader.begin();
-		shader.setUniformf("u_intensity", camera.zoom-0.5f);
-		shader.end();
+		vignetteSepiaShader.begin();
+		if (isInTutorial) {
+			vignetteSepiaShader.setUniformf("u_intensity", 0.8f);
+			vignetteSepiaShader.setUniformf("u_outerRadius", 0.6f);
+			vignetteSepiaShader.setUniformf("u_sepia", 0.2f);
+		} else {
+			vignetteSepiaShader.setUniformf("u_intensity", camera.zoom-0.4f);
+			vignetteSepiaShader.setUniformf("u_outerRadius", calculateValueForProgress(0.5f, 0.8f));
+			vignetteSepiaShader.setUniformf("u_sepia", calculateValueForProgress(0.65f, 0.3f));
+		}
+		vignetteSepiaShader.end();
 
 		// ---- 1) Update camera and map properties each iteration -------- //
 
@@ -364,41 +381,41 @@ public class GameScreen implements Screen {
 
 		// Render the remaining sprites, font last to be on top of all
 		if (DEBUG_ENABLED) shapeRenderer.begin(ShapeType.Line);
-		batch.begin();
+		this.game.batch.begin();
 
 		// Render sprites
 		for (ETFortress ETFortress : this.ETFortresses) {
-			ETFortress.update(batch);
+			ETFortress.update(this.game.batch);
 			if (DEBUG_ENABLED) ETFortress.drawDebug(shapeRenderer);
 		}
 		for (Projectile projectile : this.projectiles) {
-			projectile.update(batch);
+			projectile.update(this.game.batch);
 			if (DEBUG_ENABLED) projectile.drawDebug(shapeRenderer);
 			if (projectile.isOutOfMap()) this.projectilesToRemove.add(projectile);
 		}
 
 		// Call the update function of the sprites to draw and update them
-		firestation.updateFiretruck(this.batch, this.shapeRenderer, this.camera);
+		firestation.updateFiretruck(this.game.batch, this.shapeRenderer, this.camera);
 
 		for (Patrol patrol : this.ETPatrols) {
-			patrol.update(this.batch);
+			patrol.update(this.game.batch);
 		}
 
 		for (MinigameSprite minigameSprite : minigameSprites) {
-			minigameSprite.update(batch);
+			minigameSprite.update(this.game.batch);
 		}
 
-		this.firestation.update(batch);
+		this.firestation.update(this.game.batch);
 
 		if (DEBUG_ENABLED) firestation.drawDebug(shapeRenderer);
 
 		// Finish rendering
-		this.batch.end();
+		this.game.batch.end();
 		shapeRenderer.end();
 
 		// Draw the score, time and FPS to the screen at given co-ordinates
 		this.scoreLabel.setText("Score: " + this.score);
-		this.timeLabel.setText("Time: " + this.time);
+		this.timeLabel.setText("Time: " + this.getFireStationTime());
 		if (DEBUG_ENABLED) {
 			this.fpsLabel.setText("FPS: " + Gdx.graphics.getFramesPerSecond());
 		} else {
@@ -411,7 +428,7 @@ public class GameScreen implements Screen {
 		// ---- 4) Perform any calulcation needed after sprites are drawn - //
 
 		// Check for any collisions
-		checkForCollisions();
+		if (!isInTutorial) checkForCollisions();
 
 		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
@@ -431,9 +448,9 @@ public class GameScreen implements Screen {
 	public void resize(int width, int height) {
 		this.camera.viewportHeight = height;
 		this.camera.viewportWidth = width;
-		shader.begin();
-		shader.setUniformf("u_resolution", width, height);
-		shader.end();
+		vignetteSepiaShader.begin();
+		vignetteSepiaShader.setUniformf("u_resolution", width, height);
+		vignetteSepiaShader.end();
 	}
 
 	/**
@@ -453,8 +470,9 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void pause() {
-		Timer.instance().stop();
-		tipTimer.stop();
+		if (!isInTutorial) firestationTimer.stop();
+		popupTimer.stop();
+		ETPatrolsTimer.stop();
 		game.setScreen(new PauseScreen(game, this));
 	}
 
@@ -466,9 +484,10 @@ public class GameScreen implements Screen {
 	 */
 	@Override
 	public void resume() {
+		if (!isInTutorial) firestationTimer.start();
+		popupTimer.start();
+		ETPatrolsTimer.start();
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentre(), 0);
-		tipTimer.start();
-		Timer.instance().start();
 	}
 
 	/**
@@ -487,8 +506,25 @@ public class GameScreen implements Screen {
 		}
 		renderer.dispose();
 		map.dispose();
+		vignetteSepiaShader.dispose();
+		stage.dispose();
+		carparkScreen.dispose();
+		shapeRenderer.dispose();
 	}
 
+	/**
+	 * Spawns a patrol, up to a certain number
+	 * */
+	public void createPatrol() {
+		if (this.ETPatrols.size() < PATROL_NUMBER) {
+			spawnPatrol();
+		}
+	}
+
+	/**
+	 * Updates only the movement of the patrol when the
+	 * player is in the car park screen
+	 */
 	public void updatePatrolMovements() {
 		for (Patrol patrol : this.ETPatrols) {
 			patrol.updateMovement();
@@ -502,7 +538,7 @@ public class GameScreen implements Screen {
 	 */
 	public void checkIfCarpark() {
 		if (this.firestation.isMenuOpen()) {
-			tipTimer.stop();
+			popupTimer.stop();
 			game.setScreen(this.carparkScreen);
 		}
 	}
@@ -520,8 +556,8 @@ public class GameScreen implements Screen {
 		for (ETFortress ETFortress : this.ETFortresses) {
 			if (ETFortress.getHealthBar().getCurrentAmount() > 0) gameWon = false;
 		}
-		if (gameWon) this.game.setScreen(new GameOverScreen(this.game, Outcome.WON));
-		else if (gameLost) this.game.setScreen(new GameOverScreen(this.game, Outcome.LOST));
+		if (gameWon) this.game.setScreen(new GameOverScreen(this.game, Outcome.WON, this.score));
+		else if (gameLost) this.game.setScreen(new GameOverScreen(this.game, Outcome.LOST, this.score));
 	}
 
 	/**
@@ -537,7 +573,7 @@ public class GameScreen implements Screen {
 				this.score += 10;
 			}
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage(), ETFortress);
+				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage());
 				projectile.calculateTrajectory(firetruck);
 				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
@@ -559,30 +595,38 @@ public class GameScreen implements Screen {
 		// ==============================================================
 		//					Added for assessment 3
 		// ==============================================================
-		// Checks if a patrol has attacked a fire truck and vice versa
+		// Checks if a patrol has attacked a fire truck and vice versa, also if patrol can attack fire station
 		for (Patrol patrol : this.ETPatrols) {
 			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getDamageHitBox())) {
 				patrol.getHealthBar().subtractResourceAmount((int) firetruck.getDamage());
 				this.score += 10;
 			}
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firetruck);
 				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firestation);
 				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			}
 		}
-
+		// ==============================================================
+		//					Added for assessment 3
+		// ==============================================================
+		// Checks if truck has driven over a minigame sprite
 		for (int i=0; i<this.minigameSprites.size(); i++) {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
-				// open mini game
+				if (!isInTutorial) firestationTimer.stop();
+				popupTimer.stop();
+				ETPatrolsTimer.stop();
 				this.minigameSprites.remove(minigameSprite);
+				this.firestation.getActiveFireTruck().setSpeed(new Vector2(0, 0));
+				this.firestation.getActiveFireTruck().setHose(false);
+				this.game.setScreen(new MinigameScreen(this.game, this));
 			}
 		}
 
@@ -594,28 +638,8 @@ public class GameScreen implements Screen {
 				if (this.score >= 10) this.score -= 10;
 				projectilesToRemove.add(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
-				System.out.println(firestation.getHealthBar().getCurrentAmount());
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				projectilesToRemove.add(projectile);
-			} else {
-				for (ETFortress fortress : this.ETFortresses) {
-					if (!projectile.getSource().equals(fortress)) {
-						if (Intersector.overlapConvexPolygons(fortress.getDamageHitBox(), projectile.getDamageHitBox())) {
-							fortress.getHealthBar().subtractResourceAmount(projectile.getDamage()*FRIENDLY_FIRE_MULTIPLIER);
-							if (this.score >= 10) this.score += 10 * FRIENDLY_FIRE_MULTIPLIER;
-							projectilesToRemove.add(projectile);
-						}
-					}
-				}
-				for (Patrol patrol : this.ETPatrols) {
-					if (!projectile.getSource().equals(patrol)) {
-						if (Intersector.overlapConvexPolygons(patrol.getDamageHitBox(), projectile.getDamageHitBox())) {
-							patrol.getHealthBar().subtractResourceAmount(projectile.getDamage()*FRIENDLY_FIRE_MULTIPLIER);
-							if (this.score >= 10) this.score += 10 * FRIENDLY_FIRE_MULTIPLIER;
-							projectilesToRemove.add(projectile);
-						}
-					}
-				}
 			}
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
@@ -628,7 +652,7 @@ public class GameScreen implements Screen {
 	 * Decreases time by 1, called every second by the timer
 	 */
 	private void decreaseTime() {
-		if (this.time > 0) this.time -= 1;
+		this.time -= 1;
 	}
 
 	/**
@@ -693,7 +717,7 @@ public class GameScreen implements Screen {
 	 * Creates Patrol and adds it to the list of patrols
 	 */
 	private void spawnPatrol() {
-		this.ETPatrols.add(new Patrol(buildPatrolTextures(), mapGraph));
+		this.ETPatrols.add(new Patrol(this.patrolTextures, mapGraph));
 	}
 
 	/** ===============================================
@@ -701,20 +725,15 @@ public class GameScreen implements Screen {
 	 * ================================================
 	 * Builds an array of textures that is used to render patrols
 	 *
-	 * @return	array of textures
 	 */
-	private ArrayList<Texture> buildPatrolTextures() {
+	private void buildPatrolTextures() {
 		ArrayList<Texture> patrolTextures = new ArrayList<Texture>();
 		for (int i = 99; i >= 0; i--) {
 			String numberFormat = String.format("%03d", i);
 			Texture texture = new Texture("AlienSlices/tile" + numberFormat + ".png");
 			patrolTextures.add(texture);
 		}
-		return patrolTextures;
-	}
-
-	public Firestation getFirestation() {
-		return this.firestation;
+		this.patrolTextures = patrolTextures;
 	}
 
 	/** =========================================================================
@@ -992,39 +1011,153 @@ public class GameScreen implements Screen {
 		mapGraph.connectJunctions(fortyEight, fortyThree);
 	}
 
-	public int getTime() { return this.time; }
+	/**
+	 * Initially populates the popup messages queue with
+	 * the tutorial to teach the player how to play the game
+	 */
+	private void generateTutorial() {
+		popupMessages = new Queue<>();
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Veteran fire fighter? Press ENTER to skip tutorial\n" +
+				"Otherwise, hold tight, we will begin in a moment...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}You are currently in a safe haven, nothing can harm you... so relax...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Feel free to roam around and explore the city, " +
+				"get accustomed to your new environment...");
+		popupMessages.addLast("{FADE=0;0.75;1}Basic Controls\n{ENDFADE}" +
+				"{SLOW}{COLOR=#FFFFFFC0}WSAD to drive the truck \n" +
+				"MOUSE operates the water cannon \n" +
+				"SCROLL controls camera zoom");
+		popupMessages.addLast("{FADE=0;0.75;1}Fire Station{ENDFADE} \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}You spawned right outside here. This is where you can repair and refill Fire Trucks...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Top right, once that timer reaches zero, the Fire Station is vulnerable and can be destroyed, " +
+				"then you can no longer repair or refill...");
+		popupMessages.addLast("{FADE=0;0.75;1}Score{ENDFADE} \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}Top left, achieved by attacking Patrols and Fortresses, and can be spent to unlock new trucks " +
+				"at the Fire Station...");
+		popupMessages.addLast("{FADE=0;0.75;1}Minigame{ENDFADE} \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}Gain extra score in a minigame, accessed through controller icons dotted around the map");
+		popupMessages.addLast("{FADE=0;0.75;1}The Mission{ENDFADE} \n" +
+				"{SLOW}{COLOR=#FFFFFFC0}Your aim is to eliminate all ET Fortresses that have inhabited York.\n" +
+				"Use SPACE to locate the nearest enemy Fortress...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Be wary though, if all your Fire Trucks get destroyed," +
+				"you lose, and York will fall to the ETs...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}You're all set, the mission will start in 10 seconds...");
 
-	public int getScore(){ return this.score; }
-
-	public void setScore(int score) {this.score = score; }
-
-	private void generateTips() {
-		tips = new Queue<>();
-		tips.addLast("{FADE=0;0.75;1}Controls: Use WSAD or the ARROW KEYS to drive");
-		tips.addLast("{FADE=0;0.75;1}Controls: Use MOUSE to operate water cannon \n" +
-				"Scroll to zoom the camera");
-		tips.addLast("{FADE=0;0.75;1}Tip: Repair and refill Fire trucks at the Fire Station, " +
-				"where you started");
-		tips.addLast("{FADE=0;0.75;1}Tip: Earn score by attacking Patrols and Fortresses");
-		tips.addLast("{FADE=0;0.75;1}Tip: Unlock better Fire trucks with score in Car parks " +
-				"(green highlighted areas)");
-		tips.addLast("{FADE=0;0.75;1}Reminder: Once Time reaches zero, the Fire Station is destroyed " +
-				"and you can no longer repair or refill");
-		tips.addLast("{FADE=0;0.75;1}Tip: Press SPACE to find the nearest Fortress");
-		tips.addLast("{FADE=0;0.75;1}Win: Destroy all Fortresses\n" +
-				"Lose: All your Fire trucks get destroyed");
-		tips.addLast("{FADE=0;0.75;1}Pro Tip: When a Firetruck's health reaches 0, it will perform the act of death.");
-		tips.addLast("{FADE=0;0.75;1}Pro Tip: Drive straight into a wall to perform a sick 180° flip.");
-		tips.addLast("{FADE=0;0.75;1}Pro Tip: Killing your enemies makes them less likely to kill you.");
-		tips.addLast("{FADE=0;0.75;1}Pro Tip: The best strategy for defeating an enemy is to lower their health to zero" +
-				" while maintaining your own health above zero.");
-		tips.addLast("{FADE=0;0.75;1}Pro Tip: Press X to jump.");
-		tips.addLast("{FADE=0;0.75;1}Good luck!");
-		tips.addLast("");
 	}
 
-	private void newTip() {
-		if (tips.notEmpty()) tip.setText(tips.removeFirst());
+	/**
+	 * Runs every 5 seconds to generate the next tip
+	 * if there is one, and the first time the tips list
+	 * is empty, the tutorial has finished
+	 */
+	private void nextPopup() {
+		tip.setText("");
+		if (popupMessages.notEmpty()) {
+			tip.setText(popupMessages.removeFirst());
+		} else {
+			finishTutorial();
+		}
+	}
+
+	/**
+	 * Queues a popup message and resets the popup timer
+	 *
+	 * @param text		text to display
+	 * @param repeat	how many times the message should appear
+	 * @param interval	how long the message should stay up for
+	 */
+	public void showPopupText(String text, int repeat, int interval) {
+		if (!isInTutorial) {
+			popupTimer.clear();
+			for (int i=0; i<repeat; i++) {
+				popupMessages.addLast("{FADE=0;0.75;1}" + text);
+			}
+			popupTimer.scheduleTask(new Task() {
+				@Override
+				public void run() {
+					nextPopup();
+				}
+			}, 0, interval);
+		}
+	}
+
+	/**
+	 * Returns a tuple containing the number of fortresses
+	 * destroyed and total number of fortresses
+	 *
+	 * @return	tuple of ints
+	 */
+	public int[] getETFortressesDestroyed() {
+		int fortressesDestroyed = 0;
+		for (ETFortress fortress : this.ETFortresses)
+			if (fortress.isFlooded())
+				fortressesDestroyed++;
+		return new int[]{fortressesDestroyed, this.ETFortresses.size()};
+	}
+
+	/**
+	 * Multiple statements to reset the game after the
+	 * tutorial has terminated:
+	 * - reset truck water + position
+	 * - show good luck test
+	 * - start fire station timer
+	 * - reset zoom
+	 * - reset patrols
+	 *
+	 * The shader will also change, and collisions will now
+	 * begin to occur, starting the game
+	 */
+	public void finishTutorial() {
+		if (isInTutorial) {
+			isInTutorial = false;
+			popupMessages.clear();
+			showPopupText("Good luck!", 1, 5);
+			firestationTimer.start();
+			firestation.getActiveFireTruck().getWaterBar().resetResourceAmount();
+			firestation.getActiveFireTruck().respawn();
+			firestation.getActiveFireTruck().setHose(false);
+			this.ETPatrols.clear();
+			this.camera.zoom = 1.3f;
+			this.zoomTarget = 1.2f;
+		}
+	}
+
+	/**
+	 * Calculates the sepia and vignette values which
+	 * change as the user destroyed
+	 *
+	 * @param start	starting value at start of game
+	 * @param end	final value at end of game
+	 * @return		intensity of sepia or vignette
+	 * 				radius depending on progress
+	 */
+	private float calculateValueForProgress(float start, float end) {
+		float progress = (float) getETFortressesDestroyed()[0] / (float) getETFortressesDestroyed()[1];
+		return start - (progress*(start-end));
+	}
+
+	/**
+	 * Returns the time for the fire station
+	 * @return	<code>if time > 0</code> time
+	 * 			<code>if time < 0</code> 0
+	 */
+	public int getFireStationTime() {
+		return Math.max(this.time, 0);
+	}
+
+	public int getTime() {
+		return this.time;
+	}
+
+	public int getScore() {
+		return this.score;
+	}
+
+	public void setScore(int score) {
+		this.score = score;
+	}
+
+	public Firestation getFirestation() {
+		return this.firestation;
 	}
 
 }

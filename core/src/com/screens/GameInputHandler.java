@@ -4,15 +4,23 @@ package com.screens;
                    New class added for assessment 3
    ===============================================================*/
 
-
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.config.SFX;
 
+/**
+ * Input handler processor for {@link GameScreen}
+ */
 public class GameInputHandler implements InputProcessor {
 
     private final GameScreen gameScreen;
 
+    /**
+     * Constructor for game input handler which takes
+     * in GameScreen to be able to provide some sort
+     * of feedback to when an event occurs
+     * @param gameScreen    GameScreen
+     */
     public GameInputHandler(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
     }
@@ -28,6 +36,8 @@ public class GameInputHandler implements InputProcessor {
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.pause();
             SFX.sfx_button_click.play();
+        } else if (keycode == Input.Keys.ENTER) {
+            gameScreen.finishTutorial();
         }
         return true;
     }

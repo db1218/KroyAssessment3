@@ -1,4 +1,4 @@
-package com.classes;
+package com.misc;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.Texture;
@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.Pixmap.Format;
 import com.badlogic.gdx.graphics.Color;
 
 // Constants imports
-import static com.config.Constants.BAR_FADE_DURATION;
+import static com.misc.Constants.BAR_FADE_DURATION;
 
 /**
  * Resource bars used by sprites to indicate properties of sprites.
@@ -230,4 +230,15 @@ public class ResourceBar {
             }
         }
     }
+
+    /**
+     * Reset the resource amount back to its
+     * original full capacity, this is used for
+     * replenishing the fire truck's water after
+     * the tutorial has finished
+     */
+    public void resetResourceAmount() {
+        this.currentResourceAmount = this.maxResourceAmount;
+    }
+
 }

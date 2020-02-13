@@ -1,5 +1,7 @@
-package com.config;
+package com.misc;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Vector2;
 
 /**
@@ -7,11 +9,7 @@ import com.badlogic.gdx.math.Vector2;
  */
 public final class Constants {
 
-    private Constants() {
-        // Any constants that need instantiation go here
-    }
-
-     // Enums
+     // Simple enums
      public enum Direction {
         UP,
         DOWN,
@@ -25,14 +23,15 @@ public final class Constants {
     }
 
     // ==============================================================
-    //					Modified for assessment 3
+    //					Added for assessment 3
     // ==============================================================
 
+    // Type enums for entities in the game
     public enum FortressType {
-        CLIFFORD(7, 2000, 1, 500),
-        MINSTER(15, 3000,1, 500),
-        RAIL(10, 1000, 1, 500),
-        CASTLE1(13, 750, 2, 500),
+        CLIFFORD(7, 2000, 1, 400),
+        MINSTER(15, 3000,1, 700),
+        RAIL(10, 100000, 1, 900),
+        CASTLE1(13, 750, 2, 600),
         CASTLE2(8, 1500, 2, 500);
 
         private final int damage;
@@ -66,44 +65,44 @@ public final class Constants {
 
     public enum TruckType {
         RED ("Red", new float[]{
-                280,  // HEALTH
+                170,  // HEALTH
                 10f,  // ACCELERATION
-                300f, // MAX_SPEED
+                600f, // MAX_SPEED
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
                 600,  // WATER MAX
                 0,    // PRICE
-                2,    // damage
+                1.9f,    // damage
         }),
         BLUE ("Blue", new float[]{
-                200,   // HEALTH
+                220,   // HEALTH
                 15f,   // ACCELERATION
                 400f,  // MAX_SPEED
                 0.6f,  // RESTITUTION
-                1.01f, // RANGE
-                450,   // WATER MAX
-                100,   // PRICE
-                2,     // damage
+                1.2f, // RANGE
+                600,   // WATER MAX
+                300,   // PRICE
+                1.9f,     // damage
         }),
         YELLOW ("Yellow", new float[]{
-                350,  // HEALTH
-                15f,  // ACCELERATION
+                270,  // HEALTH
+                18f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
-                0.9f, // RANGE
-                550,  // WATER MAX
-                200,  // PRICE
-                2,    // damage
+                1.25f, // RANGE
+                600,  // WATER MAX
+                900,  // PRICE
+                1.9f,    // damage
         }),
         GREEN("Green", new float[]{
-                250f, // HEALTH
+                270f, // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
-                0.9f, // RANGE
+                1.2f, // RANGE
                 750,  // WATER MAX
-                300,  // PRICE
-                3,    // damage
+                1750,  // PRICE
+                2.2f,    // damage
             }
         );
 
@@ -123,9 +122,37 @@ public final class Constants {
         }
     }
 
-    // ==============================================================
-    //					Added for assessment 3
-    // ==============================================================
+    public enum AlienType {
+
+        green(10, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png")), 2000),
+        red(30, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png")), 1000),
+        blue(50,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")), 750);
+
+        private int score;
+        private double chance;
+        private long aliveTime;
+
+        private Texture texture;
+
+        AlienType(int score, double chance, Texture texture, long aliveTime) {
+            this.score = score;
+            this.chance = chance;
+            this.aliveTime = aliveTime;
+            this.texture = texture;
+        }
+
+        public int getScore(){return this.score;}
+
+        public double getChance() {return this.chance; }
+
+        public Texture getTexture(){ return this.texture; }
+
+        public long getAliveTime() {
+            return aliveTime;
+        }
+
+    }
+
     public enum CarparkEntrances {
         Main1(new Vector2(80.5f * TILE_DIMS, 24.5f * TILE_DIMS), 0, "Fire Station"),
         Main2(new Vector2(85 * TILE_DIMS, 30.5f * TILE_DIMS), 90, "Fire Station"),
@@ -169,12 +196,14 @@ public final class Constants {
     public static final float MAP_WIDTH = 117 * (8 * MAP_SCALE);
     public static final float MAP_HEIGHT = 10000 * (8 * MAP_SCALE);
     public static final int TILE_DIMS = (int) (8 * MAP_SCALE);
-    public static final int FRIENDLY_FIRE_MULTIPLIER = 2;
+    public static final int PATROL_NUMBER = 10;
 
     // Time durations
     public static final float BAR_FADE_DURATION = 3;
     public static final int FIRETRUCK_REPAIR_SPEED = 75;
     public static final int TIME_STATION_VULNERABLE = 180;
+    public static final int MINIGAME_DURATION = 30;
+    public static final int MINIGAME_SPAWN_RATE = 1000;
 
     // Camera settings
     public static final float LERP = 3.0f;

@@ -1,9 +1,8 @@
-package com.kroy;
+package com;
 
 // LibGDX imports
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -14,8 +13,8 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.screens.GameScreen;
 import com.screens.MainMenuScreen;
+import com.screens.MinigameScreen;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.
@@ -28,7 +27,6 @@ public class Kroy extends Game {
 	// Batches to store drawn elements
   	public Batch batch;
   	public SpriteBatch spriteBatch;
-	private BitmapFont font;
 	public BitmapFont coolFont;
 	private Label.LabelStyle font10;
 	private Skin skin;
@@ -43,8 +41,7 @@ public class Kroy extends Game {
 		this.spriteBatch = new SpriteBatch();
 		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
-		this.setScreen(new MainMenuScreen(this) {
-		});
+		this.setScreen(new MainMenuScreen(this));
 	}
 
 	/**
@@ -60,10 +57,10 @@ public class Kroy extends Game {
 	 */
 	public void dispose() {
 		this.batch.dispose();
-		this.font.dispose();
 		this.spriteBatch.dispose();
 		this.screen.dispose();
 		this.coolFont.dispose();
+		this.skin.dispose();
 	}
 
 	/**

@@ -194,9 +194,9 @@ public class PatrolMovementSprite extends SimpleSprite {
         setGoal(newGoal);
     }
 
-    public float getX(){ return this.x; }
+    public float getX() { return this.x - (this.getWidth() / 2); }
 
-    public float getY(){ return this.y; }
+    public float getY(){ return this.y - (this.getHeight() / 2); }
 
     public Junction getGoal() {return this.pathQueue.last();}
 

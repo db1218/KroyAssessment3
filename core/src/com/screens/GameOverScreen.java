@@ -19,27 +19,35 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.config.Constants.*;
-import com.kroy.Kroy;
+import com.misc.Constants.*;
+import com.Kroy;
 
-import static com.config.Constants.DEBUG_ENABLED;
+import static com.misc.Constants.DEBUG_ENABLED;
 
-
+/**
+ * Really basic screen that provides the user whether they have
+ * won or lost the game, displays their score and allows them to
+ * navigate back to the memory
+ */
 public class GameOverScreen implements Screen {
 
     private final Kroy game;
     private final Outcome outcome;
+    private final int score;
 
     private final Skin skin;
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private final Stage stage;
 
-    public GameOverScreen(Kroy game, Outcome outcome) {
+
+    public GameOverScreen(Kroy game, Outcome outcome, int score) {
         this.game = game;
         this.outcome = outcome;
+        this.score = score;
 
         skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
         //skin.add("default", new Texture("button.png"));
@@ -75,16 +83,21 @@ public class GameOverScreen implements Screen {
         table.setFillParent(true);
         table.center();
 
-        Label label = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
-        label.setFontScale(2);
-        if (outcome.equals(Outcome.WON)) label.setText("Well done, you saved York!");
-        else label.setText("Well... you let York down");
+        Label outcomeLabel = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
+        outcomeLabel.setFontScale(2);
+        if (outcome.equals(Outcome.WON)) outcomeLabel.setText("Well done, you saved York!");
+        else outcomeLabel.setText("Well... you let York down");
 
         TextButton exitButton = new TextButton("Return to Main Menu", skin);
 
-        table.add(label).padBottom(20);
+        Label scoreLabel = new Label("Final Score: " + score, new Label.LabelStyle(game.coolFont, Color.WHITE));
+        scoreLabel.setAlignment(Align.center);
+
+        table.add(outcomeLabel).padBottom(20);
         table.row();
         table.add(exitButton).width(200).height(40);
+        table.row();
+        table.add(scoreLabel).width(200).height(40);
 
         exitButton.addListener(new ClickListener() {
             @Override
@@ -118,6 +131,7 @@ public class GameOverScreen implements Screen {
     public void resize(int width, int height) {
         viewport.update(width, height);
         camera.update();
+
     }
 
     /**

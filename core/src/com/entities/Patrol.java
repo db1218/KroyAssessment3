@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.graphics.Texture;
@@ -60,6 +60,10 @@ public class Patrol extends PatrolMovementSprite {
         updateDetectionRange();
     }
 
+    /**
+     * Just updates the movement of the patrol, doesn't
+     * draw the sprite or check detection range
+     */
     public void updateMovement() {
         super.step();
     }
@@ -141,7 +145,9 @@ public class Patrol extends PatrolMovementSprite {
         mapGraph.removeDead(super.getThis());
     }
 
-    public boolean isDead(){ return this.isDead; }
+    public boolean isDead() {
+        return this.isDead;
+    }
 
 }
 

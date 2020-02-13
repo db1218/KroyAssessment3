@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -10,12 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
-import com.config.Constants;
+import com.misc.Constants;
+import com.screens.GameScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
-import static com.config.Constants.ETFORTRESS_HEIGHT;
-import static com.config.Constants.ETFORTRESS_WIDTH;
+import static com.misc.Constants.ETFORTRESS_HEIGHT;
+import static com.misc.Constants.ETFORTRESS_WIDTH;
 
 /**
  * The ET Fortress implementation, a static sprite in the game.
@@ -30,6 +31,7 @@ public class ETFortress extends SimpleSprite {
     private Circle detectionRange;
     private boolean flooded;
     private final Constants.FortressType type;
+    private GameScreen gameScreen;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -42,8 +44,9 @@ public class ETFortress extends SimpleSprite {
      * @param xPos              The x-coordinate for the ETFortress.
      * @param yPos              The y-coordinate for the ETFortress.
      */
-    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, Constants.FortressType type) {
+    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, Constants.FortressType type, GameScreen gameScreen) {
         super(texture);
+        this.gameScreen = gameScreen;
         this.destroyed = destroyedTexture;
         this.flooded = false;
         this.type = type;
@@ -69,10 +72,12 @@ public class ETFortress extends SimpleSprite {
         super.update(batch);
         // If ETFortress is destroyed, change to flooded texture
         // If ETFortress is damaged, heal over time
-        if (this.getHealthBar().getCurrentAmount() <= 0) {
+        if (!flooded && this.getHealthBar().getCurrentAmount() <= 0) {
             this.removeSprite(this.destroyed);
             this.flooded = true;
-        } else if (this.getInternalTime() % 150 == 0 && this.getHealthBar().getCurrentAmount() != this.getHealthBar().getMaxAmount()) {
+            this.gameScreen.showPopupText("You have destroyed " + gameScreen.getETFortressesDestroyed()[0] + " / " + gameScreen.getETFortressesDestroyed()[1] +
+                    " fortresses", 1, 7);
+        } else if (!flooded && this.getInternalTime() % 150 == 0 && this.getHealthBar().getCurrentAmount() != this.getHealthBar().getMaxAmount()) {
             // Heal ETFortresses every second if not taking damage
 			this.getHealthBar().addResourceAmount(type.getHealing());
         }
@@ -112,7 +117,6 @@ public class ETFortress extends SimpleSprite {
         }
         return polygon.contains(this.detectionRange.x, this.detectionRange.y);
     }
-
 
     /**
      * Overloaded method for drawing debug information. Draws the hitbox as well

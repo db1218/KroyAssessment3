@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 
@@ -13,7 +13,9 @@ import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.config.Constants;
+import com.misc.Constants;
+import com.misc.Arrow;
+import com.misc.ResourceBar;
 import com.sprites.MovementSprite;
 import com.config.SFX;
 
@@ -22,7 +24,7 @@ import com.config.SFX;
 // Java util import
 import java.util.ArrayList;
 
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 /**
  * The Firetruck implementation. A sprite capable of moving and colliding with other sprites.
@@ -367,9 +369,20 @@ public class Firetruck extends MovementSprite {
     public void toggleHose() {
         if (this.toggleDelay <= 0) {
             this.toggleDelay = 20;
-            this.isSpraying = !this.isSpraying && this.waterBar.getCurrentAmount() > 0;
+            this.isSpraying = !this.isSpraying && !this.isTankEmpty();
             this.waterBar.setFade(false, !this.isSpraying);
         }
+    }
+
+    /**
+     * Set the hose on or off
+     *
+     * @param bool  <code>true</code> to turn hose on
+     *              <code>false</code> to turn hose off
+     */
+    public void setHose(boolean bool) {
+        this.isSpraying = bool;
+        this.waterBar.setFade(false, !this.isSpraying);
     }
 
     /**
@@ -400,6 +413,15 @@ public class Firetruck extends MovementSprite {
      */
     public boolean isSpraying() {
         return this.isSpraying;
+    }
+
+    /**
+     * Gets if the water tank of the truck is empty
+     * @return  <code>true</code> if tank is empty
+     *          <code>false</code> otherwise
+     */
+    public boolean isTankEmpty() {
+        return this.waterBar.getCurrentAmount() <= 0;
     }
 
     /**

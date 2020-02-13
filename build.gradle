@@ -17,7 +17,7 @@ buildscript {
 allprojects {
     apply plugin: "java-library"
 
-    version = '1.0'
+    version = '2.0'
     ext {
         appName = "Kroy"
         gdxVersion = '1.9.10'

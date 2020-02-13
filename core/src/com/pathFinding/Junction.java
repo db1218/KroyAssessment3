@@ -41,5 +41,9 @@ public class Junction {
         return this.name;
     }
 
+    public int getIndex(){
+        return this.index;
+    }
+
 
 }
