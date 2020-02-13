@@ -85,7 +85,7 @@ public class PauseScreen implements Screen {
         Label label = new Label("Game Paused", new Label.LabelStyle(game.coolFont, Color.WHITE));
         label.setFontScale(2);
         TextButton resumeButton = new TextButton("Resume game", skin);
-        TextButton controlsButton = new TextButton("Controls", skin);
+        TextButton howToPlayButton = new TextButton("How to Play", skin);
         TextButton quitButton = new TextButton("Return to Main Menu", skin);
         Label scoreLabel = new Label("Score: " + gameScreen.getScore(), new Label.LabelStyle(game.coolFont, Color.WHITE));
         scoreLabel.setAlignment(Align.right);
@@ -96,7 +96,7 @@ public class PauseScreen implements Screen {
         table.row();
         table.add(resumeButton).width(200).height(40).padBottom(20);
         table.row();
-        table.add(controlsButton).width(200).height(40).padBottom(20);
+        table.add(howToPlayButton).width(200).height(40).padBottom(20);
         table.row();
         table.add(quitButton).width(200).height(40).padBottom(20);
         table.row();
@@ -114,10 +114,10 @@ public class PauseScreen implements Screen {
             }
         });
 
-        controlsButton.addListener(new ClickListener() {
+        howToPlayButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                game.setScreen(new ControlsScreen(game,  getThis()));
+                game.setScreen(new HowToPlayScreen(game,  getThis()));
             }
         });
 

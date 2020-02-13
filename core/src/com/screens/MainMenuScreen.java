@@ -115,7 +115,7 @@ public class MainMenuScreen implements Screen {
 		heading.setFontScale(2);
 		Label subHeading = new Label("Destroy the Fortresses and Save the City", new Label.LabelStyle(game.coolFont, Color.WHITE));
 		TextButton playButton = new TextButton("Play", skin);
-		TextButton controlsButton = new TextButton("Controls", skin);
+		TextButton howToPlayButton = new TextButton("How to Play", skin);
 		TextButton quitButton = new TextButton("Quit", skin);
 
 		// Add buttons to table and style them
@@ -125,7 +125,7 @@ public class MainMenuScreen implements Screen {
 		buttonTable.row();
 		buttonTable.add(playButton).padBottom(20).width(200).height(40);
 		buttonTable.row();
-		buttonTable.add(controlsButton).padBottom(20).width(200).height(40);
+		buttonTable.add(howToPlayButton).padBottom(20).width(200).height(40);
 		buttonTable.row();
 		buttonTable.add(quitButton).width(200).height(40);
 
@@ -138,10 +138,10 @@ public class MainMenuScreen implements Screen {
 			}
 		});
 
-		controlsButton.addListener(new ClickListener() {
+		howToPlayButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
-				game.setScreen(new ControlsScreen(game, getThis()));
+				game.setScreen(new HowToPlayScreen(game, getThis()));
 			}
 		});
 
