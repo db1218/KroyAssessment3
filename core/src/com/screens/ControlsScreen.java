@@ -14,12 +14,12 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kroy.Kroy;
+import com.Kroy;
 
 import static com.config.Constants.DEBUG_ENABLED;
+import static com.config.Constants.MINIGAME_DURATION;
 
 /**
  * Screen that appears when the user enters the controls screen.
@@ -88,7 +88,7 @@ public class ControlsScreen implements Screen {
                                     "Purchase new firetrucks using points earned by destroying fortresses, aliens and playing the minigame \n" +
                                     "When the time reaches 0, the firestation becomes vulnerable, and when destroyed can no longer be used";
         String minigame =           "Enter a minigame by driving over one of the five icons on the map \n" +
-                                    "Click the red, blue, and green aliens that appear to earn as many points as you can in 30 seconds";
+                                    "Click the red, blue, and green aliens that appear to earn as many points as you can in " + MINIGAME_DURATION + " seconds";
 
 
         // Create main table to arrange actors

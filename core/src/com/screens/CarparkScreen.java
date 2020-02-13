@@ -16,11 +16,11 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.actors.BackgroundBox;
-import com.classes.Firestation;
-import com.classes.Firetruck;
+import com.misc.BackgroundBox;
+import com.entities.Firestation;
+import com.entities.Firetruck;
 import com.config.Constants;
-import com.kroy.Kroy;
+import com.Kroy;
 import java.util.ArrayList;
 
 /**

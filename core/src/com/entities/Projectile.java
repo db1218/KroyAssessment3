@@ -1,8 +1,7 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.math.Polygon;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
@@ -25,10 +24,7 @@ import static com.config.Constants.MAP_WIDTH;
  */
 public class Projectile extends MovementSprite {
 
-    // Private values to be used in this class only
-    Vector2 trajectory;
     private final int damage;
-    private SimpleSprite source;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -39,13 +35,11 @@ public class Projectile extends MovementSprite {
      * @param texture        The texture used to draw the projectile with.
      * @param x              The x-coordinate the projectile will start at.
      * @param y              The y-coordinate the projectile will start at.
-     * @param source         Sprite the projectile was fired from
      */
-    public Projectile(Texture texture, float x, float y, int damage, SimpleSprite source) {
+    public Projectile(Texture texture, float x, float y, int damage) {
         super(texture);
         this.setPosition(x, y);
         this.damage = damage;
-        this.source = source;
         this.create();
     }
 
@@ -78,14 +72,15 @@ public class Projectile extends MovementSprite {
         Vector2 projectileVector = new Vector2(this.getCentreX(),this.getCentreY()); 
 
         // Work out the vector between them
-        this.trajectory = targetVector.sub(projectileVector);
-        this.trajectory.nor();
+        // Private values to be used in this class only
+        Vector2 trajectory = targetVector.sub(projectileVector);
+        trajectory.nor();
 
         // Scale the vector by the speed we want it to travel
-        this.trajectory.scl(PROJECTILE_SPEED);
+        trajectory.scl(PROJECTILE_SPEED);
 
         // Give the projectile the vector to travel at
-        this.rotate(this.trajectory.angle());
+        this.rotate(trajectory.angle());
         this.setSpeed(trajectory);
     }
 
@@ -101,10 +96,6 @@ public class Projectile extends MovementSprite {
         boolean outHorizontalView = this.getCentreX() > MAP_WIDTH;
         outHorizontalView = outHorizontalView || this.getCentreX() < 0;
         return outVerticalView || outHorizontalView;
-    }
-
-    public SimpleSprite getSource() {
-        return this.source;
     }
 
     public int getDamage() {

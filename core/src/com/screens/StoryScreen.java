@@ -19,7 +19,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kroy.Kroy;
+import com.Kroy;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
 import static com.config.Constants.DEBUG_ENABLED;

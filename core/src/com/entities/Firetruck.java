@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 
@@ -14,6 +14,8 @@ import com.badlogic.gdx.Input.Keys;
 // Custom class import
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.config.Constants;
+import com.misc.Arrow;
+import com.misc.ResourceBar;
 import com.sprites.MovementSprite;
 
 // Constants imports

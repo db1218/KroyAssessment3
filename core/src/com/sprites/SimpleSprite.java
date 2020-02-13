@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.Texture;
 
 // Class import
 import com.badlogic.gdx.math.Vector2;
-import com.classes.ResourceBar;
+import com.misc.ResourceBar;
 
 /**
  * Simplify and add functionality to the sprite object provided by libGDX.

@@ -1,6 +1,7 @@
-package com.classes;
+package com.entities;
 
 import com.badlogic.gdx.math.Vector2;
+import com.misc.Arrow;
 import org.junit.Before;
 import org.junit.Test;
 

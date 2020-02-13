@@ -6,7 +6,6 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
@@ -17,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
-import com.kroy.Kroy;
+import com.Kroy;
 
 import static com.config.Constants.DEBUG_ENABLED;
 
@@ -176,6 +175,11 @@ public class MainMenuScreen implements Screen {
 		stage.dispose();
 	}
 
+	/**
+	 * Used to pass the main menu screen into the controls screen
+	 *
+	 * @return  main menu screen
+	 */
 	public Screen getThis() {
 		return this;
 	}

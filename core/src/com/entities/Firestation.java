@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.OrthographicCamera;

@@ -7,7 +7,7 @@ import static com.config.Constants.SCREEN_WIDTH;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
-import com.kroy.Kroy;
+import com.Kroy;
 
 /**
  * DesktopLauncher starts the Kroy application on desktop, as required by

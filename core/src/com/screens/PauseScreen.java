@@ -16,7 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.kroy.Kroy;
+import com.Kroy;
 
 import static com.config.Constants.DEBUG_ENABLED;
 
@@ -201,6 +201,11 @@ public class PauseScreen implements Screen {
         stage.dispose();
     }
 
+    /**
+     * Used to pass the pause screen into the controls screen
+     *
+     * @return  pause screen
+     */
     public Screen getThis() {
         return this;
     }

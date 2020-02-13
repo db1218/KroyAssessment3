@@ -1,4 +1,4 @@
-package com.actors;
+package com.misc;
 
 /* =================================================================
    New class added for assessment 3

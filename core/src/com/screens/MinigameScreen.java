@@ -5,22 +5,29 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import com.badlogic.gdx.utils.TimeUtils;
-import com.classes.AlienType;
-import com.classes.Alien;
-import com.kroy.Kroy;
+import com.entities.Alien;
+import com.sprites.MinigameSprite;
+import com.Kroy;
 
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeMap;
 
+import static com.config.Constants.*;
+
+/**
+ * MinigameScreen, as suggested, a Mini game contained within
+ * the game, which allows the player to play a different style
+ * of game ("whack-a-mole"), but keeping the same theme (aliens
+ * and fire trucks). Players can earn score which is transferred
+ * into the main game after 30 seconds
+ */
 public class MinigameScreen implements Screen {
 
+    // constants to store game and game screen
     private final Kroy game;
     private final GameScreen gameScreen;
 
@@ -38,8 +45,8 @@ public class MinigameScreen implements Screen {
 
     private Rectangle water;
 
-    private long timing;
-    private boolean timeSleep;
+    private long timeStart;
+    private long timeSpawn;
 
     private ArrayList<Alien> onScreenETs;
     private ArrayList<Vector2> ETLocations;
@@ -49,8 +56,14 @@ public class MinigameScreen implements Screen {
     private MiniGameInputHandler miniGameInputHandler;
     private boolean playerHasClicked;
 
-    private long timeStart;
-
+    /**
+     * Constructor for minigame screen which is called when
+     * the player drives over {@link MinigameSprite} in
+     * {@link GameScreen}
+     *
+     * @param game          to change screen and access shared batch
+     * @param gameScreen    to return back to after minigame completion
+     */
     public MinigameScreen(Kroy game, GameScreen gameScreen) {
 
         this.game = game;
@@ -100,7 +113,6 @@ public class MinigameScreen implements Screen {
         water = new Rectangle(0, 0, 150, 150);
     }
 
-
     @Override
     public void show() {
         Gdx.input.setInputProcessor(miniGameInputHandler);
@@ -144,11 +156,11 @@ public class MinigameScreen implements Screen {
             }
         }
 
-        if (TimeUtils.millis() - timing > 700) {
+        if (TimeUtils.millis() - timeSpawn > 700) {
             spawnAlien();
         }
 
-        if (TimeUtils.millis() > timeStart + 30000) {
+        if (TimeUtils.millis() > timeStart + MINIGAME_DURATION*1000) {
             toGameScreen();
         }
 
@@ -179,17 +191,21 @@ public class MinigameScreen implements Screen {
         waterImage.dispose();
     }
 
+    /**
+     * Draws the water image if the player has clicked
+     */
     private void drawWater() {
         if (this.playerHasClicked) {
             game.spriteBatch.draw(waterImage, water.x - (waterImage.getWidth()/2f), water.y - (waterImage.getHeight()/2f));
         }
     }
 
+    /**
+     * Spawns an alien and resets the spawn timer
+     */
     private void spawnAlien() {
-        AlienType randomType = generateType();
-        Vector2 randomLocation = generateLocation();
-        onScreenETs.add(new Alien(randomType, randomLocation));
-        timing = TimeUtils.millis();
+        onScreenETs.add(new Alien(generateType(), selectLocation()));
+        timeSpawn = TimeUtils.millis();
     }
 
     /**
@@ -200,17 +216,26 @@ public class MinigameScreen implements Screen {
      *
      * @return  type of alien
      */
-
     private AlienType generateType() {
         double randomIndex = random.nextDouble();
         return map.ceilingEntry(randomIndex).getValue();
     }
 
-    private Vector2 generateLocation(){
+    /**
+     * Selects a random location on the screen to
+     * spawn the ET, from a list of locations
+     *
+     * @return  vector of random location
+     */
+    private Vector2 selectLocation(){
         int randomIndex = random.nextInt(ETLocations.size() - 1);
         return ETLocations.get(randomIndex);
     }
 
+    /**
+     *  Generates a list of all locations where an
+     *  ET can appear
+     */
     private void generateETLocations() {
         ETLocations.add(new Vector2(225, 700));
         ETLocations.add(new Vector2(195, 390));
@@ -226,19 +251,34 @@ public class MinigameScreen implements Screen {
         ETLocations.add(new Vector2(900, 550));
     }
 
-    public void setPlayerHasClicked(Boolean b){
+    /**
+     * Goes back to the game screen once the user presses escape
+     * or when the time runs out
+     */
+    public void toGameScreen() {
+        gameScreen.setScore(gameScreen.getScore() + score);
+        this.game.setScreen(this.gameScreen);
+        dispose();
+    }
+
+    /**
+     * Used to
+     * @param b
+     */
+    public void setPlayerHasClicked(Boolean b) {
         this.playerHasClicked = b;
     }
 
+    /**
+     * Sets the position of the water object
+     *
+     * @param x position of water
+     * @param y position of water
+     */
     public void setTouch(int x, int y) {
         water.setPosition(x, y);
     }
 
     public OrthographicCamera getCamera() { return camera; }
 
-    public void toGameScreen() {
-        gameScreen.setScore(gameScreen.getScore() + score);
-        this.game.setScreen(this.gameScreen);
-        dispose();
-    }
 }

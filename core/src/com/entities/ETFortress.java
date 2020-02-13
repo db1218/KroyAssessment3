@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -117,7 +117,6 @@ public class ETFortress extends SimpleSprite {
         }
         return polygon.contains(this.detectionRange.x, this.detectionRange.y);
     }
-
 
     /**
      * Overloaded method for drawing debug information. Draws the hitbox as well

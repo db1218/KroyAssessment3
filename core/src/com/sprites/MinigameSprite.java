@@ -1,4 +1,4 @@
-package com.classes;
+package com.sprites;
 
 /* =================================================================
                        New class added for assessment 3

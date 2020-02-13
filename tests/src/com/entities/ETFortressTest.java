@@ -1,10 +1,9 @@
-package com.classes;
+package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.math.Polygon;
 import com.config.Constants;
+import com.screens.GameScreen;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -19,13 +18,15 @@ public class ETFortressTest {
     private Texture mockTexture;
     @Mock
     private Texture mockDestroyedTexture;
+    @Mock
+    private GameScreen mockGameScreen;
 
     private ETFortress etFortressUnderTest;
 
     @Before
     public void setUp() {
         initMocks(this);
-        etFortressUnderTest = new ETFortress(mockTexture, mockDestroyedTexture, 1.0f, 1.0f, 0.0f, 0.0f, Constants.FortressType.CLIFFORD);
+        etFortressUnderTest = new ETFortress(mockTexture, mockDestroyedTexture, 1.0f, 1.0f, 0.0f, 0.0f, Constants.FortressType.CLIFFORD, mockGameScreen);
     }
 
     @Test

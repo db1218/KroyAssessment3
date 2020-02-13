@@ -16,7 +16,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer.ShapeType;
 import com.badlogic.gdx.graphics.Texture;
@@ -33,12 +32,12 @@ import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 // Java util imports
 import java.util.ArrayList;
-import java.util.Random;
 
 // Class imports
-import com.classes.*;
-import com.kroy.Kroy;
+import com.entities.*;
+import com.Kroy;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
+import com.sprites.MinigameSprite;
 
 // Constants import
 import static com.config.Constants.*;
@@ -75,7 +74,6 @@ public class GameScreen implements Screen {
 	private final ArrayList<Projectile> projectiles;
 	private final ArrayList<MinigameSprite> minigameSprites;
 	private ArrayList<Projectile> projectilesToRemove;
-	private ArrayList<Projectile> projectilesToAdd;
 	private final ArrayList<Patrol> ETPatrols;
 	private final Firestation firestation;
 	private final ArrayList<Texture> waterFrames;
@@ -95,7 +93,7 @@ public class GameScreen implements Screen {
 	private final Label timeLabel;
 	private final Label fpsLabel;
 
-	private com.badlogic.gdx.utils.Queue<String> tips;
+	private com.badlogic.gdx.utils.Queue<String> popupMessages;
 	private TypingLabel tip;
 	private Timer popupTimer;
 	private Timer firestationTimer;
@@ -253,7 +251,6 @@ public class GameScreen implements Screen {
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
-		this.projectilesToAdd = new ArrayList<Projectile>();
 
 		this.junctionsInMap = new ArrayList<>();
 		mapGraph = new MapGraph();
@@ -300,7 +297,6 @@ public class GameScreen implements Screen {
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentreX(), this.firestation.getActiveFireTruck().getCentreY(), 0);
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
-		this.projectilesToAdd = new ArrayList<Projectile>();
 
 		Timer collisionTask = new Timer();
 		collisionTask.scheduleTask(new Task()
@@ -333,8 +329,8 @@ public class GameScreen implements Screen {
 			vignetteSepiaShader.setUniformf("u_sepia", 0.2f);
 		} else {
 			vignetteSepiaShader.setUniformf("u_intensity", camera.zoom-0.4f);
-			vignetteSepiaShader.setUniformf("u_outerRadius", calculateRandomValueForProgress(0.5f, 0.8f, 0));
-			vignetteSepiaShader.setUniformf("u_sepia", calculateRandomValueForProgress(0.65f, 0.3f, 0));
+			vignetteSepiaShader.setUniformf("u_outerRadius", calculateValueForProgress(0.5f, 0.8f));
+			vignetteSepiaShader.setUniformf("u_sepia", calculateValueForProgress(0.65f, 0.3f));
 		}
 		vignetteSepiaShader.end();
 
@@ -431,7 +427,6 @@ public class GameScreen implements Screen {
 
 		// Remove projectiles that are off the screen and firetrucks that are dead
 		this.projectiles.removeAll(this.projectilesToRemove);
-		this.projectiles.addAll(this.projectilesToAdd);
 
 		// Check if the game should end
 		checkIfGameOver();
@@ -512,12 +507,19 @@ public class GameScreen implements Screen {
 		shapeRenderer.dispose();
 	}
 
-	public void createPatrol(){
-		if (this.ETPatrols.size() < 10){
+	/**
+	 * Spawns a patrol, up to a certain number
+	 * */
+	public void createPatrol() {
+		if (this.ETPatrols.size() < PATROL_NUMBER) {
 			spawnPatrol();
 		}
 	}
 
+	/**
+	 * Updates only the movement of the patrol when the
+	 * player is in the car park screen
+	 */
 	public void updatePatrolMovements() {
 		for (Patrol patrol : this.ETPatrols) {
 			patrol.updateMovement();
@@ -549,8 +551,8 @@ public class GameScreen implements Screen {
 		for (ETFortress ETFortress : this.ETFortresses) {
 			if (ETFortress.getHealthBar().getCurrentAmount() > 0) gameWon = false;
 		}
-		if (gameWon) this.game.setScreen(new GameOverScreen(this.game, Outcome.WON));
-		else if (gameLost) this.game.setScreen(new GameOverScreen(this.game, Outcome.LOST));
+		if (gameWon) this.game.setScreen(new GameOverScreen(this.game, Outcome.WON, this.score));
+		else if (gameLost) this.game.setScreen(new GameOverScreen(this.game, Outcome.LOST, this.score));
 	}
 
 	/**
@@ -566,7 +568,7 @@ public class GameScreen implements Screen {
 				this.score += 10;
 			}
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage(), ETFortress);
+				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage());
 				projectile.calculateTrajectory(firetruck);
 				this.projectiles.add(projectile);
 			}
@@ -587,27 +589,29 @@ public class GameScreen implements Screen {
 		// ==============================================================
 		//					Added for assessment 3
 		// ==============================================================
-		// Checks if a patrol has attacked a fire truck and vice versa
+		// Checks if a patrol has attacked a fire truck and vice versa, also if patrol can attack fire station
 		for (Patrol patrol : this.ETPatrols) {
 			if (patrol.getHealthBar().getCurrentAmount() > 0 && firetruck.isInHoseRange(patrol.getDamageHitBox())) {
 				patrol.getHealthBar().subtractResourceAmount((int) firetruck.getDamage());
 				this.score += 10;
 			}
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firetruck);
 				this.projectiles.add(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
-				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
+				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firestation);
 				this.projectiles.add(projectile);
 			}
 		}
-
+		// ==============================================================
+		//					Added for assessment 3
+		// ==============================================================
+		// Checks if truck has driven over a minigame sprite
 		for (int i=0; i<this.minigameSprites.size(); i++) {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
-				// open mini game
 				if (!isInTutorial) firestationTimer.stop();
 				popupTimer.stop();
 				ETPatrolsTimer.stop();
@@ -998,49 +1002,65 @@ public class GameScreen implements Screen {
 		mapGraph.connectJunctions(fortyEight, fortyThree);
 	}
 
+	/**
+	 * Initially populates the popup messages queue with
+	 * the tutorial to teach the player how to play the game
+	 */
 	private void generateTutorial() {
-		tips = new Queue<>();
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Veteran fire fighter? Press ENTER to skip tutorial\n" +
+		popupMessages = new Queue<>();
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Veteran fire fighter? Press ENTER to skip tutorial\n" +
 				"Otherwise, hold tight, we will begin in a moment...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}You are currently in a safe haven, nothing can harm you... so relax...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Feel free to roam around and explore the city, " +
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}You are currently in a safe haven, nothing can harm you... so relax...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Feel free to roam around and explore the city, " +
 				"get accustomed to your new environment...");
-		tips.addLast("{FADE=0;0.75;1}Basic Controls\n{ENDFADE}" +
+		popupMessages.addLast("{FADE=0;0.75;1}Basic Controls\n{ENDFADE}" +
 				"{SLOW}{COLOR=#FFFFFFC0}WSAD to drive the truck \n" +
 				"MOUSE operates the water cannon \n" +
 				"SCROLL controls camera zoom");
-		tips.addLast("{FADE=0;0.75;1}Fire Station{ENDFADE} \n" +
+		popupMessages.addLast("{FADE=0;0.75;1}Fire Station{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}You spawned right outside here. This is where you can repair and refill Fire Trucks...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Top right, once that timer reaches zero, the Fire Station is vulnerable and can be destroyed, " +
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Top right, once that timer reaches zero, the Fire Station is vulnerable and can be destroyed, " +
 				"then you can no longer repair or refill...");
-		tips.addLast("{FADE=0;0.75;1}Score{ENDFADE} \n" +
+		popupMessages.addLast("{FADE=0;0.75;1}Score{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}Top left, achieved by attacking Patrols and Fortresses, and can be spent to unlock new trucks " +
 				"at the Fire Station...");
-		tips.addLast("{FADE=0;0.75;1}Minigame{ENDFADE} \n" +
+		popupMessages.addLast("{FADE=0;0.75;1}Minigame{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}Gain extra score in a minigame, accessed through controller icons dotted around the map");
-		tips.addLast("{FADE=0;0.75;1}The Mission{ENDFADE} \n" +
+		popupMessages.addLast("{FADE=0;0.75;1}The Mission{ENDFADE} \n" +
 				"{SLOW}{COLOR=#FFFFFFC0}Your aim is to eliminate all ET Fortresses that have inhabited York.\n" +
 				"Use SPACE to locate the nearest enemy Fortress...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}Be wary though, if all your Fire Trucks get destroyed," +
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}Be wary though, if all your Fire Trucks get destroyed," +
 				"you lose, and York will fall to the ETs...");
-		tips.addLast("{SLOW}{COLOR=#FFFFFFC0}You're all set, the mission will start in 10 seconds...");
+		popupMessages.addLast("{SLOW}{COLOR=#FFFFFFC0}You're all set, the mission will start in 10 seconds...");
 
 	}
 
+	/**
+	 * Runs every 5 seconds to generate the next tip
+	 * if there is one, and the first time the tips list
+	 * is empty, the tutorial has finished
+	 */
 	private void nextPopup() {
 		tip.setText("");
-		if (tips.notEmpty()) {
-			tip.setText(tips.removeFirst());
+		if (popupMessages.notEmpty()) {
+			tip.setText(popupMessages.removeFirst());
 		} else {
 			finishTutorial();
 		}
 	}
 
+	/**
+	 * Queues a popup message and resets the popup timer
+	 *
+	 * @param text		text to display
+	 * @param repeat	how many times the message should appear
+	 * @param interval	how long the message should stay up for
+	 */
 	public void showPopupText(String text, int repeat, int interval) {
 		if (!isInTutorial) {
 			popupTimer.clear();
 			for (int i=0; i<repeat; i++) {
-				tips.addLast("{FADE=0;0.75;1}" + text);
+				popupMessages.addLast("{FADE=0;0.75;1}" + text);
 			}
 			popupTimer.scheduleTask(new Task() {
 				@Override
@@ -1052,10 +1072,10 @@ public class GameScreen implements Screen {
 	}
 
 	/**
-	 * Returns a string containing the number of fortresses
-	 * destroyed compared to total number of fortresses
+	 * Returns a tuple containing the number of fortresses
+	 * destroyed and total number of fortresses
 	 *
-	 * @return	string of progress
+	 * @return	tuple of ints
 	 */
 	public int[] getETFortressesDestroyed() {
 		int fortressesDestroyed = 0;
@@ -1080,7 +1100,7 @@ public class GameScreen implements Screen {
 	public void finishTutorial() {
 		if (isInTutorial) {
 			isInTutorial = false;
-			tips.clear();
+			popupMessages.clear();
 			showPopupText("Good luck!", 1, 5);
 			firestationTimer.start();
 			firestation.getActiveFireTruck().getWaterBar().resetResourceAmount();
@@ -1092,15 +1112,18 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	private float calculateRandomValueForProgress(float max, float min, float variation) {
+	/**
+	 * Calculates the sepia and vignette values which
+	 * change as the user destroyed
+	 *
+	 * @param start	starting value at start of game
+	 * @param end	final value at end of game
+	 * @return		intensity of sepia or vignette
+	 * 				radius depending on progress
+	 */
+	private float calculateValueForProgress(float start, float end) {
 		float progress = (float) getETFortressesDestroyed()[0] / (float) getETFortressesDestroyed()[1];
-		float upper = max - (progress*(max-min));
-		float lower = upper - variation;
-		return lower + new Random().nextFloat() * (upper - lower);
-	}
-
-	public int getTime() {
-		return this.time;
+		return start - (progress*(start-end));
 	}
 
 	/**
@@ -1110,6 +1133,10 @@ public class GameScreen implements Screen {
 	 */
 	public int getFireStationTime() {
 		return Math.max(this.time, 0);
+	}
+
+	public int getTime() {
+		return this.time;
 	}
 
 	public int getScore() {

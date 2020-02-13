@@ -1,4 +1,4 @@
-package com.kroy;
+package com;
 
 // LibGDX imports
 import com.badlogic.gdx.Game;
