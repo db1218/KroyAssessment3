@@ -297,16 +297,6 @@ public class GameScreen implements Screen {
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentreX(), this.firestation.getActiveFireTruck().getCentreY(), 0);
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
-
-		Timer collisionTask = new Timer();
-		collisionTask.scheduleTask(new Task()
-		{
-			@Override
-			public void run() {
-				if (!isInTutorial) checkForCollisions();
-			}
-		}, .5f, .5f);
-
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
 
@@ -392,10 +382,12 @@ public class GameScreen implements Screen {
 		// Call the update function of the sprites to draw and update them
 		firestation.updateFiretruck(this.game.batch, this.shapeRenderer, this.camera);
 
+		// Updates and render patrols
 		for (Patrol patrol : this.ETPatrols) {
 			patrol.update(this.game.batch);
 		}
 
+		// Render mini game sprites
 		for (MinigameSprite minigameSprite : minigameSprites) {
 			minigameSprite.update(this.game.batch);
 		}
@@ -623,14 +615,15 @@ public class GameScreen implements Screen {
 		}
 
 		// Check if firetruck is hit with a projectile
-		for (Projectile projectile : this.projectiles) {
+		for (int i=0; i<this.projectiles.size(); i++) {
+			Projectile projectile = this.projectiles.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
-				projectilesToRemove.add(projectile);
+				this.projectiles.remove(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
-				projectilesToRemove.add(projectile);
+				this.projectiles.remove(projectile);
 			}
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
