@@ -10,13 +10,13 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
-import com.config.Constants;
+import com.misc.Constants;
 import com.screens.GameScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
-import static com.config.Constants.ETFORTRESS_HEIGHT;
-import static com.config.Constants.ETFORTRESS_WIDTH;
+import static com.misc.Constants.ETFORTRESS_HEIGHT;
+import static com.misc.Constants.ETFORTRESS_WIDTH;
 
 /**
  * The ET Fortress implementation, a static sprite in the game.

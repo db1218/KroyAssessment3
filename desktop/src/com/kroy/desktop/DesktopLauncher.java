@@ -1,9 +1,9 @@
 package com.kroy.desktop;
 
 // Constants import
-import static com.config.Constants.GAME_NAME;
-import static com.config.Constants.SCREEN_HEIGHT;
-import static com.config.Constants.SCREEN_WIDTH;
+import static com.misc.Constants.GAME_NAME;
+import static com.misc.Constants.SCREEN_HEIGHT;
+import static com.misc.Constants.SCREEN_WIDTH;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;

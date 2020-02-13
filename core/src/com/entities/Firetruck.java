@@ -13,7 +13,7 @@ import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.config.Constants;
+import com.misc.Constants;
 import com.misc.Arrow;
 import com.misc.ResourceBar;
 import com.sprites.MovementSprite;
@@ -23,7 +23,7 @@ import com.sprites.MovementSprite;
 // Java util import
 import java.util.ArrayList;
 
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 /**
  * The Firetruck implementation. A sprite capable of moving and colliding with other sprites.

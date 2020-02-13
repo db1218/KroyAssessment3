@@ -22,10 +22,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
-import com.config.Constants.*;
+import com.misc.Constants.*;
 import com.Kroy;
 
-import static com.config.Constants.DEBUG_ENABLED;
+import static com.misc.Constants.DEBUG_ENABLED;
 
 /**
  * Really basic screen that provides the user whether they have

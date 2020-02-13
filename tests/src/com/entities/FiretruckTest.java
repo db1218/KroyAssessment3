@@ -3,7 +3,7 @@ package com.entities;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.config.Constants.TruckType;
+import com.misc.Constants.TruckType;
 import com.misc.ResourceBar;
 import com.screens.GameScreen;
 import com.testrunner.GdxTestRunner;

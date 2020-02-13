@@ -19,7 +19,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.misc.BackgroundBox;
 import com.entities.Firestation;
 import com.entities.Firetruck;
-import com.config.Constants;
+import com.misc.Constants;
 import com.Kroy;
 import java.util.ArrayList;
 

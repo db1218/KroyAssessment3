@@ -18,7 +18,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
 import com.Kroy;
 
-import static com.config.Constants.DEBUG_ENABLED;
+import static com.misc.Constants.DEBUG_ENABLED;
 
 // Constants import
 

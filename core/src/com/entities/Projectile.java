@@ -10,11 +10,11 @@ import com.sprites.MovementSprite;
 import com.sprites.SimpleSprite;
 
 // Constants imports
-import static com.config.Constants.PROJECTILE_SPEED;
-import static com.config.Constants.PROJECTILE_WIDTH;
-import static com.config.Constants.PROJECTILE_HEIGHT;
-import static com.config.Constants.MAP_HEIGHT;
-import static com.config.Constants.MAP_WIDTH;
+import static com.misc.Constants.PROJECTILE_SPEED;
+import static com.misc.Constants.PROJECTILE_WIDTH;
+import static com.misc.Constants.PROJECTILE_HEIGHT;
+import static com.misc.Constants.MAP_HEIGHT;
+import static com.misc.Constants.MAP_WIDTH;
 
 /**
  * The Projectile implementation. A sprite capable of moving and colliding with other sprites.

@@ -40,7 +40,7 @@ import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 import com.sprites.MinigameSprite;
 
 // Constants import
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 
 /**

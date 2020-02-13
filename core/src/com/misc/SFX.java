@@ -1,4 +1,4 @@
-package com.config;
+package com.misc;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;

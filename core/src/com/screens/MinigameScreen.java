@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.TreeMap;
 
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 /**
  * MinigameScreen, as suggested, a Mini game contained within

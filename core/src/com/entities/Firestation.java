@@ -14,7 +14,7 @@ import com.sprites.SimpleSprite;
 // Constants import
 import java.util.ArrayList;
 
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 /**
  * The Firestation implementation, a static sprite in the game.

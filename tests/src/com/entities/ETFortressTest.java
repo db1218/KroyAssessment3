@@ -2,7 +2,7 @@ package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Polygon;
-import com.config.Constants;
+import com.misc.Constants;
 import com.screens.GameScreen;
 import org.junit.Before;
 import org.junit.Test;

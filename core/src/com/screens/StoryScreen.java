@@ -22,7 +22,7 @@ import com.badlogic.gdx.utils.viewport.Viewport;
 import com.Kroy;
 import com.rafaskoberg.gdx.typinglabel.TypingLabel;
 
-import static com.config.Constants.DEBUG_ENABLED;
+import static com.misc.Constants.DEBUG_ENABLED;
 
 /**
  * Screen to tell the user the back story to the game
