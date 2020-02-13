@@ -20,9 +20,6 @@ import com.Kroy;
 
 import static com.misc.Constants.DEBUG_ENABLED;
 
-// Constants import
-
-
 /**
  * Displays the main menu screen with selection buttons.
  * 
@@ -34,10 +31,9 @@ public class MainMenuScreen implements Screen {
 	
 	// A constant variable to store the game
 	final Kroy game;
-	
-	// Private camera to see the screen
-	private final OrthographicCamera camera;
 
+	// objects used for visuals
+	private final OrthographicCamera camera;
 	private final Stage stage;
 	private final Skin skin;
 	private final Viewport viewport;

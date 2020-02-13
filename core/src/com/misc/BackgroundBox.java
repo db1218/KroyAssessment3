@@ -17,6 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.Actor;
  */
 public class BackgroundBox extends Actor {
 
+    // the texture that the pixmap makes
     private final Texture texture;
 
     /**

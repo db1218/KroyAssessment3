@@ -29,9 +29,13 @@ import static com.misc.Constants.MINIGAME_DURATION;
  */
 public class HowToPlayScreen implements Screen {
 
+    // objects to
     private final Kroy game;
+
+    // either main menu or pause screen, depending where they came from
     private final Screen returnScreen;
 
+    // objects used for visuals
     private final Skin skin;
     private final OrthographicCamera camera;
     private final Viewport viewport;

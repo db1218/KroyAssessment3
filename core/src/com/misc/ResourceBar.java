@@ -231,6 +231,11 @@ public class ResourceBar {
         }
     }
 
+    /*
+     *  =======================================================================
+     *                          Added for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Reset the resource amount back to its
      * original full capacity, this is used for

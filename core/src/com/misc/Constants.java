@@ -23,7 +23,7 @@ public final class Constants {
     }
 
     // ==============================================================
-    //					Added for assessment 3
+    //			    All enums below added for assessment 3
     // ==============================================================
 
     // Type enums for entities in the game
@@ -128,11 +128,11 @@ public final class Constants {
         red(30, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png")), 1000),
         blue(50,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")), 750);
 
-        private int score;
-        private double chance;
-        private long aliveTime;
+        private final int score;
+        private final double chance;
+        private final long aliveTime;
 
-        private Texture texture;
+        private final Texture texture;
 
         AlienType(int score, double chance, Texture texture, long aliveTime) {
             this.score = score;

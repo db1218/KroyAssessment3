@@ -33,24 +33,32 @@ import static com.misc.Constants.*;
  */
 public class Firetruck extends MovementSprite {
 
-    // Private values to be used in this class only
+    // hose values
     private Boolean isSpraying;
     private int toggleDelay;
     private float hoseWidth, hoseHeight;
-    private final TruckType type;
-    private final ArrayList<Texture> firetruckSlices;
-    private final ArrayList<Texture> waterFrames;
     private Polygon hoseRange;
     private ResourceBar waterBar;
+
+    private final TruckType type;
+
+    // texture slices to give 3D effect
+    private final ArrayList<Texture> firetruckSlices;
+
+    // water frames to give animation effect
+    private final ArrayList<Texture> waterFrames;
+
+    // arrow values
     private ETFortress nearestFortress;
     private final Arrow arrow;
-    private boolean viewArrow;
+    private boolean isArrowVisible;
+
+    // car park values
     private final TiledMapTileLayer carparkLayer;
-
-    private Constants.CarparkEntrances location;
-
-    private boolean alive;
+    private CarparkEntrances location;
     private boolean isBought;
+
+    private boolean isAlive;
 
     private final Firestation fireStation;
 
@@ -78,7 +86,7 @@ public class Firetruck extends MovementSprite {
         this.fireStation = fireStation;
         this.create();
         this.arrow = new Arrow(15, 50, 100, 50);
-        this.viewArrow = false;
+        this.isArrowVisible = false;
         this.carparkLayer = carparkLayer;
         this.isBought = isBought;
     }
@@ -96,7 +104,7 @@ public class Firetruck extends MovementSprite {
         this.setDecelerationRate(this.getType().getProperties()[1] * 0.6f);
         this.setMaxSpeed(this.getType().getProperties()[2]);
         this.createWaterHose();
-        this.alive = true;
+        this.isAlive = true;
 
         // Start the firetruck facing left
         this.rotate(-90);
@@ -127,7 +135,7 @@ public class Firetruck extends MovementSprite {
         if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
             super.applyAcceleration(Direction.UP);
         }
-        viewArrow = Gdx.input.isKeyPressed(Keys.SPACE);
+        isArrowVisible = Gdx.input.isKeyPressed(Keys.SPACE);
 
         // Deplete water if spraying, toggle off when depleted
         if (this.isSpraying && this.waterBar.getCurrentAmount() > 0) {
@@ -233,7 +241,7 @@ public class Firetruck extends MovementSprite {
      */
     public void updateArrow(ShapeRenderer shapeRenderer, ArrayList<ETFortress> fortresses) {
         setNearestFortress(fortresses);
-        if (viewArrow && this.nearestFortress != null) {
+        if (isArrowVisible && this.nearestFortress != null) {
             arrow.setPosition(this.getCentreX(), this.getCentreY());
             arrow.aimAtTarget(this.nearestFortress.getCentre());
             shapeRenderer.begin(ShapeRenderer.ShapeType.Line);
@@ -283,10 +291,9 @@ public class Firetruck extends MovementSprite {
 
     /*
      *  =======================================================================
-     *                          Added for assessment 3
+     *                          Added for Assessment 3
      *  =======================================================================
      */
-
     /**
      * Finds the nearest alive fortress
      *
@@ -423,6 +430,11 @@ public class Firetruck extends MovementSprite {
         return this.waterBar.getCurrentAmount() <= 0;
     }
 
+    /*
+     *  =======================================================================
+     *                          Added for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Calls methods to reset the fire truck when it is to be respawned
      */
@@ -436,7 +448,7 @@ public class Firetruck extends MovementSprite {
      * "Destroys" the fire truck
      */
     public void destroy() {
-        this.alive = false;
+        this.isAlive = false;
     }
 
     public Constants.CarparkEntrances getCarpark() {
@@ -452,7 +464,7 @@ public class Firetruck extends MovementSprite {
     }
 
     public boolean isAlive() {
-        return this.alive;
+        return this.isAlive;
     }
 
     public float getRange() {

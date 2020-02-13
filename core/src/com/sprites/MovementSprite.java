@@ -22,9 +22,11 @@ import static com.misc.Constants.TILE_DIMS;
  */
 public class MovementSprite extends SimpleSprite {
 
-    // Private values to be used in this class only
+    // physics values
     private float accelerationRate, decelerationRate, maxSpeed, rotationLockTime;
     private Vector2 speed;
+
+    // layer that provides collisions
     private TiledMapTileLayer collisionLayer;
 
     /**
@@ -111,6 +113,11 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
+    /*
+     *  =======================================================================
+     *                          Modified for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Apply acceleration to the sprite, based on collision boundaries and
      * existing acceleration.
@@ -153,6 +160,11 @@ public class MovementSprite extends SimpleSprite {
         }
     }
 
+    /*
+     *  =======================================================================
+     *                          Modified for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Checks if the tile at a location is a "blocked" tile or not.
      * @return Whether the hits a collision object (true) or not (false)
@@ -169,6 +181,18 @@ public class MovementSprite extends SimpleSprite {
         return collisions;
     }
 
+    /*
+     *  =======================================================================
+     *                          Added for Assessment 3
+     *  =======================================================================
+     */
+    /**
+     * Gets the coordinates, as Vector2s for each vertex
+     * of the polygon
+     *
+     * @param polygon   to get coordinates of
+     * @return          list of coordinates
+     */
     protected Array<Vector2> getPolygonVertices(Polygon polygon) {
         float[] vertices = polygon.getTransformedVertices();
         Array<Vector2> result = new Array<>();

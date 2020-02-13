@@ -31,9 +31,11 @@ import static com.misc.Constants.DEBUG_ENABLED;
  */
 public class StoryScreen implements Screen {
 
+    // A constant variable to store the game
     private final Kroy game;
     private GameScreen gameScreen;
 
+    // visuals and rendering
     private final OrthographicCamera camera;
     private final Stage stage;
     private final Skin skin;

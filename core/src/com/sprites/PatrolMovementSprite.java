@@ -39,6 +39,7 @@ public class PatrolMovementSprite extends SimpleSprite {
 
     // The speed that the patrols should move
     final float speed;
+
     // The junction that the patrol has just moved away from
     Junction previousJunction;
     // Queue of junctions that the patrol will travel through to get
