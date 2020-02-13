@@ -11,6 +11,7 @@ import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.Queue;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.config.Constants;
+import com.config.SFX;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
@@ -186,6 +187,9 @@ public class GameScreen implements Screen {
 		table.add(vg).top();
 
 		stage.addActor(table);
+
+		SFX.sfx_soundtrack_2.setLooping(true);
+		SFX.playGameMusic();
 
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
@@ -535,6 +539,7 @@ public class GameScreen implements Screen {
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage(), ETFortress);
 				projectile.calculateTrajectory(firetruck);
+				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			}
 		}
@@ -563,10 +568,12 @@ public class GameScreen implements Screen {
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
 				projectile.calculateTrajectory(firetruck);
+				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5, patrol);
 				projectile.calculateTrajectory(firestation);
+				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			}
 		}
@@ -582,6 +589,7 @@ public class GameScreen implements Screen {
 		// Check if firetruck is hit with a projectile
 		for (Projectile projectile : this.projectiles) {
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
+				SFX.sfx_truck_damage.play();
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
 				projectilesToRemove.add(projectile);
@@ -1005,6 +1013,12 @@ public class GameScreen implements Screen {
 		tips.addLast("{FADE=0;0.75;1}Tip: Press SPACE to find the nearest Fortress");
 		tips.addLast("{FADE=0;0.75;1}Win: Destroy all Fortresses\n" +
 				"Lose: All your Fire trucks get destroyed");
+		tips.addLast("{FADE=0;0.75;1}Pro Tip: When a Firetruck's health reaches 0, it will perform the act of death.");
+		tips.addLast("{FADE=0;0.75;1}Pro Tip: Drive straight into a wall to perform a sick 180° flip.");
+		tips.addLast("{FADE=0;0.75;1}Pro Tip: Killing your enemies makes them less likely to kill you.");
+		tips.addLast("{FADE=0;0.75;1}Pro Tip: The best strategy for defeating an enemy is to lower their health to zero" +
+				" while maintaining your own health above zero.");
+		tips.addLast("{FADE=0;0.75;1}Pro Tip: Press X to jump.");
 		tips.addLast("{FADE=0;0.75;1}Good luck!");
 		tips.addLast("");
 	}

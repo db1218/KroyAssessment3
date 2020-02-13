@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
+import com.config.SFX;
 import com.sprites.SimpleSprite;
 
 // Constants import
@@ -191,6 +192,7 @@ public class Firestation extends SimpleSprite {
      *                  <code>false</code> menu is being closed
      */
     public void toggleMenu(boolean isOpen) {
+        SFX.sfx_garage.play();
         this.isMenuOpen = isOpen;
         if (this.activeFireTruck.isSpraying() && isOpen) this.activeFireTruck.toggleHose();
         if (!isOpen) respawnFiretruck();

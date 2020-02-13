@@ -17,7 +17,6 @@ public class ArrowTest {
 
     @Test
     public void testAimAtTarget() {
-        // Setup
         final Vector2 target = new Vector2(0.0f, 0.0f);
         arrowUnderTest.aimAtTarget(target);
         assertEquals(target, new Vector2(0.0f, 0.0f));

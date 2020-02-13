@@ -18,6 +18,7 @@ import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
 import com.kroy.Kroy;
+import com.config.SFX;
 
 import static com.config.Constants.DEBUG_ENABLED;
 
@@ -74,6 +75,9 @@ public class MainMenuScreen implements Screen {
 		// Create a stage for buttons
 		stage = new Stage(viewport, game.spriteBatch);
 		stage.setDebugAll(DEBUG_ENABLED);
+
+		SFX.sfx_soundtrack_1.setLooping(true);
+		SFX.playMenuMusic();
 	}
 
 	/**
@@ -134,6 +138,7 @@ public class MainMenuScreen implements Screen {
 		playButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+				SFX.sfx_button_click.play();
 				game.setScreen(new StoryScreen(game));
 				dispose();
 			}
@@ -142,6 +147,7 @@ public class MainMenuScreen implements Screen {
 		controlsButton.addListener(new ClickListener() {
 			@Override
 			public void clicked(InputEvent event, float x, float y) {
+//				SFX.sfx_button_click.play();
 //				game.setScreen(new ControlsScreen(game));
 //				dispose();
 			}
