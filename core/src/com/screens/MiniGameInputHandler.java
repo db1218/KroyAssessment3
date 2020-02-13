@@ -5,10 +5,24 @@ import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 
+/**
+ * Input handler for Minigame, when the player
+ * clicks down on the screen, a water image
+ * will appear and destroy an alien if there is
+ * one there. The water will then disappear when
+ * the user clicks up. The user cannot drag the
+ * hose to avoid cheating!
+ */
 public class MiniGameInputHandler implements InputProcessor {
 
     private final MinigameScreen minigameScreen;
 
+    /**
+     * Constructor for minigame handler, which takes minigameScreen
+     * so that is can communicate events that happen in here
+     *
+     * @param minigameScreen MinigameScreen
+     */
     public MiniGameInputHandler(MinigameScreen minigameScreen) {
         this.minigameScreen = minigameScreen;
     }
@@ -35,21 +49,21 @@ public class MiniGameInputHandler implements InputProcessor {
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
         Vector2 clickCoordinates = new Vector2(screenX, screenY);
         Vector3 touch = minigameScreen.getCamera().unproject(new Vector3(clickCoordinates.x, clickCoordinates.y, 0));
-        minigameScreen.setPlayerHasClicked(true);
         minigameScreen.setTouch((int)touch.x, (int)touch.y);
+        minigameScreen.setCanSpray(true);
         return true;
     }
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        minigameScreen.setPlayerHasClicked(false);
+        minigameScreen.setTouch(0, 0);
+        minigameScreen.setCanSpray(false);
         return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        minigameScreen.setPlayerHasClicked(false);
-        return true;
+        return false;
     }
 
     @Override

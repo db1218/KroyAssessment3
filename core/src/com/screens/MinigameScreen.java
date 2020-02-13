@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.utils.TimeUtils;
+import com.badlogic.gdx.utils.Timer;
 import com.entities.Alien;
 import com.sprites.MinigameSprite;
 import com.Kroy;
@@ -45,8 +46,9 @@ public class MinigameScreen implements Screen {
 
     private Rectangle water;
 
-    private long timeStart;
     private long timeSpawn;
+
+    private int time;
 
     private ArrayList<Alien> onScreenETs;
     private ArrayList<Vector2> ETLocations;
@@ -54,7 +56,7 @@ public class MinigameScreen implements Screen {
     private TreeMap<Double, AlienType> map;
 
     private MiniGameInputHandler miniGameInputHandler;
-    private boolean playerHasClicked;
+    private boolean canSpray;
 
     /**
      * Constructor for minigame screen which is called when
@@ -90,7 +92,15 @@ public class MinigameScreen implements Screen {
 
         random = new Random();
 
-        timeStart = TimeUtils.millis();
+        Timer timer = new Timer();
+        timer.scheduleTask(new Timer.Task() {
+            @Override
+            public void run() {
+                time--;
+            }
+        }, 1, 1);
+
+        time = MINIGAME_DURATION;
 
         // Creates a map of types of aliens and their chance of being selected
         map = new TreeMap<>();
@@ -111,6 +121,8 @@ public class MinigameScreen implements Screen {
 
         //create water rectangle to allow collision detection
         water = new Rectangle(0, 0, 150, 150);
+
+        canSpray = true;
     }
 
     @Override
@@ -140,6 +152,7 @@ public class MinigameScreen implements Screen {
         drawWater();
 
         game.coolFont.draw(game.spriteBatch, "Minigame Score: " + score, 25, 100);
+        game.coolFont.draw(game.spriteBatch, "Time Remaining: " + time, 1320, 100);
 
         game.spriteBatch.end();
 
@@ -150,19 +163,15 @@ public class MinigameScreen implements Screen {
                 onScreenETs.remove(alien);
             }
 
-            if (playerHasClicked && water.overlaps(alien.getBoundingRectangle())) {
+            if (water.overlaps(alien.getBoundingRectangle())) {
                 score += alien.getScore();
                 onScreenETs.remove(alien);
             }
         }
 
-        if (TimeUtils.millis() - timeSpawn > 700) {
-            spawnAlien();
-        }
+        if (TimeUtils.millis() > timeSpawn + MINIGAME_SPAWN_RATE) spawnAlien();
 
-        if (TimeUtils.millis() > timeStart + MINIGAME_DURATION*1000) {
-            toGameScreen();
-        }
+        if (time <= 0) toGameScreen();
 
     }
 
@@ -195,9 +204,7 @@ public class MinigameScreen implements Screen {
      * Draws the water image if the player has clicked
      */
     private void drawWater() {
-        if (this.playerHasClicked) {
-            game.spriteBatch.draw(waterImage, water.x - (waterImage.getWidth()/2f), water.y - (waterImage.getHeight()/2f));
-        }
+        if (canSpray) game.spriteBatch.draw(waterImage, water.x, water.y);
     }
 
     /**
@@ -262,21 +269,23 @@ public class MinigameScreen implements Screen {
     }
 
     /**
-     * Used to
-     * @param b
-     */
-    public void setPlayerHasClicked(Boolean b) {
-        this.playerHasClicked = b;
-    }
-
-    /**
      * Sets the position of the water object
      *
      * @param x position of water
      * @param y position of water
      */
     public void setTouch(int x, int y) {
-        water.setPosition(x, y);
+        water.setPosition(x - (waterImage.getWidth()/2f), y - (waterImage.getHeight()/2f));
+    }
+
+    /**
+     * Means that the water can spray and destroy
+     * aliens in that location
+     * @param b <code>true</code> if water can spray
+     *          <code>false</code> otherwise
+     */
+    public void setCanSpray(boolean b) {
+        this.canSpray = b;
     }
 
     public OrthographicCamera getCamera() { return camera; }

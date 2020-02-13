@@ -7,10 +7,19 @@ package com.screens;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 
+/**
+ * Input handler processor for {@link GameScreen}
+ */
 public class GameInputHandler implements InputProcessor {
 
     private final GameScreen gameScreen;
 
+    /**
+     * Constructor for game input handler which takes
+     * in GameScreen to be able to provide some sort
+     * of feedback to when an event occurs
+     * @param gameScreen    GameScreen
+     */
     public GameInputHandler(GameScreen gameScreen) {
         this.gameScreen = gameScreen;
     }

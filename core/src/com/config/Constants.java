@@ -124,9 +124,9 @@ public final class Constants {
 
     public enum AlienType {
 
-        green(10, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png")), 3000),
-        red(30, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png")), 2000),
-        blue(50,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")), 1000);
+        green(10, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png")), 2000),
+        red(30, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png")), 1000),
+        blue(50,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")), 750);
 
         private int score;
         private double chance;
@@ -203,6 +203,7 @@ public final class Constants {
     public static final int FIRETRUCK_REPAIR_SPEED = 75;
     public static final int TIME_STATION_VULNERABLE = 180;
     public static final int MINIGAME_DURATION = 30;
+    public static final int MINIGAME_SPAWN_RATE = 1000;
 
     // Camera settings
     public static final float LERP = 3.0f;
