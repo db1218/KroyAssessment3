@@ -28,7 +28,6 @@ public class ETFortress extends SimpleSprite {
 
     // Private values for this class to use
     private final Texture destroyed;
-    private Circle detectionRange;
     private boolean flooded;
     private final FortressType type;
     private final GameScreen gameScreen;
@@ -61,7 +60,6 @@ public class ETFortress extends SimpleSprite {
     private void create() {
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
         this.getHealthBar().setMaxResource(type.getHealth());
-        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), type.getRange());
     }
 
     /**
@@ -81,8 +79,6 @@ public class ETFortress extends SimpleSprite {
             // Heal ETFortresses every second if not taking damage
 			this.getHealthBar().addResourceAmount(type.getHealing());
         }
-        // Set the detection radius
-        this.detectionRange.setPosition(this.getCentreX(), this.getCentreY());
     }
 
     /**
@@ -95,27 +91,19 @@ public class ETFortress extends SimpleSprite {
         return this.getHealthBar().getCurrentAmount() > 0 && this.getInternalTime() < 120 && this.getInternalTime() % 30 == 0;
     }
 
+    // ==============================================================
+    //			          Edited for Assessment 3
+    // ==============================================================
     /**
-     * Checks if a polygon is within the range of the ETFortress.
-     * Usually used to see if a firetruck is close enough to be attacked.
-     * 
-     * @param polygon  The polygon that needs to be checked.
-     * @return         Whether the given polygon is in the radius of the ETFortress
+     * Simple method for detecting whether a vector, fire truck,
+     * is within attacking distance of that fortress' range
+     *
+     * @param position  vector to check
+     * @return          <code>true</code> position is within range
+     *                  <code>false</code> otherwise
      */
-    public boolean isInRadius(Polygon polygon) {
-        float[] vertices = polygon.getTransformedVertices();
-        Vector2 center = new Vector2(this.detectionRange.x, this.detectionRange.y);
-        float squareRadius = this.detectionRange.radius * this.detectionRange.radius;
-        for (int i = 0; i < vertices.length; i+=2){
-            if (i == 0){
-                if (Intersector.intersectSegmentCircle(new Vector2(vertices[vertices.length - 2], vertices[vertices.length - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
-                    return true;
-            } else {
-                if (Intersector.intersectSegmentCircle(new Vector2(vertices[i-2], vertices[i-1]), new Vector2(vertices[i], vertices[i+1]), center, squareRadius))
-                    return true;
-            }
-        }
-        return polygon.contains(this.detectionRange.x, this.detectionRange.y);
+    public boolean isInRadius(Vector2 position) {
+        return this.getCentre().dst(position) <= type.getRange();
     }
 
     /**
@@ -127,7 +115,7 @@ public class ETFortress extends SimpleSprite {
     @Override
     public void drawDebug(ShapeRenderer renderer) {
         super.drawDebug(renderer);
-        renderer.circle(this.detectionRange.x, this.detectionRange.y, this.detectionRange.radius);
+        renderer.circle(this.getCentreX(), this.getCentreY(), this.type.getRange());
     }
 
     public boolean isFlooded() {

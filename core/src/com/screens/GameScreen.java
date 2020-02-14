@@ -586,7 +586,7 @@ public class GameScreen implements Screen {
 				ETFortress.getHealthBar().subtractResourceAmount((int) firetruck.getDamage());
 				this.score += 10;
 			}
-			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
+			if (ETFortress.isInRadius(firetruck.getCentre()) && ETFortress.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage());
 				projectile.calculateTrajectory(firetruck);
 				SFX.sfx_projectile.play();
@@ -615,12 +615,12 @@ public class GameScreen implements Screen {
 				patrol.getHealthBar().subtractResourceAmount((int) firetruck.getDamage());
 				this.score += 10;
 			}
-			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
+			if (patrol.isInRadius(firetruck.getCentre()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firetruck);
 				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
-			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
+			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getCentre()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firestation);
 				SFX.sfx_projectile.play();

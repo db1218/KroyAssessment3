@@ -6,6 +6,8 @@ package com.entities;
  *  =======================================================================
  */
 
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
+import com.misc.Constants;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -29,11 +31,10 @@ public class Patrol extends PatrolMovementSprite {
     // List of textures which are drawn on top of each other to create a 3D looking image
     final ArrayList<Texture> textureSlices;
 
-    // The range where a patrol can 'see' a firetruck
-    private final Circle detectionRange;
-
     // Whether the patrol has been killed by a firetruck or not
-    private  boolean isDead;
+    private boolean isDead;
+
+    private final int detectionRange;
 
     /** The constructor for Patrol
      *
@@ -47,7 +48,7 @@ public class Patrol extends PatrolMovementSprite {
         this.getHealthBar().setMaxResource(25);
         this.textureSlices = textureSlices;
         this.isDead = false;
-        this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth() * 3);
+        this.detectionRange = Constants.TILE_DIMS * 5;
     }
 
     /** Called from gameScreen, first checks whether the patrol has
@@ -61,7 +62,6 @@ public class Patrol extends PatrolMovementSprite {
         checkIfDead();
         drawVoxelImage(batch);
         super.update(batch);
-        updateDetectionRange();
     }
 
     /**
@@ -90,42 +90,21 @@ public class Patrol extends PatrolMovementSprite {
         }
     }
 
-    /** updates the x and y position of the patrol's detection
-     * range so that it is at the same x and y position as the
-     * patrol as the patrol moves
-     */
-    private void updateDetectionRange() {
-        this.detectionRange.setX(this.getX());
-        this.detectionRange.setY(this.getY());
-    }
-
     /** Checks if the patrol is dead and if so sets this.isDead to true */
     private void checkIfDead() {
         if (this.getHealthBar().getCurrentAmount() == 0) this.isDead = true;
     }
 
     /**
-     * Checks if a polygon is within the range of the patrol.
-     * Usually used to see if a firetruck is close enough to be attacked.
+     * Simple method for detecting whether a vector, fire truck,
+     * is within attacking distance of that fortress' range
      *
-     * @param polygon  The polygon that needs to be checked.
-     * @return <code> true </code>  If given polygon is in the radius of the patrol
-     *          <code> false </code> If given polygon is not in the radius of the patrol
+     * @param position  vector to check
+     * @return          <code>true</code> position is within range
+     *                  <code>false</code> otherwise
      */
-    public boolean isInRadius(Polygon polygon) {
-        float []vertices = polygon.getTransformedVertices();
-        Vector2 center = new Vector2(this.detectionRange.x, this.detectionRange.y);
-        float squareRadius = this.detectionRange.radius * this.detectionRange.radius;
-        for (int i = 0; i < vertices.length; i+=2){
-            if (i == 0){
-                if (Intersector.intersectSegmentCircle(new Vector2(vertices[vertices.length - 2], vertices[vertices.length - 1]), new Vector2(vertices[i], vertices[i + 1]), center, squareRadius))
-                    return true;
-            } else {
-                if (Intersector.intersectSegmentCircle(new Vector2(vertices[i-2], vertices[i-1]), new Vector2(vertices[i], vertices[i+1]), center, squareRadius))
-                    return true;
-            }
-        }
-        return polygon.contains(this.detectionRange.x, this.detectionRange.y);
+    public boolean isInRadius(Vector2 position) {
+        return this.getCentre().dst(position) <= detectionRange;
     }
 
     /** Returns if a patrol can shoot a projectile
@@ -147,6 +126,12 @@ public class Patrol extends PatrolMovementSprite {
      */
     public void removeDead(MapGraph mapGraph){
         mapGraph.removeDead(super.getThis());
+    }
+
+    @Override
+    public void drawDebug(ShapeRenderer renderer) {
+        super.drawDebug(renderer);
+        renderer.circle(this.getCentreX(), this.getCentreY(), detectionRange);
     }
 
     public boolean isDead() {
