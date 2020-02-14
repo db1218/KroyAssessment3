@@ -29,10 +29,10 @@ public final class Constants {
     // Type enums for entities in the game
     public enum FortressType {
         CLIFFORD(7, 1, 400, 80),
-        MINSTER(15,1, 700, 100),
+        MINSTER(15,1, 700, 200),
         RAIL(10, 1, 900, 75),
-        CASTLE1(13, 2, 600, 50),
-        CASTLE2(8, 2, 500, 40),
+        CASTLE1(13, 2, 600, 65),
+        CASTLE2(8, 2, 500, 60),
         MOSSY(17, 1, 800, 100);
 
         private final int damage;
@@ -71,39 +71,39 @@ public final class Constants {
                 600f, // MAX_SPEED
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
-                650,  // WATER MAX
+                550,  // WATER MAX
                 0,    // PRICE
-                1.9f,    // damage
+                2.1f,    // damage
         }),
         BLUE ("Blue", new float[]{
-                220,   // HEALTH
+                200,   // HEALTH
                 15f,   // ACCELERATION
                 400f,  // MAX_SPEED
                 0.6f,  // RESTITUTION
                 1.3f, // RANGE
-                600,   // WATER MAX
-                300,   // PRICE
-                1.9f,     // damage
+                500,   // WATER MAX
+                200,   // PRICE
+                2.1f,     // damage
         }),
         YELLOW ("Yellow", new float[]{
-                270,  // HEALTH
+                240,  // HEALTH
                 18f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 1.25f, // RANGE
-                700,  // WATER MAX
-                900,  // PRICE
-                1.9f,    // damage
+                600,  // WATER MAX
+                600,  // PRICE
+                2.1f,    // damage
         }),
         GREEN("Green", new float[]{
-                270f, // HEALTH
+                240f, // HEALTH
                 15f,  // ACCELERATION
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 1.2f, // RANGE
-                750,  // WATER MAX
-                1750,  // PRICE
-                2.2f,    // damage
+                700,  // WATER MAX
+                1000,  // PRICE
+                2.4f,    // damage
             }
         );
 
