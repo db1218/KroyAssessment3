@@ -194,10 +194,10 @@ public class GameScreen implements Screen {
 			mapLayers.getIndex("Trees")
         };
 
-        // creates mini game sprite
+        // creates mini game sprites around the map
 		minigameSprites = new ArrayList<>();
-		minigameSprites.add(new MinigameSprite(75, 3));
-		minigameSprites.add(new MinigameSprite(113, 48));
+		minigameSprites.add(new MinigameSprite(87, 68));
+		minigameSprites.add(new MinigameSprite(30.5f, 55));
 		minigameSprites.add(new MinigameSprite(10, 92));
 		minigameSprites.add(new MinigameSprite(93, 106));
 
@@ -210,10 +210,12 @@ public class GameScreen implements Screen {
 		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinsterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinsterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
-		Texture castle1 = new Texture("MapAssets/UniqueBuildings/fortress_1.png");
-		Texture castle1Wet = new Texture("MapAssets/UniqueBuildings/fortress_1_wet.png");
-		Texture castle2 = new Texture("MapAssets/UniqueBuildings/fortress_2.png");
-		Texture castle2Wet = new Texture("MapAssets/UniqueBuildings/fortress_2_wet.png");
+		Texture castle1Texture = new Texture("MapAssets/UniqueBuildings/fortress_1.png");
+		Texture castle1WetTexture = new Texture("MapAssets/UniqueBuildings/fortress_1_wet.png");
+		Texture castle2Texture = new Texture("MapAssets/UniqueBuildings/fortress_2.png");
+		Texture castle2WetTexture = new Texture("MapAssets/UniqueBuildings/fortress_2_wet.png");
+		Texture mossyTexture = new Texture("MapAssets/UniqueBuildings/mossy.png");
+		Texture mossyWetTexture = new Texture("MapAssets/UniqueBuildings/mossy_wet.png");
 
 		this.projectileTexture = new Texture("alienProjectile.png");
 
@@ -247,9 +249,9 @@ public class GameScreen implements Screen {
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS, FortressType.CLIFFORD, this));
 		this.ETFortresses.add(new ETFortress(yorkMinsterTexture, yorkMinsterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS, FortressType.MINSTER, this));
 		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS, FortressType.RAIL, this));
-		this.ETFortresses.add(new ETFortress(castle2, castle2Wet, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2, this));
-		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
-//		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 108 * TILE_DIMS, 102 * TILE_DIMS, FortressType.CASTLE1));
+		this.ETFortresses.add(new ETFortress(castle2Texture, castle2WetTexture, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2, this));
+		this.ETFortresses.add(new ETFortress(castle1Texture, castle1WetTexture, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
+		this.ETFortresses.add(new ETFortress(mossyTexture, mossyWetTexture, 1.5f, 1.5f, 106 * TILE_DIMS, 101 * TILE_DIMS, FortressType.MOSSY, this));
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();

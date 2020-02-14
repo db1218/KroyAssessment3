@@ -28,30 +28,25 @@ public final class Constants {
 
     // Type enums for entities in the game
     public enum FortressType {
-        CLIFFORD(7, 2000, 1, 400),
-        MINSTER(15, 3000,1, 700),
-        RAIL(10, 100000, 1, 900),
-        CASTLE1(13, 750, 2, 600),
-        CASTLE2(8, 1500, 2, 500);
+        CLIFFORD(7, 1, 400),
+        MINSTER(15,1, 700),
+        RAIL(10, 1, 900),
+        CASTLE1(13, 2, 600),
+        CASTLE2(8, 2, 500),
+        MOSSY(17, 1, 800);
 
         private final int damage;
-        private final int health;
         private final int healing;
         private final int range;
 
-        FortressType(int damage, int health, int healing, int range) {
+        FortressType(int damage, int healing, int range) {
             this.damage = damage;
-            this.health = health;
             this.healing = healing;
             this.range = range;
         }
 
         public int getDamage() {
             return this.damage;
-        }
-
-        public int getHealth() {
-            return this.health;
         }
 
         public int getHealing() {
