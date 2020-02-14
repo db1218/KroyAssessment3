@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
-import com.config.Constants;
-import com.config.SFX;
+import com.entities.Firestation;
+import com.misc.SFX;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
@@ -1118,6 +1118,10 @@ public class GameScreen implements Screen {
 			this.ETPatrols.clear();
 			this.camera.zoom = 1.3f;
 			this.zoomTarget = 1.2f;
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Killing your enemies makes them less likely to kill you.");
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Drive straight into a wall to perform a sick 180 flip.");
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Strategy: Maintain your health above zero and lower your enemies' health.");
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Press X to jump.");
 		}
 	}
 

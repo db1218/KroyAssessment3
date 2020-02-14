@@ -16,8 +16,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
 // Class imports
-import com.kroy.Kroy;
-import com.config.SFX;
+import com.Kroy;
+import com.misc.SFX;
 
 import static com.misc.Constants.DEBUG_ENABLED;
 

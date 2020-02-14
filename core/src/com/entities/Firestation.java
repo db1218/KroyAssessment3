@@ -1,4 +1,4 @@
-package com.classes;
+package com.entities;
 
 // LibGDX imports
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -8,13 +8,13 @@ import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
-import com.config.SFX;
+import com.screens.GameScreen;
 import com.sprites.SimpleSprite;
 
 // Constants import
 import java.util.ArrayList;
 
-import static com.config.Constants.*;
+import static com.misc.Constants.*;
 
 /**
  * The Firestation implementation, a static sprite in the game.
@@ -23,6 +23,8 @@ import static com.config.Constants.*;
  * @since 17/12/2019
  */
 public class Firestation extends SimpleSprite {
+
+    private GameScreen gameScreen;
 
     // Private values for this class to use
     private final Circle repairRange;
@@ -45,9 +47,10 @@ public class Firestation extends SimpleSprite {
      * @param xPos     The x-coordinate for the Firestation.
      * @param yPos     The y-coordinate for the Firestation.
      */
-    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos) {
+    public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, GameScreen gameScreen) {
         super(texture);
         this.destroyed = destroyedTexture;
+        this.gameScreen = gameScreen;
         this.setPosition(xPos, yPos);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
@@ -65,9 +68,11 @@ public class Firestation extends SimpleSprite {
      */
     public void update(Batch batch) {
         super.update(batch);
-        if (this.getHealthBar().getCurrentAmount() <= 0) {
+        if (!isDestroyed && this.getHealthBar().getCurrentAmount() <= 0) {
             this.isDestroyed = true;
             this.removeSprite(this.destroyed);
+            this.gameScreen.showPopupText("The Fire Station has been destroyed! " +
+                    "You can no longer repair or refill your fire trucks", 1, 7);
         }
         this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
     }
@@ -106,6 +111,10 @@ public class Firestation extends SimpleSprite {
      */
     public void updateFiretruck(Batch batch, ShapeRenderer shapeRenderer, OrthographicCamera camera) {
         this.activeFireTruck.update(batch, camera);
+        if (this.activeFireTruck.isTankEmpty() && gameScreen.getFireStationTime() % 5 == 0) {
+            if (gameScreen.getFireStationTime() > 0) gameScreen.showPopupText("{FAST}This truck has run out of water, go to the Fire Station to refill", 1, 5);
+            else gameScreen.showPopupText("{FAST}This truck has run out of water, select another one", 1, 5);
+        }
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
         if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
             this.activeFireTruck.destroy();
@@ -153,7 +162,7 @@ public class Firestation extends SimpleSprite {
      * @param firetruck to park
      */
     public void parkFireTruck(Firetruck firetruck) {
-            this.parkedFireTrucks.add(firetruck);
+        this.parkedFireTrucks.add(firetruck);
     }
 
     /**
@@ -180,8 +189,9 @@ public class Firestation extends SimpleSprite {
                 this.repairRefill(firetruck);
             }
         }
-        if (time == 0) {
+        if (!this.isVulnerable && time == 0) {
             this.isVulnerable = true;
+            this.gameScreen.showPopupText("WARNING: The Fire Station is now vulnerable to attack",3, 3);
         }
     }
 
@@ -192,7 +202,6 @@ public class Firestation extends SimpleSprite {
      *                  <code>false</code> menu is being closed
      */
     public void toggleMenu(boolean isOpen) {
-        SFX.sfx_garage.play();
         this.isMenuOpen = isOpen;
         if (this.activeFireTruck.isSpraying() && isOpen) this.activeFireTruck.toggleHose();
         if (!isOpen) respawnFiretruck();
@@ -254,4 +263,5 @@ public class Firestation extends SimpleSprite {
     public boolean isDestroyed() {
         return this.isDestroyed;
     }
+
 }

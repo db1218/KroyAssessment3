@@ -6,7 +6,7 @@ package com.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
-import com.config.SFX;
+import com.misc.SFX;
 
 /**
  * Input handler processor for {@link GameScreen}
