@@ -71,7 +71,7 @@ public final class Constants {
                 600f, // MAX_SPEED
                 0.8f, // RESTITUTION
                 1.2f, // RANGE
-                600,  // WATER MAX
+                650,  // WATER MAX
                 0,    // PRICE
                 1.9f,    // damage
         }),
@@ -80,7 +80,7 @@ public final class Constants {
                 15f,   // ACCELERATION
                 400f,  // MAX_SPEED
                 0.6f,  // RESTITUTION
-                1.2f, // RANGE
+                1.3f, // RANGE
                 600,   // WATER MAX
                 300,   // PRICE
                 1.9f,     // damage
@@ -91,7 +91,7 @@ public final class Constants {
                 500f, // MAX_SPEED
                 1.6f, // RESTITUTION
                 1.25f, // RANGE
-                600,  // WATER MAX
+                700,  // WATER MAX
                 900,  // PRICE
                 1.9f,    // damage
         }),

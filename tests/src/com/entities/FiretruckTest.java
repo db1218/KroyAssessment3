@@ -88,7 +88,6 @@ public class FiretruckTest {
         assertTrue(firetruckUnderTest.isBought());
     }
 
-
     @Test
     public void testDestroy() {
         firetruckUnderTest.destroy();
@@ -98,7 +97,7 @@ public class FiretruckTest {
     @Test
     public void testGetDamage() {
         final float result = firetruckUnderTest.getDamage();
-        assertEquals(2.0f, result, 0.0001);
+        assertEquals(1.9f, result, 0.0001);
     }
 
     @Test
