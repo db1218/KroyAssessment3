@@ -1,5 +1,11 @@
 package com.screens;
 
+/*
+ *  =======================================================================
+ *                      New class added for Assessment 3
+ *  =======================================================================
+ */
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL30;
@@ -33,29 +39,29 @@ public class MinigameScreen implements Screen {
     private final GameScreen gameScreen;
 
     //Declare images
-    private Texture waterImage;
-    private Texture background;
+    private final Texture waterImage;
+    private final Texture background;
 
-    private Random random;
+    private final Random random;
 
     //Declare score items
     private int score;
 
     //declare camera items
-    private OrthographicCamera camera;
+    private final OrthographicCamera camera;
 
-    private Rectangle water;
+    private final Rectangle water;
 
     private long timeSpawn;
 
     private int time;
 
-    private ArrayList<Alien> onScreenETs;
-    private ArrayList<Vector2> ETLocations;
+    private final ArrayList<Alien> onScreenETs;
+    private final ArrayList<Vector2> ETLocations;
 
-    private TreeMap<Double, AlienType> map;
+    private final TreeMap<Double, AlienType> map;
 
-    private MiniGameInputHandler miniGameInputHandler;
+    private final MiniGameInputHandler miniGameInputHandler;
     private boolean canSpray;
 
     /**

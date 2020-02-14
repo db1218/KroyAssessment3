@@ -56,9 +56,10 @@ public class GameScreen implements Screen {
 	// A constant variable to store the game
 	final Kroy game;
 
-	// Private values for game screen logic
+	// Private values for rendering
 	private final ShapeRenderer shapeRenderer;
 	private final OrthographicCamera camera;
+	private final ShaderProgram vignetteSepiaShader;
 
 	// Private values for tiled map
 	private final TiledMap map;
@@ -86,23 +87,24 @@ public class GameScreen implements Screen {
 	final MapGraph mapGraph;
 	final ArrayList<Junction> junctionsInMap;
 
-	private final CarparkScreen carparkScreen;
-	private final GameInputHandler gameInputHandler;
-
 	// Private stage values
 	private final Stage stage;
 	private final Label scoreLabel;
 	private final Label timeLabel;
 	private final Label fpsLabel;
 
-	private com.badlogic.gdx.utils.Queue<String> popupMessages;
-	private TypingLabel tip;
-	private Timer popupTimer;
-	private Timer firestationTimer;
-	private Timer ETPatrolsTimer;
+	// objects for the popups and tutorial
+	private Queue<String> popupMessages;
+	private final TypingLabel tip;
 	private boolean isInTutorial;
 
-	private ShaderProgram vignetteSepiaShader;
+	// timers to manage timed events
+	private final Timer popupTimer;
+	private final Timer firestationTimer;
+	private final Timer ETPatrolsTimer;
+
+	private final CarparkScreen carparkScreen;
+	private final GameInputHandler gameInputHandler;
 
 	/**
 	 * The constructor for the main game screen. All main game logic is
@@ -197,10 +199,10 @@ public class GameScreen implements Screen {
 			mapLayers.getIndex("Trees")
         };
 
-        // creates mini game sprite
+        // creates mini game sprites around the map
 		minigameSprites = new ArrayList<>();
-		minigameSprites.add(new MinigameSprite(75, 3));
-		minigameSprites.add(new MinigameSprite(113, 48));
+		minigameSprites.add(new MinigameSprite(87, 68));
+		minigameSprites.add(new MinigameSprite(30.5f, 55));
 		minigameSprites.add(new MinigameSprite(10, 92));
 		minigameSprites.add(new MinigameSprite(93, 106));
 
@@ -213,10 +215,12 @@ public class GameScreen implements Screen {
 		Texture railstationWetTexture = new Texture("MapAssets/UniqueBuildings/railstation_wet.png");
 		Texture yorkMinsterTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster.png");
 		Texture yorkMinsterWetTexture = new Texture("MapAssets/UniqueBuildings/Yorkminster_wet.png");
-		Texture castle1 = new Texture("MapAssets/UniqueBuildings/fortress_1.png");
-		Texture castle1Wet = new Texture("MapAssets/UniqueBuildings/fortress_1_wet.png");
-		Texture castle2 = new Texture("MapAssets/UniqueBuildings/fortress_2.png");
-		Texture castle2Wet = new Texture("MapAssets/UniqueBuildings/fortress_2_wet.png");
+		Texture castle1Texture = new Texture("MapAssets/UniqueBuildings/fortress_1.png");
+		Texture castle1WetTexture = new Texture("MapAssets/UniqueBuildings/fortress_1_wet.png");
+		Texture castle2Texture = new Texture("MapAssets/UniqueBuildings/fortress_2.png");
+		Texture castle2WetTexture = new Texture("MapAssets/UniqueBuildings/fortress_2_wet.png");
+		Texture mossyTexture = new Texture("MapAssets/UniqueBuildings/mossy.png");
+		Texture mossyWetTexture = new Texture("MapAssets/UniqueBuildings/mossy_wet.png");
 
 		this.projectileTexture = new Texture("alienProjectile.png");
 
@@ -250,9 +254,9 @@ public class GameScreen implements Screen {
 		this.ETFortresses.add(new ETFortress(cliffordsTowerTexture, cliffordsTowerWetTexture, 1, 1, 69 * TILE_DIMS, 51 * TILE_DIMS, FortressType.CLIFFORD, this));
 		this.ETFortresses.add(new ETFortress(yorkMinsterTexture, yorkMinsterWetTexture, 2, 3.25f, 68.25f * TILE_DIMS, 82.25f * TILE_DIMS, FortressType.MINSTER, this));
 		this.ETFortresses.add(new ETFortress(railstationTexture, railstationWetTexture, 2, 2.5f, TILE_DIMS, 72.75f * TILE_DIMS, FortressType.RAIL, this));
-		this.ETFortresses.add(new ETFortress(castle2, castle2Wet, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2, this));
-		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
-//		this.ETFortresses.add(new ETFortress(castle1, castle1Wet, 2, 2, 108 * TILE_DIMS, 102 * TILE_DIMS, FortressType.CASTLE1));
+		this.ETFortresses.add(new ETFortress(castle2Texture, castle2WetTexture, 2, 2, 10 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE2, this));
+		this.ETFortresses.add(new ETFortress(castle1Texture, castle1WetTexture, 2, 2, 98 * TILE_DIMS, TILE_DIMS, FortressType.CASTLE1, this));
+		this.ETFortresses.add(new ETFortress(mossyTexture, mossyWetTexture, 1.5f, 1.5f, 106 * TILE_DIMS, 101 * TILE_DIMS, FortressType.MOSSY, this));
 
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
@@ -302,16 +306,6 @@ public class GameScreen implements Screen {
 		this.camera.position.set(this.firestation.getActiveFireTruck().getCentreX(), this.firestation.getActiveFireTruck().getCentreY(), 0);
 		// Create array to collect entities that are no longer used
 		this.projectilesToRemove = new ArrayList<Projectile>();
-
-		Timer collisionTask = new Timer();
-		collisionTask.scheduleTask(new Task()
-		{
-			@Override
-			public void run() {
-				if (!isInTutorial) checkForCollisions();
-			}
-		}, .5f, .5f);
-
 		Gdx.input.setInputProcessor(gameInputHandler);
 	}
 
@@ -397,10 +391,12 @@ public class GameScreen implements Screen {
 		// Call the update function of the sprites to draw and update them
 		firestation.updateFiretruck(this.game.batch, this.shapeRenderer, this.camera);
 
+		// Updates and render patrols
 		for (Patrol patrol : this.ETPatrols) {
 			patrol.update(this.game.batch);
 		}
 
+		// Render mini game sprites
 		for (MinigameSprite minigameSprite : minigameSprites) {
 			minigameSprite.update(this.game.batch);
 		}
@@ -521,6 +517,11 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Updates only the movement of the patrol when the
 	 * player is in the car park screen
@@ -531,9 +532,12 @@ public class GameScreen implements Screen {
 		}
 	}
 
-	/** ==============================================================
-	 * 						Added for assessment 3
-	 * 	==============================================================
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
+	/**
 	 * Checks to see if the fire truck is to be opened, if so change screen
 	 */
 	public void checkIfCarpark() {
@@ -543,6 +547,11 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Checks to see if the player has won or lost the game. Navigates back to the main menu
 	 * if they won or lost.
@@ -560,6 +569,11 @@ public class GameScreen implements Screen {
 		else if (gameLost) this.game.setScreen(new GameOverScreen(this.game, Outcome.LOST, this.score));
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Modified for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Checks to see if any collisions have occurred
 	 */
@@ -619,7 +633,7 @@ public class GameScreen implements Screen {
 		// Checks if truck has driven over a minigame sprite
 		for (int i=0; i<this.minigameSprites.size(); i++) {
 			MinigameSprite minigameSprite = this.minigameSprites.get(i);
-			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getMovementHitBox())) {
+			if (Intersector.overlapConvexPolygons(firetruck.getMovementHitBox(), minigameSprite.getHitBox())) {
 				if (!isInTutorial) firestationTimer.stop();
 				popupTimer.stop();
 				ETPatrolsTimer.stop();
@@ -631,15 +645,16 @@ public class GameScreen implements Screen {
 		}
 
 		// Check if firetruck is hit with a projectile
-		for (Projectile projectile : this.projectiles) {
+		for (int i=0; i<this.projectiles.size(); i++) {
+			Projectile projectile = this.projectiles.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
 				SFX.sfx_truck_damage.play();
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
-				projectilesToRemove.add(projectile);
+				this.projectiles.remove(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && Intersector.overlapConvexPolygons(firestation.getDamageHitBox(), projectile.getDamageHitBox())) {
 				firestation.getHealthBar().subtractResourceAmount(projectile.getDamage());
-				projectilesToRemove.add(projectile);
+				this.projectiles.remove(projectile);
 			}
 		}
 		/* Check if it is in the firestation's radius. Only repair the truck if it needs repairing.
@@ -655,6 +670,11 @@ public class GameScreen implements Screen {
 		this.time -= 1;
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Modified for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Sets the zoomTarget that the user sets with the scroll wheel
 	 *
@@ -720,11 +740,13 @@ public class GameScreen implements Screen {
 		this.ETPatrols.add(new Patrol(this.patrolTextures, mapGraph));
 	}
 
-	/** ===============================================
-	 * 			New function for assessment 3
-	 * ================================================
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
+	/**
 	 * Builds an array of textures that is used to render patrols
-	 *
 	 */
 	private void buildPatrolTextures() {
 		ArrayList<Texture> patrolTextures = new ArrayList<Texture>();
@@ -736,13 +758,14 @@ public class GameScreen implements Screen {
 		this.patrolTextures = patrolTextures;
 	}
 
-	/** =========================================================================
-	 * 						New function for assessment 3
-	 * ==========================================================================
-	 *
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
+	/**
 	 * Adds junctions to the mapGraph. A junction is a place in the map where the
 	 * patrol has to make a decision about where to move to next.
-	 *
 	 */
 	private void populateMap(){
 		Junction one = new Junction(4987, 572, "bottom right corner");
@@ -1011,6 +1034,11 @@ public class GameScreen implements Screen {
 		mapGraph.connectJunctions(fortyEight, fortyThree);
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Initially populates the popup messages queue with
 	 * the tutorial to teach the player how to play the game
@@ -1044,6 +1072,11 @@ public class GameScreen implements Screen {
 
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Runs every 5 seconds to generate the next tip
 	 * if there is one, and the first time the tips list
@@ -1058,6 +1091,11 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Queues a popup message and resets the popup timer
 	 *
@@ -1080,6 +1118,11 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Returns a tuple containing the number of fortresses
 	 * destroyed and total number of fortresses
@@ -1094,6 +1137,11 @@ public class GameScreen implements Screen {
 		return new int[]{fortressesDestroyed, this.ETFortresses.size()};
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Multiple statements to reset the game after the
 	 * tutorial has terminated:
@@ -1125,6 +1173,11 @@ public class GameScreen implements Screen {
 		}
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	/**
 	 * Calculates the sepia and vignette values which
 	 * change as the user destroyed

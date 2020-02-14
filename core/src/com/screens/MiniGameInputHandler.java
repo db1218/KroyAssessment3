@@ -1,5 +1,11 @@
 package com.screens;
 
+/*
+ *  =======================================================================
+ *                    New class added for Assessment 3
+ *  =======================================================================
+ */
+
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.math.Vector2;
@@ -15,6 +21,7 @@ import com.badlogic.gdx.math.Vector3;
  */
 public class MiniGameInputHandler implements InputProcessor {
 
+    // communication with screen it is detecting inputs for
     private final MinigameScreen minigameScreen;
 
     /**

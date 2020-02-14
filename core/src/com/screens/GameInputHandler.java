@@ -13,6 +13,7 @@ import com.misc.SFX;
  */
 public class GameInputHandler implements InputProcessor {
 
+    // communication with screen it is detecting inputs for
     private final GameScreen gameScreen;
 
     /**

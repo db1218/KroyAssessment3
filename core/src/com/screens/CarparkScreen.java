@@ -31,19 +31,22 @@ import java.util.ArrayList;
  */
 public class CarparkScreen implements Screen {
 
+    // objects from other screen
     private final Kroy game;
     private final Skin skin;
+    private final Firestation firestation;
     private final GameScreen gameScreen;
 
+    // camera and visual objects
     private final OrthographicCamera camera;
     private final Viewport viewport;
-
     private final ShapeRenderer shapeRenderer;
-
-    private final Firestation firestation;
-    private Firetruck activeFiretruck;
     private final Stage stage;
 
+    // truck current active
+    private Firetruck activeFiretruck;
+
+    // scene 2d actors
     private final HorizontalGroup selectorGroup;
     private final TextButton closeButton;
 

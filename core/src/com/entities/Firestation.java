@@ -4,7 +4,6 @@ package com.entities;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
@@ -24,20 +23,21 @@ import static com.misc.Constants.*;
  */
 public class Firestation extends SimpleSprite {
 
-    private GameScreen gameScreen;
+    private final GameScreen gameScreen;
 
-    // Private values for this class to use
-    private final Circle repairRange;
-
+    // list of fire trucks that are not the active truck
     private final ArrayList<Firetruck> parkedFireTrucks;
+
+    // fire truck that the user is currently controlling
     private Firetruck activeFireTruck;
 
+    // destroyed texture
     private final Texture destroyed;
 
+    // booleans
     private boolean isMenuOpen;
     private boolean isVulnerable;
     private boolean isDestroyed;
-
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -54,7 +54,6 @@ public class Firestation extends SimpleSprite {
         this.setPosition(xPos, yPos);
         this.setSize(FIRESTATION_WIDTH, FIRESTATION_HEIGHT);
         this.getHealthBar().setMaxResource(FIRESTATION_HEALTH);
-        this.repairRange = new Circle(this.getCentreX(), this.getCentreY(), this.getWidth());
         this.parkedFireTrucks = new ArrayList<>();
         this.isDestroyed = false;
         this.isVulnerable = false;
@@ -74,7 +73,6 @@ public class Firestation extends SimpleSprite {
             this.gameScreen.showPopupText("The Fire Station has been destroyed! " +
                     "You can no longer repair or refill your fire trucks", 1, 7);
         }
-        this.repairRange.setPosition(this.getCentreX(), this.getCentreY());
     }
 
     /**
@@ -143,15 +141,17 @@ public class Firestation extends SimpleSprite {
         this.activeFireTruck.respawn();
     }
 
+    /*
+     *  =======================================================================
+     *                          Added for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Whether the fire station has any more active fire trucks
      *
      * @return  <code>true</code> if there is a parked fire truck
      *          <code>false</code> otherwise
      */
-    // ==============================================================
-    //					Added for assessment 3
-    // ==============================================================
     public boolean hasParkedFiretrucks() {
         return getAliveFiretruckID() >= 0;
     }
@@ -207,15 +207,17 @@ public class Firestation extends SimpleSprite {
         if (!isOpen) respawnFiretruck();
     }
 
+    /*
+     *  =======================================================================
+     *                          Modified for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Returns the id of a parked fire truck,
      * called when a fire truck dies and a new one is selected
      *
      * @return  <code>-1</code> no id
      */
-    // ==============================================================
-    //					Modified for assessment 3
-    // ==============================================================
     private int getAliveFiretruckID() {
         for (int i=0; i < parkedFireTrucks.size(); i++) {
             if (parkedFireTrucks.get(i).isAlive() && parkedFireTrucks.get(i).isBought()) {
@@ -225,14 +227,16 @@ public class Firestation extends SimpleSprite {
         return -1;
     }
 
+    /*
+     *  =======================================================================
+     *                          Added for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Swap active fire truck with indexed parked fire truck
      *
      * @param index of parked fire truck
      */
-    // ==============================================================
-    //					Added for assessment 3
-    // ==============================================================
     public void changeFiretruck(int index) {
         Firetruck previous = activeFireTruck;
         activeFireTruck = parkedFireTrucks.get(index);

@@ -14,7 +14,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.screens.MainMenuScreen;
-import com.screens.MinigameScreen;
 
 /**
  * Entry point to the main game, called by DesktopLauncher.
@@ -24,7 +23,7 @@ import com.screens.MinigameScreen;
  */
 public class Kroy extends Game {
 
-	// Batches to store drawn elements
+	// shared objects to use throughout the screens as quite heavy
   	public Batch batch;
   	public SpriteBatch spriteBatch;
 	public BitmapFont coolFont;
@@ -36,8 +35,9 @@ public class Kroy extends Game {
 	 */
 	public void create() {
 		Gdx.graphics.setFullscreenMode(Gdx.graphics.getDisplayMode());
-		// Use LibGDX's default Arial font.
-		this.setTTF();
+
+
+		this.setFonts();
 		this.spriteBatch = new SpriteBatch();
 		this.skin = new Skin(Gdx.files.internal("skin/uiskin.json"), new TextureAtlas("skin/uiskin.atlas"));
 		// Instantly transition to the main menu screen when game starts
@@ -71,7 +71,16 @@ public class Kroy extends Game {
 		this.batch = batch;
 	}
 
-	private void setTTF() {
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
+	/**
+	 * Helper method to create the shared fonts and styles
+	 * used throughout the game by various screens.
+	 */
+	private void setFonts() {
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("Xolonium-Regular.ttf"));
 		FreeTypeFontGenerator.FreeTypeFontParameter parameter = new FreeTypeFontGenerator.FreeTypeFontParameter();
 		parameter.borderWidth = 1;
@@ -85,8 +94,8 @@ public class Kroy extends Game {
 
 		Label.LabelStyle labelStyle = new Label.LabelStyle();
 		labelStyle.font = font2;
-		this.font10 = labelStyle;
 
+		this.font10 = labelStyle;
 		this.coolFont = generator.generateFont(parameter);
 
 		generator.dispose();
@@ -96,6 +105,11 @@ public class Kroy extends Game {
 		return this.font10;
 	}
 
+	/*
+	 *  =======================================================================
+	 *                          Added for Assessment 3
+	 *  =======================================================================
+	 */
 	public Skin getSkin() {
 		return this.skin;
 	}

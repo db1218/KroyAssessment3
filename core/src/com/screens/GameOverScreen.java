@@ -30,20 +30,29 @@ import static com.misc.Constants.DEBUG_ENABLED;
 /**
  * Really basic screen that provides the user whether they have
  * won or lost the game, displays their score and allows them to
- * navigate back to the memory
+ * navigate back to the main menu
  */
 public class GameOverScreen implements Screen {
 
+    // values passed in from GameScreen
     private final Kroy game;
     private final Outcome outcome;
     private final int score;
 
-    private final Skin skin;
+    // camera, visual and appearance objects
     private final OrthographicCamera camera;
     private final Viewport viewport;
     private final Stage stage;
+    private final Skin skin;
 
-
+    /**
+     * Constructor for Game over screen, with inputs from
+     * {@link GameScreen} once the game has ended
+     *
+     * @param game      to access shared objects
+     * @param outcome   either win or lose, depending on game outcome
+     * @param score     how much score the player earned in the game
+     */
     public GameOverScreen(Kroy game, Outcome outcome, int score) {
         this.game = game;
         this.outcome = outcome;

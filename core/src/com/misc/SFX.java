@@ -1,5 +1,11 @@
 package com.misc;
 
+/*
+ *  =======================================================================
+ *                    New class Added for Assessment 3
+ *  =======================================================================
+ */
+
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.audio.Sound;

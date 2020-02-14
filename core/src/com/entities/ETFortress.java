@@ -10,7 +10,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.graphics.Texture;
 
 // Custom class import
-import com.misc.Constants;
+import com.misc.Constants.*;
 import com.screens.GameScreen;
 import com.sprites.SimpleSprite;
 
@@ -30,8 +30,8 @@ public class ETFortress extends SimpleSprite {
     private final Texture destroyed;
     private Circle detectionRange;
     private boolean flooded;
-    private final Constants.FortressType type;
-    private GameScreen gameScreen;
+    private final FortressType type;
+    private final GameScreen gameScreen;
 
     /**
      * Overloaded constructor containing all possible parameters.
@@ -44,7 +44,7 @@ public class ETFortress extends SimpleSprite {
      * @param xPos              The x-coordinate for the ETFortress.
      * @param yPos              The y-coordinate for the ETFortress.
      */
-    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, Constants.FortressType type, GameScreen gameScreen) {
+    public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, FortressType type, GameScreen gameScreen) {
         super(texture);
         this.gameScreen = gameScreen;
         this.destroyed = destroyedTexture;
@@ -59,7 +59,7 @@ public class ETFortress extends SimpleSprite {
      * Sets the health of the ETFortress and its size provided in CONSTANTS.
      */
     private void create() {
-        this.getHealthBar().setMaxResource((int) (type.getHealth() * Math.max(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY())));
+        this.getHealthBar().setMaxResource((int) Math.max(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY()));
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
         this.detectionRange = new Circle(this.getCentreX(), this.getCentreY(), type.getRange());
     }
@@ -134,7 +134,7 @@ public class ETFortress extends SimpleSprite {
         return this.flooded;
     }
 
-    public Constants.FortressType getType() {
+    public FortressType getType() {
         return this.type;
     }
 }

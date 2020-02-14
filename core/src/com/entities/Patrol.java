@@ -1,5 +1,11 @@
 package com.entities;
 
+/*
+ *  =======================================================================
+ *                       New class added for Assessment 3
+ *  =======================================================================
+ */
+
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
@@ -18,11 +24,9 @@ import java.util.ArrayList;
  * extends PatrolMovementSprite which determines how the
  * patrol moves around the map
  */
-
 public class Patrol extends PatrolMovementSprite {
 
-    // List of textures which are drawn on top of each other
-    // to create a 3D looking image
+    // List of textures which are drawn on top of each other to create a 3D looking image
     final ArrayList<Texture> textureSlices;
 
     // The range where a patrol can 'see' a firetruck

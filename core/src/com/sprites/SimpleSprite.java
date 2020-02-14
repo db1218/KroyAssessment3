@@ -24,8 +24,12 @@ public class SimpleSprite extends Sprite {
     private Texture texture;
     private float width, height, internalTime;
     private ResourceBar healthBar;
+
+    // hit boxes, only not equal for fire truck
     private Polygon movementHitBox;
     private Polygon damageHitBox;
+
+    // center of the sprite
     private Vector2 centre;
 
     /**
@@ -41,6 +45,11 @@ public class SimpleSprite extends Sprite {
         this.create();
     }
 
+    /*
+     *  =======================================================================
+     *                          Modified for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Creates a healthbar and hitbox for the sprite.
      */
@@ -55,6 +64,11 @@ public class SimpleSprite extends Sprite {
         this.internalTime = 150;
     }
 
+    /*
+     *  =======================================================================
+     *                          Modified for Assessment 3
+     *  =======================================================================
+     */
     /**
      * Update the sprite position, hitbox and health bar.
      * Must be called every frame in order to draw the sprite.
@@ -119,9 +133,12 @@ public class SimpleSprite extends Sprite {
         this.damageHitBox.setOrigin(width/2, height/2);
     }
 
-    /** ============================================================================
-     *                          Added for assessment 3
-     *  ============================================================================
+    /*
+     *  =======================================================================
+     *                          Added for Assessment 3
+     *  =======================================================================
+     */
+    /**
      * Changes the movement hit box to a triangle for better movement and collisions
      *
      * @param rotation  amount in degrees to rotate the hitbox by
