@@ -6,8 +6,10 @@ import com.badlogic.gdx.utils.Array;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.pathFinding.Road;
+import com.testrunner.GdxTestRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -16,6 +18,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(GdxTestRunner.class)
 public class PatrolMovementSpriteTest {
 
     @Mock

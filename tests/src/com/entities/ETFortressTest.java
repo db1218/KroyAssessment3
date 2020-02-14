@@ -1,17 +1,20 @@
 package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.math.Polygon;
+import com.badlogic.gdx.math.Vector2;
 import com.misc.Constants;
 import com.screens.GameScreen;
+import com.testrunner.GdxTestRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(GdxTestRunner.class)
 public class ETFortressTest {
 
     @Mock
@@ -37,8 +40,19 @@ public class ETFortressTest {
 
     @Test
     public void testIsInRadius() {
-        final Polygon polygon = new Polygon(new float[]{0.0f});
-        final boolean result = etFortressUnderTest.isInRadius(polygon);
+        final boolean result = etFortressUnderTest.isInRadius(new Vector2(0,0));
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsOnRadius() {
+        final boolean result = etFortressUnderTest.isInRadius(new Vector2(etFortressUnderTest.getType().getRange(),0));
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsNotInRadius() {
+        final boolean result = etFortressUnderTest.isInRadius(new Vector2(etFortressUnderTest.getType().getRange() + 1,0));
         assertFalse(result);
     }
 
