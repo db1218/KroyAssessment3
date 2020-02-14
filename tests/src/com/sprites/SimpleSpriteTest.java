@@ -2,11 +2,10 @@ package com.sprites;
 
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
-import com.badlogic.gdx.math.Polygon;
+import com.testrunner.GdxTestRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 
 import static org.junit.Assert.assertEquals;
@@ -14,6 +13,7 @@ import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.verify;
 import static org.mockito.MockitoAnnotations.initMocks;
 
+@RunWith(GdxTestRunner.class)
 public class SimpleSpriteTest {
 
     @Mock
@@ -29,7 +29,7 @@ public class SimpleSpriteTest {
 
     @Test
     public void testRemoveSprite() {
-        final Texture destroyedTexture = new Texture(0, 0, Pixmap.Format.Alpha);
+        final Texture destroyedTexture = new Texture(0, 0, Pixmap.Format.Intensity);
         simpleSpriteUnderTest.removeSprite(destroyedTexture);
         assertEquals(simpleSpriteUnderTest.getTexture(), mockSpriteTexture);
     }
@@ -55,7 +55,7 @@ public class SimpleSpriteTest {
 
     @Test
     public void testSetRotation() {
-        simpleSpriteUnderTest.setRotation(5.0f);
+        simpleSpriteUnderTest.resetRotation(5.0f);
         assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), 5.0f, 0.0001f);
     }
 
