@@ -10,17 +10,13 @@ import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.math.*;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.ui.Image;
 
 // Custom class import
-import com.badlogic.gdx.scenes.scene2d.ui.Image;
-import com.entities.Firestation;
 import com.misc.Constants;
 import com.misc.Arrow;
 import com.misc.ResourceBar;
 import com.sprites.MovementSprite;
-import com.misc.SFX;
-
-// Constants imports
 
 // Java util import
 import java.util.ArrayList;
@@ -287,7 +283,7 @@ public class Firetruck extends MovementSprite {
      * Resets rotation and hit box when fire truck is spawned
      */
     protected void resetSprite() {
-        super.setRotation(0 + this.location.getRotation());
+        super.resetRotation(0 + this.location.getRotation());
         super.setMovementHitBox(180 + this.location.getRotation());
     }
 

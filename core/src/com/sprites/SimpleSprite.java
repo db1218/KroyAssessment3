@@ -160,8 +160,14 @@ public class SimpleSprite extends Sprite {
         this.damageHitBox.rotate(degrees);
     }
 
-    @Override
-    public void setRotation(float degrees) {
+    /**
+     * Resets the rotation of the sprite,
+     * but also the hit boxes
+     *
+     * @param degrees   what the starting rotation
+     *                  should be
+     */
+    public void resetRotation(float degrees) {
         super.setRotation(degrees);
         this.movementHitBox.setRotation(degrees);
         this.damageHitBox.setRotation(degrees);

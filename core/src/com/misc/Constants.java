@@ -197,7 +197,7 @@ public final class Constants {
     public static final float MAP_WIDTH = 117 * (8 * MAP_SCALE);
     public static final float MAP_HEIGHT = 10000 * (8 * MAP_SCALE);
     public static final int TILE_DIMS = (int) (8 * MAP_SCALE);
-    public static final int PATROL_NUMBER = 10;
+    public static final int PATROL_MAX = 10;
 
     // Time durations
     public static final float BAR_FADE_DURATION = 3;

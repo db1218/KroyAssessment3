@@ -394,6 +394,7 @@ public class GameScreen implements Screen {
 		// Updates and render patrols
 		for (Patrol patrol : this.ETPatrols) {
 			patrol.update(this.game.batch);
+			if (DEBUG_ENABLED) patrol.drawDebug(shapeRenderer);
 		}
 
 		// Render mini game sprites
@@ -512,7 +513,7 @@ public class GameScreen implements Screen {
 	 * Spawns a patrol, up to a certain number
 	 * */
 	public void createPatrol() {
-		if (this.ETPatrols.size() < PATROL_NUMBER) {
+		if (this.ETPatrols.size() < PATROL_MAX) {
 			spawnPatrol();
 		}
 	}

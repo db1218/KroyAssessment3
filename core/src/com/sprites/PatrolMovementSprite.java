@@ -68,20 +68,18 @@ public class PatrolMovementSprite extends SimpleSprite {
         this.deltaY = 0f;
         this.speed = 2.0f;
 
-
         this.previousJunction = start;
 
         setGoal(goal);
 
-
-        // The road it is travelling on is the road between the junction it will start
-        // moving from (here it's it start junction) and the next junction it is moving to
-        // (here it's the first junction in pathQueue)
+        /* The road it is travelling on is the road between the junction it will start
+        moving from (here it's it start junction) and the next junction it is moving to
+        (here it's the first junction in pathQueue) */
         this.setRoad = mapGraph.getRoad(this.previousJunction, this.pathQueue.first());
 
-        // Calls lockRoad in mapGraph which adds the road it is travelling on to the hashmap
-        // lockedRoads in mapGraph so another patrol doesn't travel on this road at the same
-        // time
+        /* Calls lockRoad in mapGraph which adds the road it is travelling on to the hashmap
+        lockedRoads in mapGraph so another patrol doesn't travel on this road at the same
+        time */
         mapGraph.lockRoad(this.setRoad, this);
     }
 
@@ -195,9 +193,13 @@ public class PatrolMovementSprite extends SimpleSprite {
         setGoal(newGoal);
     }
 
-    public float getX() { return this.x - (this.getWidth() / 2); }
+    public float getX() {
+        return this.x - (this.getWidth() / 2);
+    }
 
-    public float getY(){ return this.y - (this.getHeight() / 2); }
+    public float getY() {
+        return this.y - (this.getHeight() / 2);
+    }
 
     public Junction getGoal() {return this.pathQueue.last();}
 
