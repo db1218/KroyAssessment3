@@ -6,6 +6,7 @@ package com.screens;
 
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.InputProcessor;
+import com.misc.SFX;
 
 /**
  * Input handler processor for {@link GameScreen}
@@ -35,6 +36,7 @@ public class GameInputHandler implements InputProcessor {
     public boolean keyDown(int keycode) {
         if (keycode == Input.Keys.ESCAPE) {
             gameScreen.pause();
+            SFX.sfx_button_click.play();
         } else if (keycode == Input.Keys.ENTER) {
             gameScreen.finishTutorial();
         }

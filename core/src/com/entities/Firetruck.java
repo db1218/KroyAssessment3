@@ -13,10 +13,12 @@ import com.badlogic.gdx.Input.Keys;
 
 // Custom class import
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
+import com.entities.Firestation;
 import com.misc.Constants;
 import com.misc.Arrow;
 import com.misc.ResourceBar;
 import com.sprites.MovementSprite;
+import com.misc.SFX;
 
 // Constants imports
 
@@ -370,7 +372,7 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
-     * Toggles the fireturck's hose to spray if off and stop if on.
+     * Toggles the firetruck's hose to spray if off and stop if on.
      */
     public void toggleHose() {
         if (this.toggleDelay <= 0) {
@@ -490,6 +492,8 @@ public class Firetruck extends MovementSprite {
     public boolean isBought() {
         return this.isBought;
     }
+
+    public void setToggleDelay(int delay) {this.toggleDelay = delay;}
 
     /**
      * Dispose of all textures used by this class and its parents.

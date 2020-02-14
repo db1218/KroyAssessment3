@@ -16,6 +16,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
+import com.misc.SFX;
 import com.Kroy;
 
 import static com.misc.Constants.DEBUG_ENABLED;
@@ -110,6 +111,7 @@ public class PauseScreen implements Screen {
         resumeButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SFX.sfx_button_click.play();
                 game.setScreen(gameScreen);
                 gameScreen.resume();
                 dispose();
@@ -126,6 +128,7 @@ public class PauseScreen implements Screen {
         quitButton.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
+                SFX.sfx_button_click.play();
                 game.setScreen(new MainMenuScreen(game));
                 gameScreen.dispose();
                 dispose();
@@ -136,6 +139,7 @@ public class PauseScreen implements Screen {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ESCAPE) {
+                    SFX.sfx_button_click.play();
                     game.setScreen(gameScreen);
                     gameScreen.resume();
                     dispose();

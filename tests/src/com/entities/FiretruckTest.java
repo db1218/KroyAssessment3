@@ -34,7 +34,6 @@ public class FiretruckTest {
     private ArrayList<Texture> textures;
 
     private Firetruck firetruckUnderTest;
-    private Firetruck firetruck;
 
     @Rule
     public MockitoRule mockitoRule = MockitoJUnit.rule();
@@ -42,7 +41,7 @@ public class FiretruckTest {
     @Before
     public void setUp() {
         setUpTextures();
-        firetruck = new Firetruck(textures, textures,TruckType.BLUE,t1,t2,firestation,false);
+        firetruckUnderTest = new Firetruck(textures, textures,TruckType.BLUE,t1,t2,firestation,false);
     }
 
     private void setUpTextures() {
@@ -85,25 +84,26 @@ public class FiretruckTest {
 
     @Test
     public void testBuy() {
-        firetruck.buy();
-        assertTrue(firetruck.isBought());
+        firetruckUnderTest.buy();
+        assertTrue(firetruckUnderTest.isBought());
     }
 
 
     @Test
     public void testDestroy() {
         firetruckUnderTest.destroy();
-        assertNull(firetruckUnderTest);
+        assertFalse(firetruckUnderTest.isAlive());
     }
 
     @Test
     public void testGetDamage() {
         final float result = firetruckUnderTest.getDamage();
-        assertEquals(0.0f, result, 0.0001);
+        assertEquals(2.0f, result, 0.0001);
     }
 
     @Test
     public void testToggleHose() {
+        firetruckUnderTest.setToggleDelay(0);
         firetruckUnderTest.toggleHose();
         assertTrue(firetruckUnderTest.isSpraying());
     }

@@ -10,6 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.VerticalGroup;
 import com.badlogic.gdx.utils.*;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
+import com.entities.Firestation;
+import com.misc.SFX;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.badlogic.gdx.Gdx;
@@ -179,6 +181,9 @@ public class GameScreen implements Screen {
 		table.add(vg).top();
 
 		stage.addActor(table);
+
+		SFX.sfx_soundtrack_2.setLooping(true);
+		SFX.playGameMusic();
 
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
@@ -584,6 +589,7 @@ public class GameScreen implements Screen {
 			if (ETFortress.isInRadius(firetruck.getDamageHitBox()) && ETFortress.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, ETFortress.getCentreX(), ETFortress.getCentreY(), ETFortress.getType().getDamage());
 				projectile.calculateTrajectory(firetruck);
+				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			}
 		}
@@ -612,10 +618,12 @@ public class GameScreen implements Screen {
 			if (patrol.isInRadius(firetruck.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firetruck);
+				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			} else if (!firestation.isDestroyed() && firestation.isVulnerable() && patrol.isInRadius(firestation.getDamageHitBox()) && patrol.canShootProjectile()) {
 				Projectile projectile = new Projectile(this.projectileTexture, patrol.getCentreX(), patrol.getCentreY(), 5);
 				projectile.calculateTrajectory(firestation);
+				SFX.sfx_projectile.play();
 				this.projectiles.add(projectile);
 			}
 		}
@@ -640,6 +648,7 @@ public class GameScreen implements Screen {
 		for (int i=0; i<this.projectiles.size(); i++) {
 			Projectile projectile = this.projectiles.get(i);
 			if (Intersector.overlapConvexPolygons(firetruck.getDamageHitBox(), projectile.getDamageHitBox())) {
+				SFX.sfx_truck_damage.play();
 				firetruck.getHealthBar().subtractResourceAmount(projectile.getDamage());
 				if (this.score >= 10) this.score -= 10;
 				this.projectiles.remove(projectile);
@@ -1157,6 +1166,10 @@ public class GameScreen implements Screen {
 			this.ETPatrols.clear();
 			this.camera.zoom = 1.3f;
 			this.zoomTarget = 1.2f;
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Killing your enemies makes them less likely to kill you.");
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Drive straight into a wall to perform a sick 180 flip.");
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Strategy: Maintain your health above zero and lower your enemies' health.");
+			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Press X to jump.");
 		}
 	}
 

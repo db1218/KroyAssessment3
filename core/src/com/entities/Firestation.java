@@ -162,7 +162,7 @@ public class Firestation extends SimpleSprite {
      * @param firetruck to park
      */
     public void parkFireTruck(Firetruck firetruck) {
-            this.parkedFireTrucks.add(firetruck);
+        this.parkedFireTrucks.add(firetruck);
     }
 
     /**
