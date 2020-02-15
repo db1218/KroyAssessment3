@@ -155,4 +155,25 @@ public class FiretruckTest {
         firetruckUnderTest.getWaterBar().subtractResourceAmount(10);
         assertEquals(initialWater - 10, firetruckUnderTest.getWaterBar().getCurrentAmount(), 0.0001f);
     }
+
+    @Test
+    public void healthDecreases() {
+        float initialHealth = firetruckUnderTest.getHealthBar().getCurrentAmount();
+        firetruckUnderTest.getHealthBar().subtractResourceAmount(10);
+        assertEquals(initialHealth-10, firetruckUnderTest.getHealthBar().getCurrentAmount(), 0.0001f);
+    }
+
+    @Test
+    public void waterIncreases() {
+        float initialWater = firetruckUnderTest.getWaterBar().getCurrentAmount();
+        firetruckUnderTest.getWaterBar().subtractResourceAmount(10);
+        firetruckUnderTest.getWaterBar().addResourceAmount(5);
+        assertEquals(initialWater - 5, firetruckUnderTest.getWaterBar().getCurrentAmount(), 0.0001f);
+    }
+
+    public void healthIncreases() {
+        float initialHealth = firetruckUnderTest.getHealthBar().getCurrentAmount();
+        firetruckUnderTest.getHealthBar().addResourceAmount(10);
+        assertEquals(initialHealth + 10, firetruckUnderTest.getHealthBar().getCurrentAmount(), 0.0001f);
+    }
 }

@@ -83,7 +83,7 @@ public final class Constants {
                 1.3f, // RANGE
                 500,   // WATER MAX
                 200,   // PRICE
-                2.7f,     // damage
+                2.2f,     // damage
         }),
         YELLOW ("Yellow", new float[]{
                 240,  // HEALTH
