@@ -51,15 +51,9 @@ public class ETFortress extends SimpleSprite {
         this.type = type;
         this.setScale(scaleX, scaleY);
         this.setPosition(xPos, yPos);
-        this.create();
-    }
-
-    /**
-     * Sets the health of the ETFortress and its size provided in CONSTANTS.
-     */
-    private void create() {
         this.setSize(ETFORTRESS_WIDTH * this.getScaleX(), ETFORTRESS_HEIGHT * this.getScaleY());
         this.getHealthBar().setMaxResource(type.getHealth());
+        super.resetRotation(90);
     }
 
     /**

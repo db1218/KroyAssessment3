@@ -82,16 +82,19 @@ public class HowToPlayScreen implements Screen {
         Gdx.input.setInputProcessor(stage);
 
         // Strings for controls
-        String firetruckText = "Move the firetruck using either WASD or the arrow keys to move up, left, down and right respectively \n" +
+        String firetruckText = "Move the firetruck using either WASD or the arrow keys to move up, \n" +
+                "left, down and right respectively \n" +
                 "The firetruck will rotate as you change direction \n" +
                 "Zoom in and out by scrolling up and down";
-        String fortressText = "Toggle the firehose on and off by left clicking, and use the mouse to aim at fortresses and aliens \n" +
+        String fortressText = "Toggle the firehose on and off by left clicking, and use the mouse \n" +
+                "to aim at fortresses and aliens \n" +
                 "Fortresses are destroyed when their health reaches 0, and will appear as flooded \n" +
                 "Press the SPACEBAR to see the direction of the nearest fortress";
         String repairAndPurchaseText = "Repair and refill your firetruck by returning to the firestation \n" +
                 "Purchase new firetrucks using points earned by destroying fortresses, aliens and playing the minigame \n" +
-                "When the time reaches 0, the firestation becomes vulnerable, and when destroyed can no longer be used";
-        String minigameText = "Enter a minigame by driving over one of the five icons on the map \n" +
+                "When the time reaches zero, the firestation becomes vulnerable, and when destroyed \n" +
+                "can no longer be used to repair or refill trucks";
+        String minigameText = "Enter a minigame by driving over one of the four icons on the map \n" +
                 "Click the red, blue, and green aliens that appear to earn as many points as you can in " + MINIGAME_DURATION + " seconds";
 
 
@@ -137,9 +140,9 @@ public class HowToPlayScreen implements Screen {
         Label minigameHeading = new Label("Minigame", new Label.LabelStyle(game.coolFont, Color.WHITE));
         Label minigameBody = new Label(minigameText, skin);
         Image minigameImage = new Image(new Texture(Gdx.files.internal("minigame.png")));
-        Image redAlienImage = new Image(new Texture(Gdx.files.internal("Minigame/redalien.png")));
-        Image blueAlienImage = new Image(new Texture(Gdx.files.internal("Minigame/bluealien.png")));
-        Image greenAlienImage = new Image(new Texture(Gdx.files.internal("Minigame/aliensquare.png")));
+        Image redAlienImage = new Image(new Texture(Gdx.files.internal("Minigame/alien_3.png")));
+        Image blueAlienImage = new Image(new Texture(Gdx.files.internal("Minigame/alien_1.png")));
+        Image greenAlienImage = new Image(new Texture(Gdx.files.internal("Minigame/alien_2.png")));
 
         // Return button
         TextButton returnButton = new TextButton("Return", skin);

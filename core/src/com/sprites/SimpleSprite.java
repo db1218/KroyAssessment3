@@ -39,7 +39,7 @@ public class SimpleSprite extends Sprite {
      * @param spriteTexture  The texture the sprite should use.
      */
     public SimpleSprite(Texture spriteTexture) {
-//        super(spriteTexture);
+        super(spriteTexture);
         this.texture = spriteTexture;
         this.centre = new Vector2(this.getCentreX(), this.getCentreY());
         this.create();
@@ -58,8 +58,6 @@ public class SimpleSprite extends Sprite {
         this.healthBar = new ResourceBar(Math.max(this.getWidth(), this.getHeight()), Math.min(this.getWidth(), this.getHeight()));
         this.movementHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
         this.damageHitBox = new Polygon(new float[]{0,0,this.getWidth(),0,this.getWidth(),this.getHeight(),0,this.getHeight()});
-        // Rotate 90 to be same rotation as textures
-        this.rotate(-90);
         // Start internal time at 150, used for animations/timeouts
         this.internalTime = 150;
     }

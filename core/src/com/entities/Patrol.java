@@ -49,7 +49,6 @@ public class Patrol extends PatrolMovementSprite {
         this.textureSlices = textureSlices;
         this.isDead = false;
         this.detectionRange = Constants.TILE_DIMS * 5;
-        this.rotate(90);
     }
 
     /** Called from gameScreen, first checks whether the patrol has
