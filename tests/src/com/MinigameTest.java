@@ -1,5 +1,6 @@
 package com;
 
+import com.badlogic.gdx.math.Vector2;
 import com.entities.Alien;
 import com.misc.Constants;
 import com.screens.GameScreen;
@@ -13,6 +14,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -51,6 +53,42 @@ public class MinigameTest {
         minigameScreen.spawnAlien();
         int ETsAfter = minigameScreen.getOnScreenETs().size();
         assertTrue(ETsAfter > ETsBefore);
+    }
+
+    @Test
+    public void testGreenAlienPoints() {
+        minigameScreen.getOnScreenETs().add(new Alien(Constants.AlienType.green, new Vector2(0, 0)));
+
+        int scoreBefore = minigameScreen.getScore();
+        minigameScreen.setTouch(0,0);
+        minigameScreen.checkAlienDespawn();
+        int scoreAfter = minigameScreen.getScore();
+
+        assertEquals(scoreAfter, scoreBefore + 10);
+    }
+
+    @Test
+    public void testRedAlienPoints() {
+        minigameScreen.getOnScreenETs().add(new Alien(Constants.AlienType.red, new Vector2(0, 0)));
+
+        int scoreBefore = minigameScreen.getScore();
+        minigameScreen.setTouch(0,0);
+        minigameScreen.checkAlienDespawn();
+        int scoreAfter = minigameScreen.getScore();
+
+        assertEquals(scoreAfter, scoreBefore + 20);
+    }
+
+    @Test
+    public void testBlueAlienPoints() {
+        minigameScreen.getOnScreenETs().add(new Alien(Constants.AlienType.blue, new Vector2(0, 0)));
+
+        int scoreBefore = minigameScreen.getScore();
+        minigameScreen.setTouch(0,0);
+        minigameScreen.checkAlienDespawn();
+        int scoreAfter = minigameScreen.getScore();
+
+        assertEquals(scoreAfter, scoreBefore + 50);
     }
 
 }
