@@ -167,18 +167,7 @@ public class MinigameScreen implements Screen {
 
         game.spriteBatch.end();
 
-        for (int i = 0; i < onScreenETs.size(); i++) {
-            Alien alien = onScreenETs.get(i);
-
-            if (TimeUtils.millis() > alien.getSpawnTime() + alien.type.getAliveTime()) {
-                onScreenETs.remove(alien);
-            }
-
-            if (alien.getBoundingRectangle().contains(clicked)) {
-                score += alien.getScore();
-                onScreenETs.remove(alien);
-            }
-        }
+        checkAlienDespawn();
 
         if (TimeUtils.millis() > timeSpawn + MINIGAME_SPAWN_RATE) spawnAlien();
 
@@ -212,6 +201,25 @@ public class MinigameScreen implements Screen {
     public void dispose() {
         background.dispose();
         waterImage.dispose();
+    }
+
+    /**
+     * Check if an alien on the screen is ready to be
+     * despawned by being clicked on or by the timer
+     */
+    public void checkAlienDespawn() {
+        for (int i = 0; i < onScreenETs.size(); i++) {
+            Alien alien = onScreenETs.get(i);
+
+            if (TimeUtils.millis() > alien.getSpawnTime() + alien.type.getAliveTime()) {
+                onScreenETs.remove(alien);
+            }
+
+            if (alien.getBoundingRectangle().contains(clicked)) {
+                score += alien.getScore();
+                onScreenETs.remove(alien);
+            }
+        }
     }
 
     /**
@@ -298,4 +306,7 @@ public class MinigameScreen implements Screen {
         this.screenHeight = height;
     }
 
+    public int getScore() {
+        return this.score;
+    }
 }
