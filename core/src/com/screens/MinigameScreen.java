@@ -80,7 +80,6 @@ public class MinigameScreen implements Screen {
         //load images for sprites
         waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
         background = new Texture(Gdx.files.internal("Minigame/minigame_bg.png"));
-        background.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
 
         //alien creation
         onScreenETs = new ArrayList<Alien>();
