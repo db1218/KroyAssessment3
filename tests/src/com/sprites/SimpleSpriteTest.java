@@ -49,8 +49,8 @@ public class SimpleSpriteTest {
 
     @Test
     public void testRotate() {
-        simpleSpriteUnderTest.rotate(1.0f);
-        assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), -89.0f, 0.0001f);
+        simpleSpriteUnderTest.rotate(12.0f);
+        assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), 12.0f, 0.0001f);
     }
 
     @Test

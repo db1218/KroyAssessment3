@@ -83,7 +83,7 @@ public final class Constants {
                 1.3f, // RANGE
                 500,   // WATER MAX
                 200,   // PRICE
-                2.1f,     // damage
+                2.7f,     // damage
         }),
         YELLOW ("Yellow", new float[]{
                 240,  // HEALTH
@@ -93,13 +93,13 @@ public final class Constants {
                 1.25f, // RANGE
                 600,  // WATER MAX
                 600,  // PRICE
-                2.1f,    // damage
+                2.3f,    // damage
         }),
         GREEN("Green", new float[]{
-                240f, // HEALTH
+                245f, // HEALTH
                 15f,  // ACCELERATION
-                500f, // MAX_SPEED
-                1.6f, // RESTITUTION
+                505f, // MAX_SPEED
+                1.4f, // RESTITUTION
                 1.2f, // RANGE
                 700,  // WATER MAX
                 1000,  // PRICE

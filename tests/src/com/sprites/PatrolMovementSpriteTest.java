@@ -1,5 +1,6 @@
 package com.sprites;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
@@ -11,6 +12,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -21,23 +23,22 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(GdxTestRunner.class)
 public class PatrolMovementSpriteTest {
 
-    @Mock
-    private Texture mockSpriteTexture;
-    @Mock
-    private MapGraph mockMapGraph;
+    private MapGraph mapgraph;
 
     private PatrolMovementSprite patrolMovementSpriteUnderTest;
 
     @Before
     public void setUp() {
         initMocks(this);
-        patrolMovementSpriteUnderTest = new PatrolMovementSprite(mockSpriteTexture, mockMapGraph);
+        Texture texture = Mockito.mock(Texture.class);
+        mapgraph = new MapGraph();
+        patrolMovementSpriteUnderTest = new PatrolMovementSprite(texture, mapgraph);
     }
 
     @Test
     public void testSetGoal() {
         final Junction goal = new Junction(0.0f, 0.0f, "name");
-        when(mockMapGraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
+        when(mapgraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
 
         patrolMovementSpriteUnderTest.setGoal(goal);
 
@@ -47,17 +48,17 @@ public class PatrolMovementSpriteTest {
     @Test
     public void testStep() {
         final Array<Junction> junctions = new Array<>(false, new Junction[]{new Junction(0.0f, 0.0f, "name")}, 0, 0);
-        when(mockMapGraph.getJunctions()).thenReturn(junctions);
+        when(mapgraph.getJunctions()).thenReturn(junctions);
 
-        when(mockMapGraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
-        when(mockMapGraph.isRoadLocked(any(Junction.class), any(Junction.class))).thenReturn(false);
+        when(mapgraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
+        when(mapgraph.isRoadLocked(any(Junction.class), any(Junction.class))).thenReturn(false);
 
         final Road road = new Road(new Junction(0.0f, 0.0f, "name"), new Junction(0.0f, 0.0f, "name"));
-        when(mockMapGraph.getRoad(any(Junction.class), any(Junction.class))).thenReturn(road);
+        when(mapgraph.getRoad(any(Junction.class), any(Junction.class))).thenReturn(road);
 
         patrolMovementSpriteUnderTest.step();
 
-        verify(mockMapGraph).unlockRoad(any(Road.class), any(PatrolMovementSprite.class));
-        verify(mockMapGraph).lockRoad(any(Road.class), any(PatrolMovementSprite.class));
+        verify(mapgraph).unlockRoad(any(Road.class), any(PatrolMovementSprite.class));
+        verify(mapgraph).lockRoad(any(Road.class), any(PatrolMovementSprite.class));
     }
 }
