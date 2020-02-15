@@ -157,7 +157,7 @@ public class HowToPlayScreen implements Screen {
         minigameImages.add(minigameImage).size(100,100).padRight(20);
         minigameImages.add(redAlienImage).size(100,100).padRight(20);
         minigameImages.add(blueAlienImage).size(100,100).padRight(20);
-        minigameImages.add(greenAlienImage).size(152,80);
+        minigameImages.add(greenAlienImage).size(100,100);
 
         // Adding information to main table
         table.add(heading).padBottom(40).colspan(2);
