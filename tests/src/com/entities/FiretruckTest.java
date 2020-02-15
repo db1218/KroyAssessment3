@@ -1,25 +1,22 @@
 package com.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.misc.Constants;
+import com.badlogic.gdx.math.Polygon;
 import com.misc.Constants.TruckType;
-import com.misc.ResourceBar;
-import com.screens.GameScreen;
 import com.testrunner.GdxTestRunner;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -105,6 +102,39 @@ public class FiretruckTest {
     public void testDestroy() {
         firetruckUnderTest.destroy();
         assertFalse(firetruckUnderTest.isAlive());
+    }
+
+    @Test
+    public void testCheckCarparkCollision() {
+        final TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
+        when(t2.getCell(0, 0)).thenReturn(cell);
+        firetruckUnderTest.checkCarparkCollision();
+        verify(firestation).toggleMenu(false);
+    }
+
+    @Test
+    public void testIsInHoseRange() {
+        final Polygon polygon = new Polygon(new float[]{0.0f});
+        final boolean result = firetruckUnderTest.isInHoseRange(polygon);
+        assertTrue(result);
+    }
+
+    @Test
+    public void testIsLowOnWater() {
+        final boolean result = firetruckUnderTest.isLowOnWater();
+        assertTrue(result);
+    }
+
+    @Test
+    public void testRespawn() {
+        firetruckUnderTest.respawn();
+
+    }
+
+    @Test
+    public void testSetRespawnLocation() {
+        firetruckUnderTest.setRespawnLocation(0);
+
     }
 
     @Test
