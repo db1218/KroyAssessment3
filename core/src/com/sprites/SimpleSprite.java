@@ -39,7 +39,7 @@ public class SimpleSprite extends Sprite {
      * @param spriteTexture  The texture the sprite should use.
      */
     public SimpleSprite(Texture spriteTexture) {
-        super(spriteTexture);
+//        super(spriteTexture);
         this.texture = spriteTexture;
         this.centre = new Vector2(this.getCentreX(), this.getCentreY());
         this.create();
