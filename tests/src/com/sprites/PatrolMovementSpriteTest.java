@@ -23,7 +23,8 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(GdxTestRunner.class)
 public class PatrolMovementSpriteTest {
 
-    private MapGraph mapgraph;
+    private MapGraph mockMapGraph;
+    private Texture mockSpriteTexture;
 
     private PatrolMovementSprite patrolMovementSpriteUnderTest;
 
@@ -43,7 +44,7 @@ public class PatrolMovementSpriteTest {
     @Test
     public void testSetGoal() {
         final Junction goal = new Junction(0.0f, 0.0f, "name");
-        when(mapgraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
+        when(mockMapGraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
 
         patrolMovementSpriteUnderTest.setGoal(goal);
 
@@ -53,17 +54,17 @@ public class PatrolMovementSpriteTest {
     @Test
     public void testStep() {
         final Array<Junction> junctions = new Array<>(false, new Junction[]{new Junction(0.0f, 0.0f, "name")}, 0, 0);
-        when(mapgraph.getJunctions()).thenReturn(junctions);
+        when(mockMapGraph.getJunctions()).thenReturn(junctions);
 
-        when(mapgraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
-        when(mapgraph.isRoadLocked(any(Junction.class), any(Junction.class))).thenReturn(false);
+        when(mockMapGraph.findPath(any(Junction.class), any(Junction.class))).thenReturn(null);
+        when(mockMapGraph.isRoadLocked(any(Junction.class), any(Junction.class))).thenReturn(false);
 
         final Road road = new Road(new Junction(0.0f, 0.0f, "name"), new Junction(0.0f, 0.0f, "name"));
-        when(mapgraph.getRoad(any(Junction.class), any(Junction.class))).thenReturn(road);
+        when(mockMapGraph.getRoad(any(Junction.class), any(Junction.class))).thenReturn(road);
 
         patrolMovementSpriteUnderTest.step();
 
-        verify(mapgraph).unlockRoad(any(Road.class), any(PatrolMovementSprite.class));
-        verify(mapgraph).lockRoad(any(Road.class), any(PatrolMovementSprite.class));
+        verify(mockMapGraph).unlockRoad(any(Road.class), any(PatrolMovementSprite.class));
+        verify(mockMapGraph).lockRoad(any(Road.class), any(PatrolMovementSprite.class));
     }
 }
