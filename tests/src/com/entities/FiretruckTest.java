@@ -12,26 +12,27 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(GdxTestRunner.class)
 public class FiretruckTest {
 
     @Mock
-    GameScreen gameScreenMock;
-    @Mock
     Firestation firestation;
     @Mock
     TiledMapTileLayer t1, t2;
     @Mock
-    ArrayList<Texture> a1, a2;
-
-    private ArrayList<Texture> textures;
+    private ArrayList<Texture> texturesMock;
+    @Mock
+    private Texture textureMock;
 
     private Firetruck firetruckUnderTest;
 
@@ -40,18 +41,11 @@ public class FiretruckTest {
 
     @Before
     public void setUp() {
-        setUpTextures();
-        firetruckUnderTest = new Firetruck(textures, textures,TruckType.BLUE,t1,t2,firestation,false);
-    }
-
-    private void setUpTextures() {
-        Texture texture = new Texture(Gdx.files.internal("garage.jpg"));
-        textures = new ArrayList<>();
-        textures.add(texture);
-        textures.add(texture);
-        textures.add(texture);
-        textures.add(texture);
-        textures.add(texture);
+        initMocks(this);
+        when(textureMock.getHeight()).thenReturn(10);
+        when(textureMock.getWidth()).thenReturn(10);
+        when(texturesMock.get(texturesMock.size() - 1)).thenReturn(textureMock);
+        firetruckUnderTest = new Firetruck(texturesMock, texturesMock,TruckType.BLUE,t1,t2,firestation,false);
     }
 
     /**
