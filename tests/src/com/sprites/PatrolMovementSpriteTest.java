@@ -4,11 +4,13 @@ import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
+import com.badlogic.gdx.utils.Queue;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.pathFinding.Road;
 import com.testrunner.GdxTestRunner;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -16,6 +18,8 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
+
+import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -25,8 +29,24 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(GdxTestRunner.class)
 public class PatrolMovementSpriteTest {
 
+    @Mock
     private MapGraph mockMapGraph;
+    @Mock
+    private Array<Junction> junctionsMock;
+    @Mock
     private Texture mockSpriteTexture;
+    @Mock
+    private GraphPath<Junction> graphPathMock;
+    @Mock
+    private Road roadMock;
+    @Mock
+    private Junction junctionMock;
+
+    private MapGraph mapGraph;
+
+    private Junction zero;
+    private Junction one;
+    private Junction two;
 
     private PatrolMovementSprite patrolMovementSpriteUnderTest;
 
@@ -34,34 +54,87 @@ public class PatrolMovementSpriteTest {
     @Before
     public void setUp() {
         initMocks(this);
-        Array<Junction> junctions = new Array<>();
-        junctions.add(new Junction(0,0, "junction 1"));
-        junctions.add(new Junction(10,10, "junction 2"));
-        final Road road = new Road(new Junction(0.0f, 0.0f, "name"), new Junction(0.0f, 0.0f, "name"));
-        final GraphPath graphPathMock = Mockito.mock(GraphPath.class);
-        when(graphPathMock.getCount()).thenReturn(2);
-        when(mockMapGraph.findPath(junctions.get(0), junctions.get(1))).thenReturn(graphPathMock);
-        when(mockSpriteTexture.getHeight()).thenReturn(10);
-        when(mockSpriteTexture.getWidth()).thenReturn(10);
-        when(mockMapGraph.getJunctions()).thenReturn(junctions);
-        when(mockMapGraph.getRoad(any(Junction.class), any(Junction.class))).thenReturn(road);
-        when(mockMapGraph.isRoadLocked(any(Junction.class), any(Junction.class))).thenReturn(false);
-        patrolMovementSpriteUnderTest = new PatrolMovementSprite(mockSpriteTexture, mockMapGraph);
+        mapGraph = new MapGraph();
+        populateTestGraph();
+        patrolMovementSpriteUnderTest = new PatrolMovementSprite(mockSpriteTexture, mapGraph);
+    }
+
+    private void populateTestGraph() {
+        zero = new Junction(0, 0, "zero");
+        one = new Junction(0, 10, "one");
+        two = new Junction(10, 10, "two");
+
+        mapGraph.addJunction(zero);
+        mapGraph.addJunction(one);
+        mapGraph.addJunction(two);
+
+        mapGraph.connectJunctions(zero, one);
+        mapGraph.connectJunctions(one, two);
+        mapGraph.connectJunctions(two, zero);
+
+        /* Simple Testing Graph
+
+                     (two)
+                      /|
+                    /  |
+                  /    |
+                /      |
+              /________|
+           (zero)      (one)
+
+         */
     }
 
     @Test
     public void testSetGoal() {
-        final Junction goal = new Junction(0.0f, 0.0f, "name");
+        patrolMovementSpriteUnderTest.previousJunction = mapGraph.getJunctions().get(0);
+        Junction goal = mapGraph.getJunctions().get(1);
         patrolMovementSpriteUnderTest.setGoal(goal);
         assertEquals(patrolMovementSpriteUnderTest.getGoal(), goal);
     }
 
     @Test
-    public void testStep() {
-        final Array<Junction> junctions = new Array<>(false, new Junction[]{new Junction(0.0f, 0.0f, "name")}, 0, 0);
-        patrolMovementSpriteUnderTest.step();
+    public void testGoalEqualsStartRoute() {
+        patrolMovementSpriteUnderTest.pathQueue.clear();
+        patrolMovementSpriteUnderTest.previousJunction = mapGraph.getJunctions().get(0);
 
-        verify(mockMapGraph).unlockRoad(any(Road.class), any(PatrolMovementSprite.class));
-        verify(mockMapGraph).lockRoad(any(Road.class), any(PatrolMovementSprite.class));
+        Junction goal = mapGraph.getJunctions().get(0);
+        patrolMovementSpriteUnderTest.setGoal(goal);
+
+        Queue<Junction> expectedPath = new Queue<Junction>();
+        expectedPath.addLast(mapGraph.getJunctions().get(0));
+
+        assertEquals(expectedPath, patrolMovementSpriteUnderTest.pathQueue);
     }
+
+    @Test
+    public void testOneEdgeRoute() {
+        patrolMovementSpriteUnderTest.pathQueue.clear();
+        patrolMovementSpriteUnderTest.previousJunction = zero;
+
+        Junction goal = one;
+        patrolMovementSpriteUnderTest.setGoal(goal);
+
+        Queue<Junction> expectedPath = new Queue<Junction>();
+        expectedPath.addLast(zero);
+        expectedPath.addLast(one);
+
+        assertEquals(expectedPath, patrolMovementSpriteUnderTest.pathQueue);
+    }
+
+    @Test
+    public void testTwoEdgeShortestPathRoute() {
+        patrolMovementSpriteUnderTest.pathQueue.clear();
+        patrolMovementSpriteUnderTest.previousJunction = zero;
+
+        Junction goal = two;
+        patrolMovementSpriteUnderTest.setGoal(goal);
+
+        Queue<Junction> expectedPath = new Queue<Junction>();
+        expectedPath.addLast(zero);
+        expectedPath.addLast(two);
+
+        assertEquals(expectedPath, patrolMovementSpriteUnderTest.pathQueue);
+    }
+
 }
