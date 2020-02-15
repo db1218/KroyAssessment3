@@ -42,27 +42,25 @@ public class MinigameScreen implements Screen {
     private final Texture waterImage;
     private final Texture background;
 
-    private final Random random;
-
-    //Declare score items
+    // score and time
     private int score;
+    private int time;
 
     //declare camera items
     private final OrthographicCamera camera;
 
-    private final Rectangle water;
-
+    // values to control spawning and despawning ETs
     private long timeSpawn;
-
-    private int time;
-
+    private final Random random;
     private final ArrayList<Alien> onScreenETs;
-    private final ArrayList<Vector2> ETLocations;
-
     private final TreeMap<Double, AlienType> map;
 
-    private final MiniGameInputHandler miniGameInputHandler;
+    // water values
+    private final Rectangle water;
     private boolean canSpray;
+    private Vector2 clicked;
+
+    private final MiniGameInputHandler miniGameInputHandler;
 
     /**
      * Constructor for minigame screen which is called when
@@ -79,12 +77,11 @@ public class MinigameScreen implements Screen {
 
         //load images for sprites
         waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
-        background = new Texture(Gdx.files.internal("Minigame/tempbackground.png"));
+        background = new Texture(Gdx.files.internal("Minigame/minigame_bg.png"), true);
+        background.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
 
         //alien creation
         onScreenETs = new ArrayList<Alien>();
-        ETLocations = new ArrayList<Vector2>();
-        generateETLocations();
 
         ArrayList<AlienType> typeOfAliens = new ArrayList<>();
         typeOfAliens.add(AlienType.blue);
@@ -120,7 +117,7 @@ public class MinigameScreen implements Screen {
 
         //create camera
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, 1600, 960);
+        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
         // set InputHandler
         miniGameInputHandler = new MiniGameInputHandler(this);
@@ -128,7 +125,9 @@ public class MinigameScreen implements Screen {
         //create water rectangle to allow collision detection
         water = new Rectangle(0, 0, 150, 150);
 
-        canSpray = true;
+        canSpray = false;
+
+        clicked = new Vector2();
     }
 
     @Override
@@ -148,17 +147,17 @@ public class MinigameScreen implements Screen {
         game.spriteBatch.setProjectionMatrix(camera.combined);
 
         game.spriteBatch.begin();
-        game.spriteBatch.draw(background, 0, 0);
+        game.spriteBatch.draw(background, 0, 0, background.getWidth(), background.getHeight());
 
         //draw aliens on screen
         for (Alien alien : onScreenETs) {
-            game.spriteBatch.draw(alien.getTexture(), alien.getX(), alien.getY());
+            game.spriteBatch.draw(alien.getTexture(), alien.getX(), alien.getY(), 100, 100);
         }
 
         drawWater();
 
         game.coolFont.draw(game.spriteBatch, "Minigame Score: " + score, 25, 100);
-        game.coolFont.draw(game.spriteBatch, "Time Remaining: " + time, 1320, 100);
+        game.coolFont.draw(game.spriteBatch, "Time Remaining: " + time, Gdx.graphics.getWidth() - 250, 100);
 
         game.spriteBatch.end();
 
@@ -169,7 +168,7 @@ public class MinigameScreen implements Screen {
                 onScreenETs.remove(alien);
             }
 
-            if (water.overlaps(alien.getBoundingRectangle())) {
+            if (alien.getBoundingRectangle().contains(clicked)) {
                 score += alien.getScore();
                 onScreenETs.remove(alien);
             }
@@ -217,7 +216,7 @@ public class MinigameScreen implements Screen {
      * Spawns an alien and resets the spawn timer
      */
     private void spawnAlien() {
-        onScreenETs.add(new Alien(generateType(), selectLocation()));
+        onScreenETs.add(new Alien(generateType(), generateLocation()));
         timeSpawn = TimeUtils.millis();
     }
 
@@ -235,33 +234,16 @@ public class MinigameScreen implements Screen {
     }
 
     /**
-     * Selects a random location on the screen to
-     * spawn the ET, from a list of locations
+     * Generated a random location on the screen to
+     * spawn the ET, within a border to prevent them
+     * appearing partly or fully off the screen
      *
      * @return  vector of random location
      */
-    private Vector2 selectLocation(){
-        int randomIndex = random.nextInt(ETLocations.size() - 1);
-        return ETLocations.get(randomIndex);
-    }
-
-    /**
-     *  Generates a list of all locations where an
-     *  ET can appear
-     */
-    private void generateETLocations() {
-        ETLocations.add(new Vector2(225, 700));
-        ETLocations.add(new Vector2(195, 390));
-        ETLocations.add(new Vector2(650, 390));
-        ETLocations.add(new Vector2(850, 550));
-        ETLocations.add(new Vector2(1050, 365));
-        ETLocations.add(new Vector2(1000, 100));
-        ETLocations.add(new Vector2(590, 600));
-        ETLocations.add(new Vector2(900, 650));
-        ETLocations.add(new Vector2(850, 500));
-        ETLocations.add(new Vector2(300, 200));
-        ETLocations.add(new Vector2(750, 890));
-        ETLocations.add(new Vector2(900, 550));
+    private Vector2 generateLocation(){
+        int randomX = random.nextInt((Gdx.graphics.getWidth()-150 - 50) + 1) + 50;
+        int randomY = random.nextInt((Gdx.graphics.getHeight()-150 - 250) + 1) + 250;
+        return new Vector2(randomX, randomY);
     }
 
     /**
@@ -275,13 +257,15 @@ public class MinigameScreen implements Screen {
     }
 
     /**
-     * Sets the position of the water object
+     * Sets the position of the water object and set
+     * where the player clicked
      *
      * @param x position of water
      * @param y position of water
      */
     public void setTouch(int x, int y) {
         water.setPosition(x - (waterImage.getWidth()/2f), y - (waterImage.getHeight()/2f));
+        clicked.set(x, y);
     }
 
     /**

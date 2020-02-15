@@ -97,7 +97,7 @@ public class FiretruckTest {
     @Test
     public void testGetDamage() {
         final float result = firetruckUnderTest.getDamage();
-        assertEquals(1.9f, result, 0.0001);
+        assertEquals(2.1f, result, 0.0001);
     }
 
     @Test
