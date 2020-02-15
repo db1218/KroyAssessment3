@@ -9,15 +9,17 @@ import com.pathFinding.MapGraph;
 import com.pathFinding.Road;
 import com.testrunner.GdxTestRunner;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnit;
+import org.mockito.junit.MockitoRule;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(GdxTestRunner.class)
@@ -27,6 +29,7 @@ public class PatrolMovementSpriteTest {
     private Texture mockSpriteTexture;
 
     private PatrolMovementSprite patrolMovementSpriteUnderTest;
+    
 
     @Before
     public void setUp() {
@@ -34,10 +37,12 @@ public class PatrolMovementSpriteTest {
         Array<Junction> junctions = new Array<>();
         junctions.add(new Junction(0,0, "junction 1"));
         junctions.add(new Junction(10,10, "junction 2"));
-        when(mockMapGraph.getJunctions()).thenReturn(junctions);
+       // when(mockMapGraph.getJunctions()).thenReturn(null);
         GraphPath graphPathMock = Mockito.mock(GraphPath.class);
         when(graphPathMock.getCount()).thenReturn(2);
-        when(mockMapGraph.findPath(junctions.get(0), junctions.get(1))).thenReturn(graphPathMock);
+//        when(mockMapGraph.findPath(junctions.get(0), junctions.get(1))).thenReturn(graphPathMock);
+        when(mockSpriteTexture.getHeight()).thenReturn(10);
+        when(mockSpriteTexture.getWidth()).thenReturn(10);
         patrolMovementSpriteUnderTest = new PatrolMovementSprite(mockSpriteTexture, mockMapGraph);
     }
 
