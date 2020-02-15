@@ -443,10 +443,13 @@ public class Firetruck extends MovementSprite {
     }
 
     /**
-     * "Destroys" the fire truck
+     * Checks if the fire truck should be destroyed
+     * @return  <code>true</code> if fire truck is destroyed
+     *          <code>false</code> otherwise
      */
-    public void destroy() {
-        this.isAlive = false;
+    public boolean checkDestroyed() {
+        this.isAlive = (getHealthBar().getCurrentAmount() > 0);
+        return this.isAlive;
     }
 
     public Constants.CarparkEntrances getCarpark() {
