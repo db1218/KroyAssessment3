@@ -19,8 +19,9 @@ public class ArrowTest {
 
     @Test
     public void testAimAtTarget() {
-        final Vector2 target = new Vector2(0.0f, 0.0f);
+        final Vector2 target = new Vector2(10.0f, 15.0f);
         arrowUnderTest.aimAtTarget(target);
-        assertEquals(target, new Vector2(0.0f, 0.0f));
+        float theta = (float) (180f / Math.PI * Math.atan2(arrowUnderTest.getX() - target.x, target.y - arrowUnderTest.getY()));
+        assertEquals(theta, arrowUnderTest.getRotation(), 0.0001f);
     }
 }
