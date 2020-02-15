@@ -48,6 +48,8 @@ public class MinigameScreen implements Screen {
 
     //declare camera items
     private final OrthographicCamera camera;
+    private int screenWidth;
+    private int screenHeight;
 
     // values to control spawning and despawning ETs
     private long timeSpawn;
@@ -77,7 +79,7 @@ public class MinigameScreen implements Screen {
 
         //load images for sprites
         waterImage = new Texture(Gdx.files.internal("Minigame/splashcircle.png"));
-        background = new Texture(Gdx.files.internal("Minigame/minigame_bg.png"), true);
+        background = new Texture(Gdx.files.internal("Minigame/minigame_bg.png"));
         background.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.MipMapLinearLinear);
 
         //alien creation
@@ -115,9 +117,14 @@ public class MinigameScreen implements Screen {
         //initialise score to 0
         score = 0;
 
+        screenWidth = Gdx.graphics.getWidth();
+        screenHeight = Gdx.graphics.getHeight();
+
         //create camera
         camera = new OrthographicCamera();
-        camera.setToOrtho(false, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+        camera.setToOrtho(false, screenWidth, screenHeight);
+
+
 
         // set InputHandler
         miniGameInputHandler = new MiniGameInputHandler(this);
@@ -147,7 +154,7 @@ public class MinigameScreen implements Screen {
         game.spriteBatch.setProjectionMatrix(camera.combined);
 
         game.spriteBatch.begin();
-        game.spriteBatch.draw(background, Math.abs(background.getWidth()-Gdx.graphics.getWidth())/-2f, Math.abs(background.getHeight()-Gdx.graphics.getHeight())/-2f, background.getWidth(), background.getHeight());
+        game.spriteBatch.draw(background, Math.abs(background.getWidth()-screenWidth)/-2f, Math.abs(background.getHeight()-screenHeight)/-2f, background.getWidth(), background.getHeight());
 
         //draw aliens on screen
         for (Alien alien : onScreenETs) {
@@ -157,7 +164,7 @@ public class MinigameScreen implements Screen {
         drawWater();
 
         game.coolFont.draw(game.spriteBatch, "Minigame Score: " + score, 25, 100);
-        game.coolFont.draw(game.spriteBatch, "Time Remaining: " + time, Gdx.graphics.getWidth() - 250, 100);
+        game.coolFont.draw(game.spriteBatch, "Time Remaining: " + time, screenWidth - 250, 100);
 
         game.spriteBatch.end();
 
@@ -182,6 +189,9 @@ public class MinigameScreen implements Screen {
 
     @Override
     public void resize(int width, int height) {
+        camera.viewportHeight = height;
+        camera.viewportWidth = width;
+        setScreenDimentions(width, height);
     }
 
     @Override
@@ -215,7 +225,7 @@ public class MinigameScreen implements Screen {
     /**
      * Spawns an alien and resets the spawn timer
      */
-    private void spawnAlien() {
+    public void spawnAlien() {
         onScreenETs.add(new Alien(generateType(), generateLocation()));
         timeSpawn = TimeUtils.millis();
     }
@@ -228,7 +238,7 @@ public class MinigameScreen implements Screen {
      *
      * @return  type of alien
      */
-    private AlienType generateType() {
+    public AlienType generateType() {
         double randomIndex = random.nextDouble();
         return map.ceilingEntry(randomIndex).getValue();
     }
@@ -241,8 +251,8 @@ public class MinigameScreen implements Screen {
      * @return  vector of random location
      */
     private Vector2 generateLocation(){
-        int randomX = random.nextInt((Gdx.graphics.getWidth()-150 - 50) + 1) + 50;
-        int randomY = random.nextInt((Gdx.graphics.getHeight()-150 - 250) + 1) + 250;
+        int randomX = random.nextInt((screenWidth-150 - 50) + 1) + 50;
+        int randomY = random.nextInt((screenHeight-150 - 250) + 1) + 250;
         return new Vector2(randomX, randomY);
     }
 
@@ -279,5 +289,14 @@ public class MinigameScreen implements Screen {
     }
 
     public OrthographicCamera getCamera() { return camera; }
+
+    public ArrayList<Alien> getOnScreenETs() {
+        return this.onScreenETs;
+    }
+
+    public void setScreenDimentions(int width, int height) {
+        this.screenWidth = width;
+        this.screenHeight = height;
+    }
 
 }

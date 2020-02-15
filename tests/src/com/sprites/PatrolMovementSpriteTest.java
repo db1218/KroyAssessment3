@@ -1,6 +1,6 @@
 package com.sprites;
 
-import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.utils.Array;
@@ -30,9 +30,14 @@ public class PatrolMovementSpriteTest {
     @Before
     public void setUp() {
         initMocks(this);
-        Texture texture = Mockito.mock(Texture.class);
-        mapgraph = new MapGraph();
-        patrolMovementSpriteUnderTest = new PatrolMovementSprite(texture, mapgraph);
+        Array<Junction> junctions = new Array<>();
+        junctions.add(new Junction(0,0, "junction 1"));
+        junctions.add(new Junction(10,10, "junction 2"));
+        when(mockMapGraph.getJunctions()).thenReturn(junctions);
+        GraphPath graphPathMock = Mockito.mock(GraphPath.class);
+        when(graphPathMock.getCount()).thenReturn(2);
+        when(mockMapGraph.findPath(junctions.get(0), junctions.get(1))).thenReturn(graphPathMock);
+        patrolMovementSpriteUnderTest = new PatrolMovementSprite(mockSpriteTexture, mockMapGraph);
     }
 
     @Test

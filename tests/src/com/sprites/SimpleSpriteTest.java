@@ -48,15 +48,16 @@ public class SimpleSpriteTest {
     }
 
     @Test
-    public void testRotate() {
-        simpleSpriteUnderTest.rotate(12.0f);
-        assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), 12.0f, 0.0001f);
+    public void testResetRotation() {
+        simpleSpriteUnderTest.resetRotation(5.0f);
+        assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), 5.0f, 0.0001f);
     }
 
     @Test
-    public void testSetRotation() {
-        simpleSpriteUnderTest.resetRotation(5.0f);
-        assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), 5.0f, 0.0001f);
+    public void testRotate() {
+        simpleSpriteUnderTest.resetRotation(90);
+        simpleSpriteUnderTest.rotate(1.0f);
+        assertEquals(simpleSpriteUnderTest.getMovementHitBox().getRotation(), 91.0, 0.0001f);
     }
 
     @Test

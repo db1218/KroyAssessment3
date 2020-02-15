@@ -1,6 +1,5 @@
 package com.entities;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.misc.Constants;
@@ -12,12 +11,12 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(GdxTestRunner.class)
 public class FireStationTest {
@@ -28,7 +27,7 @@ public class FireStationTest {
     private Texture textureMock;
 
     @Mock
-    private ArrayList texturesMock;
+    private ArrayList<Texture> texturesMock;
 
     @Mock
     private GameScreen gameScreen;
@@ -38,10 +37,9 @@ public class FireStationTest {
 
     @Before
     public void setUp() {
-        textureMock = Mockito.mock(Texture.class);
+        initMocks(this);
         when(textureMock.getHeight()).thenReturn(10);
         when(textureMock.getWidth()).thenReturn(10);
-        texturesMock = Mockito.mock(ArrayList.class);
         when(texturesMock.get(texturesMock.size() - 1)).thenReturn(textureMock);
         firestation = new Firestation(textureMock, textureMock, 0, 0, gameScreen);
     }
@@ -78,9 +76,9 @@ public class FireStationTest {
 
     @Test
     public void changeFiretruckTest() {
-        Firetruck firetruck1 = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
-        Firetruck firetruck2 = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
-        Firetruck firetruck3 = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
+        Firetruck firetruck1 = Mockito.mock(Firetruck.class);
+        Firetruck firetruck2 = Mockito.mock(Firetruck.class);
+        Firetruck firetruck3 = Mockito.mock(Firetruck.class);
         firestation.setActiveFireTruck(firetruck1);
         firestation.parkFireTruck(firetruck2);
         firestation.parkFireTruck(firetruck3);

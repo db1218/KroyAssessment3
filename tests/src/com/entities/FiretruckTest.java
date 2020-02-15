@@ -20,20 +20,20 @@ import org.mockito.junit.MockitoRule;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(GdxTestRunner.class)
 public class FiretruckTest {
 
     @Mock
-    GameScreen gameScreenMock;
-    @Mock
     Firestation firestation;
     @Mock
     TiledMapTileLayer t1, t2;
     @Mock
-    ArrayList<Texture> a1, a2;
-
-    private ArrayList<Texture> textures;
+    private ArrayList<Texture> texturesMock;
+    @Mock
+    private Texture textureMock;
 
     private Firetruck firetruckUnderTest;
 
@@ -42,16 +42,11 @@ public class FiretruckTest {
 
     @Before
     public void setUp() {
-        setUpTextures();
-        firetruckUnderTest = new Firetruck(textures, textures,TruckType.BLUE,t1,t2,firestation,false);
-    }
-
-    private void setUpTextures() {
-        Texture texture = Mockito.mock(Texture.class);
-        textures = new ArrayList<>();
-        for (int i = 0; i < 5; i++) {
-            textures.add(texture);
-        }
+        initMocks(this);
+        when(textureMock.getHeight()).thenReturn(10);
+        when(textureMock.getWidth()).thenReturn(10);
+        when(texturesMock.get(texturesMock.size() - 1)).thenReturn(textureMock);
+        firetruckUnderTest = new Firetruck(texturesMock, texturesMock,TruckType.BLUE,t1,t2,firestation,false);
     }
 
     /**

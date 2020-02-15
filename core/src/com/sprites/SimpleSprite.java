@@ -188,6 +188,14 @@ public class SimpleSprite extends Sprite {
     }
 
     /**
+     * Set the internal time of the sprite.
+     * @param time new internal time
+     */
+    public void setInternalTime(int time) {
+        this.internalTime = time;
+    }
+
+    /**
      * Get the movement hit box of the sprite.
      * @return The hit box of the sprite.
      */
