@@ -62,11 +62,28 @@ public class ETFortressTest {
     }
 
     @Test
-    public void testFlooded() {
+    public void testNotEnoughToFlood() {
+        when(mockGameScreen.getETFortressesDestroyed()).thenReturn(new int[]{1, 6});
+        doNothing().when(mockGameScreen).showPopupText(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
+        etFortressUnderTest.getHealthBar().subtractResourceAmount(((int) etFortressUnderTest.getHealthBar().getCurrentAmount()) - 1);
+        etFortressUnderTest.update(mockBatch);
+        assertFalse(etFortressUnderTest.isFlooded());
+    }
+
+    @Test
+    public void testJustEnoughToFlood() {
         when(mockGameScreen.getETFortressesDestroyed()).thenReturn(new int[]{1, 6});
         doNothing().when(mockGameScreen).showPopupText(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
         etFortressUnderTest.getHealthBar().subtractResourceAmount(((int) etFortressUnderTest.getHealthBar().getCurrentAmount()));
+        etFortressUnderTest.update(mockBatch);
+        assertTrue(etFortressUnderTest.isFlooded());
+    }
 
+    @Test
+    public void testDefinatelyEnoughToFlood() {
+        when(mockGameScreen.getETFortressesDestroyed()).thenReturn(new int[]{1, 6});
+        doNothing().when(mockGameScreen).showPopupText(Mockito.anyString(), Mockito.anyInt(), Mockito.anyInt());
+        etFortressUnderTest.getHealthBar().subtractResourceAmount(10000);
         etFortressUnderTest.update(mockBatch);
         assertTrue(etFortressUnderTest.isFlooded());
     }
