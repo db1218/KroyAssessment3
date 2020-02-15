@@ -99,12 +99,34 @@ public class FiretruckTest {
     }
 
     @Test
-    public void testDestroy() {
-        firetruckUnderTest.destroy();
+    public void testShouldNotBeDestroyed() {
+        firetruckUnderTest.getHealthBar().subtractResourceAmount(((int) firetruckUnderTest.getHealthBar().getCurrentAmount()) - 1);
+        firetruckUnderTest.checkDestroyed();
+        assertTrue(firetruckUnderTest.isAlive());
+    }
+
+    @Test
+    public void testShouldJustBeDestroyed() {
+        firetruckUnderTest.getHealthBar().subtractResourceAmount(((int) firetruckUnderTest.getHealthBar().getCurrentAmount()));
+        firetruckUnderTest.checkDestroyed();
         assertFalse(firetruckUnderTest.isAlive());
     }
 
     @Test
+    public void testShouldDefinatelyBeDestroyed() {
+        firetruckUnderTest.getHealthBar().subtractResourceAmount(10000);
+        firetruckUnderTest.checkDestroyed();
+        assertFalse(firetruckUnderTest.isAlive());
+    }
+
+    @Test
+    public void testGetDamage() {
+        final float result = firetruckUnderTest.getDamage();
+        assertEquals(2.1f, result, 0.0001);
+    }
+
+    @Test
+    public void testShouldDefinatelyNotToggleHose() {
     public void testCheckCarparkCollision() {
         final TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
         when(t2.getCell(0, 0)).thenReturn(cell);
@@ -140,6 +162,23 @@ public class FiretruckTest {
     @Test
     public void testToggleHose() {
         firetruckUnderTest.setToggleDelay(0);
+        firetruckUnderTest.getWaterBar().subtractResourceAmount(100000);
+        firetruckUnderTest.toggleHose();
+        assertFalse(firetruckUnderTest.isSpraying());
+    }
+
+    @Test
+    public void testShouldJustNotToggleHose() {
+        firetruckUnderTest.setToggleDelay(0);
+        firetruckUnderTest.getWaterBar().subtractResourceAmount(((int) firetruckUnderTest.getWaterBar().getCurrentAmount()));
+        firetruckUnderTest.toggleHose();
+        assertFalse(firetruckUnderTest.isSpraying());
+    }
+
+    @Test
+    public void testShouldToggleHose() {
+        firetruckUnderTest.setToggleDelay(0);
+        firetruckUnderTest.getWaterBar().subtractResourceAmount(((int) firetruckUnderTest.getWaterBar().getCurrentAmount())-1);
         firetruckUnderTest.toggleHose();
         assertTrue(firetruckUnderTest.isSpraying());
     }

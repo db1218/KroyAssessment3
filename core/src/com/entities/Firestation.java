@@ -115,8 +115,7 @@ public class Firestation extends SimpleSprite {
             else gameScreen.showPopupText("{FAST}This truck has run out of water, select another one", 1, 5);
         }
         if (DEBUG_ENABLED) this.activeFireTruck.drawDebug(shapeRenderer);
-        if (this.activeFireTruck.getHealthBar().getCurrentAmount() <= 0) {
-            this.activeFireTruck.destroy();
+        if (this.activeFireTruck.checkDestroyed()) {
             if (getAliveFiretruckID() != -1) {
                 changeFiretruck(getAliveFiretruckID());
                 this.toggleMenu(true);
