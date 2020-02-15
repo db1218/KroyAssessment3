@@ -2,8 +2,9 @@ package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.math.Polygon;
+import com.misc.Constants;
 import com.misc.Constants.TruckType;
+import com.misc.ResourceBar;
 import com.testrunner.GdxTestRunner;
 import org.junit.Before;
 import org.junit.Rule;
@@ -16,7 +17,6 @@ import org.mockito.junit.MockitoRule;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
-import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -43,7 +43,7 @@ public class FiretruckTest {
         when(textureMock.getHeight()).thenReturn(10);
         when(textureMock.getWidth()).thenReturn(10);
         when(texturesMock.get(texturesMock.size() - 1)).thenReturn(textureMock);
-        firetruckUnderTest = new Firetruck(texturesMock, texturesMock,TruckType.BLUE,t1,t2,firestation,false);
+        firetruckUnderTest = new Firetruck(texturesMock, texturesMock, TruckType.BLUE, t1, t2, firestation, false);
     }
 
     /**
@@ -57,30 +57,35 @@ public class FiretruckTest {
         assertNotEquals(TruckType.RED.getProperties()[0], TruckType.YELLOW.getProperties()[0]);
         assertNotEquals(TruckType.YELLOW.getProperties()[0], TruckType.GREEN.getProperties()[0]);
     }
+
     @Test
     public void differentAcceleration() {
         assertNotEquals(TruckType.BLUE.getProperties()[1], TruckType.RED.getProperties()[1]);
         assertNotEquals(TruckType.RED.getProperties()[1], TruckType.YELLOW.getProperties()[1]);
         assertNotEquals(TruckType.YELLOW.getProperties()[1], TruckType.GREEN.getProperties()[1]);
     }
+
     @Test
     public void differentMaxSpeed() {
         assertNotEquals(TruckType.BLUE.getProperties()[2], TruckType.RED.getProperties()[2]);
         assertNotEquals(TruckType.RED.getProperties()[2], TruckType.YELLOW.getProperties()[2]);
         assertNotEquals(TruckType.YELLOW.getProperties()[2], TruckType.GREEN.getProperties()[2]);
     }
+
     @Test
     public void differentRestitution() {
         assertNotEquals(TruckType.BLUE.getProperties()[3], TruckType.RED.getProperties()[3]);
         assertNotEquals(TruckType.RED.getProperties()[3], TruckType.YELLOW.getProperties()[3]);
         assertNotEquals(TruckType.YELLOW.getProperties()[3], TruckType.GREEN.getProperties()[3]);
     }
+
     @Test
     public void differentRange() {
         assertNotEquals(TruckType.BLUE.getProperties()[4], TruckType.RED.getProperties()[4]);
         assertNotEquals(TruckType.RED.getProperties()[4], TruckType.YELLOW.getProperties()[4]);
         assertNotEquals(TruckType.YELLOW.getProperties()[4], TruckType.GREEN.getProperties()[4]);
     }
+
     @Test
     public void differentWaterReserve() {
         assertNotEquals(TruckType.BLUE.getProperties()[5], TruckType.RED.getProperties()[5]);
@@ -92,6 +97,7 @@ public class FiretruckTest {
     public void testTruckIsInitiallyNotBought() {
         assertFalse(firetruckUnderTest.isBought());
     }
+
     @Test
     public void testBuy() {
         firetruckUnderTest.buy();
@@ -113,54 +119,14 @@ public class FiretruckTest {
     }
 
     @Test
-    public void testShouldDefinatelyBeDestroyed() {
+    public void testShouldDefinitelyBeDestroyed() {
         firetruckUnderTest.getHealthBar().subtractResourceAmount(10000);
         firetruckUnderTest.checkDestroyed();
         assertFalse(firetruckUnderTest.isAlive());
     }
 
     @Test
-    public void testGetDamage() {
-        final float result = firetruckUnderTest.getDamage();
-        assertEquals(2.1f, result, 0.0001);
-    }
-
-    @Test
-    public void testShouldDefinatelyNotToggleHose() {
-    public void testCheckCarparkCollision() {
-        final TiledMapTileLayer.Cell cell = new TiledMapTileLayer.Cell();
-        when(t2.getCell(0, 0)).thenReturn(cell);
-        firetruckUnderTest.checkCarparkCollision();
-        verify(firestation).toggleMenu(false);
-    }
-
-    @Test
-    public void testIsInHoseRange() {
-        final Polygon polygon = new Polygon(new float[]{0.0f});
-        final boolean result = firetruckUnderTest.isInHoseRange(polygon);
-        assertTrue(result);
-    }
-
-    @Test
-    public void testIsLowOnWater() {
-        final boolean result = firetruckUnderTest.isLowOnWater();
-        assertTrue(result);
-    }
-
-    @Test
-    public void testRespawn() {
-        firetruckUnderTest.respawn();
-
-    }
-
-    @Test
-    public void testSetRespawnLocation() {
-        firetruckUnderTest.setRespawnLocation(0);
-
-    }
-
-    @Test
-    public void testToggleHose() {
+    public void testShouldDefinitelyNotToggleHose() {
         firetruckUnderTest.setToggleDelay(0);
         firetruckUnderTest.getWaterBar().subtractResourceAmount(100000);
         firetruckUnderTest.toggleHose();
@@ -178,7 +144,7 @@ public class FiretruckTest {
     @Test
     public void testShouldToggleHose() {
         firetruckUnderTest.setToggleDelay(0);
-        firetruckUnderTest.getWaterBar().subtractResourceAmount(((int) firetruckUnderTest.getWaterBar().getCurrentAmount())-1);
+        firetruckUnderTest.getWaterBar().subtractResourceAmount(((int) firetruckUnderTest.getWaterBar().getCurrentAmount()) - 1);
         firetruckUnderTest.toggleHose();
         assertTrue(firetruckUnderTest.isSpraying());
     }
@@ -187,14 +153,6 @@ public class FiretruckTest {
     public void waterDecreases() {
         float initialWater = firetruckUnderTest.getWaterBar().getCurrentAmount();
         firetruckUnderTest.getWaterBar().subtractResourceAmount(10);
-        assertEquals(initialWater-10, firetruckUnderTest.getWaterBar().getCurrentAmount(), 0.0001f);
+        assertEquals(initialWater - 10, firetruckUnderTest.getWaterBar().getCurrentAmount(), 0.0001f);
     }
-
-    @Test
-    public void healthDecreases() {
-        float initialHealth = firetruckUnderTest.getHealthBar().getCurrentAmount();
-        firetruckUnderTest.getHealthBar().subtractResourceAmount(10);
-        assertEquals(initialHealth-10, firetruckUnderTest.getHealthBar().getCurrentAmount(), 0.0001f);
-    }
-
 }
