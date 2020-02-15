@@ -57,6 +57,7 @@ public class Firestation extends SimpleSprite {
         this.parkedFireTrucks = new ArrayList<>();
         this.isDestroyed = false;
         this.isVulnerable = false;
+        super.resetRotation(90);
     }
 
     /**

@@ -125,9 +125,9 @@ public final class Constants {
 
     public enum AlienType {
 
-        green(10, 0.5, new Texture(Gdx.files.internal("Minigame/aliensquare.png")), 2000),
-        red(30, 0.3, new Texture(Gdx.files.internal("Minigame/redalien.png")), 1000),
-        blue(50,0.2, new Texture(Gdx.files.internal("Minigame/bluealien.png")), 750);
+        green(10, 0.5, new Texture(Gdx.files.internal("Minigame/alien_2.png")), 1000),
+        red(20, 0.3, new Texture(Gdx.files.internal("Minigame/alien_3.png")), 750),
+        blue(50,0.2, new Texture(Gdx.files.internal("Minigame/alien_1.png")), 400);
 
         private final int score;
         private final double chance;

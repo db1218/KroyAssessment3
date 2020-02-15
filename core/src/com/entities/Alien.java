@@ -37,6 +37,7 @@ public class Alien extends Sprite {
      */
     public Alien(AlienType type, Vector2 position) {
         super(type.getTexture());
+        super.setSize(100, 100);
         super.setPosition(position.x, position.y);
         this.type = type;
         this.spawnTime = TimeUtils.millis();
