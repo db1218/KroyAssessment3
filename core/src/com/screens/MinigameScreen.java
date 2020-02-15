@@ -147,7 +147,7 @@ public class MinigameScreen implements Screen {
         game.spriteBatch.setProjectionMatrix(camera.combined);
 
         game.spriteBatch.begin();
-        game.spriteBatch.draw(background, 0, 0, background.getWidth(), background.getHeight());
+        game.spriteBatch.draw(background, Math.abs(background.getWidth()-Gdx.graphics.getWidth())/-2f, Math.abs(background.getHeight()-Gdx.graphics.getHeight())/-2f, background.getWidth(), background.getHeight());
 
         //draw aliens on screen
         for (Alien alien : onScreenETs) {
