@@ -2,11 +2,14 @@ package com.misc;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.Batch;
+import com.testrunner.GdxTestRunner;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import static org.junit.Assert.assertEquals;
 
+@RunWith(GdxTestRunner.class)
 public class ResourceBarTest {
 
     private ResourceBar resource;
