@@ -1162,6 +1162,7 @@ public class GameScreen implements Screen {
 			showPopupText("Good luck!", 1, 5);
 			firestationTimer.start();
 			firestation.getActiveFireTruck().getWaterBar().resetResourceAmount();
+			firestation.getActiveFireTruck().setRespawnLocation(0);
 			firestation.getActiveFireTruck().respawn();
 			firestation.getActiveFireTruck().setHose(false);
 			this.ETPatrols.clear();
