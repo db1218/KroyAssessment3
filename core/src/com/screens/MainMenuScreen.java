@@ -105,11 +105,11 @@ public class MainMenuScreen implements Screen {
 
 		// Create table to arrange buttons.
 		Table buttonTable = new Table();
-		buttonTable.setFillParent(true);
 		buttonTable.center();
 
 		Image bcg = new Image(new Texture(Gdx.files.internal("menu_bg_2.png")));
 		Stack bcgstack = new Stack();
+		bcgstack.setFillParent(true);
 		bcgstack.add(bcg);
 		bcgstack.add(buttonTable);
 
