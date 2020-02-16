@@ -39,6 +39,8 @@ public class GameInputHandler implements InputProcessor {
             SFX.sfx_button_click.play();
         } else if (keycode == Input.Keys.ENTER) {
             gameScreen.finishTutorial();
+        } else if (keycode == Input.Keys.SPACE) {
+            gameScreen.getActiveTruck().setArrow(true);
         }
         return true;
     }
@@ -51,7 +53,10 @@ public class GameInputHandler implements InputProcessor {
      */
     @Override
     public boolean keyUp(int keycode) {
-        return false;
+        if (keycode == Input.Keys.SPACE) {
+            gameScreen.getActiveTruck().setArrow(false);
+        }
+        return true;
     }
 
     /**

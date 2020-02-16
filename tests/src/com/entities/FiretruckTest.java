@@ -1,7 +1,10 @@
 package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
+import com.misc.Arrow;
 import com.misc.Constants;
 import com.misc.Constants.TruckType;
 import com.misc.ResourceBar;
@@ -11,12 +14,15 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.MockitoJUnit;
 import org.mockito.junit.MockitoRule;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -31,6 +37,8 @@ public class FiretruckTest {
     private ArrayList<Texture> texturesMock;
     @Mock
     private Texture textureMock;
+
+    private Arrow arrowUnderTest;
 
     private Firetruck firetruckUnderTest;
 
@@ -171,9 +179,45 @@ public class FiretruckTest {
         assertEquals(initialWater - 5, firetruckUnderTest.getWaterBar().getCurrentAmount(), 0.0001f);
     }
 
+    @Test
     public void healthIncreases() {
         float initialHealth = firetruckUnderTest.getHealthBar().getCurrentAmount();
         firetruckUnderTest.getHealthBar().addResourceAmount(10);
         assertEquals(initialHealth + 10, firetruckUnderTest.getHealthBar().getCurrentAmount(), 0.0001f);
+    }
+
+    @Test
+    public void testUpdateNearestFortress() {
+        ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
+        ETFortress fortress1 = Mockito.mock(ETFortress.class);
+        ETFortress fortress2 = Mockito.mock(ETFortress.class);
+        when(fortress1.getCentre()).thenReturn(new Vector2(0,0));
+        when(fortress2.getCentre()).thenReturn(new Vector2(10,10));
+        fortresses.add(fortress1);
+        fortresses.add(fortress2);
+        firetruckUnderTest.setPosition(2,2);
+        firetruckUnderTest.setNearestFortress(fortresses);
+        assertEquals(firetruckUnderTest.getNearestFortress(), fortress1);
+    }
+
+    @Test
+    public void testUpdateArrow() {
+        ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
+        ETFortress fortress1 = Mockito.mock(ETFortress.class);
+        ETFortress fortress2 = Mockito.mock(ETFortress.class);
+        when(fortress1.getCentre()).thenReturn(new Vector2(10,10));
+        when(fortress2.getCentre()).thenReturn(new Vector2(20,20));
+        fortresses.add(fortress1);
+        fortresses.add(fortress2);
+        firetruckUnderTest.setPosition(2,2);
+        firetruckUnderTest.updateArrow(Mockito.mock(ShapeRenderer.class), fortresses);
+
+        arrowUnderTest = new Arrow(0, 0, 0, 0);
+        final Vector2 target = firetruckUnderTest.getNearestFortress().getCentre();
+        arrowUnderTest.aimAtTarget(target);
+        float theta = (float) (180f / Math.PI * Math.atan2(arrowUnderTest.getX() - target.x, target.y - arrowUnderTest.getY()));
+        System.out.println(theta);
+        System.out.println(arrowUnderTest.getRotation());
+        assertEquals(theta, arrowUnderTest.getRotation(), 0.0001f);
     }
 }
