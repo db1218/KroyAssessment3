@@ -1,5 +1,6 @@
-package com;
+package com.screens;
 
+import com.Kroy;
 import com.badlogic.gdx.math.Vector2;
 import com.entities.Alien;
 import com.misc.Constants;
