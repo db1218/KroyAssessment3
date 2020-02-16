@@ -43,9 +43,11 @@ public class Firestation extends SimpleSprite {
      * Overloaded constructor containing all possible parameters.
      * Drawn with the given texture at the given position.
      *
-     * @param texture  The texture used to draw the Firestation with.
-     * @param xPos     The x-coordinate for the Firestation.
-     * @param yPos     The y-coordinate for the Firestation.
+     * @param texture           The texture used to draw the Firestation with.
+     * @param destroyedTexture  The destoryed texture when Firestation is destroyed.
+     * @param xPos              The x-coordinate for the Firestation.
+     * @param yPos              The y-coordinate for the Firestation.
+     * @param gameScreen        GameScreen to be able to send popup messages to
      */
     public Firestation(Texture texture, Texture destroyedTexture, float xPos, float yPos, GameScreen gameScreen) {
         super(texture);

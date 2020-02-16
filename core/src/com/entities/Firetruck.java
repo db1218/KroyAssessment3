@@ -449,7 +449,7 @@ public class Firetruck extends MovementSprite {
      */
     public boolean checkDestroyed() {
         this.isAlive = (getHealthBar().getCurrentAmount() > 0);
-        return this.isAlive;
+        return !this.isAlive;
     }
 
     public Constants.CarparkEntrances getCarpark() {

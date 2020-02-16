@@ -32,9 +32,10 @@ public class Projectile extends MovementSprite {
      * It also requires an ID so that it can be focused with the camera. Drawn with the given
      * texture at the given position.
      * 
-     * @param texture        The texture used to draw the projectile with.
-     * @param x              The x-coordinate the projectile will start at.
-     * @param y              The y-coordinate the projectile will start at.
+     * @param texture       The texture used to draw the projectile with.
+     * @param x             The x-coordinate the projectile will start at.
+     * @param y             The y-coordinate the projectile will start at.
+     * @param damage        The amount of damage projectile does when it hits
      */
     public Projectile(Texture texture, float x, float y, int damage) {
         super(texture);

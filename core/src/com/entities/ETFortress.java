@@ -42,6 +42,8 @@ public class ETFortress extends SimpleSprite {
      * @param scaleY            The scaling in the y-axis.
      * @param xPos              The x-coordinate for the ETFortress.
      * @param yPos              The y-coordinate for the ETFortress.
+     * @param type              {@link FortressType} given to fortress
+     * @param gameScreen        GameScreen to send popup messages to
      */
     public ETFortress(Texture texture, Texture destroyedTexture, float scaleX, float scaleY, float xPos, float yPos, FortressType type, GameScreen gameScreen) {
         super(texture);

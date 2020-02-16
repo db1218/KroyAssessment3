@@ -1196,8 +1196,8 @@ public class GameScreen implements Screen {
 
 	/**
 	 * Returns the time for the fire station
-	 * @return	<code>if time > 0</code> time
-	 * 			<code>if time < 0</code> 0
+	 * @return	<code>if time greater than 0</code> time
+	 * 			<code>if time less than 0</code> 0
 	 */
 	public int getFireStationTime() {
 		return Math.max(this.time, 0);
