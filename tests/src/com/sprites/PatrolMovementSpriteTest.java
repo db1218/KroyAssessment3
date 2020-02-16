@@ -76,13 +76,13 @@ public class PatrolMovementSpriteTest {
     @Test
     public void testGoalEqualsStartRoute() {
         patrolMovementSpriteUnderTest.pathQueue.clear();
-        patrolMovementSpriteUnderTest.previousJunction = mapGraph.getJunctions().get(0);
+        patrolMovementSpriteUnderTest.previousJunction = zero;
 
-        Junction goal = mapGraph.getJunctions().get(0);
+        Junction goal = zero;
         patrolMovementSpriteUnderTest.setGoal(goal);
 
         Queue<Junction> expectedPath = new Queue<Junction>();
-        expectedPath.addLast(mapGraph.getJunctions().get(0));
+        expectedPath.addLast(zero);
 
         assertEquals(expectedPath, patrolMovementSpriteUnderTest.pathQueue);
     }

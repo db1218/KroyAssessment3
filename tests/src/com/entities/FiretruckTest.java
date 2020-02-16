@@ -188,7 +188,7 @@ public class FiretruckTest {
     }
 
     @Test
-    public void testUpdateNearestFortress() {
+    public void testUpdateNearestFortress1() {
         ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
         ETFortress fortress1 = Mockito.mock(ETFortress.class);
         ETFortress fortress2 = Mockito.mock(ETFortress.class);
@@ -196,7 +196,35 @@ public class FiretruckTest {
         when(fortress2.getCentre()).thenReturn(new Vector2(10,10));
         fortresses.add(fortress1);
         fortresses.add(fortress2);
-        firetruckUnderTest.setPosition(2,2);
+        firetruckUnderTest.setPosition(4,4);
+        firetruckUnderTest.setNearestFortress(fortresses);
+        assertEquals(firetruckUnderTest.getNearestFortress(), fortress1);
+    }
+
+    @Test
+    public void testUpdateNearestFortressOnBoundary() {
+        ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
+        ETFortress fortress1 = Mockito.mock(ETFortress.class);
+        ETFortress fortress2 = Mockito.mock(ETFortress.class);
+        when(fortress1.getCentre()).thenReturn(new Vector2(0,0));
+        when(fortress2.getCentre()).thenReturn(new Vector2(10,10));
+        fortresses.add(fortress1);
+        fortresses.add(fortress2);
+        firetruckUnderTest.setPosition(5,5);
+        firetruckUnderTest.setNearestFortress(fortresses);
+        assertEquals(firetruckUnderTest.getNearestFortress(), fortress1);
+    }
+
+    @Test
+    public void testUpdateNearestFortress2() {
+        ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
+        ETFortress fortress1 = Mockito.mock(ETFortress.class);
+        ETFortress fortress2 = Mockito.mock(ETFortress.class);
+        when(fortress1.getCentre()).thenReturn(new Vector2(0,0));
+        when(fortress2.getCentre()).thenReturn(new Vector2(10,10));
+        fortresses.add(fortress1);
+        fortresses.add(fortress2);
+        firetruckUnderTest.setPosition(6,6);
         firetruckUnderTest.setNearestFortress(fortresses);
         assertEquals(firetruckUnderTest.getNearestFortress(), fortress1);
     }
