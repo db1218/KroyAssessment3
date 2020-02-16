@@ -1,6 +1,7 @@
 package com.entities;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.misc.Constants;
 import com.screens.GameScreen;
@@ -34,6 +35,8 @@ public class FireStationTest {
 
     @Mock
     private TiledMapTileLayer tileLayerMock;
+    @Mock
+    private Batch mockBatch;
 
     @Before
     public void setUp() {
@@ -73,6 +76,58 @@ public class FireStationTest {
         float waterAfter = firetruck.getWaterBar().getCurrentAmount();
         assertEquals(waterAfter, waterBefore, 0.0);
     }
+
+    @Test
+    public void repairNotAtFirestationTest() {
+        Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
+        firestation.setActiveFireTruck(firetruck);
+        firestation.getActiveFireTruck().getHealthBar().subtractResourceAmount(10);
+        float healthBefore = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
+        firestation.getActiveFireTruck().setRespawnLocation(3); // sets car park to upper 1 (not fire station)
+        firestation.checkRepairRefill(180, true);
+        float healthAfter = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
+        assertEquals(healthAfter, healthBefore, 0.0);
+    }
+
+    @Test
+    public void repaiAtFirestationTest() {
+        Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
+        firestation.setActiveFireTruck(firetruck);
+        firestation.getActiveFireTruck().getHealthBar().subtractResourceAmount(10);
+        float healthBefore = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
+        firestation.getActiveFireTruck().setRespawnLocation(0); // sets car park to fire station
+        firestation.checkRepairRefill(180, true);
+        float healthAfter = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
+        assertTrue(healthAfter > healthBefore);
+    }
+
+    @Test
+    public void repairAtFirestationAfterItHasBeenDestroyedTest() {
+        Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
+        firestation.setActiveFireTruck(firetruck);
+        firestation.getActiveFireTruck().getHealthBar().subtractResourceAmount(10);
+        float healthBefore = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
+        firestation.getActiveFireTruck().setRespawnLocation(0); // sets car park to fire station
+        firestation.getHealthBar().subtractResourceAmount(((int) firestation.getHealthBar().getCurrentAmount()));
+        firestation.update(mockBatch);
+        firestation.checkRepairRefill(0, true);
+        float healthAfter = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
+        assertEquals(healthAfter, healthBefore, 0.0);
+    }
+
+    @Test
+    public void firestationVulnerableTest() {
+        firestation.checkRepairRefill(0, false);
+        assertTrue(firestation.isVulnerable());
+    }
+
+    @Test
+    public void firestationDestroyTest() {
+        firestation.getHealthBar().subtractResourceAmount(((int) firestation.getHealthBar().getCurrentAmount()));
+        firestation.update(mockBatch);
+        assertTrue(firestation.isDestroyed());
+    }
+
 
     @Test
     public void changeFiretruckTest() {
