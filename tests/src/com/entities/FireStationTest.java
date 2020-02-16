@@ -48,6 +48,19 @@ public class FireStationTest {
     }
 
     @Test
+    public void firestationVulnerableTest() {
+        firestation.checkRepairRefill(0, false);
+        assertTrue(firestation.isVulnerable());
+    }
+
+    @Test
+    public void firestationDestroyTest() {
+        firestation.getHealthBar().subtractResourceAmount(((int) firestation.getHealthBar().getCurrentAmount()));
+        firestation.update(mockBatch);
+        assertTrue(firestation.isDestroyed());
+    }
+
+    @Test
     public void refillEmptyTest() {
         Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
         firetruck.getWaterBar().subtractResourceAmount(((int) firetruck.getWaterBar().getCurrentAmount()));
@@ -90,7 +103,7 @@ public class FireStationTest {
     }
 
     @Test
-    public void repaiAtFirestationTest() {
+    public void repairAtFirestationTest() {
         Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
         firestation.setActiveFireTruck(firetruck);
         firestation.getActiveFireTruck().getHealthBar().subtractResourceAmount(10);
@@ -113,19 +126,6 @@ public class FireStationTest {
         firestation.checkRepairRefill(0, true);
         float healthAfter = firestation.getActiveFireTruck().getHealthBar().getCurrentAmount();
         assertEquals(healthAfter, healthBefore, 0.0);
-    }
-
-    @Test
-    public void firestationVulnerableTest() {
-        firestation.checkRepairRefill(0, false);
-        assertTrue(firestation.isVulnerable());
-    }
-
-    @Test
-    public void firestationDestroyTest() {
-        firestation.getHealthBar().subtractResourceAmount(((int) firestation.getHealthBar().getCurrentAmount()));
-        firestation.update(mockBatch);
-        assertTrue(firestation.isDestroyed());
     }
 
     @Test
