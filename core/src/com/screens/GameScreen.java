@@ -183,7 +183,6 @@ public class GameScreen implements Screen {
 		stage.addActor(table);
 
 		SFX.sfx_soundtrack_2.setLooping(true);
-		SFX.playGameMusic();
 
 		// ---- 3) Construct all textures to be used in the game here, ONCE ------ //
 
@@ -1170,8 +1169,7 @@ public class GameScreen implements Screen {
 			this.zoomTarget = 1.2f;
 			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Killing your enemies makes them less likely to kill you.");
 			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Drive straight into a wall to perform a sick 180 flip.");
-			popupMessages.addLast("{FADE=0;0.75;1}Pro Strategy: Maintain your health above zero and lower your enemies' health.");
-			popupMessages.addLast("{FADE=0;0.75;1}Pro Tip: Press X to jump.");
+			SFX.playGameMusic();
 		}
 	}
 

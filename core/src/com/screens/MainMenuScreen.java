@@ -6,12 +6,10 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
 import com.badlogic.gdx.utils.viewport.Viewport;
@@ -110,6 +108,11 @@ public class MainMenuScreen implements Screen {
 		buttonTable.setFillParent(true);
 		buttonTable.center();
 
+		Image bcg = new Image(new Texture(Gdx.files.internal("menu_bg_2.png")));
+		Stack bcgstack = new Stack();
+		bcgstack.add(bcg);
+		bcgstack.add(buttonTable);
+
 		// Create buttons
 		Label heading = new Label("Kroy", new Label.LabelStyle(game.coolFont, Color.WHITE));
 		heading.setFontScale(2);
@@ -156,7 +159,7 @@ public class MainMenuScreen implements Screen {
 		});
 
 		// Add table to stage
-		stage.addActor(buttonTable);
+		stage.addActor(bcgstack);
 
 	}
 

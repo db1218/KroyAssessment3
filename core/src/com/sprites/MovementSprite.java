@@ -138,7 +138,7 @@ public class MovementSprite extends SimpleSprite {
                 this.speed = new Vector2(-this.speed.x*.50f, this.speed.y*.75f);
             }
         } else {
-            this.speed = new Vector2(-this.speed.x, -(this.speed.y*1.2f));
+            this.speed = new Vector2(-(this.speed.x*0.7f), -(this.speed.y*0.7f));
         }
     }
 
