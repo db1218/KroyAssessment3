@@ -133,7 +133,6 @@ public class Firetruck extends MovementSprite {
         if (Gdx.input.isKeyPressed(Keys.UP) || Gdx.input.isKeyPressed(Keys.W)) {
             super.applyAcceleration(Direction.UP);
         }
-        isArrowVisible = Gdx.input.isKeyPressed(Keys.SPACE);
 
         // Deplete water if spraying, toggle off when depleted
         if (this.isSpraying && this.waterBar.getCurrentAmount() > 0) {
@@ -493,6 +492,8 @@ public class Firetruck extends MovementSprite {
     }
 
     public void setToggleDelay(int delay) {this.toggleDelay = delay;}
+
+    public void setArrow(boolean b) {this.isArrowVisible = b;}
 
     /**
      * Dispose of all textures used by this class and its parents.

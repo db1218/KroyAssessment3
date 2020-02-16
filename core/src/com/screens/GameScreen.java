@@ -1197,13 +1197,9 @@ public class GameScreen implements Screen {
 	 * @return	<code>if time greater than 0</code> time
 	 * 			<code>if time less than 0</code> 0
 	 */
-	public int getFireStationTime() {
-		return Math.max(this.time, 0);
-	}
+	public int getFireStationTime() { return Math.max(this.time, 0); }
 
-	public int getTime() {
-		return this.time;
-	}
+	public int getTime() { return this.time; }
 
 	public int getScore() {
 		return this.score;
@@ -1216,5 +1212,7 @@ public class GameScreen implements Screen {
 	public Firestation getFirestation() {
 		return this.firestation;
 	}
+
+	public Firetruck getActiveTruck() {return this.firestation.getActiveFireTruck();}
 
 }
