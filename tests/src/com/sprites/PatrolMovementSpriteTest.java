@@ -70,7 +70,7 @@ public class PatrolMovementSpriteTest {
 
         mapGraph.connectJunctions(zero, one);
         mapGraph.connectJunctions(one, two);
-        mapGraph.connectJunctions(two, zero);
+        mapGraph.connectJunctions(zero, two);
 
         /* Simple Testing Graph
 
