@@ -44,15 +44,24 @@ public class MapGraph implements IndexedGraph<Junction> {
     private int lastNodeIndex = 0;
 
     /** This finds the path from the startJunction to the goalJunction
-     * @return junctionPath  path of junctions needed to get from the startJunction to
-     *                       the goalJunction */
+     *
+     * @param startJunction starting junction
+     * @param goalJunction  finishing junction
+     * @return              path of junctions needed to get from the startJunction to
+     *                      the goalJunction
+    */
     public GraphPath<Junction> findPath(Junction startJunction, Junction goalJunction){
         GraphPath<Junction> junctionPath = new DefaultGraphPath<>();
         new IndexedAStarPathFinder<>(this).searchNodePath(startJunction, goalJunction, mapHeuristic, junctionPath);
         return junctionPath;
     }
 
-    /** @return Road  returns a road going from fromJunction to toJunction */
+    /**
+     * Gets road between two junction
+     * @param fromJunction  first junction
+     * @param toJunction    second junction
+     * @return              returns a road going from fromJunction to toJunction
+     */
     public Road getRoad(Junction fromJunction, Junction toJunction) {
         for (Road road : roads) {
             if (road.fromJunction == fromJunction && road.toJunction == toJunction) {
@@ -62,7 +71,10 @@ public class MapGraph implements IndexedGraph<Junction> {
         return new Road(fromJunction, toJunction);
     }
 
-            /** Adds a junction to junctions */
+    /**
+     * Adds a junction to junctions
+     * @param junction  junction to add
+     */
     public void addJunction(Junction junction){
         junction.index = lastNodeIndex;
         lastNodeIndex++;

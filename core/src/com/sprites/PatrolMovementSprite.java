@@ -92,9 +92,12 @@ public class PatrolMovementSprite extends SimpleSprite {
         super.update(batch);
     }
 
-    /** This generates the queue of junctions the patrol will have to travel through
+    /**
+     * This generates the queue of junctions the patrol will have to travel through
      * to go from it's start position to it's goal position, once it's created a path
-     * it calls setSpeedToNextCity*/
+     * it calls setSpeedToNextCity
+     * @param goal node to end up at
+     */
     public void setGoal(Junction goal){
         GraphPath<Junction> junctionPath = mapGraph.findPath(previousJunction, goal);
         for (int i = 0; i < junctionPath.getCount(); i++){
@@ -103,7 +106,8 @@ public class PatrolMovementSprite extends SimpleSprite {
         setSpeedToNextJunction();
     }
 
-    /** This calculates the speed at which the patrol should move each frame to go from
+    /**
+     * This calculates the speed at which the patrol should move each frame to go from
      * the junction it is at (previousJunction) to the next junction it should go to.
      */
     private void setSpeedToNextJunction(){
@@ -113,7 +117,8 @@ public class PatrolMovementSprite extends SimpleSprite {
         deltaY = MathUtils.sin(angle) * this.speed;
     }
 
-    /** This updates the rotation of the patrol so it looks like it is facing the
+    /**
+     * This updates the rotation of the patrol so it looks like it is facing the
      * direction it is moving in. First calculates this in radians (angle) then
      * converts it into degrees (angleDeg).
      */
@@ -125,7 +130,8 @@ public class PatrolMovementSprite extends SimpleSprite {
         this.setRotation((float) angleDEG);
     }
 
-    /** This is called each frame and is what makes the patrol look like it
+    /**
+     * This is called each frame and is what makes the patrol look like it
      * is moving by updating it's x and y position by an amount set by
      * setSpeedToNextJunction.
      */
@@ -135,7 +141,8 @@ public class PatrolMovementSprite extends SimpleSprite {
         atNextJunction();
     }
 
-    /** Checks if the patrol has reached the junction at the end of the road it
+    /**
+     * Checks if the patrol has reached the junction at the end of the road it
      * is travelling on - if it has then it calls reachNextJunction().
      */
     private void atNextJunction() {
@@ -147,10 +154,12 @@ public class PatrolMovementSprite extends SimpleSprite {
         }
     }
 
-    /** This controls the patrol's pathQueue and determines whether
+    /**
+     * This controls the patrol's pathQueue and determines whether
      * the patrol has reached it's destination and should be set a
      * new goal or if it can travel onto the next junction in it's
-     * pathQueue */
+     * pathQueue
+     */
     private void reachNextJunction() {
         // this removes the road the patrol was travelling on
         // from lockedRoads in mapGraph to allow another patrol
@@ -181,7 +190,8 @@ public class PatrolMovementSprite extends SimpleSprite {
 
     /** Gives the patrol a new random goal then calls SetGoal to
      * start generating a path from the patrols current position
-     * to it's new randomly generated goal */
+     * to it's new randomly generated goal
+     */
     private void reachDestination(){
         deltaX = 0;
         deltaY = 0;
