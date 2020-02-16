@@ -493,6 +493,10 @@ public class Firetruck extends MovementSprite {
 
     public void setToggleDelay(int delay) {this.toggleDelay = delay;}
 
+    public ETFortress getNearestFortress() {
+        return this.nearestFortress;
+    }
+
     public void setArrow(boolean b) {this.isArrowVisible = b;}
 
     /**
