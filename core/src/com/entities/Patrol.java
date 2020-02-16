@@ -92,7 +92,7 @@ public class Patrol extends PatrolMovementSprite {
 
     /** Checks if the patrol is dead and if so sets this.isDead to true */
     private void checkIfDead() {
-        if (this.getHealthBar().getCurrentAmount() == 0) this.isDead = true;
+        if (this.getHealthBar().getCurrentAmount() <= 0) this.isDead = true;
     }
 
     /**
