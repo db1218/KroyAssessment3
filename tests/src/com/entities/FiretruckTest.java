@@ -182,8 +182,9 @@ public class FiretruckTest {
     @Test
     public void healthIncreases() {
         float initialHealth = firetruckUnderTest.getHealthBar().getCurrentAmount();
+        firetruckUnderTest.getWaterBar().subtractResourceAmount(10);
         firetruckUnderTest.getHealthBar().addResourceAmount(10);
-        assertEquals(initialHealth + 10, firetruckUnderTest.getHealthBar().getCurrentAmount(), 0.0001f);
+        assertEquals(initialHealth, firetruckUnderTest.getHealthBar().getCurrentAmount(), 0.0001f);
     }
 
     @Test
@@ -201,7 +202,7 @@ public class FiretruckTest {
     }
 
     @Test
-    public void testUpdateArrow() {
+    public void testUpdateArrowA() {
         ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
         ETFortress fortress1 = Mockito.mock(ETFortress.class);
         ETFortress fortress2 = Mockito.mock(ETFortress.class);
@@ -213,6 +214,48 @@ public class FiretruckTest {
         firetruckUnderTest.updateArrow(Mockito.mock(ShapeRenderer.class), fortresses);
 
         arrowUnderTest = new Arrow(0, 0, 0, 0);
+        final Vector2 target = firetruckUnderTest.getNearestFortress().getCentre();
+        arrowUnderTest.aimAtTarget(target);
+        float theta = (float) (180f / Math.PI * Math.atan2(arrowUnderTest.getX() - target.x, target.y - arrowUnderTest.getY()));
+        System.out.println(theta);
+        System.out.println(arrowUnderTest.getRotation());
+        assertEquals(theta, arrowUnderTest.getRotation(), 0.0001f);
+    }
+
+    @Test
+    public void testUpdateArrowB() {
+        ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
+        ETFortress fortress1 = Mockito.mock(ETFortress.class);
+        ETFortress fortress2 = Mockito.mock(ETFortress.class);
+        when(fortress1.getCentre()).thenReturn(new Vector2(0,0));
+        when(fortress2.getCentre()).thenReturn(new Vector2(20,20));
+        fortresses.add(fortress1);
+        fortresses.add(fortress2);
+        firetruckUnderTest.setPosition(0,0);
+        firetruckUnderTest.updateArrow(Mockito.mock(ShapeRenderer.class), fortresses);
+
+        arrowUnderTest = new Arrow(0, 0, 0, 0);
+        final Vector2 target = firetruckUnderTest.getNearestFortress().getCentre();
+        arrowUnderTest.aimAtTarget(target);
+        float theta = (float) (180f / Math.PI * Math.atan2(arrowUnderTest.getX() - target.x, target.y - arrowUnderTest.getY()));
+        System.out.println(theta);
+        System.out.println(arrowUnderTest.getRotation());
+        assertEquals(theta, arrowUnderTest.getRotation(), 0.0001f);
+    }
+
+    @Test
+    public void testUpdateArrowC() {
+        ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
+        ETFortress fortress1 = Mockito.mock(ETFortress.class);
+        ETFortress fortress2 = Mockito.mock(ETFortress.class);
+        when(fortress1.getCentre()).thenReturn(new Vector2(145678,3456789));
+        when(fortress2.getCentre()).thenReturn(new Vector2(987654,34598434));
+        fortresses.add(fortress1);
+        fortresses.add(fortress2);
+        firetruckUnderTest.setPosition(2345868,76543459);
+        firetruckUnderTest.updateArrow(Mockito.mock(ShapeRenderer.class), fortresses);
+
+        arrowUnderTest = new Arrow(234567898, 875456789, 19623456, 8765457);
         final Vector2 target = firetruckUnderTest.getNearestFortress().getCentre();
         arrowUnderTest.aimAtTarget(target);
         float theta = (float) (180f / Math.PI * Math.atan2(arrowUnderTest.getX() - target.x, target.y - arrowUnderTest.getY()));
