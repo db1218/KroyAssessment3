@@ -276,14 +276,14 @@ public class FiretruckTest {
         ArrayList<ETFortress> fortresses = new ArrayList<ETFortress>();
         ETFortress fortress1 = Mockito.mock(ETFortress.class);
         ETFortress fortress2 = Mockito.mock(ETFortress.class);
-        when(fortress1.getCentre()).thenReturn(new Vector2(145678,3456789));
-        when(fortress2.getCentre()).thenReturn(new Vector2(987654,34598434));
+        when(fortress1.getCentre()).thenReturn(new Vector2(999999999,999999999));
+        when(fortress2.getCentre()).thenReturn(new Vector2(999999999,999999999));
         fortresses.add(fortress1);
         fortresses.add(fortress2);
-        firetruckUnderTest.setPosition(2345868,76543459);
+        firetruckUnderTest.setPosition(999999999,999999999);
         firetruckUnderTest.updateArrow(Mockito.mock(ShapeRenderer.class), fortresses);
 
-        arrowUnderTest = new Arrow(234567898, 875456789, 19623456, 8765457);
+        arrowUnderTest = new Arrow(999999999, 999999999, 999999999, 999999999);
         final Vector2 target = firetruckUnderTest.getNearestFortress().getCentre();
         arrowUnderTest.aimAtTarget(target);
         float theta = (float) (180f / Math.PI * Math.atan2(arrowUnderTest.getX() - target.x, target.y - arrowUnderTest.getY()));

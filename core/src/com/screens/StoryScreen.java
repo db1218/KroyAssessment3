@@ -10,11 +10,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -88,8 +87,13 @@ public class StoryScreen implements Screen {
 
         // Create table to arrange buttons.
         Table table = new Table();
-        table.setFillParent(true);
         table.center();
+
+        Image bcg = new Image(new Texture(Gdx.files.internal("story.png")));
+        Stack bcgstack = new Stack();
+        bcgstack.setFillParent(true);
+        bcgstack.add(bcg);
+        bcgstack.add(table);
 
         // Create actors
         TypingLabel storyLabel = new TypingLabel(story, skin);
@@ -111,7 +115,7 @@ public class StoryScreen implements Screen {
         });
 
         // Add table to stage
-        stage.addActor(table);
+        stage.addActor(bcgstack);
 
         // creates game screen here to allow for less load time later
         gameScreen = new GameScreen(game);

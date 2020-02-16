@@ -90,16 +90,22 @@ public class GameOverScreen implements Screen {
         Table table = new Table();
         table.center();
 
-        Image bcg = new Image(new Texture(Gdx.files.internal("game_over.png")));
+        Image bcg;
         Stack bcgstack = new Stack();
         bcgstack.setFillParent(true);
-        bcgstack.add(bcg);
-        bcgstack.add(table);
 
         Label outcomeLabel = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
         outcomeLabel.setFontScale(2);
-        if (outcome.equals(Outcome.WON)) outcomeLabel.setText("Well done, you saved York!");
-        else outcomeLabel.setText("Well... you let York down...");
+        if (outcome.equals(Outcome.WON)){
+            bcg = new Image(new Texture(Gdx.files.internal("win.png")));
+            outcomeLabel.setText("Well done, you saved York!");
+        } else {
+            bcg = new Image(new Texture(Gdx.files.internal("game_over.png")));
+            outcomeLabel.setText("Well... you let York down...");
+        }
+
+        bcgstack.add(bcg);
+        bcgstack.add(table);
 
         TextButton exitButton = new TextButton("Return to Main Menu", skin);
 
