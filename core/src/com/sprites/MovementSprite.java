@@ -133,9 +133,9 @@ public class MovementSprite extends SimpleSprite {
         } else if (collisions == 1){
             // Separate the sprite from the tile and stop sprite movement
             if (Math.abs(this.speed.x) > Math.abs(this.speed.y)) {
-                this.speed = new Vector2(this.speed.x*.75f, -this.speed.y*.50f);
+                this.speed = new Vector2(this.speed.x*.85f, -this.speed.y*.75f);
             } else {
-                this.speed = new Vector2(-this.speed.x*.50f, this.speed.y*.75f);
+                this.speed = new Vector2(-this.speed.x*.75f, this.speed.y*.75f);
             }
         } else {
             this.speed = new Vector2(-(this.speed.x*0.7f), -(this.speed.y*0.7f));
