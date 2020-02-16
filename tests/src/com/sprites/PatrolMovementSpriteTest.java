@@ -2,55 +2,32 @@ package com.sprites;
 
 import com.badlogic.gdx.ai.pfa.GraphPath;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Batch;
-import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.Queue;
 import com.pathFinding.Junction;
 import com.pathFinding.MapGraph;
 import com.pathFinding.Road;
 import com.testrunner.GdxTestRunner;
 import org.junit.Before;
-import org.junit.Ignore;
-import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.Mockito;
-import org.mockito.junit.MockitoJUnit;
-import org.mockito.junit.MockitoRule;
-
-import java.util.ArrayList;
 
 import static org.junit.Assert.assertEquals;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.*;
 import static org.mockito.MockitoAnnotations.initMocks;
 
 @RunWith(GdxTestRunner.class)
 public class PatrolMovementSpriteTest {
 
     @Mock
-    private MapGraph mockMapGraph;
-    @Mock
-    private Array<Junction> junctionsMock;
-    @Mock
     private Texture mockSpriteTexture;
-    @Mock
-    private GraphPath<Junction> graphPathMock;
-    @Mock
-    private Road roadMock;
-    @Mock
-    private Junction junctionMock;
 
     private MapGraph mapGraph;
-
     private Junction zero;
     private Junction one;
     private Junction two;
 
     private PatrolMovementSprite patrolMovementSpriteUnderTest;
-
-
+    
     @Before
     public void setUp() {
         initMocks(this);

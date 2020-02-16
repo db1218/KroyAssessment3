@@ -27,7 +27,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 @RunWith(GdxTestRunner.class)
 public class PatrolTest {
 
-    private Patrol patrolUnderTest;
     @Mock
     private ArrayList<Texture> texturesMock;
     @Mock
@@ -37,8 +36,6 @@ public class PatrolTest {
     @Mock
     private Array<Junction> junctionsMock;
     @Mock
-    private Texture mockSpriteTexture;
-    @Mock
     private GraphPath<Junction> graphPathMock;
     @Mock
     private Road roadMock;
@@ -46,6 +43,8 @@ public class PatrolTest {
     private Junction junctionMock;
     @Mock
     private Batch mockBatch;
+
+    private Patrol patrolUnderTest;
 
     @Before
     public void setUp() {
