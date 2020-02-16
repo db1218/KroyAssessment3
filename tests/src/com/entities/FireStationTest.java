@@ -3,6 +3,7 @@ package com.entities;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Batch;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
+import com.badlogic.gdx.math.Vector2;
 import com.misc.Constants;
 import com.screens.GameScreen;
 import com.testrunner.GdxTestRunner;
@@ -14,8 +15,7 @@ import org.mockito.Mockito;
 
 import java.util.ArrayList;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -128,7 +128,6 @@ public class FireStationTest {
         assertTrue(firestation.isDestroyed());
     }
 
-
     @Test
     public void changeFiretruckTest() {
         Firetruck firetruck1 = Mockito.mock(Firetruck.class);
@@ -149,5 +148,25 @@ public class FireStationTest {
         boolean parkedCorrect = expectedParkedFiretrucks.equals(firestation.getParkedFireTrucks());
 
         assertTrue(activeCorrect && parkedCorrect);
+    }
+
+    @Test
+    public void testOpenCarparkMenu() {
+        Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
+        firestation.setActiveFireTruck(firetruck);
+        firestation.toggleMenu(true);
+        assertTrue(firestation.isMenuOpen() && !firestation.getActiveFireTruck().isSpraying());
+    }
+
+    @Test
+    public void testCloseCarparkMenuToRespawnFiretruck() {
+        Firetruck firetruck = new Firetruck(texturesMock, texturesMock, Constants.TruckType.BLUE, tileLayerMock, tileLayerMock, firestation, true);
+        firestation.setActiveFireTruck(firetruck);
+        firestation.toggleMenu(false);
+
+        Vector2 truckActualRespawnLocation = new Vector2(firestation.getActiveFireTruck().getX(), firestation.getActiveFireTruck().getY());
+        Vector2 truckExpectedLocation = firestation.getActiveFireTruck().getCarpark().getLocation();
+
+        assertTrue(!firestation.isMenuOpen() && truckExpectedLocation.equals(truckActualRespawnLocation));
     }
 }
