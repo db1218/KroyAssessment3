@@ -160,7 +160,7 @@ public class MainMenuScreen implements Screen {
 
 		// Add table to stage
 		stage.addActor(bcgstack);
-		//test
+
 
 	}
 

@@ -11,13 +11,11 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Label;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
-import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
+import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import com.badlogic.gdx.utils.Align;
 import com.badlogic.gdx.utils.viewport.ScreenViewport;
@@ -88,14 +86,20 @@ public class GameOverScreen implements Screen {
     public void show() {
         Gdx.input.setInputProcessor(stage);
 
+
         Table table = new Table();
-        table.setFillParent(true);
         table.center();
+
+        Image bcg = new Image(new Texture(Gdx.files.internal("game_over.png")));
+        Stack bcgstack = new Stack();
+        bcgstack.setFillParent(true);
+        bcgstack.add(bcg);
+        bcgstack.add(table);
 
         Label outcomeLabel = new Label("", new Label.LabelStyle(game.coolFont, Color.WHITE));
         outcomeLabel.setFontScale(2);
         if (outcome.equals(Outcome.WON)) outcomeLabel.setText("Well done, you saved York!");
-        else outcomeLabel.setText("Well... you let York down");
+        else outcomeLabel.setText("Well... you let York down...");
 
         TextButton exitButton = new TextButton("Return to Main Menu", skin);
 
@@ -115,7 +119,7 @@ public class GameOverScreen implements Screen {
             }
         });
 
-        stage.addActor(table);
+        stage.addActor(bcgstack);
     }
 
     /**
